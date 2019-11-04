@@ -18,6 +18,22 @@ export default class Home extends Component<Props> {
       <div data-tid="container">
         <div className="row pt-4">
           <div className="col-md-8">
+            <div className="col-md-12 mb-4">
+              <div className="input-group flex-nowrap">
+                <div className="input-group-prepend">
+                  <span className="input-group-text" id="addon-wrapping">
+                    Search
+                  </span>
+                </div>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="name, sku"
+                  aria-label="Username"
+                  aria-describedby="addon-wrapping"
+                />
+              </div>
+            </div>
             <div className="row">
               {productList.map(item => (
                 <div className="col-md-4 mb-4" key={item.id}>
@@ -50,7 +66,7 @@ export default class Home extends Component<Props> {
                 <ListCart />
                 <div className="mt-4">
                   <div className="row">
-                    <div className="col-md-3">
+                    <div className="col-md-4 col-xs-4">
                       <a
                         href="#"
                         className="btn btn-secondary btn-lg btn-block"
@@ -58,7 +74,7 @@ export default class Home extends Component<Props> {
                         Hold
                       </a>
                     </div>
-                    <div className="col-md-9">
+                    <div className="col-md-8 col-xs-8">
                       <Link
                         className="btn btn-primary btn-lg btn-block"
                         to={routes.CHECKOUT}
