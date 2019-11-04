@@ -10,6 +10,10 @@ export default class App extends React.Component<Props> {
 
   render() {
     const { children } = this.props;
-    return <React.Fragment>{children}</React.Fragment>;
+    return (
+      <React.Fragment>
+        <div className="container-fluid">{children}</div>
+      </React.Fragment>
+    );
   }
 }

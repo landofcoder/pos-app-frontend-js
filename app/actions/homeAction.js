@@ -1,9 +1,15 @@
 // @flow
-import { ADD_TO_CART } from '../constants/root';
+import * as types from '../constants/root';
 
 export function addToCart(payload) {
   return {
-    type: ADD_TO_CART,
+    type: types.ADD_TO_CART,
     payload
+  };
+}
+
+export function checkoutAction() {
+  return {
+    type: types.CHECK_OUT_ACTION
   };
 }

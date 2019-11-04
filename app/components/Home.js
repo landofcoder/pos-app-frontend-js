@@ -1,9 +1,11 @@
 // @flow
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import ListCart from './Cart/ListCart';
+import routes from '../constants/routes';
 
 type Props = {
   productList: Array,
-  cartCurrent: Object,
   addToCart: (payload: Object) => void
 };
 
@@ -11,10 +13,9 @@ export default class Home extends Component<Props> {
   props: Props;
 
   render() {
-    const { productList, cartCurrent, addToCart } = this.props;
-    const cartCurrentData = cartCurrent.data;
+    const { productList, addToCart } = this.props;
     return (
-      <div className="container-fluid" data-tid="container">
+      <div data-tid="container">
         <div className="row pt-4">
           <div className="col-md-8">
             <div className="row">
@@ -46,13 +47,7 @@ export default class Home extends Component<Props> {
           <div className="col-md-4">
             <div className="card">
               <div className="card-body">
-                <ul className="list-group">
-                  {cartCurrentData.map(item => (
-                    <li key={item.id} className="list-group-item">
-                      Cras justo odio
-                    </li>
-                  ))}
-                </ul>
+                <ListCart />
                 <div className="mt-4">
                   <div className="row">
                     <div className="col-md-3">
@@ -64,9 +59,12 @@ export default class Home extends Component<Props> {
                       </a>
                     </div>
                     <div className="col-md-9">
-                      <a href="#" className="btn btn-primary btn-lg btn-block">
+                      <Link
+                        className="btn btn-primary btn-lg btn-block"
+                        to={routes.CHECKOUT}
+                      >
                         Checkout
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </div>
