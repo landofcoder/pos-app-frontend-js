@@ -10,43 +10,55 @@ type Props = {
   productList: Array,
   addToCart: (payload: Object) => void,
   holdAction: () => void,
-  cashCheckoutAction: () => void
+  cashCheckoutAction: () => void,
+  searchAction: () => void,
+  getDefaultProductAction: () => void
 };
 
 export default class Home extends Component<Props> {
   props: Props;
 
+  componentDidMount(): * {
+    const { getDefaultProductAction } = this.props;
+    getDefaultProductAction();
+  }
+
   render() {
+    const classWrapProductPanel = `${Styles.wrapProductPanel} row`;
     const {
       productList,
       addToCart,
       holdAction,
-      cashCheckoutAction
+      cashCheckoutAction,
+      searchAction
     } = this.props;
     return (
       <>
         <div data-tid="container">
-          <div className="row pt-4">
+          <div className="row" id={Styles.wrapPostContainerId}>
             <div className="col-md-9">
-              <div className="col-md-12 mb-4">
-                <div className="input-group flex-nowrap">
-                  <div className="input-group-prepend">
-                    <span className="input-group-text" id="addon-wrapping">
-                      Search
-                    </span>
+              <div className="row">
+                <div className="col-md-12 mb-4">
+                  <div className="input-group flex-nowrap">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text" id="addon-wrapping">
+                          Search
+                        </span>
+                    </div>
+                    <input
+                      type="text"
+                      className="form-control"
+                      onChange={searchAction}
+                      placeholder="name, sku"
+                      aria-label="Username"
+                      aria-describedby="addon-wrapping"
+                    />
                   </div>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="name, sku"
-                    aria-label="Username"
-                    aria-describedby="addon-wrapping"
-                  />
                 </div>
               </div>
-              <div className="row">
+              <div className={classWrapProductPanel}>
                 {productList.map(item => (
-                  <div className="col-md-4 mb-4" key={item.id}>
+                  <div className="col-md-3 mb-4" key={item.id}>
                     <div className="card">
                       <div className="card-body">
                         <h5 className="card-title">Card title</h5>
@@ -124,12 +136,13 @@ export default class Home extends Component<Props> {
         <div className={Styles.wrapFooterAction}>
           <div className={Styles.wrapAction}>
             <div className="col-md-2 pr-0">
-              <Link
+              <button
+                type="button"
                 onClick={holdAction}
                 className="btn btn-secondary btn-lg btn-block"
               >
                 Hold
-              </Link>
+              </button>
             </div>
             <div className="col-md-2">
               <Link
@@ -140,12 +153,13 @@ export default class Home extends Component<Props> {
               </Link>
             </div>
             <div className="col-md-3 pl-0 pr-0">
-              <Link
+              <button
+                type="button"
                 className="btn btn-primary btn-lg btn-block"
                 onClick={cashCheckoutAction}
               >
                 CASH
-              </Link>
+              </button>
             </div>
           </div>
         </div>

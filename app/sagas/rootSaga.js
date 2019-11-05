@@ -1,9 +1,12 @@
+// @flow
 import { takeEvery, put, call, select, all } from 'redux-saga/effects';
 import * as types from '../constants/root';
 import {
   createGuestCartService,
   addProductToQuote,
-  addShippingInformationService
+  addShippingInformationService,
+  searchProductService,
+  getProductsService
 } from './services/GuestCartService';
 
 const productList = state => state.mainRd.productList;
@@ -20,7 +23,7 @@ function* getListProduct() {
  * Create quote function
  * @returns {IterableIterator<*>}
  */
-function* cashCheckoutAction() {
+function* cashCheckout() {
   // Create quote
   const cartToken = yield call(createGuestCartService);
   // Add product item to cart
@@ -36,9 +39,25 @@ function* cashCheckoutAction() {
   });
 }
 
+/**
+ * Get default product
+ * @returns {Generator<*, *>}
+ */
+function* getDefaultProduct() {
+  const response = yield call(getProductsService);
+  const productResult = response.items ? response.items : [];
+  yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productResult });
+}
+
+function* search() {
+  yield call(searchProductService);
+}
+
 function* rootSaga() {
   yield takeEvery(types.FETCH_LIST_PRODUCT, getListProduct);
-  yield takeEvery(types.CASH_CHECKOUT_ACTION, cashCheckoutAction);
+  yield takeEvery(types.CASH_CHECKOUT_ACTION, cashCheckout);
+  yield takeEvery(types.SEARCH_ACTION, search);
+  yield takeEvery(types.GET_DEFAULT_PRODUCT, getDefaultProduct);
 }
 
 export default rootSaga;

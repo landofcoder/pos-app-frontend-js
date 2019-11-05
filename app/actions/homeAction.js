@@ -25,3 +25,15 @@ export function cashCheckoutAction() {
     type: types.CASH_CHECKOUT_ACTION
   };
 }
+
+export function searchAction() {
+  return {
+    type: types.SEARCH_ACTION
+  };
+}
+
+export function getDefaultProductAction() {
+  return {
+    type: types.GET_DEFAULT_PRODUCT
+  };
+}

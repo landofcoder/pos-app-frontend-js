@@ -3,12 +3,7 @@ import produce from 'immer';
 import * as types from '../constants/root';
 
 const initialState = {
-  productList: [
-    { id: 2028, sku: 'MT07-XS-Gray' },
-    { id: 2027, sku: 'WSH11-29-Blue' },
-    { id: 2026, sku: 'WSH11-28-Red' },
-    { id: 2025, sku: 'WSH11-28-Orange' }
-  ],
+  productList: [],
   cartCurrent: {
     data: []
   },
@@ -25,6 +20,9 @@ const mainRd = (state = initialState, action) =>
         break;
       case types.RECEIVED_ORDER_PREPARING_CHECKOUT:
         draft.orderPreparingCheckout = action.payload;
+        break;
+      case types.RECEIVED_PRODUCT_RESULT:
+        draft.productList = action.payload;
         break;
       default:
         break;
