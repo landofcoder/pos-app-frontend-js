@@ -1,0 +1,13 @@
+.wrapFooterAction {
+  position: fixed;
+  width: 100%;
+  height: 48px;
+  bottom: 0;
+  margin-left: -15px;
+  margin-bottom: 10px;
+  .wrapAction {
+    padding-right: 5px;
+    display: flex;
+    justify-content: flex-end;
+  }
+}
