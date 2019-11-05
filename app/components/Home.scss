@@ -1,7 +1,6 @@
-
 $fullHeight: 100vh;
 $paddingTopPostContainerId: 2vh;
-$paddingBottomPostContainerId: 6vh;
+$paddingBottomPostContainerId: 25px;
 $wrapPostContainerHeight: calc(#{$fullHeight} - #{$paddingTopPostContainerId} - #{$paddingBottomPostContainerId});
 
 #wrapPostContainerId {
@@ -27,5 +26,11 @@ $wrapPostContainerHeight: calc(#{$fullHeight} - #{$paddingTopPostContainerId} - 
     padding-right: 5px;
     display: flex;
     justify-content: flex-end;
+  }
+}
+
+.wrapProductItem {
+  .wrapImage {
+    width: 100%;
   }
 }

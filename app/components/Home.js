@@ -23,6 +23,18 @@ export default class Home extends Component<Props> {
     getDefaultProductAction();
   }
 
+  getFirstMedia = item => {
+    const gallery = item.media_gallery_entries
+      ? item.media_gallery_entries
+      : [];
+    if (gallery.length > 0) {
+      const image = gallery[0].file;
+      return `http://magento2.local1/pub/media/catalog/product/${image}`;
+    }
+    // Return default image
+    return `http://magento2.local1/pub/media/catalog/product/`;
+  };
+
   render() {
     const classWrapProductPanel = `${Styles.wrapProductPanel} row`;
     const {
@@ -32,18 +44,19 @@ export default class Home extends Component<Props> {
       cashCheckoutAction,
       searchAction
     } = this.props;
+    console.log('product list:', productList);
     return (
       <>
         <div data-tid="container">
           <div className="row" id={Styles.wrapPostContainerId}>
             <div className="col-md-9">
-              <div className="row">
+              <div className={classWrapProductPanel}>
                 <div className="col-md-12 mb-4">
                   <div className="input-group flex-nowrap">
                     <div className="input-group-prepend">
-                        <span className="input-group-text" id="addon-wrapping">
-                          Search
-                        </span>
+                      <span className="input-group-text" id="addon-wrapping">
+                        Search
+                      </span>
                     </div>
                     <input
                       type="text"
@@ -55,27 +68,19 @@ export default class Home extends Component<Props> {
                     />
                   </div>
                 </div>
-              </div>
-              <div className={classWrapProductPanel}>
                 {productList.map(item => (
-                  <div className="col-md-3 mb-4" key={item.id}>
+                  <div
+                    className={`col-md-3 mb-4 ${Styles.wrapProductItem}`}
+                    key={item.id}
+                  >
                     <div className="card">
                       <div className="card-body">
-                        <h5 className="card-title">Card title</h5>
-                        <h6 className="card-subtitle mb-2 text-muted">
-                          Card subtitle
-                        </h6>
-                        <p className="card-text">
-                          Some quick example text to build on the card title and
-                          make up make up make up the bulk of the card content.
-                        </p>
-                        <a
-                          href="#"
-                          className="card-link"
-                          onClick={() => addToCart(item)}
-                        >
-                          Add to cart
-                        </a>
+                        <img
+                          className={Styles.wrapImage}
+                          alt="product image"
+                          src={this.getFirstMedia(item)}
+                        />
+                        <h5 className="card-title">{item.name}</h5>
                       </div>
                     </div>
                   </div>
@@ -85,7 +90,7 @@ export default class Home extends Component<Props> {
             <div className="col-md-3">
               <div className={CommonStyle.wrapLevel1}>
                 <div className={CommonStyle.wrapCartPanelPosition}>
-                  <ListCart />
+                  <ListCart/>
                   <div className={CommonStyle.subTotalContainer}>
                     <div className={CommonStyle.wrapSubTotal}>
                       <div className={CommonStyle.wrapRow}>
