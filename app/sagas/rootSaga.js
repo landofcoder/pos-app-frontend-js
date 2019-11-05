@@ -20,7 +20,7 @@ function* getListProduct() {
  * Create quote function
  * @returns {IterableIterator<*>}
  */
-function* checkoutAction() {
+function* cashCheckoutAction() {
   // Create quote
   const cartToken = yield call(createGuestCartService);
   // Add product item to cart
@@ -38,7 +38,7 @@ function* checkoutAction() {
 
 function* rootSaga() {
   yield takeEvery(types.FETCH_LIST_PRODUCT, getListProduct);
-  yield takeEvery(types.CHECK_OUT_ACTION, checkoutAction);
+  yield takeEvery(types.CASH_CHECKOUT_ACTION, cashCheckoutAction);
 }
 
 export default rootSaga;

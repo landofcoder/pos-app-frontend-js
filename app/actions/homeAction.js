@@ -13,3 +13,15 @@ export function checkoutAction() {
     type: types.CHECK_OUT_ACTION
   };
 }
+
+export function holdAction() {
+  return {
+    type: types.HOLD_ACTION
+  };
+}
+
+export function cashCheckoutAction() {
+  return {
+    type: types.CASH_CHECKOUT_ACTION
+  };
+}

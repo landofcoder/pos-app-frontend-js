@@ -8,14 +8,21 @@ import CommonStyle from './common.scss';
 
 type Props = {
   productList: Array,
-  addToCart: (payload: Object) => void
+  addToCart: (payload: Object) => void,
+  holdAction: () => void,
+  cashCheckoutAction: () => void
 };
 
 export default class Home extends Component<Props> {
   props: Props;
 
   render() {
-    const { productList, addToCart } = this.props;
+    const {
+      productList,
+      addToCart,
+      holdAction,
+      cashCheckoutAction
+    } = this.props;
     return (
       <>
         <div data-tid="container">
@@ -67,6 +74,48 @@ export default class Home extends Component<Props> {
               <div className={CommonStyle.wrapLevel1}>
                 <div className={CommonStyle.wrapCartPanelPosition}>
                   <ListCart />
+                  <div className={CommonStyle.subTotalContainer}>
+                    <div className={CommonStyle.wrapSubTotal}>
+                      <div className={CommonStyle.wrapRow}>
+                        <div className={CommonStyle.wrapLabel}>
+                          <span>Subtotal</span>
+                        </div>
+                        <div className={CommonStyle.wrapValue}>
+                          <span>$113.00</span>
+                        </div>
+                      </div>
+                      <div className={CommonStyle.wrapRow}>
+                        <div className={CommonStyle.wrapLabel}>
+                          <span>Tax</span>
+                        </div>
+                        <div className={CommonStyle.wrapValue}>
+                          <span>$0.00</span>
+                        </div>
+                      </div>
+                      <div className={CommonStyle.wrapRow}>
+                        <div className={CommonStyle.wrapLabel}>
+                          <span>Discount</span>
+                        </div>
+                        <div className={CommonStyle.wrapValue}>
+                          <span>$0.00</span>
+                        </div>
+                      </div>
+                      <div className={CommonStyle.wrapRow}>
+                        <div
+                          className={CommonStyle.wrapLabel}
+                          data-grand-total="1"
+                        >
+                          <span>GRAND TOTAL</span>
+                        </div>
+                        <div
+                          className={CommonStyle.wrapValue}
+                          data-grand-total="1"
+                        >
+                          <span>$113.00</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -75,7 +124,12 @@ export default class Home extends Component<Props> {
         <div className={Styles.wrapFooterAction}>
           <div className={Styles.wrapAction}>
             <div className="col-md-2 pr-0">
-              <Link className="btn btn-secondary btn-lg btn-block">Hold</Link>
+              <Link
+                onClick={holdAction}
+                className="btn btn-secondary btn-lg btn-block"
+              >
+                Hold
+              </Link>
             </div>
             <div className="col-md-2">
               <Link
@@ -88,9 +142,9 @@ export default class Home extends Component<Props> {
             <div className="col-md-3 pl-0 pr-0">
               <Link
                 className="btn btn-primary btn-lg btn-block"
-                to={routes.CHECKOUT}
+                onClick={cashCheckoutAction}
               >
-                Checkout
+                CASH
               </Link>
             </div>
           </div>

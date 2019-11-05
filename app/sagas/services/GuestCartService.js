@@ -1,27 +1,25 @@
 const adminToken = '1x4yqtfxwp3lnozbfam2zkes706336fh';
+const baseUrl = 'http://magento2.local1/';
 
 /**
  * Create guest cart service
  * @returns {Promise<any>}
  */
 export async function createGuestCartService() {
-  const response = await fetch(
-    'http://extension.magento232.localhost/index.php/rest/V1/guest-carts/',
-    {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
-      mode: 'cors', // no-cors, *cors, same-origin
-      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: 'same-origin', // include, *same-origin, omit
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${adminToken}`
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      redirect: 'follow', // manual, *follow, error
-      referrer: 'no-referrer', // no-referrer, *client
-      body: JSON.stringify({}) // body data type must match "Content-Type" header
-    }
-  );
+  const response = await fetch(`${baseUrl}index.php/rest/V1/guest-carts/`, {
+    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+    mode: 'cors', // no-cors, *cors, same-origin
+    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    credentials: 'same-origin', // include, *same-origin, omit
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${adminToken}`
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    redirect: 'follow', // manual, *follow, error
+    referrer: 'no-referrer', // no-referrer, *client
+    body: JSON.stringify({}) // body data type must match "Content-Type" header
+  });
   const data = await response.json(); // parses JSON response into native JavaScript objects
   return data;
 }
@@ -33,7 +31,7 @@ export async function createGuestCartService() {
  * @returns {Promise<void>}
  */
 export async function addProductToQuote(cartToken, sku) {
-  const url = `http://extension.magento232.localhost/index.php/rest/V1/guest-carts/${cartToken}/items`;
+  const url = `${baseUrl}index.php/rest/V1/guest-carts/${cartToken}/items`;
   const cartItem = {
     cartItem: {
       quote_id: cartToken,
@@ -65,7 +63,7 @@ export async function addProductToQuote(cartToken, sku) {
  * @returns {Promise<void>}
  */
 export async function getGuestCartDetail(cartToken) {
-  const url = `http://extension.magento232.localhost/index.php/rest/V1/guest-carts/${cartToken}`;
+  const url = `${baseUrl}index.php/rest/V1/guest-carts/${cartToken}`;
   const response = await fetch(url, {
     method: 'GET', // *GET, POST, PUT, DELETE, etc.
     mode: 'cors', // no-cors, *cors, same-origin
@@ -89,7 +87,7 @@ export async function getGuestCartDetail(cartToken) {
  * @returns {Promise<any>}
  */
 export async function addShippingInformationService(cartToken) {
-  const url = `http://extension.magento232.localhost/index.php/rest/V1/guest-carts/${cartToken}/shipping-information`;
+  const url = `${baseUrl}index.php/rest/V1/guest-carts/${cartToken}/shipping-information`;
   const response = await fetch(url, {
     method: 'POST', // *GET, POST, PUT, DELETE, etc.
     mode: 'cors', // no-cors, *cors, same-origin
@@ -141,7 +139,7 @@ export async function addShippingInformationService(cartToken) {
  * @returns {any}
  */
 export async function searchProductService() {
-  const url = `http://extension.magento232.localhost/index.php/rest/V1/products/?searchCriteria[filter_groups][0][filters][0][field]=sku&searchCriteria[filter_groups][0][filters][0][value]=%25${'MJ12'}%25&searchCriteria[filter_groups][0][filters][0][condition_type]=like`;
+  const url = `${baseUrl}index.php/rest/V1/products/?searchCriteria[filter_groups][0][filters][0][field]=sku&searchCriteria[filter_groups][0][filters][0][value]=%25${'MJ12'}%25&searchCriteria[filter_groups][0][filters][0][condition_type]=like`;
   const response = await fetch(url, {
     method: 'GET', // *GET, POST, PUT, DELETE, etc.
     mode: 'cors', // no-cors, *cors, same-origin
