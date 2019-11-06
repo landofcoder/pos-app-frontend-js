@@ -36,7 +36,7 @@ export async function addProductToQuote(cartToken, sku) {
     cartItem: {
       quote_id: cartToken,
       sku,
-      qty: 2
+      qty: 1
     }
   };
   const response = await fetch(url, {

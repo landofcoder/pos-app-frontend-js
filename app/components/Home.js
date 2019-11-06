@@ -13,7 +13,8 @@ type Props = {
   holdAction: () => void,
   searchAction: () => void,
   getDefaultProductAction: () => void,
-  cartCurrent: Array
+  cartCurrent: Array,
+  cashCheckoutAction: () => void
 };
 
 export default class Home extends Component<Props> {
@@ -52,6 +53,11 @@ export default class Home extends Component<Props> {
     return totalPrice;
   };
 
+  /**
+   * Rendering left panel, or product list or payment types
+   * @param productList
+   * @returns {*}
+   */
   renderSwitchPanel = productList => {
     const { addToCart } = this.props;
     const { paymentType } = this.state;
@@ -83,8 +89,43 @@ export default class Home extends Component<Props> {
     }
   };
 
+  /**
+   * Change payment type for switching left panel
+   * @param paymentType
+   */
   switchToPaymentType = paymentType => {
     this.setState({ paymentType });
+
+    // After switch to payment, run cashCheckoutAction to load discount to quote
+    const { cashCheckoutAction } = this.props;
+    cashCheckoutAction();
+  };
+
+  /**
+   * Render discount and tax
+   * @returns {*}
+   */
+  renderDiscountAndTax = () => {
+    return (
+      <>
+        <div className={CommonStyle.wrapRow}>
+          <div className={CommonStyle.wrapLabel}>
+            <span>Subtotal</span>
+          </div>
+          <div className={CommonStyle.wrapValue}>
+            <span>{this.sumTotalPrice()}</span>
+          </div>
+        </div>
+        <div className={CommonStyle.wrapRow}>
+          <div className={CommonStyle.wrapLabel}>
+            <span>Discount</span>
+          </div>
+          <div className={CommonStyle.wrapValue}>
+            <span>--</span>
+          </div>
+        </div>
+      </>
+    );
   };
 
   render() {
@@ -123,6 +164,7 @@ export default class Home extends Component<Props> {
                   <ListCart />
                   <div className={CommonStyle.subTotalContainer}>
                     <div className={CommonStyle.wrapSubTotal}>
+                      {this.renderDiscountAndTax()}
                       <div className={CommonStyle.wrapRow}>
                         <div
                           className={CommonStyle.wrapLabel}

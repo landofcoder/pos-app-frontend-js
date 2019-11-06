@@ -9,7 +9,7 @@ import {
   getProductsService
 } from './services/GuestCartService';
 
-const productList = state => state.mainRd.productList;
+const cartCurrent = state => state.mainRd.cartCurrent.data;
 
 /**
  * Get list product
@@ -27,9 +27,9 @@ function* cashCheckout() {
   // Create quote
   const cartToken = yield call(createGuestCartService);
   // Add product item to cart
-  const productListState = yield select(productList);
+  const cartCurrentResult = yield select(cartCurrent);
   yield all(
-    productListState.map(item => call(addProductToQuote, cartToken, item.sku))
+    cartCurrentResult.map(item => call(addProductToQuote, cartToken, item.sku))
   );
   // Add shipping and get detail order
   const response = yield call(addShippingInformationService, cartToken);
@@ -37,6 +37,8 @@ function* cashCheckout() {
     type: types.RECEIVED_ORDER_PREPARING_CHECKOUT,
     payload: response
   });
+
+  console.log('response:', response);
 }
 
 /**
