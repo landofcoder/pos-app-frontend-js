@@ -1,3 +1,78 @@
-.wrapCashPayment {
+@import './../../Home.scss';
+$footer: 110px;
+$heightWrapCashPayment: calc(#{$wrapPostContainerHeight} - #{$footer});
 
+.wrapCashPayment {
+  height: #{$heightWrapCashPayment};
+  width: 100%;
+  display: flex;
+  margin-left: 15px;
+  margin-right: 15px;
+  overflow: hidden;
+  background-color: white;
+  position: relative;
+  flex-wrap: wrap;
+  text-align: center;
+
+  span {
+    margin: 10px;
+  }
+
+  .dollar {
+    margin: 20px 10px 10px;
+    color: #666;
+  }
+
+  .center {
+    width: 600px;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .tableMount {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 30px;
+    border: 1px solid #9b9b9b;
+    border-radius: 5px;
+    height: 100px;
+
+    span {
+      align-self: center;
+      margin: 0 0 0 auto;
+    }
+
+    .paddingLeft {
+      margin-left: 10px;
+    }
+
+    .paddingRight {
+      margin-right: 10px;
+    }
+  }
+
+  .colorText {
+    color: #9b9b9b;
+  }
+
+  .size {
+    font-size: 25px;
+  }
+
+  button {
+    margin-bottom: 20px;
+    margin-right: 20px;
+    border-radius: 5px;
+  }
+
+  .footerButton {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    bottom: 10px;
+    margin-left: 15px;
+    margin-right: 15px;
+    width: 100%;
+  }
 }
