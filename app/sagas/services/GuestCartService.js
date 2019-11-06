@@ -1,4 +1,4 @@
-const adminToken = 'rcye18l843nr61y0xhhw3e1geyiqs3ir';
+const adminToken = 'oiurwvdlqw13y1i0ev32doezu8zjep8z';
 const baseUrl = 'http://magento2.local1/';
 
 /**

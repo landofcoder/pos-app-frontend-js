@@ -131,7 +131,6 @@ export default class Home extends Component<Props> {
   render() {
     const classWrapProductPanel = `${Styles.wrapProductPanel} row`;
     const { productList, holdAction, searchAction } = this.props;
-    console.log('product list:', productList);
     return (
       <>
         <div data-tid="container">
