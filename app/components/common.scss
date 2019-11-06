@@ -4,9 +4,10 @@
   height: 100%;
 
   .wrapCartPanelPosition {
-    height: 100%;
+    height: calc(100% - 60px);
+    max-height: calc(100% - 60px);
+    overflow-y: scroll;
     background: #fff;
-    position: absolute !important;
     border-radius: 5px;
     width: 100%;
 
@@ -14,6 +15,7 @@
       position: absolute;
       bottom: 0;
       width: 100%;
+      background: #fff;
 
       .wrapSubTotal {
         padding-top: 10px;

@@ -5,18 +5,26 @@ import ListCart from './Cart/ListCart';
 import routes from '../constants/routes';
 import Styles from './Home.scss';
 import CommonStyle from './common.scss';
+import CashPayment from './payment/Cash/Cash';
 
 type Props = {
   productList: Array,
   addToCart: (payload: Object) => void,
   holdAction: () => void,
-  cashCheckoutAction: () => void,
   searchAction: () => void,
-  getDefaultProductAction: () => void
+  getDefaultProductAction: () => void,
+  cartCurrent: Array
 };
 
 export default class Home extends Component<Props> {
   props: Props;
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      paymentType: ''
+    };
+  }
 
   componentDidMount(): * {
     const { getDefaultProductAction } = this.props;
@@ -35,15 +43,53 @@ export default class Home extends Component<Props> {
     return `http://magento2.local1/pub/media/catalog/product/`;
   };
 
+  sumTotalPrice = () => {
+    const { cartCurrent } = this.props;
+    let totalPrice = 0;
+    cartCurrent.data.forEach(item => {
+      totalPrice += item.price;
+    });
+    return totalPrice;
+  };
+
+  renderSwitchPanel = productList => {
+    const { addToCart } = this.props;
+    const { paymentType } = this.state;
+    switch (paymentType) {
+      case '':
+        return productList.map(item => (
+          <div
+            className={`col-md-3 mb-4 ${Styles.wrapProductItem}`}
+            key={item.id}
+          >
+            <div className="card">
+              <div className="card-body">
+                <a role="presentation" onClick={() => addToCart(item)}>
+                  <img
+                    alt="name"
+                    className={Styles.wrapImage}
+                    src={this.getFirstMedia(item)}
+                  />
+                  <h5 className="card-title">{item.name}</h5>
+                </a>
+              </div>
+            </div>
+          </div>
+        ));
+      case 'cash':
+        return <CashPayment />;
+      default:
+        return <></>;
+    }
+  };
+
+  switchToPaymentType = paymentType => {
+    this.setState({ paymentType });
+  };
+
   render() {
     const classWrapProductPanel = `${Styles.wrapProductPanel} row`;
-    const {
-      productList,
-      addToCart,
-      holdAction,
-      cashCheckoutAction,
-      searchAction
-    } = this.props;
+    const { productList, holdAction, searchAction } = this.props;
     console.log('product list:', productList);
     return (
       <>
@@ -68,55 +114,15 @@ export default class Home extends Component<Props> {
                     />
                   </div>
                 </div>
-                {productList.map(item => (
-                  <div
-                    className={`col-md-3 mb-4 ${Styles.wrapProductItem}`}
-                    key={item.id}
-                  >
-                    <div className="card">
-                      <div className="card-body">
-                        <img
-                          className={Styles.wrapImage}
-                          alt="product image"
-                          src={this.getFirstMedia(item)}
-                        />
-                        <h5 className="card-title">{item.name}</h5>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                {this.renderSwitchPanel(productList)}
               </div>
             </div>
             <div className="col-md-3">
               <div className={CommonStyle.wrapLevel1}>
                 <div className={CommonStyle.wrapCartPanelPosition}>
-                  <ListCart/>
+                  <ListCart />
                   <div className={CommonStyle.subTotalContainer}>
                     <div className={CommonStyle.wrapSubTotal}>
-                      <div className={CommonStyle.wrapRow}>
-                        <div className={CommonStyle.wrapLabel}>
-                          <span>Subtotal</span>
-                        </div>
-                        <div className={CommonStyle.wrapValue}>
-                          <span>$113.00</span>
-                        </div>
-                      </div>
-                      <div className={CommonStyle.wrapRow}>
-                        <div className={CommonStyle.wrapLabel}>
-                          <span>Tax</span>
-                        </div>
-                        <div className={CommonStyle.wrapValue}>
-                          <span>$0.00</span>
-                        </div>
-                      </div>
-                      <div className={CommonStyle.wrapRow}>
-                        <div className={CommonStyle.wrapLabel}>
-                          <span>Discount</span>
-                        </div>
-                        <div className={CommonStyle.wrapValue}>
-                          <span>$0.00</span>
-                        </div>
-                      </div>
                       <div className={CommonStyle.wrapRow}>
                         <div
                           className={CommonStyle.wrapLabel}
@@ -128,7 +134,7 @@ export default class Home extends Component<Props> {
                           className={CommonStyle.wrapValue}
                           data-grand-total="1"
                         >
-                          <span>$113.00</span>
+                          <span>{this.sumTotalPrice()}</span>
                         </div>
                       </div>
                     </div>
@@ -161,7 +167,7 @@ export default class Home extends Component<Props> {
               <button
                 type="button"
                 className="btn btn-primary btn-lg btn-block"
-                onClick={cashCheckoutAction}
+                onClick={() => this.switchToPaymentType('cash')}
               >
                 CASH
               </button>
