@@ -4,17 +4,23 @@ import { connect } from 'react-redux';
 import styles from './listcart.scss';
 
 type Props = {
-  //  cartCurrent: Array
+  cartCurrent: Array
 };
 
 class ListCart extends Component<Props> {
   props: Props;
 
   render() {
-    //  const { cartCurrent } = this.props;
+    const { cartCurrent } = this.props;
     return (
       <div>
         <ul className="list-group">
+          {cartCurrent.data.map(item => (
+            <li key={item.id} className="list-group-item">
+              Cras justo odio
+            </li>
+          ))}
+
           <li className={`list-group-item ${styles.item}`}>
             <div className="row">
               <div className="col-sm-3">
