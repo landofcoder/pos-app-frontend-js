@@ -8,7 +8,7 @@ export default class CashPayment extends Component<Props> {
 
   render() {
     return (
-      <div className={`${commonStyle.wrapStaticPageContent}`}>
+      <div className={`mr-3 ml-3 pl-4 ${commonStyle.wrapStaticPageContent}`}>
         <div className={commonStyle.wrapCenterContent}>
           <div className={styles.contentColumn}>
             <i
@@ -16,7 +16,7 @@ export default class CashPayment extends Component<Props> {
             />
             <span className={`${commonStyle.colorText}`}>Total</span>
             <span className={`${commonStyle.sizeFont}`}>$233.53</span>
-            <div className={`${styles.wrapTable} row`}>
+            <div className={`col-md-12 ${styles.wrapTable} row`}>
               <span className={`${commonStyle.colorText} ${styles.forLeft}`}>
                 Amount
               </span>
