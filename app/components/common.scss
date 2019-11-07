@@ -1,4 +1,4 @@
-.wrapCashPayment {
+.wrapStaticPageContent {
   @import './Home.scss';
   $footer: 110px;
   $heightWrapCashPayment: calc(#{$wrapPostContainerHeight} - #{$footer});
@@ -18,9 +18,8 @@
     color: #666;
   }
 
-  .wrapCenterCash {
+  .wrapCenterContent {
     width: 600px;
-    position: relative;
     margin-left: auto;
     margin-right: auto;
   }

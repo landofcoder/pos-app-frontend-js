@@ -8,8 +8,8 @@ export default class CashPayment extends Component<Props> {
 
   render() {
     return (
-      <div className={`${commonStyle.wrapCashPayment}`}>
-        <div className={commonStyle.wrapCenterCash}>
+      <div className={`${commonStyle.wrapStaticPageContent}`}>
+        <div className={commonStyle.wrapCenterContent}>
           <i
             className={`fa fa-money-bill-wave fa-3x ${commonStyle.headerIcon}`}
           />
