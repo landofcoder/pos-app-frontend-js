@@ -38,10 +38,10 @@ export default class Home extends Component<Props> {
       : [];
     if (gallery.length > 0) {
       const image = gallery[0].file;
-      return `http://magento2.local1/pub/media/catalog/product/${image}`;
+      return `http://magento2.local2/pub/media/catalog/product/${image}`;
     }
     // Return default image
-    return `http://magento2.local1/pub/media/catalog/product/`;
+    return `http://magento2.local2/pub/media/catalog/product/`;
   };
 
   sumTotalPrice = () => {

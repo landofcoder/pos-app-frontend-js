@@ -1,5 +1,5 @@
-const adminToken = 'oiurwvdlqw13y1i0ev32doezu8zjep8z';
-const baseUrl = 'http://magento2.local1/';
+const adminToken = '2s1bxbczn4ou2qhja90lnyvb1jqe8sfh';
+const baseUrl = 'http://magento2.local2/';
 
 /**
  * Create guest cart service
