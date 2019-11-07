@@ -154,8 +154,8 @@ export default class Home extends Component<Props> {
                     />
                   </div>
                 </div>
-                {this.renderSwitchPanel(productList)}
               </div>
+              {this.renderSwitchPanel(productList)}
             </div>
             <div className="col-md-3">
               <div className={CommonStyle.wrapLevel1}>
