@@ -1,3 +1,4 @@
+/* eslint-disable */
 // @flow
 import React, { Component } from 'react';
 import commonStyle from '../../common.scss';
@@ -10,21 +11,20 @@ export default class CashPayment extends Component<Props> {
     return (
       <div className={`${commonStyle.wrapStaticPageContent}`}>
         <div className={commonStyle.wrapCenterContent}>
-          <i
-            className={`fa fa-money-bill-wave fa-3x ${commonStyle.headerIcon}`}
-          />
-          <br />
-          <span className={`${commonStyle.colorText}`}>Total</span>
-          <br />
-          <span className={`${commonStyle.sizeFont}`}>$233.53</span>
-          <br />
-          <div className={`${styles.wrapTable} row`}>
+          <div className={styles.contentColumn}>
+            <i
+              className={`fa fa-money-bill-wave fa-3x ${commonStyle.headerIcon}`}
+            />
+            <span className={`${commonStyle.colorText}`}>Total</span>
+            <span className={`${commonStyle.sizeFont}`}>$233.53</span>
+            <div className={`${styles.wrapTable} row`}>
             <span className={`${commonStyle.colorText} ${styles.forLeft}`}>
               Amount
             </span>
-            <span className={`${commonStyle.sizeFont} ${styles.forRight}`}>
+              <span className={`${commonStyle.sizeFont} ${styles.forRight}`}>
               $233.53
             </span>
+            </div>
           </div>
           <button
             type="button"
