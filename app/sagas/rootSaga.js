@@ -5,10 +5,10 @@ import {
   createGuestCartService,
   addProductToQuote,
   addShippingInformationService,
-  searchProductService,
   getProductsService,
   placeCashOrderService
 } from './services/GuestCartService';
+import { searchProductService } from './services/ProductService';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
 const cartCurrentToken = state => state.mainRd.cartCurrent.token;
@@ -77,8 +77,14 @@ function* cashCheckoutPlaceOrder() {
   console.log('place order response:', response);
 }
 
-function* search() {
-  yield call(searchProductService);
+/**
+ * Search action
+ * @param searchValue
+ * @returns {Generator<<"CALL", CallEffectDescriptor<RT>>, *>}
+ */
+function* search(searchValue) {
+  const searchResult = yield call(searchProductService, searchValue);
+  console.log('search result:', searchResult);
 }
 
 function* rootSaga() {

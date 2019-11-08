@@ -16,7 +16,7 @@ type Props = {
   productList: Array,
   addToCart: (payload: Object) => void,
   holdAction: () => void,
-  searchAction: () => void,
+  searchAction: (payload: string) => void,
   getDefaultProductAction: () => void,
   cartCurrent: Array,
   mainPanelType: string,
@@ -26,6 +26,13 @@ type Props = {
 
 export default class Home extends Component<Props> {
   props: Props;
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      delayTimer: null
+    };
+  }
 
   componentDidMount(): * {
     const { getDefaultProductAction } = this.props;
@@ -130,9 +137,21 @@ export default class Home extends Component<Props> {
     );
   };
 
+  searchTyping = e => {
+    const { value } = e.target;
+    const { delayTimer } = this.state;
+    const { searchAction } = this.props;
+    clearTimeout(delayTimer);
+    const delayTimerRes = setTimeout(() => {
+      // Do the ajax stuff
+      searchAction(value);
+    }, 300); // Will do the ajax stuff after 1000 ms, or 1 s
+    this.setState({ delayTimer: delayTimerRes });
+  };
+
   render() {
     const classWrapProductPanel = `${Styles.wrapProductPanel} row`;
-    const { productList, holdAction, searchAction, cartCurrent } = this.props;
+    const { productList, holdAction, cartCurrent } = this.props;
     // Enable checkout button or disable
     const disableCheckout = cartCurrent.data.length <= 0;
     return (
@@ -151,7 +170,7 @@ export default class Home extends Component<Props> {
                     <input
                       type="text"
                       className="form-control"
-                      onChange={searchAction}
+                      onChange={this.searchTyping}
                       placeholder="name, sku"
                       aria-label="Username"
                       aria-describedby="addon-wrapping"

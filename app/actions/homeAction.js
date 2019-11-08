@@ -26,9 +26,10 @@ export function cashCheckoutAction() {
   };
 }
 
-export function searchAction() {
+export function searchAction(payload) {
   return {
-    type: types.SEARCH_ACTION
+    type: types.SEARCH_ACTION,
+    payload
   };
 }
 
