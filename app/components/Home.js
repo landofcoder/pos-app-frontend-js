@@ -10,6 +10,7 @@ import {
   HOME_DEFAULT_PRODUCT_LIST,
   CASH_PANEL
 } from '../constants/main-panel-types';
+import {baseUrl} from '../params';
 
 type Props = {
   productList: Array,
@@ -37,10 +38,10 @@ export default class Home extends Component<Props> {
       : [];
     if (gallery.length > 0) {
       const image = gallery[0].file;
-      return `http://magento2.local2/pub/media/catalog/product/${image}`;
+      return `${baseUrl}pub/media/catalog/product/${image}`;
     }
     // Return default image
-    return `http://magento2.local2/pub/media/catalog/product/`;
+    return `${baseUrl}pub/media/catalog/product/`;
   };
 
   sumTotalPrice = () => {

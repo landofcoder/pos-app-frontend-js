@@ -2,13 +2,15 @@
 import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
-import { updateMainPanelType } from '../../../actions/homeAction';
+import { bindActionCreators } from 'redux';
 import { HOME_DEFAULT_PRODUCT_LIST } from '../../../constants/main-panel-types';
+import * as CheckoutActions from '../../../actions/checkoutActions';
 
 type Props = {
   cashLoadingPreparingOrder: boolean,
   orderPreparingCheckout: Object,
-  updateMainPanelTypeAction: (payload: string) => void
+  updateMainPanelTypeAction: (payload: string) => void,
+  cashPlaceOrderAction: () => void
 };
 
 class CashPayment extends Component<Props> {
@@ -18,7 +20,8 @@ class CashPayment extends Component<Props> {
     const {
       cashLoadingPreparingOrder,
       orderPreparingCheckout,
-      updateMainPanelTypeAction
+      updateMainPanelTypeAction,
+      cashPlaceOrderAction
     } = this.props;
     return (
       <div className="col-md-3">
@@ -29,7 +32,7 @@ class CashPayment extends Component<Props> {
         >
           Cancel
         </button>
-        <button type="button" className="btn btn-primary btn-lg">
+        <button type="button" className="btn btn-primary btn-lg" onClick={cashPlaceOrderAction}>
           {cashLoadingPreparingOrder ? (
             <span
               className="spinner-border"
@@ -53,9 +56,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return {
-    updateMainPanelTypeAction: payload => dispatch(updateMainPanelType(payload))
-  };
+  return bindActionCreators(CheckoutActions, dispatch);
 }
 
 export default connect(

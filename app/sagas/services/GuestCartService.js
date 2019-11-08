@@ -178,3 +178,27 @@ export async function getProductsService() {
   const data = await response.json();
   return data;
 }
+
+/**
+ * Place cash order
+ * @param cartToken
+ * @returns {Promise<void>}
+ */
+export async function placeCashOrder(cartToken) {
+  const url = `${baseUrl}index.php/rest/V1/guest-carts/${cartToken}/order`;
+  const response = await fetch(url, {
+    method: 'PUT',
+    mode: 'cors', // no-cors, *cors, same-origin
+    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    credentials: 'same-origin', // include, *same-origin, omit
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${adminToken}`
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    redirect: 'follow', // manual, *follow, error
+    referrer: 'no-referrer' // no-referrer, *client
+  });
+  const data = await response.json();
+  console.log('put data response:', data);
+}
