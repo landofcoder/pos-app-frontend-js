@@ -6,6 +6,10 @@ import routes from '../constants/routes';
 import Styles from './Home.scss';
 import CommonStyle from './common.scss';
 import CashPayment from './payment/Cash/Cash';
+import {
+  HOME_DEFAULT_PRODUCT_LIST,
+  CASH_PANEL
+} from '../constants/main-panel-types';
 
 type Props = {
   productList: Array,
@@ -14,18 +18,13 @@ type Props = {
   searchAction: () => void,
   getDefaultProductAction: () => void,
   cartCurrent: Array,
-  cashCheckoutAction: () => void,
+  mainPanelType: string,
+  updateMainPanelType: (payload: string) => void,
+  cashCheckoutAction: () => void
 };
 
 export default class Home extends Component<Props> {
   props: Props;
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      paymentType: ''
-    };
-  }
 
   componentDidMount(): * {
     const { getDefaultProductAction } = this.props;
@@ -59,10 +58,10 @@ export default class Home extends Component<Props> {
    * @returns {*}
    */
   renderSwitchPanel = productList => {
-    const { addToCart } = this.props;
-    const { paymentType } = this.state;
-    switch (paymentType) {
-      case '':
+    const { addToCart, mainPanelType } = this.props;
+
+    switch (mainPanelType) {
+      case HOME_DEFAULT_PRODUCT_LIST:
         return productList.map(item => (
           <div
             className={`col-md-3 mb-4 ${Styles.wrapProductItem}`}
@@ -82,7 +81,7 @@ export default class Home extends Component<Props> {
             </div>
           </div>
         ));
-      case 'cash':
+      case CASH_PANEL:
         return <CashPayment></CashPayment>;
       default:
         return <></>;
@@ -94,7 +93,9 @@ export default class Home extends Component<Props> {
    * @param paymentType
    */
   switchToPaymentType = paymentType => {
-    this.setState({ paymentType });
+    // Switch main panel type
+    const { updateMainPanelType } = this.props;
+    updateMainPanelType(paymentType);
 
     // After switch to payment, run cashCheckoutAction to load discount to quote
     const { cashCheckoutAction } = this.props;
@@ -211,7 +212,7 @@ export default class Home extends Component<Props> {
                 type="button"
                 disabled={disableCheckout}
                 className="btn btn-primary btn-lg btn-block"
-                onClick={() => this.switchToPaymentType('cash')}
+                onClick={() => this.switchToPaymentType(CASH_PANEL)}
               >
                 CASH
               </button>

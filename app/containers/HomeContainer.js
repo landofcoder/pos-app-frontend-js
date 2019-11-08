@@ -7,7 +7,8 @@ import * as homeActions from '../actions/homeAction';
 function mapStateToProps(state) {
   return {
     productList: state.mainRd.productList,
-    cartCurrent: state.mainRd.cartCurrent
+    cartCurrent: state.mainRd.cartCurrent,
+    mainPanelType: state.mainRd.mainPanelType
   };
 }
 

@@ -4,7 +4,7 @@ import * as types from '../constants/root';
 import { HOME_DEFAULT_PRODUCT_LIST } from '../constants/main-panel-types';
 
 const initialState = {
-  mainPanelType: HOME_DEFAULT_PRODUCT_LIST,
+  mainPanelType: HOME_DEFAULT_PRODUCT_LIST, // Main panel type for switching all main panel
   productList: [],
   cartCurrent: {
     data: []
@@ -29,6 +29,9 @@ const mainRd = (state = initialState, action) =>
         break;
       case types.UPDATE_CASH_LOADING_PREPARING_ORDER:
         draft.cashLoadingPreparingOrder = action.payload;
+        break;
+      case types.UPDATE_MAIN_PANEL_TYPE:
+        draft.mainPanelType = action.payload;
         break;
       default:
         break;

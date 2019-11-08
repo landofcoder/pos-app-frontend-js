@@ -37,3 +37,10 @@ export function getDefaultProductAction() {
     type: types.GET_DEFAULT_PRODUCT
   };
 }
+
+export function updateMainPanelType(payload) {
+  return {
+    type: types.UPDATE_MAIN_PANEL_TYPE,
+    payload
+  };
+}

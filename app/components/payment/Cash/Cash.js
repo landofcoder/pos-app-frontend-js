@@ -2,20 +2,33 @@
 import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
+import { updateMainPanelType } from '../../../actions/homeAction';
+import { HOME_DEFAULT_PRODUCT_LIST } from '../../../constants/main-panel-types';
 
 type Props = {
   cashLoadingPreparingOrder: boolean,
-  orderPreparingCheckout: Object
+  orderPreparingCheckout: Object,
+  updateMainPanelTypeAction: (payload: string) => void
 };
 
 class CashPayment extends Component<Props> {
   props: Props;
 
   render() {
-    const { cashLoadingPreparingOrder, orderPreparingCheckout } = this.props;
-    console.log('order preparing checkout:', orderPreparingCheckout);
+    const {
+      cashLoadingPreparingOrder,
+      orderPreparingCheckout,
+      updateMainPanelTypeAction
+    } = this.props;
     return (
       <div className="col-md-3">
+        <button
+          type="button"
+          className="btn btn-secondary"
+          onClick={() => updateMainPanelTypeAction(HOME_DEFAULT_PRODUCT_LIST)}
+        >
+          Cancel
+        </button>
         <button type="button" className="btn btn-primary btn-lg">
           {cashLoadingPreparingOrder ? (
             <span
@@ -39,7 +52,13 @@ function mapStateToProps(state) {
   };
 }
 
+function mapDispatchToProps(dispatch) {
+  return {
+    updateMainPanelTypeAction: payload => dispatch(updateMainPanelType(payload))
+  };
+}
+
 export default connect(
   mapStateToProps,
-  null
+  mapDispatchToProps
 )(CashPayment);
