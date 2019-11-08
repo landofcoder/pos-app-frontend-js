@@ -1,24 +1,44 @@
 .item {
-  position: relative;
-  .cancel {
-    margin-top: auto;
-    margin-bottom: auto;
-    text-align: right;
-    right: 10px;
-    color: #666;
-    .icon {
-      font-size: larger;
+  .tableFlex {
+    display: flex;
+    position: relative;
+    .spaceTable {
+      padding-right: 20px;
     }
-  }
-  .cost {
-    margin-top: auto;
-    margin-bottom: auto;
-    text-align: center;
-  }
-  img {
-    width: 50px;
-  }
-  .blockquote {
-    color: #666;
+    .wrapContent {
+      display: flex;
+
+      .title {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+
+    .cancel {
+      $fullHeight: 50%;
+
+      text-align: right;
+      top: calc(#{$fullHeight} - 10px);
+      color: #666;
+      position: absolute;
+      right: 10px;
+      .icon {
+        font-size: larger;
+      }
+    }
+
+    .cost {
+      margin-top: auto;
+      margin-bottom: auto;
+      text-align: center;
+    }
+
+    .sizeimgsmall {
+      width: 50px;
+    }
+
+    .blockquote {
+      color: #666;
+    }
   }
 }
