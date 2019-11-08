@@ -1,18 +1,30 @@
 // @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+//  import { HOME_DEFAULT_PRODUCT_LIST } from '../../../constants/main-panel-types';
+import * as CheckoutActions from '../../../actions/checkoutActions';
+import {} from '../../../actions/homeAction';
 import commonStyle from '../../common.scss';
 import styles from './cash.scss';
 
-type Props = {
-  //  cashLoadingPreparingOrder: boolean,
-  //  orderPreparingCheckout: Object
-};
+// type Props = {
+//   cashLoadingPreparingOrder: boolean,
+//   orderPreparingCheckout: Object,
+//   updateMainPanelTypeAction: (payload: string) => void,
+//   cashPlaceOrderAction: () => void
+// };
 
 class CashPayment extends Component<Props> {
   props: Props;
 
   render() {
+    // const {
+    //   cashLoadingPreparingOrder,
+    //   orderPreparingCheckout,
+    //   updateMainPanelTypeAction,
+    //   cashPlaceOrderAction
+    // } = this.props;
     return (
       <div className={`mr-3 ml-3 pl-4 ${commonStyle.wrapStaticPageContent}`}>
         <div className={commonStyle.wrapCenterContent}>
@@ -84,7 +96,11 @@ function mapStateToProps(state) {
   };
 }
 
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ ...CheckoutActions }, dispatch);
+}
+
 export default connect(
   mapStateToProps,
-  null
+  mapDispatchToProps
 )(CashPayment);

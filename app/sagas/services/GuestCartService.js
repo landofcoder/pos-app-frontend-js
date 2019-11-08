@@ -1,5 +1,4 @@
-const adminToken = '2s1bxbczn4ou2qhja90lnyvb1jqe8sfh';
-const baseUrl = 'http://magento2.local2/';
+import { adminToken, baseUrl } from '../../params';
 
 /**
  * Create guest cart service
@@ -107,7 +106,8 @@ export async function addShippingInformationService(cartToken) {
           street: ['Street Address'],
           company: 'Company',
           telephone: '2313131312',
-          postcode: '',
+          postcode: 'A1B2C3',
+          regionId: '1',
           city: 'California',
           firstname: 'john',
           lastname: 'harrison',
@@ -119,7 +119,8 @@ export async function addShippingInformationService(cartToken) {
           street: ['Street Address'],
           company: 'Company',
           telephone: '2313131312',
-          postcode: '',
+          postcode: 'A1B2C3',
+          regionId: '1',
           city: 'California',
           firstname: 'john',
           lastname: 'harrison',
@@ -175,6 +176,62 @@ export async function getProductsService() {
     },
     redirect: 'follow', // manual, *follow, error
     referrer: 'no-referrer' // no-referrer, *client
+  });
+  const data = await response.json();
+  return data;
+}
+
+/**
+ * Place cash order
+ * @returns {Promise<void>}
+ * @param cartToken
+ */
+export async function placeCashOrderService(cartToken) {
+  const url = `${baseUrl}index.php/rest/V1/guest-carts/${cartToken}/order`;
+  const response = await fetch(url, {
+    method: 'PUT',
+    mode: 'cors', // no-cors, *cors, same-origin
+    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    credentials: 'same-origin', // include, *same-origin, omit
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${adminToken}`
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    redirect: 'follow', // manual, *follow, error
+    referrer: 'no-referrer', // no-referrer, *client
+    body: JSON.stringify({
+      paymentMethod: { method: 'checkmo' },
+      addressInformation: {
+        shippingAddress: {
+          country_id: 'US',
+          street: ['Street Address'],
+          company: 'Company',
+          telephone: '2313131312',
+          postcode: 'A1B2C3',
+          regionId: '1',
+          city: 'California',
+          firstname: 'john',
+          lastname: 'harrison',
+          email: 'guestuser@gmail.com',
+          sameAsBilling: 1
+        },
+        billingAddress: {
+          country_id: 'US',
+          street: ['Street Address'],
+          company: 'Company',
+          telephone: '2313131312',
+          postcode: 'A1B2C3',
+          regionId: '1',
+          city: 'California',
+          firstname: 'john',
+          lastname: 'harrison',
+          email: 'guestuser@gmail.com'
+        },
+        shipping_method_code: 'flatrate',
+        shipping_carrier_code: 'flatrate'
+      }
+    })
   });
   const data = await response.json();
   return data;
