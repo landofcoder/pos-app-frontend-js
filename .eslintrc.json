@@ -5,11 +5,15 @@
     "flowtype"
   ],
   "rules": {
-    "flowtype/no-weak-types": [2, {
-      "any": false,
-      "Object": false,
-      "Function": true
-    }]
+    "flowtype/no-weak-types": [
+      2,
+      {
+        "any": false,
+        "Object": false,
+        "Function": true
+      }
+    ],
+    "no-shadow": "off"
   },
   "settings": {
     "import/resolver": {

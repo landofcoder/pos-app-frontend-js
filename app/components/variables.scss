@@ -1,0 +1,4 @@
+$fullHeight: 100vh;
+$paddingTopPostContainerId: 2vh;
+$paddingBottomPostContainerId: 25px;
+$wrapPostContainerHeight: calc(#{$fullHeight} - #{$paddingTopPostContainerId} - #{$paddingBottomPostContainerId});
