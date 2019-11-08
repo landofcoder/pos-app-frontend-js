@@ -83,7 +83,7 @@ export default class Home extends Component<Props> {
           </div>
         ));
       case 'cash':
-        return <CashPayment />;
+        return <CashPayment></CashPayment>;
       default:
         return <></>;
     }
@@ -130,7 +130,9 @@ export default class Home extends Component<Props> {
 
   render() {
     const classWrapProductPanel = `${Styles.wrapProductPanel} row`;
-    const { productList, holdAction, searchAction } = this.props;
+    const { productList, holdAction, searchAction, cartCurrent } = this.props;
+    // Enable checkout button or disable
+    const disableCheckout = cartCurrent.data.length <= 0;
     return (
       <>
         <div data-tid="container">
@@ -207,6 +209,7 @@ export default class Home extends Component<Props> {
             <div className="col-md-3 pl-0 pr-0">
               <button
                 type="button"
+                disabled={disableCheckout}
                 className="btn btn-primary btn-lg btn-block"
                 onClick={() => this.switchToPaymentType('cash')}
               >

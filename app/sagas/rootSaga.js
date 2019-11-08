@@ -24,6 +24,9 @@ function* getListProduct() {
  * @returns {IterableIterator<*>}
  */
 function* cashCheckout() {
+  // Show cash loading pre order
+  yield put({ type: types.UPDATE_CASH_LOADING_PREPARING_ORDER, payload: true });
+
   // Create quote
   const cartToken = yield call(createGuestCartService);
   // Add product item to cart
@@ -38,7 +41,11 @@ function* cashCheckout() {
     payload: response
   });
 
-  console.log('response:', response);
+  // Hide cash loading pre order
+  yield put({
+    type: types.UPDATE_CASH_LOADING_PREPARING_ORDER,
+    payload: false
+  });
 }
 
 /**

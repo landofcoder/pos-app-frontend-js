@@ -1,14 +1,17 @@
 // @flow
 import produce from 'immer';
 import * as types from '../constants/root';
+import { HOME_DEFAULT_PRODUCT_LIST } from '../constants/main-panel-types';
 
 const initialState = {
+  mainPanelType: HOME_DEFAULT_PRODUCT_LIST,
   productList: [],
   cartCurrent: {
     data: []
   },
   cartHoldList: [],
-  orderPreparingCheckout: {} // Detail order for preparing to checkout
+  orderPreparingCheckout: {}, // Detail order for preparing to checkout
+  cashLoadingPreparingOrder: false // Status cash loading for preparing to show cash payment form
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -23,6 +26,9 @@ const mainRd = (state = initialState, action) =>
         break;
       case types.RECEIVED_PRODUCT_RESULT:
         draft.productList = action.payload;
+        break;
+      case types.UPDATE_CASH_LOADING_PREPARING_ORDER:
+        draft.cashLoadingPreparingOrder = action.payload;
         break;
       default:
         break;

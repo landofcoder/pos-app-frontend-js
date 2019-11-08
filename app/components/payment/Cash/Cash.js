@@ -1,9 +1,15 @@
 // @flow
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import commonStyle from '../../common.scss';
 import styles from './cash.scss';
 
-export default class CashPayment extends Component<Props> {
+type Props = {
+  //  cashLoadingPreparingOrder: boolean,
+  //  orderPreparingCheckout: Object
+};
+
+class CashPayment extends Component<Props> {
   props: Props;
 
   render() {
@@ -70,3 +76,15 @@ export default class CashPayment extends Component<Props> {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    cashLoadingPreparingOrder: state.mainRd.cashLoadingPreparingOrder,
+    orderPreparingCheckout: state.mainRd.orderPreparingCheckout
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  null
+)(CashPayment);
