@@ -106,7 +106,8 @@ export async function addShippingInformationService(cartToken) {
           street: ['Street Address'],
           company: 'Company',
           telephone: '2313131312',
-          postcode: '',
+          postcode: 'A1B2C3',
+          regionId: '1',
           city: 'California',
           firstname: 'john',
           lastname: 'harrison',
@@ -118,7 +119,8 @@ export async function addShippingInformationService(cartToken) {
           street: ['Street Address'],
           company: 'Company',
           telephone: '2313131312',
-          postcode: '',
+          postcode: 'A1B2C3',
+          regionId: '1',
           city: 'California',
           firstname: 'john',
           lastname: 'harrison',
@@ -198,7 +200,38 @@ export async function placeCashOrderService(cartToken) {
     },
     redirect: 'follow', // manual, *follow, error
     referrer: 'no-referrer', // no-referrer, *client
-    body: JSON.stringify({ paymentMethod: { method: 'checkmo' } })
+    body: JSON.stringify({
+      paymentMethod: { method: 'checkmo' },
+      addressInformation: {
+        shippingAddress: {
+          country_id: 'US',
+          street: ['Street Address'],
+          company: 'Company',
+          telephone: '2313131312',
+          postcode: 'A1B2C3',
+          regionId: '1',
+          city: 'California',
+          firstname: 'john',
+          lastname: 'harrison',
+          email: 'guestuser@gmail.com',
+          sameAsBilling: 1
+        },
+        billingAddress: {
+          country_id: 'US',
+          street: ['Street Address'],
+          company: 'Company',
+          telephone: '2313131312',
+          postcode: 'A1B2C3',
+          regionId: '1',
+          city: 'California',
+          firstname: 'john',
+          lastname: 'harrison',
+          email: 'guestuser@gmail.com'
+        },
+        shipping_method_code: 'flatrate',
+        shipping_carrier_code: 'flatrate'
+      }
+    })
   });
   const data = await response.json();
   return data;

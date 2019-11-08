@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { HOME_DEFAULT_PRODUCT_LIST } from '../../../constants/main-panel-types';
 import * as CheckoutActions from '../../../actions/checkoutActions';
+import {} from '../../../actions/homeAction';
 
 type Props = {
   cashLoadingPreparingOrder: boolean,
@@ -32,7 +33,11 @@ class CashPayment extends Component<Props> {
         >
           Cancel
         </button>
-        <button type="button" className="btn btn-primary btn-lg" onClick={cashPlaceOrderAction}>
+        <button
+          type="button"
+          className="btn btn-primary btn-lg"
+          onClick={cashPlaceOrderAction}
+        >
           {cashLoadingPreparingOrder ? (
             <span
               className="spinner-border"
@@ -56,7 +61,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators(CheckoutActions, dispatch);
+  return bindActionCreators({ ...CheckoutActions }, dispatch);
 }
 
 export default connect(
