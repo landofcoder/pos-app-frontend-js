@@ -202,6 +202,7 @@ export async function placeCashOrderService(cartToken) {
     referrer: 'no-referrer', // no-referrer, *client
     body: JSON.stringify({
       paymentMethod: { method: 'checkmo' },
+      app: 'LOF_POS',
       addressInformation: {
         shippingAddress: {
           country_id: 'US',
