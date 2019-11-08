@@ -181,10 +181,10 @@ export async function getProductsService() {
 
 /**
  * Place cash order
- * @param cartToken
  * @returns {Promise<void>}
+ * @param cartToken
  */
-export async function placeCashOrder(cartToken) {
+export async function placeCashOrderService(cartToken) {
   const url = `${baseUrl}index.php/rest/V1/guest-carts/${cartToken}/order`;
   const response = await fetch(url, {
     method: 'PUT',
@@ -197,8 +197,9 @@ export async function placeCashOrder(cartToken) {
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
     redirect: 'follow', // manual, *follow, error
-    referrer: 'no-referrer' // no-referrer, *client
+    referrer: 'no-referrer', // no-referrer, *client
+    body: JSON.stringify({ paymentMethod: { method: 'checkmo' } })
   });
   const data = await response.json();
-  console.log('put data response:', data);
+  return data;
 }

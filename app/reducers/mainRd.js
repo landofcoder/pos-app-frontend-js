@@ -7,6 +7,7 @@ const initialState = {
   mainPanelType: HOME_DEFAULT_PRODUCT_LIST, // Main panel type for switching all main panel
   productList: [],
   cartCurrent: {
+    token: '',
     data: []
   },
   cartHoldList: [],
@@ -32,6 +33,9 @@ const mainRd = (state = initialState, action) =>
         break;
       case types.UPDATE_MAIN_PANEL_TYPE:
         draft.mainPanelType = action.payload;
+        break;
+      case types.UPDATE_CART_TOKEN_TO_CURRENT_CART:
+        draft.cartCurrent.token = action.payload;
         break;
       default:
         break;

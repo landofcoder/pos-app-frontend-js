@@ -6,10 +6,12 @@ import {
   addProductToQuote,
   addShippingInformationService,
   searchProductService,
-  getProductsService
+  getProductsService,
+  placeCashOrderService
 } from './services/GuestCartService';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
+const cartCurrentToken = state => state.mainRd.cartCurrent.token;
 
 /**
  * Get list product
@@ -29,6 +31,13 @@ function* cashCheckout() {
 
   // Create quote
   const cartToken = yield call(createGuestCartService);
+
+  // Update cart token to current quote
+  yield put({
+    type: types.UPDATE_CART_TOKEN_TO_CURRENT_CART,
+    payload: cartToken
+  });
+
   // Add product item to cart
   const cartCurrentResult = yield select(cartCurrent);
   yield all(
@@ -58,6 +67,16 @@ function* getDefaultProduct() {
   yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productResult });
 }
 
+/**
+ * Cash place order
+ * @returns {Generator<<"CALL", CallEffectDescriptor<RT>>, *>}
+ */
+function* cashCheckoutPlaceOrder() {
+  const cartCurrentTokenResult = yield select(cartCurrentToken);
+  const response = yield call(placeCashOrderService, cartCurrentTokenResult);
+  console.log('place order response:', response);
+}
+
 function* search() {
   yield call(searchProductService);
 }
@@ -67,6 +86,10 @@ function* rootSaga() {
   yield takeEvery(types.CASH_CHECKOUT_ACTION, cashCheckout);
   yield takeEvery(types.SEARCH_ACTION, search);
   yield takeEvery(types.GET_DEFAULT_PRODUCT, getDefaultProduct);
+  yield takeEvery(
+    types.CASH_CHECKOUT_PLACE_ORDER_ACTION,
+    cashCheckoutPlaceOrder
+  );
 }
 
 export default rootSaga;
