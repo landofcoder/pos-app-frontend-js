@@ -10,7 +10,7 @@ import {
   HOME_DEFAULT_PRODUCT_LIST,
   CASH_PANEL
 } from '../constants/main-panel-types';
-import {baseUrl} from '../params';
+import { baseUrl } from '../params';
 
 type Props = {
   productList: Array,
