@@ -50,4 +50,4 @@ main.js.map
 .idea
 npm-debug.log.*
 
-./app/params.json
+app/params.json

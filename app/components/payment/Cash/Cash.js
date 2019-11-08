@@ -1,30 +1,29 @@
 // @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-//  import { HOME_DEFAULT_PRODUCT_LIST } from '../../../constants/main-panel-types';
-import * as CheckoutActions from '../../../actions/checkoutActions';
-import {} from '../../../actions/homeAction';
+import { HOME_DEFAULT_PRODUCT_LIST } from '../../../constants/main-panel-types';
+import { cashPlaceOrderAction } from '../../../actions/checkoutActions';
+import { updateMainPanelType } from '../../../actions/homeAction';
 import commonStyle from '../../common.scss';
 import styles from './cash.scss';
 
-// type Props = {
-//   cashLoadingPreparingOrder: boolean,
-//   orderPreparingCheckout: Object,
-//   updateMainPanelTypeAction: (payload: string) => void,
-//   cashPlaceOrderAction: () => void
-// };
+type Props = {
+  cashLoadingPreparingOrder: boolean,
+  orderPreparingCheckout: Object,
+  updateMainPanelType: (payload: string) => void,
+  cashPlaceOrderAction: () => void
+};
 
 class CashPayment extends Component<Props> {
   props: Props;
 
   render() {
-    // const {
-    //   cashLoadingPreparingOrder,
-    //   orderPreparingCheckout,
-    //   updateMainPanelTypeAction,
-    //   cashPlaceOrderAction
-    // } = this.props;
+    const {
+      cashLoadingPreparingOrder,
+      orderPreparingCheckout,
+      updateMainPanelType,
+      cashPlaceOrderAction
+    } = this.props;
     return (
       <div className={`mr-3 ml-3 pl-4 ${commonStyle.wrapStaticPageContent}`}>
         <div className={commonStyle.wrapCenterContent}>
@@ -72,6 +71,7 @@ class CashPayment extends Component<Props> {
           <div className="col-md-2 pr-0">
             <button
               type="button"
+              onClick={() => updateMainPanelType(HOME_DEFAULT_PRODUCT_LIST)}
               className="btn btn-lg btn-secondary btn-block"
             >
               Back
@@ -79,8 +79,20 @@ class CashPayment extends Component<Props> {
           </div>
 
           <div className="col-md-3 pr-0">
-            <button type="button" className="btn btn-lg btn-primary btn-block">
-              Accept
+            <button
+              type="button"
+              className="btn btn-primary btn-lg"
+              onClick={cashPlaceOrderAction}
+            >
+              {cashLoadingPreparingOrder ? (
+                <span
+                  className="spinner-border"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+              ) : (
+                <>{orderPreparingCheckout.totals.grand_total}</>
+              )}
             </button>
           </div>
         </div>
@@ -97,7 +109,10 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ ...CheckoutActions }, dispatch);
+  return {
+    cashPlaceOrderAction: () => dispatch(cashPlaceOrderAction()),
+    updateMainPanelType: payload => dispatch(updateMainPanelType(payload))
+  };
 }
 
 export default connect(
