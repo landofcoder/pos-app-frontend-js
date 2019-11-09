@@ -8,7 +8,8 @@ function mapStateToProps(state) {
   return {
     productList: state.mainRd.productList,
     cartCurrent: state.mainRd.cartCurrent,
-    mainPanelType: state.mainRd.mainPanelType
+    mainPanelType: state.mainRd.mainPanelType,
+    productOption: state.mainRd.productOption
   };
 }
 

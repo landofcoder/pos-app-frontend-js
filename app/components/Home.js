@@ -4,12 +4,14 @@ import { Link } from 'react-router-dom';
 import ListCart from './Cart/ListCart';
 import routes from '../constants/routes';
 import Styles from './Home.scss';
-import CommonStyle from './common.scss';
+import CommonStyle from './styles/common.scss';
+import ModalStyle from './styles/modal.scss';
 import CashPayment from './payment/Cash/Cash';
 import {
   HOME_DEFAULT_PRODUCT_LIST,
   CASH_PANEL
 } from '../constants/main-panel-types';
+import { SIMPLE, CONFIGURABLE } from '../constants/product-types';
 import { baseUrl } from '../params';
 
 type Props = {
@@ -21,7 +23,9 @@ type Props = {
   cartCurrent: Array,
   mainPanelType: string,
   updateMainPanelType: (payload: string) => void,
-  cashCheckoutAction: () => void
+  cashCheckoutAction: () => void,
+  getDetailProductConfigurable: (sku: string) => void,
+  productOption: Object
 };
 
 export default class Home extends Component<Props> {
@@ -61,12 +65,34 @@ export default class Home extends Component<Props> {
   };
 
   /**
+   * Pre add to cart
+   * @param item
+   */
+  preAddToCart = item => {
+    const { addToCart, getDetailProductConfigurable } = this.props;
+    switch (item.type_id) {
+      case CONFIGURABLE:
+        {
+          const { sku } = item;
+          getDetailProductConfigurable(sku);
+        }
+        break;
+      case SIMPLE:
+        break;
+      default:
+        addToCart(item);
+        break;
+    }
+  };
+
+  /**
    * Rendering left panel, or product list or payment types
    * @param productList
    * @returns {*}
    */
   renderSwitchPanel = productList => {
-    const { addToCart, mainPanelType } = this.props;
+    const { mainPanelType, productOption } = this.props;
+    const { isLoadingProductOption } = productOption;
 
     switch (mainPanelType) {
       case HOME_DEFAULT_PRODUCT_LIST:
@@ -77,13 +103,23 @@ export default class Home extends Component<Props> {
           >
             <div className="card">
               <div className="card-body">
-                <a role="presentation" onClick={() => addToCart(item)}>
+                <a role="presentation" onClick={() => this.preAddToCart(item)}>
                   <img
                     alt="name"
                     className={Styles.wrapImage}
                     src={this.getFirstMedia(item)}
                   />
                   <h5 className="card-title">{item.name}</h5>
+                  {isLoadingProductOption ? (
+                    <div
+                      className="spinner-border spinner-border-sm"
+                      role="status"
+                    >
+                      <span className="sr-only">Loading...</span>
+                    </div>
+                  ) : (
+                    <></>
+                  )}
                 </a>
               </div>
             </div>
@@ -137,6 +173,10 @@ export default class Home extends Component<Props> {
     );
   };
 
+  /**
+   * When cashier input search
+   * @param e
+   */
   searchTyping = e => {
     const { value } = e.target;
     const { delayTimer } = this.state;
@@ -154,9 +194,47 @@ export default class Home extends Component<Props> {
     const { productList, holdAction, cartCurrent } = this.props;
     // Enable checkout button or disable
     const disableCheckout = cartCurrent.data.length <= 0;
+    const { productOption } = this.props;
+    const { isShowingProductOption } = productOption;
     return (
       <>
         <div data-tid="container">
+          <div
+            id="myModal"
+            style={{ display: isShowingProductOption ? 'block' : 'none' }}
+            className={ModalStyle.modal}
+          >
+            <div className={ModalStyle.modalContent}>
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLongTitle">
+                    Modal title
+                  </h5>
+                  <button
+                    type="button"
+                    className="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div className="modal-body">...</div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    data-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                  <button type="button" className="btn btn-primary">
+                    Save changes
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
           <div className="row" id={Styles.wrapPostContainerId}>
             <div className="col-md-9">
               <div className={classWrapProductPanel}>

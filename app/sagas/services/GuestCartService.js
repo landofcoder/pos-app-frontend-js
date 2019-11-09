@@ -1,7 +1,5 @@
 import { adminToken, baseUrl } from '../../params';
 
-const graphqlPath = `${baseUrl}graphql`;
-
 /**
  * Create guest cart service
  * @returns {Promise<any>}
@@ -142,7 +140,8 @@ export async function addShippingInformationService(cartToken) {
  * @returns {Promise<any>}
  */
 export async function getProductsService() {
-  const url = `${baseUrl}index.php/rest/V1/products?searchCriteria[page_size]=20`;
+  // const url = `${baseUrl}index.php/rest/V1/products?searchCriteria[page_size]=20`;
+  const url = `${baseUrl}index.php/rest/V1/products/?searchCriteria[filter_groups][0][filters][0][field]=sku&searchCriteria[filter_groups][0][filters][0][value]=MJ12&searchCriteria[filter_groups][0][filters][0][condition_type]=like`;
   const response = await fetch(url, {
     method: 'GET', // *GET, POST, PUT, DELETE, etc.
     mode: 'cors', // no-cors, *cors, same-origin

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { HOME_DEFAULT_PRODUCT_LIST } from '../../../constants/main-panel-types';
 import { cashPlaceOrderAction } from '../../../actions/checkoutActions';
 import { updateMainPanelType } from '../../../actions/homeAction';
-import commonStyle from '../../common.scss';
+import commonStyle from '../../styles/common.scss';
 import styles from './cash.scss';
 
 type Props = {

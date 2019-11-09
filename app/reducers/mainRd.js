@@ -12,7 +12,13 @@ const initialState = {
   },
   cartHoldList: [],
   orderPreparingCheckout: {}, // Detail order for preparing to checkout
-  cashLoadingPreparingOrder: false // Status cash loading for preparing to show cash payment form
+  cashLoadingPreparingOrder: false, // Status cash loading for preparing to show cash payment form
+  productOption: {
+    // State product option for all product type configurable, bundle, grouped product
+    isLoadingProductOption: false, // Show a loading in screen for product option loading
+    isShowingProductOption: false, // Show model for choose product type option
+    optionValue: {}
+  }
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -36,6 +42,12 @@ const mainRd = (state = initialState, action) =>
         break;
       case types.UPDATE_CART_TOKEN_TO_CURRENT_CART:
         draft.cartCurrent.token = action.payload;
+        break;
+      case types.UPDATE_IS_LOADING_PRODUCT_OPTION:
+        draft.productOption.isLoadingProductOption = action.payload;
+        break;
+      case types.UPDATE_IS_SHOWING_PRODUCT_OPTION:
+        draft.productOption.isShowingProductOption = action.payload;
         break;
       default:
         break;

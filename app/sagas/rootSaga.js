@@ -8,7 +8,10 @@ import {
   getProductsService,
   placeCashOrderService
 } from './services/GuestCartService';
-import { searchProductService } from './services/ProductService';
+import {
+  searchProductService,
+  getDetailProductConfigurableService
+} from './services/ProductService';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
 const cartCurrentToken = state => state.mainRd.cartCurrent.token;
@@ -64,6 +67,7 @@ function* cashCheckout() {
 function* getDefaultProduct() {
   const response = yield call(getProductsService);
   const productResult = response.items ? response.items : [];
+  console.log('product result:', productResult);
   yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productResult });
 }
 
@@ -87,6 +91,32 @@ function* search(searchValue) {
   console.log('search result:', searchResult);
 }
 
+/**
+ * Get detail product configurable
+ * @param payload
+ * @returns {Generator<<"CALL", CallEffectDescriptor<RT>>, *>}
+ */
+function* getDetailProductConfigurable(payload) {
+  // Start loading for get product detail and option
+  yield put({ type: types.UPDATE_IS_LOADING_PRODUCT_OPTION, payload: true });
+
+  const productDetail = yield call(
+    getDetailProductConfigurableService,
+    payload
+  );
+
+  // Set showProductOption to true
+  yield put({ type: types.UPDATE_IS_SHOWING_PRODUCT_OPTION, payload: true });
+  console.log('product detail:', productDetail);
+
+  // Stop loading
+  yield put({ type: types.UPDATE_IS_LOADING_PRODUCT_OPTION, payload: false });
+}
+
+/**
+ * Default root saga
+ * @returns {Generator<<"FORK", ForkEffectDescriptor<RT>>, *>}
+ */
 function* rootSaga() {
   yield takeEvery(types.FETCH_LIST_PRODUCT, getListProduct);
   yield takeEvery(types.CASH_CHECKOUT_ACTION, cashCheckout);
@@ -95,6 +125,10 @@ function* rootSaga() {
   yield takeEvery(
     types.CASH_CHECKOUT_PLACE_ORDER_ACTION,
     cashCheckoutPlaceOrder
+  );
+  yield takeEvery(
+    types.GET_DETAIL_PRODUCT_CONFIGURABLE,
+    getDetailProductConfigurable
   );
 }
 

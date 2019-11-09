@@ -45,3 +45,10 @@ export function updateMainPanelType(payload) {
     payload
   };
 }
+
+export function getDetailProductConfigurable(payload) {
+  return {
+    type: types.GET_DETAIL_PRODUCT_CONFIGURABLE,
+    payload
+  };
+}
