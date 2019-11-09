@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import ListCart from './Cart/ListCart';
+import ListCart from './cart/ListCart';
 import routes from '../constants/routes';
 import Styles from './Home.scss';
 import CommonStyle from './styles/common.scss';
@@ -13,6 +13,7 @@ import {
 } from '../constants/main-panel-types';
 import { SIMPLE, CONFIGURABLE } from '../constants/product-types';
 import { baseUrl } from '../params';
+import Configuration from './product-types/Configuration';
 
 type Props = {
   productList: Array,
@@ -35,7 +36,8 @@ export default class Home extends Component<Props> {
   constructor(props) {
     super(props);
     this.state = {
-      delayTimer: null
+      delayTimer: null,
+      typeId: ''
     };
   }
 
@@ -71,6 +73,9 @@ export default class Home extends Component<Props> {
    */
   preAddToCart = item => {
     const { addToCart, getDetailProductConfigurable } = this.props;
+    // Set type_id to state for switchingProductSettings render settings form
+    this.setState({ typeId: item.type_id });
+
     switch (item.type_id) {
       case CONFIGURABLE:
         {
@@ -82,6 +87,20 @@ export default class Home extends Component<Props> {
         break;
       default:
         addToCart(item);
+        break;
+    }
+  };
+
+  /**
+   * Switching product config render
+   * @returns {*}
+   */
+  switchingProductSettings = () => {
+    const { typeId } = this.state;
+    switch (typeId) {
+      case CONFIGURABLE:
+        return <Configuration />;
+      default:
         break;
     }
   };
@@ -206,40 +225,7 @@ export default class Home extends Component<Props> {
             className={ModalStyle.modal}
           >
             <div className={ModalStyle.modalContent}>
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title" id="exampleModalLongTitle">
-                    Modal title
-                  </h5>
-                  <button
-                    type="button"
-                    className="close"
-                    data-dismiss="modal"
-                    onClick={() => updateIsShowingProductOption(false)}
-                    aria-label="Close"
-                  >
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div className="modal-body">...</div>
-                <div className="modal-footer">
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={() => updateIsShowingProductOption(false)}
-                    data-dismiss="modal"
-                  >
-                    Close
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={() => updateIsShowingProductOption(false)}
-                  >
-                    Save changes
-                  </button>
-                </div>
-              </div>
+              {this.switchingProductSettings()}
             </div>
           </div>
           <div className="row" id={Styles.wrapPostContainerId}>

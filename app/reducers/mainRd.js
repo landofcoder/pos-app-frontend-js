@@ -49,6 +49,10 @@ const mainRd = (state = initialState, action) =>
       case types.UPDATE_IS_SHOWING_PRODUCT_OPTION:
         draft.productOption.isShowingProductOption = action.payload;
         break;
+      case types.UPDATE_PRODUCT_OPTION_VALUE:
+        console.log('value1:', action.payload);
+        draft.productOption.optionValue = action.payload;
+        break;
       default:
         break;
     }

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import routes from '../constants/routes';
 import styles from './styles/common.scss';
-import ListCart from './Cart/ListCart';
+import ListCart from './cart/ListCart';
 
 type Props = {};
 

@@ -105,9 +105,14 @@ function* getDetailProductConfigurable(payload) {
     payload
   );
 
+  // Set product detail to productOption->optionValue
+  yield put({
+    type: types.UPDATE_PRODUCT_OPTION_VALUE,
+    payload: productDetail
+  });
+
   // Set showProductOption to true
   yield put({ type: types.UPDATE_IS_SHOWING_PRODUCT_OPTION, payload: true });
-  console.log('product detail:', productDetail);
 
   // Stop loading
   yield put({ type: types.UPDATE_IS_LOADING_PRODUCT_OPTION, payload: false });
