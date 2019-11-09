@@ -1,10 +1,24 @@
 .item {
   .tableFlex {
+    .tableFlexLeft {
+      flex-grow: 1;
+    }
+
+    .tableFlexRight {
+      flex-grow: 8;
+    }
+
+    .divElement {
+      justify-content: space-between;
+    }
+
     display: flex;
     position: relative;
+
     .spaceTable {
       padding-right: 20px;
     }
+
     .wrapContent {
       display: flex;
 
@@ -22,6 +36,7 @@
       color: #666;
       position: absolute;
       right: 10px;
+
       .icon {
         font-size: larger;
       }
@@ -34,7 +49,7 @@
     }
 
     .sizeimgsmall {
-      width: 50px;
+      height: 50px;
     }
 
     .blockquote {

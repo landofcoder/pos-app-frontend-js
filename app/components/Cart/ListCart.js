@@ -17,22 +17,24 @@ class ListCart extends Component<Props> {
         <ul className="list-group">
           {cartCurrent.data.map(item => (
             <li key={item.id} className={`list-group-item ${styles.item}`}>
-              <div className={`row ${styles.tableFlex}`}>
-                <div className="col-md-3 pr-5 pb-2">
+              <div className={`${styles.tableFlex}`}>
+                <div
+                  className={`${styles.tableFlex} ${styles.tableFlexLeft} pr-1 pb-2`}
+                >
                   <img
                     className={styles.sizeimgsmall}
                     src="https://images-na.ssl-images-amazon.com/images/I/81SHf40Ph3L._UL1500_.jpg"
                     alt=""
                   />
                 </div>
-                <div className={`col-md-9 pr-5 row ${styles.wrapContent}`}>
-                  <div className={`col-md-9 ${styles.title}`}>
+                <div
+                  className={`${styles.tableFlex} ${styles.tableFlexRight} ${styles.divElement} ${styles.wrapContent}`}
+                >
+                  <div className={`${styles.title}`}>
                     <span>Bolo Sport Watch</span>
                     <span className={styles.blockquote}>another thing</span>
                   </div>
-                  <div
-                    className={`col-md-3 pr-5 ${styles.spaceTable} ${styles.cost}`}
-                  >
+                  <div className={`pr-5 ${styles.spaceTable} ${styles.cost}`}>
                     <div>
                       <span>$23.00</span>
                     </div>
