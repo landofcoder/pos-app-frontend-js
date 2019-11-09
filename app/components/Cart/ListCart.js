@@ -14,7 +14,7 @@ class ListCart extends Component<Props> {
     const { cartCurrent } = this.props;
     return (
       <div>
-        <ul className="list-group">
+        <ul className={styles.listGroup}>
           {cartCurrent.data.map(item => (
             <li key={item.id} className={`${styles.item}`}>
               <div className={`${styles.tableFlex}`}>
