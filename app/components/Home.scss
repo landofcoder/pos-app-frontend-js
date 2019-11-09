@@ -25,14 +25,17 @@
     justify-content: flex-end;
   }
 }
+
 .itemSameHeight {
   display: inline-flex;
 }
+
 .wrapProductItem {
   .titleCard {
     display: flex;
     flex-direction: column;
   }
+
   .wrapImage {
     width: 45%;
     display: block;

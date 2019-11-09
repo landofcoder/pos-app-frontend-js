@@ -104,7 +104,11 @@ export default class Home extends Component<Props> {
           >
             <div className="card">
               <div className="card-body">
-                <a role="presentation" onClick={() => this.preAddToCart(item)}>
+                <a
+                  role="presentation"
+                  className={CommonStyle.pointer}
+                  onClick={() => this.preAddToCart(item)}
+                >
                   <img
                     alt="name"
                     className={Styles.wrapImage}
@@ -112,7 +116,7 @@ export default class Home extends Component<Props> {
                   />
                   <div className={Styles.titleCard}>
                     <span>{item.name}</span>
-                    <span>[...]</span>
+                    <span className={CommonStyle.colorText}>{item.sku}</span>
                   </div>
                   {isLoadingProductOption ? (
                     <div
