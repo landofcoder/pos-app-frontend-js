@@ -52,3 +52,10 @@ export function getDetailProductConfigurable(payload) {
     payload
   };
 }
+
+export function updateIsShowingProductOption(payload) {
+  return {
+    type: types.UPDATE_IS_SHOWING_PRODUCT_OPTION,
+    payload
+  };
+}

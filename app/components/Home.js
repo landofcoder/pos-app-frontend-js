@@ -25,7 +25,8 @@ type Props = {
   updateMainPanelType: (payload: string) => void,
   cashCheckoutAction: () => void,
   getDetailProductConfigurable: (sku: string) => void,
-  productOption: Object
+  productOption: Object,
+  updateIsShowingProductOption: (payload: string) => void
 };
 
 export default class Home extends Component<Props> {
@@ -194,7 +195,7 @@ export default class Home extends Component<Props> {
     const { productList, holdAction, cartCurrent } = this.props;
     // Enable checkout button or disable
     const disableCheckout = cartCurrent.data.length <= 0;
-    const { productOption } = this.props;
+    const { productOption, updateIsShowingProductOption } = this.props;
     const { isShowingProductOption } = productOption;
     return (
       <>
@@ -214,6 +215,7 @@ export default class Home extends Component<Props> {
                     type="button"
                     className="close"
                     data-dismiss="modal"
+                    onClick={() => updateIsShowingProductOption(false)}
                     aria-label="Close"
                   >
                     <span aria-hidden="true">&times;</span>
@@ -224,11 +226,16 @@ export default class Home extends Component<Props> {
                   <button
                     type="button"
                     className="btn btn-secondary"
+                    onClick={() => updateIsShowingProductOption(false)}
                     data-dismiss="modal"
                   >
                     Close
                   </button>
-                  <button type="button" className="btn btn-primary">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={() => updateIsShowingProductOption(false)}
+                  >
                     Save changes
                   </button>
                 </div>
