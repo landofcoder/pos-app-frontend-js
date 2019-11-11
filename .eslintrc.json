@@ -13,6 +13,7 @@
         "Function": true
       }
     ],
+    "import/prefer-default-export": "off",
     "no-shadow": "off"
   },
   "settings": {

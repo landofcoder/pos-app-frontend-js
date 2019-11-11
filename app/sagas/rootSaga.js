@@ -12,6 +12,7 @@ import {
   searchProductService,
   getDetailProductConfigurableService
 } from './services/ProductService';
+import { handleProductType } from '../common/product';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
 const cartCurrentToken = state => state.mainRd.cartCurrent.token;
@@ -104,11 +105,15 @@ function* getDetailProductConfigurable(payload) {
     getDetailProductConfigurableService,
     payload
   );
+  const productDetailReFormat = yield handleProductType(productDetail);
+
+  // Handle data to add usedProduct after add to reducer
+  console.log('product detail:', productDetailReFormat);
 
   // Set product detail to productOption->optionValue
   yield put({
     type: types.UPDATE_PRODUCT_OPTION_VALUE,
-    payload: productDetail
+    payload: productDetailReFormat
   });
 
   // Set showProductOption to true

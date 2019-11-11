@@ -16,12 +16,13 @@ class Configuration extends Component<Props> {
     const isLoading = !optionValue.data;
     let productDetail = null;
     let configurableOptions;
+    let price = null;
     if (optionValue.data) {
       // eslint-disable-next-line prefer-destructuring
       productDetail = optionValue.data.products.items[0];
       configurableOptions = productDetail.configurable_options;
+      price = productDetail.price.regularPrice.amount.value;
     }
-    console.log('configurable:', configurableOptions);
     return (
       <>
         {isLoading ? (
@@ -41,10 +42,9 @@ class Configuration extends Component<Props> {
                   type="button"
                   className="close"
                   data-dismiss="modal"
-                  onClick={() => updateIsShowingProductOption(false)}
                   aria-label="Close"
                 >
-                  $40
+                  {price}
                 </button>
               </div>
               <div className="modal-body">

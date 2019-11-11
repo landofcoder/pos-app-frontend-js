@@ -43,7 +43,7 @@ export async function searchProductService(payload) {
               attribute_code
               values {
                 value_index
-                label
+                label             
               }
               product_id
             }
