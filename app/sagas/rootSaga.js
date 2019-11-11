@@ -68,7 +68,6 @@ function* cashCheckout() {
 function* getDefaultProduct() {
   const response = yield call(getProductsService);
   const productResult = response.items ? response.items : [];
-  console.log('product result:', productResult);
   yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productResult });
 }
 
@@ -106,10 +105,6 @@ function* getDetailProductConfigurable(payload) {
     payload
   );
   const productDetailReFormat = yield handleProductType(productDetail);
-
-  // Handle data to add usedProduct after add to reducer
-  console.log('product detail:', productDetailReFormat);
-
   // Set product detail to productOption->optionValue
   yield put({
     type: types.UPDATE_PRODUCT_OPTION_VALUE,
@@ -121,6 +116,24 @@ function* getDetailProductConfigurable(payload) {
 
   // Stop loading
   yield put({ type: types.UPDATE_IS_LOADING_PRODUCT_OPTION, payload: false });
+}
+
+/**
+ * On config select on change
+ * @returns {Generator<*, *>}
+ */
+function* onConfigurableSelectOnChange(payload) {
+  const event = payload.payload.event;
+  const productDetail = payload.payload.optionValue;
+  const item = payload.payload.item;
+  const index = payload.payload.index;
+
+  yield put({ type: types.UPDATE_CONFIGURABLE_PRODUCT_OPTION });
+
+  // Update change to reducer
+  console.log('product detail:', payload.payload);
+  // const productDetailReFormat = yield handleProductType(productDetail);
+  // console.log('product detail reformat:', productDetailReFormat);
 }
 
 /**
@@ -139,6 +152,10 @@ function* rootSaga() {
   yield takeEvery(
     types.GET_DETAIL_PRODUCT_CONFIGURABLE,
     getDetailProductConfigurable
+  );
+  yield takeEvery(
+    types.ON_CONFIGURABLE_SELECT_ONCHANGE,
+    onConfigurableSelectOnChange
   );
 }
 

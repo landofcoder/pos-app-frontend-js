@@ -1,27 +1,38 @@
 // @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { updateIsShowingProductOption } from '../../actions/homeAction';
+import {
+  updateIsShowingProductOption,
+  onConfigurableSelectOnChange
+} from '../../actions/homeAction';
 
 type Props = {
   optionValue: Object,
-  updateIsShowingProductOption: (payload: string) => void
+  updateIsShowingProductOption: (payload: string) => void,
+  onConfigurableSelectOnChange: (payload: Object) => void
 };
 
 class Configuration extends Component<Props> {
   props: Props;
 
   render() {
-    const { optionValue, updateIsShowingProductOption } = this.props;
+    const {
+      optionValue,
+      updateIsShowingProductOption,
+      onConfigurableSelectOnChange
+    } = this.props;
     const isLoading = !optionValue.data;
-    let productDetail = null;
+    let parentProduct = null;
     let configurableOptions;
-    let price = null;
+    let variantProductPrice = null;
+
     if (optionValue.data) {
       // eslint-disable-next-line prefer-destructuring
-      productDetail = optionValue.data.products.items[0];
-      configurableOptions = productDetail.configurable_options;
-      price = productDetail.price.regularPrice.amount.value;
+      parentProduct = optionValue.data.products.items[0];
+      configurableOptions = parentProduct.configurable_options;
+      const usedProduct = parentProduct.usedProduct.product;
+
+      variantProductPrice = usedProduct.price.regularPrice.amount.value;
     }
     return (
       <>
@@ -36,7 +47,7 @@ class Configuration extends Component<Props> {
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title" id="exampleModalLongTitle">
-                  {productDetail.name}
+                  {parentProduct.name}
                 </h5>
                 <button
                   type="button"
@@ -44,18 +55,29 @@ class Configuration extends Component<Props> {
                   data-dismiss="modal"
                   aria-label="Close"
                 >
-                  {price}
+                  {variantProductPrice}
                 </button>
               </div>
               <div className="modal-body">
-                {configurableOptions.map(item => {
+                {configurableOptions.map((item, index) => {
                   return (
                     <div key={item.id}>
                       <div className="form-group">
-                        <label>{item.label}</label>
+                        <label htmlFor={`option-select-${item.id}`}>
+                          {item.label}
+                        </label>
                         <select
                           id={`option-select-${item.id}`}
+                          value={item.pos_selected}
                           className="custom-select"
+                          onChange={event =>
+                            onConfigurableSelectOnChange({
+                              event,
+                              optionValue,
+                              item,
+                              index
+                            })
+                          }
                         >
                           {item.values.map(option => {
                             return (
@@ -109,7 +131,9 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     updateIsShowingProductOption: payload =>
-      dispatch(updateIsShowingProductOption(payload))
+      dispatch(updateIsShowingProductOption(payload)),
+    onConfigurableSelectOnChange: payload =>
+      dispatch(onConfigurableSelectOnChange(payload))
   };
 }
 

@@ -17,7 +17,7 @@ const initialState = {
     // State product option for all product type configurable, bundle, grouped product
     isLoadingProductOption: false, // Show a loading in screen for product option loading
     isShowingProductOption: false, // Show model for choose product type option
-    optionValue: {}
+    optionValue: {} // Keep detail product clicked
   }
 };
 
@@ -50,7 +50,6 @@ const mainRd = (state = initialState, action) =>
         draft.productOption.isShowingProductOption = action.payload;
         break;
       case types.UPDATE_PRODUCT_OPTION_VALUE:
-        console.log('value1:', action.payload);
         draft.productOption.optionValue = action.payload;
         break;
       default:

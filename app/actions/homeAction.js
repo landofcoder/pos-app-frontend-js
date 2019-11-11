@@ -59,3 +59,10 @@ export function updateIsShowingProductOption(payload) {
     payload
   };
 }
+
+export function onConfigurableSelectOnChange(payload) {
+  return {
+    type: types.ON_CONFIGURABLE_SELECT_ONCHANGE,
+    payload
+  };
+}

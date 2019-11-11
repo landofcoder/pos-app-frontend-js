@@ -221,7 +221,7 @@ export default class Home extends Component<Props> {
     const { productList, holdAction, cartCurrent } = this.props;
     // Enable checkout button or disable
     const disableCheckout = cartCurrent.data.length <= 0;
-    const { productOption, updateIsShowingProductOption } = this.props;
+    const { productOption } = this.props;
     const { isShowingProductOption } = productOption;
     return (
       <>
