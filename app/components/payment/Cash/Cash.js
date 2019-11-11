@@ -25,7 +25,7 @@ class CashPayment extends Component<Props> {
       cashPlaceOrderAction
     } = this.props;
     return (
-      <div className={`mr-3 ml-3 pl-4 ${commonStyle.wrapStaticPageContent}`}>
+      <div className={`ml-3 pl-4 ${commonStyle.wrapStaticPageContent}`}>
         <div className={commonStyle.wrapCenterContent}>
           <div className={styles.contentColumn}>
             <i

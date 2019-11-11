@@ -118,18 +118,25 @@ export default class Home extends Component<Props> {
       case HOME_DEFAULT_PRODUCT_LIST:
         return productList.map(item => (
           <div
-            className={`col-md-3 mb-4 ${Styles.wrapProductItem}`}
+            className={`col-md-3 mb-3 pr-0 ${Styles.wrapProductItem} ${Styles.itemSameHeight}`}
             key={item.id}
           >
             <div className="card">
               <div className="card-body">
-                <a role="presentation" onClick={() => this.preAddToCart(item)}>
+                <a
+                  role="presentation"
+                  className={CommonStyle.pointer}
+                  onClick={() => this.preAddToCart(item)}
+                >
                   <img
                     alt="name"
                     className={Styles.wrapImage}
                     src={this.getFirstMedia(item)}
                   />
-                  <h5 className="card-title">{item.name}</h5>
+                  <div className={Styles.titleCard}>
+                    <span>{item.name}</span>
+                    <span className={CommonStyle.colorText}>{item.sku}</span>
+                  </div>
                   {isLoadingProductOption ? (
                     <div
                       className="spinner-border spinner-border-sm"
@@ -210,7 +217,7 @@ export default class Home extends Component<Props> {
   };
 
   render() {
-    const classWrapProductPanel = `${Styles.wrapProductPanel} row`;
+    const classWrapProductPanel = `pr-3 ${Styles.wrapProductPanel} row`;
     const { productList, holdAction, cartCurrent } = this.props;
     // Enable checkout button or disable
     const disableCheckout = cartCurrent.data.length <= 0;
@@ -231,7 +238,7 @@ export default class Home extends Component<Props> {
           <div className="row" id={Styles.wrapPostContainerId}>
             <div className="col-md-9">
               <div className={classWrapProductPanel}>
-                <div className="col-md-12 mb-4">
+                <div className="col-md-12 mb-4 pr-0">
                   <div className="input-group flex-nowrap">
                     <div className="input-group-prepend">
                       <span className="input-group-text" id="addon-wrapping">

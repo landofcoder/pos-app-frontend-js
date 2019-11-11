@@ -1,4 +1,4 @@
-@import "styles/variables";
+@import 'styles/variables';
 
 #wrapPostContainerId {
   padding-top: #{$paddingTopPostContainerId};
@@ -26,8 +26,20 @@
   }
 }
 
+.itemSameHeight {
+  display: inline-flex;
+}
+
 .wrapProductItem {
+  .titleCard {
+    display: flex;
+    flex-direction: column;
+  }
+
   .wrapImage {
-    width: 100%;
+    width: 45%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
