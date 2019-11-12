@@ -10,8 +10,7 @@ export function handleProductType(productDetailSingle) {
 /**
  * Find used configurable
  */
-export function findUsedConfigurable(item, firstInit = true, payload) {
-  console.log('item pass:', item);
+export function findUsedConfigurable(item, firstInit = true) {
   let reAssignItem = null;
 
   /**
@@ -25,28 +24,26 @@ export function findUsedConfigurable(item, firstInit = true, payload) {
   }
   const configurableOption = reAssignItem.configurable_options;
 
-  console.log('conf option:', configurableOption);
-
   // Get all configurable options to get list array with key as option_code and value selected like: [color: 153, size: 198]
   if (configurableOption.length > 0) {
     const listOption = {};
     for (let i = 0; i < configurableOption.length; i += 1) {
       const confOption = configurableOption[i];
-      // Assign code and value to listOption
-      // Eg: listOption[color] = 1902
-      listOption[confOption.attribute_code] = confOption.values
-        ? confOption.values[0].value_index
-        : 0;
 
       // If not first init, get first item to set default selected
       if (firstInit) {
-        // Get first item to set to default select
+        // Get first item to set to default select, just set for first time
         configurableOption[i].pos_selected = confOption.values[0].value_index;
+        // Assign code and value to listOption. Eg: listOption[color] = 1902
+        listOption[confOption.attribute_code] = confOption.values
+          ? Number(confOption.values[0].value_index)
+          : 0;
       } else {
-        // Get by event selected
-        console.log('run to get event selected:', payload);
-        console.log('configurable option:', configurableOption[i]);
-        // configurableOption[i].pos_selected = payload;
+        // If not firstInit, we don't have to set pos_selected anymore. pos_selected has changed before by other function
+        // Assign code and value to listOption. Eg: listOption[color] = 1902
+        listOption[confOption.attribute_code] = Number(
+          configurableOption[i].pos_selected
+        );
       }
     }
 
@@ -78,5 +75,6 @@ export function findUsedConfigurable(item, firstInit = true, payload) {
 
     reAssignItem.usedProduct = foundProduct;
   }
+  // Before return
   return reAssignItem;
 }

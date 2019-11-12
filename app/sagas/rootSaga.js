@@ -108,12 +108,7 @@ function* getDetailProductConfigurable(payload) {
 
   const productDetailSingle = productDetail.data.products.items[0];
   const productDetailReFormat = yield handleProductType(productDetailSingle);
-
-  // Set product detail to productOption->optionValue
-  yield put({
-    type: types.UPDATE_PRODUCT_OPTION_VALUE,
-    payload: productDetailReFormat
-  });
+  yield receivedProductOptionValue(productDetailReFormat);
 
   // Set showProductOption to true
   yield put({ type: types.UPDATE_IS_SHOWING_PRODUCT_OPTION, payload: true });
@@ -127,19 +122,26 @@ function* getDetailProductConfigurable(payload) {
  * @returns {Generator<*, *>}
  */
 function* onConfigurableSelectOnChange(payload) {
+  // Update change to reducer
   yield put({ type: types.UPDATE_CONFIGURABLE_PRODUCT_OPTION, payload });
 
-  // Update change to reducer
   const optionValueRd = yield select(optionValue);
-  console.log('product option:', optionValueRd);
   const { value } = payload.payload.event.target;
   const productDetailReFormat = yield findUsedConfigurable(
     optionValueRd,
     false,
     value
   );
-  console.log('reassign:', productDetailReFormat);
+  yield receivedProductOptionValue(productDetailReFormat);
   // console.log('product detail reformat:', productDetailReFormat);
+}
+
+function* receivedProductOptionValue(productDetailReFormat) {
+  // Set product detail to productOption->optionValue
+  yield put({
+    type: types.UPDATE_PRODUCT_OPTION_VALUE,
+    payload: productDetailReFormat
+  });
 }
 
 /**
