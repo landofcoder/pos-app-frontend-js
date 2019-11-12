@@ -21,14 +21,14 @@ class Configuration extends Component<Props> {
       updateIsShowingProductOption,
       onConfigurableSelectOnChange
     } = this.props;
-    const isLoading = !optionValue.data;
+    const isLoading = !optionValue;
     let parentProduct = null;
     let configurableOptions;
     let variantProductPrice = null;
 
-    if (optionValue.data) {
+    if (optionValue) {
       // eslint-disable-next-line prefer-destructuring
-      parentProduct = optionValue.data.products.items[0];
+      parentProduct = optionValue;
       configurableOptions = parentProduct.configurable_options;
       const usedProduct = parentProduct.usedProduct.product;
 
@@ -73,8 +73,6 @@ class Configuration extends Component<Props> {
                           onChange={event =>
                             onConfigurableSelectOnChange({
                               event,
-                              optionValue,
-                              item,
                               index
                             })
                           }

@@ -12,10 +12,11 @@ import {
   searchProductService,
   getDetailProductConfigurableService
 } from './services/ProductService';
-import { handleProductType } from '../common/product';
+import { handleProductType, findUsedConfigurable } from '../common/product';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
 const cartCurrentToken = state => state.mainRd.cartCurrent.token;
+const optionValue = state => state.mainRd.productOption.optionValue;
 
 /**
  * Get list product
@@ -104,7 +105,10 @@ function* getDetailProductConfigurable(payload) {
     getDetailProductConfigurableService,
     payload
   );
-  const productDetailReFormat = yield handleProductType(productDetail);
+
+  const productDetailSingle = productDetail.data.products.items[0];
+  const productDetailReFormat = yield handleProductType(productDetailSingle);
+
   // Set product detail to productOption->optionValue
   yield put({
     type: types.UPDATE_PRODUCT_OPTION_VALUE,
@@ -123,16 +127,18 @@ function* getDetailProductConfigurable(payload) {
  * @returns {Generator<*, *>}
  */
 function* onConfigurableSelectOnChange(payload) {
-  const event = payload.payload.event;
-  const productDetail = payload.payload.optionValue;
-  const item = payload.payload.item;
-  const index = payload.payload.index;
-
-  yield put({ type: types.UPDATE_CONFIGURABLE_PRODUCT_OPTION });
+  yield put({ type: types.UPDATE_CONFIGURABLE_PRODUCT_OPTION, payload });
 
   // Update change to reducer
-  console.log('product detail:', payload.payload);
-  // const productDetailReFormat = yield handleProductType(productDetail);
+  const optionValueRd = yield select(optionValue);
+  console.log('product option:', optionValueRd);
+  const { value } = payload.payload.event.target;
+  const productDetailReFormat = yield findUsedConfigurable(
+    optionValueRd,
+    false,
+    value
+  );
+  console.log('reassign:', productDetailReFormat);
   // console.log('product detail reformat:', productDetailReFormat);
 }
 

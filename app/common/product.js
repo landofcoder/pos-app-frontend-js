@@ -1,46 +1,31 @@
-import { BUNDLE, CONFIGURABLE, GROUPED } from '../constants/product-types';
-
 /**
  * By product_type, this function will convert data for each product type to standard format
  */
-export function handleProductType(productList) {
-  const productListAssign = Object.assign({}, productList);
-  const { items } = productListAssign.data.products;
-  // Loop all products
-  if (items && items.length > 0) {
-    for (let i = 0; i < items.length; i += 1) {
-      const item = items[i];
-      const typeId = item.type_id;
-      switch (typeId) {
-        case CONFIGURABLE:
-          {
-            // Find usedProduct for configurable
-            const standardFormat = findUsedConfigurable(item);
-            items[i] = standardFormat;
-          }
-          break;
-        case BUNDLE:
-          break;
-        case GROUPED:
-          break;
-        default:
-          break;
-      }
-    }
-    return productListAssign;
-  }
-  return productListAssign;
+export function handleProductType(productDetailSingle) {
+  const productDetailSingleAssign = Object.assign({}, productDetailSingle);
+  // Find usedProduct for configurable
+  return findUsedConfigurable(productDetailSingleAssign);
 }
 
 /**
  * Find used configurable
  */
-function findUsedConfigurable(item) {
-  const reAssignItem = Object.assign({}, item);
+export function findUsedConfigurable(item, firstInit = true, payload) {
+  console.log('item pass:', item);
+  let reAssignItem = null;
 
-  console.log('conf item:', reAssignItem);
-
+  /**
+   * If firstInit then just assign
+   * if not firstInit: item is object of react just read only, should convert to JSON from JSON stringify
+   */
+  if (firstInit) {
+    reAssignItem = Object.assign({}, item);
+  } else {
+    reAssignItem = JSON.parse(JSON.stringify(item));
+  }
   const configurableOption = reAssignItem.configurable_options;
+
+  console.log('conf option:', configurableOption);
 
   // Get all configurable options to get list array with key as option_code and value selected like: [color: 153, size: 198]
   if (configurableOption.length > 0) {
@@ -53,8 +38,16 @@ function findUsedConfigurable(item) {
         ? confOption.values[0].value_index
         : 0;
 
-      // Get first item to set to default select
-      configurableOption[i].pos_selected = confOption.values[0].value_index;
+      // If not first init, get first item to set default selected
+      if (firstInit) {
+        // Get first item to set to default select
+        configurableOption[i].pos_selected = confOption.values[0].value_index;
+      } else {
+        // Get by event selected
+        console.log('run to get event selected:', payload);
+        console.log('configurable option:', configurableOption[i]);
+        // configurableOption[i].pos_selected = payload;
+      }
     }
 
     const listOptionLength = Object.keys(listOption).length;

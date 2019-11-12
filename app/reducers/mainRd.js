@@ -17,7 +17,7 @@ const initialState = {
     // State product option for all product type configurable, bundle, grouped product
     isLoadingProductOption: false, // Show a loading in screen for product option loading
     isShowingProductOption: false, // Show model for choose product type option
-    optionValue: {} // Keep detail product clicked
+    optionValue: null // Keep detail product clicked
   }
 };
 
@@ -49,9 +49,18 @@ const mainRd = (state = initialState, action) =>
       case types.UPDATE_IS_SHOWING_PRODUCT_OPTION:
         draft.productOption.isShowingProductOption = action.payload;
         break;
-      case types.UPDATE_PRODUCT_OPTION_VALUE:
+      case types.UPDATE_PRODUCT_OPTION_VALUE: {
         draft.productOption.optionValue = action.payload;
         break;
+      }
+      case types.UPDATE_CONFIGURABLE_PRODUCT_OPTION: {
+        const { index } = action.payload.payload;
+        const { value } = action.payload.payload.event.target;
+        draft.productOption.optionValue.configurable_options[
+          index
+        ].pos_selected = value;
+        break;
+      }
       default:
         break;
     }
