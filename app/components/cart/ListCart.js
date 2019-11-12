@@ -24,13 +24,20 @@ class ListCart extends Component<Props> {
     return `${baseUrl}pub/media/catalog/product/`;
   };
 
+  renderItemPrice = item => {
+    if (item.price.regularPrice) {
+      return item.price.regularPrice.amount.value;
+    }
+    return item.price;
+  };
+
   render() {
     const { cartCurrent } = this.props;
     return (
       <div>
         <ul className={styles.listGroup}>
           {cartCurrent.data.map(item => {
-            console.log(item);
+            console.log('item cart:', item);
             return (
               <li key={item.id} className={`${styles.item}`}>
                 <div className={`${styles.tableFlex}`}>
@@ -52,7 +59,7 @@ class ListCart extends Component<Props> {
                     </div>
                     <div className={`pr-5 ${styles.spaceTable} ${styles.cost}`}>
                       <div>
-                        <span>${item.price}</span>
+                        <span>${this.renderItemPrice(item)}</span>
                       </div>
                     </div>
                   </div>

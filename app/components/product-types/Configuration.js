@@ -3,17 +3,25 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
   updateIsShowingProductOption,
-  onConfigurableSelectOnChange
+  onConfigurableSelectOnChange,
+  addToCart
 } from '../../actions/homeAction';
 
 type Props = {
   optionValue: Object,
   updateIsShowingProductOption: (payload: string) => void,
-  onConfigurableSelectOnChange: (payload: Object) => void
+  onConfigurableSelectOnChange: (payload: Object) => void,
+  addToCart: (payload: Object) => void
 };
 
 class Configuration extends Component<Props> {
   props: Props;
+
+  addToCart = () => {
+    const { addToCart, optionValue } = this.props;
+    addToCart(optionValue.usedProduct.product);
+    console.log('used product:', optionValue.usedProduct.product);
+  };
 
   render() {
     const {
@@ -105,6 +113,7 @@ class Configuration extends Component<Props> {
                 </div>
                 <div className="col-md-6 p-0">
                   <button
+                    onClick={this.addToCart}
                     type="button"
                     className="btn btn-primary btn-lg btn-block"
                   >
@@ -131,7 +140,8 @@ function mapDispatchToProps(dispatch) {
     updateIsShowingProductOption: payload =>
       dispatch(updateIsShowingProductOption(payload)),
     onConfigurableSelectOnChange: payload =>
-      dispatch(onConfigurableSelectOnChange(payload))
+      dispatch(onConfigurableSelectOnChange(payload)),
+    addToCart: payload => dispatch(addToCart(payload))
   };
 }
 

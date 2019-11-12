@@ -126,16 +126,19 @@ function* onConfigurableSelectOnChange(payload) {
   yield put({ type: types.UPDATE_CONFIGURABLE_PRODUCT_OPTION, payload });
 
   const optionValueRd = yield select(optionValue);
-  const { value } = payload.payload.event.target;
   const productDetailReFormat = yield findUsedConfigurable(
     optionValueRd,
-    false,
-    value
+    false
   );
   yield receivedProductOptionValue(productDetailReFormat);
   // console.log('product detail reformat:', productDetailReFormat);
 }
 
+/**
+ * Received product option value
+ * @param productDetailReFormat
+ * @returns {Generator<<"PUT", PutEffectDescriptor<{payload: *, type: *}>>, *>}
+ */
 function* receivedProductOptionValue(productDetailReFormat) {
   // Set product detail to productOption->optionValue
   yield put({
