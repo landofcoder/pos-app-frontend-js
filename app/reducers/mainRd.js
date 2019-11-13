@@ -5,6 +5,7 @@ import { HOME_DEFAULT_PRODUCT_LIST } from '../constants/main-panel-types';
 
 const initialState = {
   mainPanelType: HOME_DEFAULT_PRODUCT_LIST, // Main panel type for switching all main panel
+  loading: false,
   productList: [],
   cartCurrent: {
     token: '',

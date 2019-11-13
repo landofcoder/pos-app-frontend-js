@@ -22,5 +22,6 @@ export default async function AuthenService() {
     }
   );
   const data = await response.json(); // parses JSON response into native JavaScript objects
+  console.log(data);
   return data;
 }
