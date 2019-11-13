@@ -26,8 +26,7 @@ type Props = {
   updateMainPanelType: (payload: string) => void,
   cashCheckoutAction: () => void,
   getDetailProductConfigurable: (sku: string) => void,
-  productOption: Object,
-  updateIsShowingProductOption: (payload: string) => void
+  productOption: Object
 };
 
 export default class Home extends Component<Props> {

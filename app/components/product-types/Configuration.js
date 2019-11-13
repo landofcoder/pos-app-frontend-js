@@ -18,9 +18,10 @@ class Configuration extends Component<Props> {
   props: Props;
 
   addToCart = () => {
-    const { addToCart, optionValue } = this.props;
+    const { addToCart, optionValue, updateIsShowingProductOption } = this.props;
     addToCart(optionValue.usedProduct.product);
-    console.log('used product:', optionValue.usedProduct.product);
+    // Hide modal
+    updateIsShowingProductOption(false);
   };
 
   render() {

@@ -36,10 +36,9 @@ class ListCart extends Component<Props> {
     return (
       <div>
         <ul className={styles.listGroup}>
-          {cartCurrent.data.map(item => {
-            console.log('item cart:', item);
+          {cartCurrent.data.map((item, index) => {
             return (
-              <li key={item.id} className={`${styles.item}`}>
+              <li key={`${item.id}${index}`} className={`${styles.item}`}>
                 <div className={`${styles.tableFlex}`}>
                   <div
                     className={`${styles.tableFlex} ${styles.tableFlexLeft} pr-1 pb-2`}
