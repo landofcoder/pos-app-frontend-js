@@ -3,10 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 type Props = {
-  optionValue: Object,
-  updateIsShowingProductOption: (payload: string) => void,
-  onConfigurableSelectOnChange: (payload: Object) => void,
-  addToCart: (payload: Object) => void
+  optionValue: Object
 };
 
 class Bundle extends Component<Props> {
@@ -15,6 +12,8 @@ class Bundle extends Component<Props> {
   render() {
     const { optionValue } = this.props;
     const isLoading = !optionValue;
+
+    console.log('option value:', optionValue);
     return (
       <div>
         {isLoading ? (
@@ -24,7 +23,22 @@ class Bundle extends Component<Props> {
             </div>
           </div>
         ) : (
-          <div>Bundle option</div>
+          <div>
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLongTitle">
+                  {optionValue.name}
+                </h5>
+                <button
+                  type="button"
+                  className="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div className="modal-body"></div>
+            </div>
+          </div>
         )}
       </div>
     );
@@ -37,11 +51,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
-  return {};
-}
-
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  null
 )(Bundle);

@@ -1,10 +1,29 @@
+import { CONFIGURABLE, BUNDLE } from '../constants/product-types';
+
 /**
  * By product_type, this function will convert data for each product type to standard format
  */
 export function handleProductType(productDetailSingle) {
   const productDetailSingleAssign = Object.assign({}, productDetailSingle);
-  // Find usedProduct for configurable
-  return findUsedConfigurable(productDetailSingleAssign);
+  switch (productDetailSingleAssign.type_id) {
+    case BUNDLE:
+      console.log('bundle type');
+      break;
+    case CONFIGURABLE:
+      // Find usedProduct for configurable
+      return findUsedConfigurable(productDetailSingleAssign);
+    default:
+      break;
+  }
+}
+
+/**
+ * FInd
+ * @param item
+ * @param firstInit
+ */
+export function reformatBundleProduct(item, firstInit = true) {
+
 }
 
 /**

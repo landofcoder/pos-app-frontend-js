@@ -99,8 +99,7 @@ function* search(searchValue) {
  * @returns {Generator<<"CALL", CallEffectDescriptor<RT>>, *>}
  */
 function* getDetailProductConfigurable(payload) {
-  // Start loading for get product detail and option
-  yield put({ type: types.UPDATE_IS_LOADING_PRODUCT_OPTION, payload: true });
+  yield startLoadingProductOption();
 
   const productDetail = yield call(
     getDetailProductConfigurableService,
@@ -111,11 +110,7 @@ function* getDetailProductConfigurable(payload) {
   const productDetailReFormat = yield handleProductType(productDetailSingle);
   yield receivedProductOptionValue(productDetailReFormat);
 
-  // Set showProductOption to true
-  yield put({ type: types.UPDATE_IS_SHOWING_PRODUCT_OPTION, payload: true });
-
-  // Stop loading
-  yield put({ type: types.UPDATE_IS_LOADING_PRODUCT_OPTION, payload: false });
+  yield getDetailProductEndTask();
 }
 
 /**
@@ -123,8 +118,26 @@ function* getDetailProductConfigurable(payload) {
  * @returns {Generator<<"CALL", CallEffectDescriptor<RT>>, *>}
  */
 function* getDetailBundleProduct(payload) {
-  const response = yield call(getDetailProductBundleService, payload);
-  console.log(response, 'bundle response:');
+  yield startLoadingProductOption();
+
+  const productDetail = yield call(getDetailProductBundleService, payload);
+  const productDetailSingle = productDetail.data.products.items[0];
+
+  yield receivedProductOptionValue(productDetailSingle);
+
+  yield getDetailProductEndTask();
+}
+
+function* startLoadingProductOption() {
+  // Start loading for get product detail and option
+  yield put({ type: types.UPDATE_IS_LOADING_PRODUCT_OPTION, payload: true });
+}
+
+function* getDetailProductEndTask() {
+  // Set showProductOption to true
+  yield put({ type: types.UPDATE_IS_SHOWING_PRODUCT_OPTION, payload: true });
+  // Stop loading
+  yield put({ type: types.UPDATE_IS_LOADING_PRODUCT_OPTION, payload: false });
 }
 
 /**

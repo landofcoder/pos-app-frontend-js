@@ -197,7 +197,7 @@ export async function getDetailProductBundleService(payload) {
                   sku
                   options {
                     id
-                    quantity
+                    qty
                     position
                     is_default
                     price
@@ -209,6 +209,13 @@ export async function getDetailProductBundleService(payload) {
                       name
                       sku
                       type_id
+                      price {
+                      regularPrice {
+                      amount  {
+                          value
+                          }
+                        }
+                      }
                     }
                   }
                 }

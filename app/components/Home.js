@@ -14,6 +14,7 @@ import {
 import { SIMPLE, CONFIGURABLE, BUNDLE } from '../constants/product-types';
 import { baseUrl } from '../params';
 import Configuration from './product-types/Configuration';
+import Bundle from './product-types/Bundle';
 
 type Props = {
   productList: Array,
@@ -106,6 +107,8 @@ export default class Home extends Component<Props> {
     switch (typeId) {
       case CONFIGURABLE:
         return <Configuration />;
+      case BUNDLE:
+        return <Bundle />;
       default:
         break;
     }
