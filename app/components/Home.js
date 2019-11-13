@@ -11,7 +11,7 @@ import {
   HOME_DEFAULT_PRODUCT_LIST,
   CASH_PANEL
 } from '../constants/main-panel-types';
-import { SIMPLE, CONFIGURABLE } from '../constants/product-types';
+import { SIMPLE, CONFIGURABLE, BUNDLE } from '../constants/product-types';
 import { baseUrl } from '../params';
 import Configuration from './product-types/Configuration';
 
@@ -26,6 +26,7 @@ type Props = {
   updateMainPanelType: (payload: string) => void,
   cashCheckoutAction: () => void,
   getDetailProductConfigurable: (sku: string) => void,
+  getDetailProductBundle: (sku: string) => void,
   productOption: Object
 };
 
@@ -71,7 +72,7 @@ export default class Home extends Component<Props> {
    * @param item
    */
   preAddToCart = item => {
-    const { addToCart, getDetailProductConfigurable } = this.props;
+    const { addToCart, getDetailProductConfigurable, getDetailProductBundle } = this.props;
     // Set type_id to state for switchingProductSettings render settings form
     this.setState({ typeId: item.type_id });
 
@@ -83,6 +84,12 @@ export default class Home extends Component<Props> {
         }
         break;
       case SIMPLE:
+        break;
+      case BUNDLE:
+        {
+          const { sku } = item;
+          getDetailProductBundle(sku);
+        }
         break;
       default:
         addToCart(item);

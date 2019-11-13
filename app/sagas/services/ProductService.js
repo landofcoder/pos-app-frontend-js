@@ -159,3 +159,66 @@ export async function getDetailProductConfigurableService(payload) {
   const data = await response.json();
   return data;
 }
+
+/**
+ * Get detail product bundle service
+ * @returns {Promise<void>}
+ */
+export async function getDetailProductBundleService(payload) {
+  const response = await fetch(graphqlPath, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${adminToken}`
+    },
+    body: JSON.stringify({
+      query: `{
+        products(filter: {sku:
+          {eq: "${payload.payload}"}
+        })
+         {
+            items{
+               sku
+               type_id
+               id
+               name
+                ... on BundleProduct {
+                dynamic_sku
+                dynamic_price
+                dynamic_weight
+                price_view
+                ship_bundle_items
+                items {
+                  option_id
+                  title
+                  required
+                  type
+                  position
+                  sku
+                  options {
+                    id
+                    quantity
+                    position
+                    is_default
+                    price
+                    price_type
+                    can_change_quantity
+                    label
+                    product {
+                      id
+                      name
+                      sku
+                      type_id
+                    }
+                  }
+                }
+              }
+            }
+         }
+      }
+      `
+    })
+  });
+  const data = await response.json();
+  return data;
+}

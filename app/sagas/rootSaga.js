@@ -10,7 +10,8 @@ import {
 } from './services/GuestCartService';
 import {
   searchProductService,
-  getDetailProductConfigurableService
+  getDetailProductConfigurableService,
+  getDetailProductBundleService
 } from './services/ProductService';
 import { handleProductType, findUsedConfigurable } from '../common/product';
 
@@ -118,6 +119,15 @@ function* getDetailProductConfigurable(payload) {
 }
 
 /**
+ * Get detail bundle product
+ * @returns {Generator<<"CALL", CallEffectDescriptor<RT>>, *>}
+ */
+function* getDetailBundleProduct(payload) {
+  const response = yield call(getDetailProductBundleService, payload);
+  console.log(response, 'bundle response:');
+}
+
+/**
  * On config select on change
  * @returns {Generator<*, *>}
  */
@@ -168,6 +178,7 @@ function* rootSaga() {
     types.ON_CONFIGURABLE_SELECT_ONCHANGE,
     onConfigurableSelectOnChange
   );
+  yield takeEvery(types.GET_DETAIL_PRODUCT_BUNDLE, getDetailBundleProduct);
 }
 
 export default rootSaga;

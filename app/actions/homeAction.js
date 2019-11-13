@@ -53,6 +53,13 @@ export function getDetailProductConfigurable(payload) {
   };
 }
 
+export function getDetailProductBundle(payload) {
+  return {
+    type: types.GET_DETAIL_PRODUCT_BUNDLE,
+    payload
+  };
+}
+
 export function updateIsShowingProductOption(payload) {
   return {
     type: types.UPDATE_IS_SHOWING_PRODUCT_OPTION,
