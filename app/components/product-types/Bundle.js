@@ -1,6 +1,15 @@
 // @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Select from './bundle-components/Select';
+import Multi from './bundle-components/Multi';
+import Radio from './bundle-components/Radio';
+import Checkbox from './bundle-components/Checkbox';
+
+const RADIO = 'radio';
+const CHECKBOX = 'checkbox';
+const MULTI = 'multi';
+const SELECT = 'select';
 
 type Props = {
   optionValue: Object
@@ -36,7 +45,23 @@ class Bundle extends Component<Props> {
                   aria-label="Close"
                 ></button>
               </div>
-              <div className="modal-body"></div>
+              <div className="modal-body">
+                {optionValue.items.map(item => {
+                  console.log('type:', item.type);
+                  switch (item.type) {
+                    case SELECT:
+                      return <Select />;
+                    case RADIO:
+                      return <Radio />;
+                    case CHECKBOX:
+                      return <Checkbox />;
+                    case MULTI:
+                      return <Multi />;
+                    default:
+                      return <Select />;
+                  }
+                })}
+              </div>
             </div>
           </div>
         )}
