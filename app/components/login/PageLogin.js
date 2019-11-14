@@ -18,7 +18,11 @@ class PageLogin extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { valueUser: '', valuePass: '' };
+    this.state = {
+      valueUser: 'roni_cost@example.com',
+      valuePass: 'roni_cost3@example.com'
+    };
+    console.log(this.state);
   }
 
   handleChangeUser = event => {
@@ -43,10 +47,10 @@ class PageLogin extends Component {
 
   render() {
     const { token, message } = this.props;
+    const { valueUser, valuePass } = this.state;
     if (token !== '') {
       return <Redirect to={routes.HOME} />;
     }
-
     return (
       <>
         <Loading />
@@ -67,7 +71,7 @@ class PageLogin extends Component {
                 Email address
               </label>
               <input
-                value={this.valueUser}
+                value={valueUser}
                 onChange={this.handleChangeUser}
                 type="email"
                 id="inputEmail"
@@ -79,7 +83,7 @@ class PageLogin extends Component {
                 Password
               </label>
               <input
-                value={this.valuePass}
+                value={valuePass}
                 onChange={this.handleChangePass}
                 type="password"
                 id="inputPassword"
