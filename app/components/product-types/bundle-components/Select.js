@@ -6,7 +6,7 @@ class Select extends Component<Props> {
   props: Props;
 
   render() {
-    return <div>Check box</div>;
+    return <div>Select</div>;
   }
 }
 

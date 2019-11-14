@@ -6,7 +6,7 @@ class Multi extends Component<Props> {
   props: Props;
 
   render() {
-    return <div>Check box</div>;
+    return <div>Multiple</div>;
   }
 }
 

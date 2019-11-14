@@ -22,7 +22,7 @@ class Bundle extends Component<Props> {
     const { optionValue } = this.props;
     const isLoading = !optionValue;
 
-    console.log('option value:', optionValue);
+    console.log('option value update 1:', optionValue);
     return (
       <div>
         {isLoading ? (
@@ -46,19 +46,18 @@ class Bundle extends Component<Props> {
                 ></button>
               </div>
               <div className="modal-body">
-                {optionValue.items.map(item => {
-                  console.log('type:', item.type);
+                {optionValue.items.map((item, index) => {
                   switch (item.type) {
                     case SELECT:
-                      return <Select />;
+                      return <Select key={index} item={item} />;
                     case RADIO:
-                      return <Radio />;
+                      return <Radio key={index} item={item} />;
                     case CHECKBOX:
-                      return <Checkbox />;
+                      return <Checkbox key={index} item={item} />;
                     case MULTI:
-                      return <Multi />;
+                      return <Multi key={index} item={item} />;
                     default:
-                      return <Select />;
+                      return <Select key={index} item={item} />;
                   }
                 })}
               </div>
