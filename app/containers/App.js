@@ -5,7 +5,7 @@ type Props = {
   children: React.Node
 };
 
-export default class App extends React.Component<Props> {
+class App extends React.Component<Props> {
   props: Props;
 
   render() {
@@ -17,3 +17,5 @@ export default class App extends React.Component<Props> {
     );
   }
 }
+
+export default App;

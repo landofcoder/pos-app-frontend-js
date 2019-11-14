@@ -9,7 +9,8 @@ function mapStateToProps(state) {
     productList: state.mainRd.productList,
     cartCurrent: state.mainRd.cartCurrent,
     mainPanelType: state.mainRd.mainPanelType,
-    productOption: state.mainRd.productOption
+    productOption: state.mainRd.productOption,
+    token: state.authenRd.token
   };
 }
 

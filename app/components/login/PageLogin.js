@@ -1,20 +1,55 @@
 // @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router';
 import { login } from '../../actions/authenAction';
 import styles from './pagelogin.scss';
 import commonStyles from '../styles/common.scss';
+import Loading from '../wait/Loading';
+import * as routes from '../../constants/routes';
 
 type Props = {
-  login: () => void
+  login: () => void,
+  message: string,
+  token: string
 };
 class PageLogin extends Component {
   props: Props;
 
-  render() {
+  constructor(props) {
+    super(props);
+    this.state = { valueUser: '', valuePass: '' };
+  }
+
+  handleChangeUser = event => {
+    this.setState({ valueUser: event.target.value });
+  };
+
+  handleChangePass = event => {
+    this.setState({ valuePass: event.target.value });
+  };
+
+  loginAction = () => {
     const { login } = this.props;
+    const { valueUser, valuePass } = this.state;
+    console.log(`user name :${valueUser}`);
+    console.log(`pass name :${valuePass}`);
+    const payload = {
+      username: valueUser,
+      password: valuePass
+    };
+    login(payload);
+  };
+
+  render() {
+    const { token, message } = this.props;
+    if (token !== '') {
+      return <Redirect to={routes.HOME} />;
+    }
+
     return (
       <>
+        <Loading />
         <div
           className={`${commonStyles.wrapStaticPageContent} ${styles.wrapFullCenter} ${commonStyles.contentColumn}`}
         >
@@ -30,33 +65,32 @@ class PageLogin extends Component {
               <h1 className="h3 mb-3 font-weight-normal">Please sign in</h1>
               <label htmlFor="inputEmail" className="sr-only">
                 Email address
-                <input
-                  refs={user => {
-                    this.user = user;
-                  }}
-                  type="email"
-                  id="inputEmail"
-                  className="form-control"
-                  placeholder="Email address"
-                  required
-                />
               </label>
+              <input
+                value={this.valueUser}
+                onChange={this.handleChangeUser}
+                type="email"
+                id="inputEmail"
+                className="form-control"
+                placeholder="Email address"
+                required
+              />
               <label htmlFor="inputPassword" className="sr-only">
                 Password
-                <input
-                  refs={pass => {
-                    this.pass = pass;
-                  }}
-                  type="password"
-                  id="inputPassword"
-                  className="form-control"
-                  placeholder="Password"
-                  required
-                />
               </label>
+              <input
+                value={this.valuePass}
+                onChange={this.handleChangePass}
+                type="password"
+                id="inputPassword"
+                className="form-control"
+                placeholder="Password"
+                required
+              />
               <div className="checkbox mb-3"></div>
+              <p>{message}</p>
               <button
-                onClick={login}
+                onClick={this.loginAction}
                 className="btn btn-lg btn-primary btn-block"
                 type="submit"
               >
@@ -71,19 +105,17 @@ class PageLogin extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    cashLoadingPreparingOrder: state.mainRd.cashLoadingPreparingOrder,
-    orderPreparingCheckout: state.mainRd.orderPreparingCheckout
-  };
-}
-
 function mapDispatchToProps(dispatch) {
   return {
     login: payload => dispatch(login(payload))
   };
 }
-
+function mapStateToProps(state) {
+  return {
+    message: state.authenRd.message,
+    token: state.authenRd.token
+  };
+}
 export default connect(
   mapStateToProps,
   mapDispatchToProps

@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import ListCart from './cart/ListCart';
 import routes from '../constants/routes';
 import Styles from './Home.scss';
@@ -27,7 +27,8 @@ type Props = {
   cashCheckoutAction: () => void,
   getDetailProductConfigurable: (sku: string) => void,
   productOption: Object,
-  updateIsShowingProductOption: (payload: string) => void
+  //  updateIsShowingProductOption: (payload: string) => void,
+  token: string
 };
 
 export default class Home extends Component<Props> {
@@ -39,6 +40,9 @@ export default class Home extends Component<Props> {
       delayTimer: null,
       typeId: ''
     };
+    localStorage.setItem('posAppData', '');
+    console.log('set cookie to null');
+    console.log(localStorage.getItem('posAppData'));
   }
 
   componentDidMount(): * {
@@ -217,11 +221,19 @@ export default class Home extends Component<Props> {
   };
 
   render() {
+    //  ================Check login======================
+    const { token } = this.props;
+    if (token === '') {
+      console.log('need to login');
+      return <Redirect to={routes.LOGIN} />;
+    }
+    console.log('have a token');
+    //  ================Check login======================
     const classWrapProductPanel = `pr-3 ${Styles.wrapProductPanel} row`;
     const { productList, holdAction, cartCurrent } = this.props;
     // Enable checkout button or disable
     const disableCheckout = cartCurrent.data.length <= 0;
-    const { productOption, updateIsShowingProductOption } = this.props;
+    const { productOption } = this.props;
     const { isShowingProductOption } = productOption;
     return (
       <>
