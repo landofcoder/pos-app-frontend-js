@@ -88,7 +88,13 @@ class PageLogin extends Component {
                 required
               />
               <div className="checkbox mb-3"></div>
-              <p>{message}</p>
+              {message !== '' ? (
+                <div class="alert alert-danger" role="alert">
+                  {message}
+                </div>
+              ) : (
+                <></>
+              )}
               <button
                 onClick={this.loginAction}
                 className="btn btn-lg btn-primary btn-block"
