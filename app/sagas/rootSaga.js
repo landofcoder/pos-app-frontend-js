@@ -13,7 +13,7 @@ import {
   getDetailProductConfigurableService,
   getDetailProductBundleService
 } from './services/ProductService';
-import { handleProductType, findUsedConfigurable } from '../common/product';
+import { handleProductType, reformatConfigurableProduct } from '../common/product';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
 const cartCurrentToken = state => state.mainRd.cartCurrent.token;
@@ -122,8 +122,9 @@ function* getDetailBundleProduct(payload) {
 
   const productDetail = yield call(getDetailProductBundleService, payload);
   const productDetailSingle = productDetail.data.products.items[0];
-
-  yield receivedProductOptionValue(productDetailSingle);
+  const productDetailReFormat = yield handleProductType(productDetailSingle);
+  console.log('detail bundle reformat:', productDetailReFormat);
+  yield receivedProductOptionValue(productDetailReFormat);
 
   yield getDetailProductEndTask();
 }
@@ -149,7 +150,7 @@ function* onConfigurableSelectOnChange(payload) {
   yield put({ type: types.UPDATE_CONFIGURABLE_PRODUCT_OPTION, payload });
 
   const optionValueRd = yield select(optionValue);
-  const productDetailReFormat = yield findUsedConfigurable(
+  const productDetailReFormat = yield reformatConfigurableProduct(
     optionValueRd,
     false
   );

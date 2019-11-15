@@ -18,11 +18,24 @@ type Props = {
 class Bundle extends Component<Props> {
   props: Props;
 
+  renderViewByComponent = item => {
+    switch (item.type) {
+      case SELECT:
+        return <Select />;
+      case RADIO:
+        return <Radio />;
+      case CHECKBOX:
+        return <Checkbox />;
+      case MULTI:
+        return <Multi />;
+      default:
+        return <Select />;
+    }
+  };
+
   render() {
     const { optionValue } = this.props;
     const isLoading = !optionValue;
-
-    console.log('option value update 1:', optionValue);
     return (
       <div>
         {isLoading ? (
@@ -43,22 +56,13 @@ class Bundle extends Component<Props> {
                   className="close"
                   data-dismiss="modal"
                   aria-label="Close"
-                ></button>
+                />
               </div>
               <div className="modal-body">
                 {optionValue.items.map((item, index) => {
-                  switch (item.type) {
-                    case SELECT:
-                      return <Select key={index} item={item} />;
-                    case RADIO:
-                      return <Radio key={index} item={item} />;
-                    case CHECKBOX:
-                      return <Checkbox key={index} item={item} />;
-                    case MULTI:
-                      return <Multi key={index} item={item} />;
-                    default:
-                      return <Select key={index} item={item} />;
-                  }
+                  return (
+                    <div key={index}>{this.renderViewByComponent(item)}</div>
+                  );
                 })}
               </div>
             </div>
