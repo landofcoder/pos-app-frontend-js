@@ -13,7 +13,10 @@ import {
   getDetailProductConfigurableService,
   getDetailProductBundleService
 } from './services/ProductService';
-import { handleProductType, reformatConfigurableProduct } from '../common/product';
+import {
+  handleProductType,
+  reformatConfigurableProduct
+} from '../common/product';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
 const cartCurrentToken = state => state.mainRd.cartCurrent.token;

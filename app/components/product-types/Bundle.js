@@ -21,15 +21,15 @@ class Bundle extends Component<Props> {
   renderViewByComponent = item => {
     switch (item.type) {
       case SELECT:
-        return <Select />;
+        return <Select item={item} />;
       case RADIO:
-        return <Radio />;
+        return <Radio item={item} />;
       case CHECKBOX:
-        return <Checkbox />;
+        return <Checkbox item={item} />;
       case MULTI:
-        return <Multi />;
+        return <Multi item={item} />;
       default:
-        return <Select />;
+        return <Select item={item} />;
     }
   };
 

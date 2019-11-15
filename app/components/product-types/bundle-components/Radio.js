@@ -9,13 +9,22 @@ type Props = {
 class Radio extends Component<Props> {
   props: Props;
 
+  getOptionSelected = item => {
+    console.log('item option:', item);
+    return true;
+  };
+
+  radioOnChange = item => {
+    console.log('radio onchange:', item);
+  };
+
   render() {
     const { item } = this.props;
     console.log('item:', item);
     return (
       <div>
         <p className="font-weight-bold">{item.title}</p>
-        {item.options.map((item, index) => {
+        {item.options.map((itemOption, index) => {
           return (
             <div key={index}>
               <div className="form-check">
@@ -24,8 +33,9 @@ class Radio extends Component<Props> {
                   type="radio"
                   name="exampleRadios"
                   id={`radio-${index}`}
+                  onChange={this.radioOnChange}
                   value="option1"
-                  checked
+                  checked={() => this.getOptionSelected(itemOption)}
                 />
                 <label className="form-check-label" htmlFor={`radio-${index}`}>
                   {item.label}
