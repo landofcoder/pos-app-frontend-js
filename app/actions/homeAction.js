@@ -8,6 +8,12 @@ export function addToCart(payload) {
   };
 }
 
+export function deleteItemCart(payload) {
+  return {
+    type: types.REMOVE_ITEM_OUT_CART,
+    payload
+  };
+}
 export function checkoutAction() {
   return {
     type: types.CHECK_OUT_ACTION

@@ -73,7 +73,11 @@ export default class Home extends Component<Props> {
    * @param item
    */
   preAddToCart = item => {
-    const { addToCart, getDetailProductConfigurable, getDetailProductBundle } = this.props;
+    const {
+      addToCart,
+      getDetailProductConfigurable,
+      getDetailProductBundle
+    } = this.props;
     // Set type_id to state for switchingProductSettings render settings form
     this.setState({ typeId: item.type_id });
 
@@ -85,6 +89,7 @@ export default class Home extends Component<Props> {
         }
         break;
       case SIMPLE:
+        addToCart(item);
         break;
       case BUNDLE:
         {

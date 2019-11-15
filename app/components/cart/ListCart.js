@@ -4,13 +4,20 @@ import { connect } from 'react-redux';
 import styles from './listcart.scss';
 import { baseUrl } from '../../params';
 import CommonStyles from '../styles/common.scss';
+import { deleteItemCart } from '../../actions/homeAction';
 
 type Props = {
-  cartCurrent: Array
+  cartCurrent: Array,
+  deleteItemCart: (payload: object) => void
 };
 
 class ListCart extends Component<Props> {
   props: Props;
+
+  deleteAction = index => {
+    const { deleteItemCart } = this.props;
+    deleteItemCart(index);
+  };
 
   getFirstMedia = item => {
     const gallery = item.media_gallery_entries
@@ -63,7 +70,11 @@ class ListCart extends Component<Props> {
                     </div>
                   </div>
                   <div className={`p-0 ${styles.cancel}`}>
-                    <a role="presentation" className={CommonStyles.pointer}>
+                    <a
+                      onClick={() => this.deleteAction(index)}
+                      role="presentation"
+                      className={CommonStyles.pointer}
+                    >
                       <i className={`far fa-times-circle ${styles.icon}`}></i>
                     </a>
                   </div>
@@ -81,8 +92,10 @@ const mapStateToProps = state => ({
   cartCurrent: state.mainRd.cartCurrent
 });
 
-const mapDispatchToProps = () => {
-  return {};
+const mapDispatchToProps = dispatch => {
+  return {
+    deleteItemCart: payload => dispatch(deleteItemCart(payload))
+  };
 };
 
 export default connect(
