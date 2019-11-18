@@ -61,6 +61,18 @@ const mainRd = (state = initialState, action) =>
         ].pos_selected = value;
         break;
       }
+      case types.ON_BUNDLE_SELECTED_RADIO_ONCHANGE: {
+        const { index } = action.payload;
+        const { id } = action.payload;
+        draft.productOption.optionValue.items[index].option_selected = [id];
+        break;
+      }
+      case types.ON_BUNDLE_SELECTED_SELECT_ONCHANGE: {
+        const { index } = action.payload;
+        const { id } = action.payload;
+        draft.productOption.optionValue.items[index].option_selected = [id];
+        break;
+      }
       default:
         break;
     }

@@ -73,3 +73,17 @@ export function onConfigurableSelectOnChange(payload) {
     payload
   };
 }
+
+export function onBundleSelectedChange(payload) {
+  return {
+    type: types.ON_BUNDLE_SELECTED_RADIO_ONCHANGE,
+    payload
+  };
+}
+
+export function onBundleSelectedSelectChange(payload) {
+  return {
+    type: types.ON_BUNDLE_SELECTED_SELECT_ONCHANGE,
+    payload
+  };
+}

@@ -18,18 +18,18 @@ type Props = {
 class Bundle extends Component<Props> {
   props: Props;
 
-  renderViewByComponent = item => {
+  renderViewByComponent = (item, index) => {
     switch (item.type) {
       case SELECT:
-        return <Select item={item} />;
+        return <Select item={item} index={index} />;
       case RADIO:
-        return <Radio item={item} />;
+        return <Radio item={item} index={index} />;
       case CHECKBOX:
-        return <Checkbox item={item} />;
+        return <Checkbox item={item} index={index} />;
       case MULTI:
-        return <Multi item={item} />;
+        return <Multi item={item} index={index} />;
       default:
-        return <Select item={item} />;
+        return <Select item={item} index={index} />;
     }
   };
 
@@ -61,7 +61,7 @@ class Bundle extends Component<Props> {
               <div className="modal-body">
                 {optionValue.items.map((item, index) => {
                   return (
-                    <div key={index}>{this.renderViewByComponent(item)}</div>
+                    <div key={index}>{this.renderViewByComponent(item, index)}</div>
                   );
                 })}
               </div>

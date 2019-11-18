@@ -1,26 +1,32 @@
 // @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { onBundleSelectedChange } from '../../../actions/homeAction';
 
 type Props = {
-  item: Object
+  item: Object,
+  index: number,
+  onBundleSelectedChange: (payload: Object) => void
 };
 
 class Radio extends Component<Props> {
   props: Props;
 
-  getOptionSelected = item => {
-    console.log('item option:', item);
-    return true;
+  /**
+   * Get option selected
+   * @returns {boolean}
+   */
+  getOptionSelected = (id, listOptionSelected) => {
+    return listOptionSelected.indexOf(id) !== -1;
   };
 
-  radioOnChange = item => {
-    console.log('radio onchange:', item);
+  radioOnChange = id => {
+    const { index, onBundleSelectedChange } = this.props;
+    onBundleSelectedChange({ index, id });
   };
 
   render() {
     const { item } = this.props;
-    console.log('item:', item);
     return (
       <div>
         <p className="font-weight-bold">{item.title}</p>
@@ -33,12 +39,15 @@ class Radio extends Component<Props> {
                   type="radio"
                   name="exampleRadios"
                   id={`radio-${index}`}
-                  onChange={this.radioOnChange}
+                  onChange={() => this.radioOnChange(itemOption.id)}
                   value="option1"
-                  checked={() => this.getOptionSelected(itemOption)}
+                  checked={this.getOptionSelected(
+                    itemOption.id,
+                    item.option_selected
+                  )}
                 />
                 <label className="form-check-label" htmlFor={`radio-${index}`}>
-                  {item.label}
+                  {itemOption.label}
                 </label>
               </div>
             </div>
@@ -55,7 +64,13 @@ function mapStateToProps(state) {
   };
 }
 
+function mapDispatchToProps(dispatch) {
+  return {
+    onBundleSelectedChange: payload => dispatch(onBundleSelectedChange(payload))
+  };
+}
+
 export default connect(
   mapStateToProps,
-  null
+  mapDispatchToProps
 )(Radio);
