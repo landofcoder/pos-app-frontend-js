@@ -94,3 +94,24 @@ export function onBundleCheckBoxOnChange(payload) {
     payload
   };
 }
+
+export function onBundleMultipleCheckboxOnChange(payload) {
+  return {
+    type: types.ON_BUNDLE_SELECTED_MULTIPLE_ONCHANGE,
+    payload
+  };
+}
+
+export function onBundleMultipleCheckboxRemoveItem(payload) {
+  return {
+    type: types.ON_BUNDLE_SELECTED_MULTIPLE_REMOVE_ITEM_ONCHANGE,
+    payload
+  };
+}
+
+export function onBundleMultipleCheckboxPushItem(payload) {
+  return {
+    type: types.ON_BUNDLE_SELECTED_MULTIPLE_PUSH_ITEM_ONCHANGE,
+    payload
+  };
+}

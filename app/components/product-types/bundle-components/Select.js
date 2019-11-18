@@ -40,7 +40,7 @@ class Select extends Component<Props> {
           )}
           {item.options.map((itemOption, index) => {
             return (
-              <option key={index} value={index}>
+              <option key={index} value={itemOption.id}>
                 {itemOption.label}
               </option>
             );

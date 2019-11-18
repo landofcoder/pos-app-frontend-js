@@ -80,6 +80,26 @@ const mainRd = (state = initialState, action) =>
         ].option_selected = arraySelected;
         break;
       }
+      case types.ON_BUNDLE_SELECTED_MULTIPLE_ONCHANGE: {
+        const { index, arraySelected } = action.payload;
+        draft.productOption.optionValue.items[
+          index
+        ].option_selected = arraySelected;
+        break;
+      }
+      case types.ON_BUNDLE_SELECTED_MULTIPLE_REMOVE_ITEM_ONCHANGE: {
+        const { index, indexOf } = action.payload;
+        draft.productOption.optionValue.items[index].option_selected.splice(
+          indexOf,
+          1
+        );
+        break;
+      }
+      case types.ON_BUNDLE_SELECTED_MULTIPLE_PUSH_ITEM_ONCHANGE: {
+        const { index, id } = action.payload;
+        draft.productOption.optionValue.items[index].option_selected.push(id);
+        break;
+      }
       default:
         break;
     }
