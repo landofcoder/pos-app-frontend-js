@@ -11,7 +11,8 @@ import {
 import {
   searchProductService,
   getDetailProductConfigurableService,
-  getDetailProductBundleService
+  getDetailProductBundleService,
+  getDetailProductGroupedService
 } from './services/ProductService';
 import {
   handleProductType,
@@ -72,7 +73,7 @@ function* cashCheckout() {
  */
 function* getDefaultProduct() {
   const response = yield call(getProductsService);
-  const productResult = response.items ? response.items : [];
+  const productResult = response.data ? response.data.products.items : [];
   yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productResult });
 }
 
@@ -126,17 +127,37 @@ function* getDetailBundleProduct(payload) {
   const productDetail = yield call(getDetailProductBundleService, payload);
   const productDetailSingle = productDetail.data.products.items[0];
   const productDetailReFormat = yield handleProductType(productDetailSingle);
-  console.log('detail bundle reformat:', productDetailReFormat);
   yield receivedProductOptionValue(productDetailReFormat);
 
   yield getDetailProductEndTask();
 }
 
+/**
+ *
+ * @returns {Generator<*, *>}
+ */
+function* getDetailGroupedProduct(payload) {
+  yield startLoadingProductOption();
+
+  const productDetail = yield call(getDetailProductGroupedService, payload);
+  const products = productDetail.data.products.items[0];
+  yield receivedProductOptionValue(products);
+
+  yield getDetailProductEndTask();
+}
+/**
+ *
+ * @returns {Generator<<"PUT", PutEffectDescriptor<{payload: boolean, type: *}>>, *>}
+ */
 function* startLoadingProductOption() {
   // Start loading for get product detail and option
   yield put({ type: types.UPDATE_IS_LOADING_PRODUCT_OPTION, payload: true });
 }
 
+/**
+ *
+ * @returns {Generator<<"PUT", PutEffectDescriptor<{payload: boolean, type: *}>>, *>}
+ */
 function* getDetailProductEndTask() {
   // Set showProductOption to true
   yield put({ type: types.UPDATE_IS_SHOWING_PRODUCT_OPTION, payload: true });
@@ -196,6 +217,7 @@ function* rootSaga() {
     onConfigurableSelectOnChange
   );
   yield takeEvery(types.GET_DETAIL_PRODUCT_BUNDLE, getDetailBundleProduct);
+  yield takeEvery(types.GET_DETAIL_PRODUCT_GROUPED, getDetailGroupedProduct);
 }
 
 export default rootSaga;

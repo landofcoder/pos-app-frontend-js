@@ -229,3 +229,52 @@ export async function getDetailProductBundleService(payload) {
   const data = await response.json();
   return data;
 }
+
+/**
+ * Get detail product grouped service
+ * @returns {Promise<void>}
+ */
+export async function getDetailProductGroupedService(payload) {
+  const response = await fetch(graphqlPath, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${adminToken}`
+    },
+    body: JSON.stringify({
+      query: `
+           {
+        products(filter: {sku: {eq: "${payload.payload}"}}) {
+          items {
+            id
+            name
+            sku
+            type_id
+            ... on GroupedProduct {
+              items {
+                qty
+                position
+                product {
+                  sku
+                  name
+                  type_id
+                  url_key
+                  price {
+                    regularPrice {
+                      amount {
+                        value
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      `
+    })
+  });
+  const data = await response.json();
+  return data;
+}

@@ -61,7 +61,9 @@ class Bundle extends Component<Props> {
               <div className="modal-body">
                 {optionValue.items.map((item, index) => {
                   return (
-                    <div key={index}>{this.renderViewByComponent(item, index)}</div>
+                    <div key={index}>
+                      {this.renderViewByComponent(item, index)}
+                    </div>
                   );
                 })}
               </div>

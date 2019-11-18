@@ -11,10 +11,16 @@ import {
   HOME_DEFAULT_PRODUCT_LIST,
   CASH_PANEL
 } from '../constants/main-panel-types';
-import { SIMPLE, CONFIGURABLE, BUNDLE } from '../constants/product-types';
+import {
+  SIMPLE,
+  CONFIGURABLE,
+  BUNDLE,
+  GROUPED
+} from '../constants/product-types';
 import { baseUrl } from '../params';
 import Configuration from './product-types/Configuration';
 import Bundle from './product-types/Bundle';
+import Grouped from './product-types/Grouped';
 
 type Props = {
   productList: Array,
@@ -28,6 +34,7 @@ type Props = {
   cashCheckoutAction: () => void,
   getDetailProductConfigurable: (sku: string) => void,
   getDetailProductBundle: (sku: string) => void,
+  getDetailProductGrouped: (sku: string) => void,
   productOption: Object
 };
 
@@ -73,7 +80,12 @@ export default class Home extends Component<Props> {
    * @param item
    */
   preAddToCart = item => {
-    const { addToCart, getDetailProductConfigurable, getDetailProductBundle } = this.props;
+    const {
+      addToCart,
+      getDetailProductConfigurable,
+      getDetailProductBundle,
+      getDetailProductGrouped
+    } = this.props;
     // Set type_id to state for switchingProductSettings render settings form
     this.setState({ typeId: item.type_id });
 
@@ -85,11 +97,18 @@ export default class Home extends Component<Props> {
         }
         break;
       case SIMPLE:
+        addToCart(item);
         break;
       case BUNDLE:
         {
           const { sku } = item;
           getDetailProductBundle(sku);
+        }
+        break;
+      case GROUPED:
+        {
+          const { sku } = item;
+          getDetailProductGrouped(sku);
         }
         break;
       default:
@@ -109,6 +128,8 @@ export default class Home extends Component<Props> {
         return <Configuration />;
       case BUNDLE:
         return <Bundle />;
+      case GROUPED:
+        return <Grouped />;
       default:
         break;
     }

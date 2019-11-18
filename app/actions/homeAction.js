@@ -60,6 +60,13 @@ export function getDetailProductBundle(payload) {
   };
 }
 
+export function getDetailProductGrouped(payload) {
+  return {
+    type: types.GET_DETAIL_PRODUCT_GROUPED,
+    payload
+  };
+}
+
 export function updateIsShowingProductOption(payload) {
   return {
     type: types.UPDATE_IS_SHOWING_PRODUCT_OPTION,
@@ -112,6 +119,13 @@ export function onBundleMultipleCheckboxRemoveItem(payload) {
 export function onBundleMultipleCheckboxPushItem(payload) {
   return {
     type: types.ON_BUNDLE_SELECTED_MULTIPLE_PUSH_ITEM_ONCHANGE,
+    payload
+  };
+}
+
+export function onGroupedChangeQty(payload) {
+  return {
+    type: types.ON_GROUPED_QTY_CHANGE,
     payload
   };
 }

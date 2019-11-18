@@ -1,5 +1,7 @@
 import { adminToken, baseUrl } from '../../params';
 
+const graphqlPath = `${baseUrl}graphql`;
+
 /**
  * Create guest cart service
  * @returns {Promise<any>}
@@ -141,10 +143,8 @@ export async function addShippingInformationService(cartToken) {
  * @returns {Promise<any>}
  */
 export async function getProductsService() {
-  // const url = `${baseUrl}index.php/rest/V1/products?searchCriteria[page_size]=20`;
-  const url = `${baseUrl}index.php/rest/V1/products/?searchCriteria[filter_groups][0][filters][0][field]=sku&searchCriteria[filter_groups][0][filters][0][value]=24-WG080&searchCriteria[filter_groups][0][filters][0][condition_type]=like`;
-  const response = await fetch(url, {
-    method: 'GET', // *GET, POST, PUT, DELETE, etc.
+  const response = await fetch(graphqlPath, {
+    method: 'POST', // *GET, POST, PUT, DELETE, etc.
     mode: 'cors', // no-cors, *cors, same-origin
     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
     credentials: 'same-origin', // include, *same-origin, omit
@@ -154,7 +154,38 @@ export async function getProductsService() {
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
     redirect: 'follow', // manual, *follow, error
-    referrer: 'no-referrer' // no-referrer, *client
+    referrer: 'no-referrer', // no-referrer, *client
+    body: JSON.stringify({
+      query: `{
+           products(filter:
+            {sku: {in: ["24-WG085_Group", "24-MB01", "MT07", "24-WG080"]}}
+          )
+          {
+            items {
+              id
+              name
+              sku
+              media_gallery_entries {
+                file
+              }
+              type_id
+              price {
+                regularPrice {
+                  amount {
+                    value
+                    currency
+                  }
+                }
+              }
+            }
+            total_count
+            page_info {
+              page_size
+            }
+          }
+        }
+      `
+    })
   });
   const data = await response.json();
   return data;

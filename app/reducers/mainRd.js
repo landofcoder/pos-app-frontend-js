@@ -100,6 +100,11 @@ const mainRd = (state = initialState, action) =>
         draft.productOption.optionValue.items[index].option_selected.push(id);
         break;
       }
+      case types.ON_GROUPED_QTY_CHANGE: {
+        const { index, value } = action.payload;
+        draft.productOption.optionValue.items[index].qty = value;
+        break;
+      }
       default:
         break;
     }
