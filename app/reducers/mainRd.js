@@ -73,6 +73,13 @@ const mainRd = (state = initialState, action) =>
         draft.productOption.optionValue.items[index].option_selected = [id];
         break;
       }
+      case types.ON_BUNDLE_SELECTED_CHECKBOX_ONCHANGE: {
+        const { index, arraySelected } = action.payload;
+        draft.productOption.optionValue.items[
+          index
+        ].option_selected = arraySelected;
+        break;
+      }
       default:
         break;
     }

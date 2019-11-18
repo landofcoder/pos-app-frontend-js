@@ -87,3 +87,10 @@ export function onBundleSelectedSelectChange(payload) {
     payload
   };
 }
+
+export function onBundleCheckBoxOnChange(payload) {
+  return {
+    type: types.ON_BUNDLE_SELECTED_CHECKBOX_ONCHANGE,
+    payload
+  };
+}
