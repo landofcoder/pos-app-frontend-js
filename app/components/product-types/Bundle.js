@@ -5,6 +5,7 @@ import Select from './bundle-components/Select';
 import Multi from './bundle-components/Multi';
 import Radio from './bundle-components/Radio';
 import Checkbox from './bundle-components/Checkbox';
+import { updateIsShowingProductOption } from '../../actions/homeAction';
 
 const RADIO = 'radio';
 const CHECKBOX = 'checkbox';
@@ -12,7 +13,8 @@ const MULTI = 'multi';
 const SELECT = 'select';
 
 type Props = {
-  optionValue: Object
+  optionValue: Object,
+  updateIsShowingProductOption: (payload: string) => void
 };
 
 class Bundle extends Component<Props> {
@@ -34,7 +36,7 @@ class Bundle extends Component<Props> {
   };
 
   render() {
-    const { optionValue } = this.props;
+    const { optionValue, updateIsShowingProductOption } = this.props;
     const isLoading = !optionValue;
     return (
       <div>
@@ -67,6 +69,26 @@ class Bundle extends Component<Props> {
                   );
                 })}
               </div>
+              <div className="modal-footer">
+                <div className="col-md-6 p-0">
+                  <button
+                    type="button"
+                    onClick={() => updateIsShowingProductOption(false)}
+                    className="btn btn-secondary btn-lg btn-block"
+                  >
+                    CANCEL
+                  </button>
+                </div>
+                <div className="col-md-6 p-0">
+                  <button
+                    onClick={this.addToCart}
+                    type="button"
+                    className="btn btn-primary btn-lg btn-block"
+                  >
+                    ADD TO CART
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -81,7 +103,13 @@ function mapStateToProps(state) {
   };
 }
 
+function mapDispatchToProps(dispatch) {
+  return {
+    updateIsShowingProductOption: payload =>
+      dispatch(updateIsShowingProductOption(payload))
+  };
+}
 export default connect(
   mapStateToProps,
-  null
+  mapDispatchToProps
 )(Bundle);

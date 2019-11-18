@@ -22,7 +22,7 @@ class Grouped extends Component<Props> {
   qtyOnChange = (index, evt) => {
     const { value } = evt.target;
     const { onGroupedChangeQty } = this.props;
-    onGroupedChangeQty({index, value});
+    onGroupedChangeQty({ index, value });
   };
 
   getPriceProductItem = item => {

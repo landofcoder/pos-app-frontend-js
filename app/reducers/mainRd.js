@@ -48,6 +48,10 @@ const mainRd = (state = initialState, action) =>
         break;
       case types.UPDATE_IS_SHOWING_PRODUCT_OPTION:
         draft.productOption.isShowingProductOption = action.payload;
+        // Reset option value after close modal
+        if (action.payload === false) {
+          draft.productOption.optionValue = null;
+        }
         break;
       case types.UPDATE_PRODUCT_OPTION_VALUE: {
         draft.productOption.optionValue = action.payload;
