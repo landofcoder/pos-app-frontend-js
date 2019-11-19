@@ -1,12 +1,17 @@
 // @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { onBundleSelectedSelectChange } from '../../../actions/homeAction';
+import {
+  onBundleSelectedSelectChange,
+  onBundleProductQtyOnChange
+} from '../../../actions/homeAction';
+import { findOptionById } from '../../../utils/common';
 
 type Props = {
   item: Object,
   index: number,
-  onBundleSelectedSelectChange: (payload: Object) => void
+  onBundleSelectedSelectChange: (payload: Object) => void,
+  onBundleProductQtyOnChange: (payload: Object) => void
 };
 
 class Select extends Component<Props> {
@@ -23,9 +28,17 @@ class Select extends Component<Props> {
     onBundleSelectedSelectChange({ index, value });
   };
 
+  qtyOnChange = (e, currentActiveItem) => {
+    const { value } = e.target;
+    const { onBundleProductQtyOnChange, index } = this.props;
+    const optionId = currentActiveItem.id;
+    onBundleProductQtyOnChange({ index, optionId, value });
+  };
+
   render() {
     const { item } = this.props;
     const { required } = item;
+    const currentActiveItem = findOptionById(this.props);
     return (
       <div>
         <p className="font-weight-bold">{item.title}</p>
@@ -46,6 +59,16 @@ class Select extends Component<Props> {
             );
           })}
         </select>
+        <div className="form-group">
+          <label htmlFor="exampleFormControlInput1">Quantity</label>
+          <input
+            onChange={e => this.qtyOnChange(e, currentActiveItem)}
+            type="text"
+            className="form-control col-md-1"
+            id="exampleFormControlInput1"
+            value={currentActiveItem ? currentActiveItem.qty : 0}
+          />
+        </div>
       </div>
     );
   }
@@ -60,7 +83,9 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     onBundleSelectedSelectChange: payload =>
-      dispatch(onBundleSelectedSelectChange(payload))
+      dispatch(onBundleSelectedSelectChange(payload)),
+    onBundleProductQtyOnChange: payload =>
+      dispatch(onBundleProductQtyOnChange(payload))
   };
 }
 

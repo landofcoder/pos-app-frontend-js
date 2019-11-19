@@ -37,6 +37,7 @@ class Bundle extends Component<Props> {
 
   render() {
     const { optionValue, updateIsShowingProductOption } = this.props;
+    console.log('bundle item:', optionValue);
     const isLoading = !optionValue;
     return (
       <div>

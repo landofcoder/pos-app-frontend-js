@@ -129,3 +129,10 @@ export function onGroupedChangeQty(payload) {
     payload
   };
 }
+
+export function onBundleProductQtyOnChange(payload) {
+  return {
+    type: types.ON_BUNDLE_PRODUCT_QTY_ONCHANGE,
+    payload
+  };
+}

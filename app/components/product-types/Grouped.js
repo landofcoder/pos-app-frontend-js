@@ -54,7 +54,6 @@ class Grouped extends Component<Props> {
 
   render() {
     const { optionValue, updateIsShowingProductOption } = this.props;
-    console.log('item:', optionValue);
     const isLoading = !optionValue;
     return (
       <div>

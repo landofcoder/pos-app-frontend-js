@@ -73,8 +73,10 @@ const mainRd = (state = initialState, action) =>
       }
       case types.ON_BUNDLE_SELECTED_SELECT_ONCHANGE: {
         const { index } = action.payload;
-        const { id } = action.payload;
-        draft.productOption.optionValue.items[index].option_selected = [id];
+        const { value } = action.payload;
+        draft.productOption.optionValue.items[index].option_selected = [
+          Number(value)
+        ];
         break;
       }
       case types.ON_BUNDLE_SELECTED_CHECKBOX_ONCHANGE: {
@@ -107,6 +109,21 @@ const mainRd = (state = initialState, action) =>
       case types.ON_GROUPED_QTY_CHANGE: {
         const { index, value } = action.payload;
         draft.productOption.optionValue.items[index].qty = value;
+        break;
+      }
+      case types.ON_BUNDLE_PRODUCT_QTY_ONCHANGE: {
+        const { index, optionId, value } = action.payload;
+        draft.productOption.optionValue.items[
+          index
+        ].options = draft.productOption.optionValue.items[index].options.map(
+          item => {
+            if (item.id === optionId) {
+              item.qty = value;
+              return item;
+            }
+            return item;
+          }
+        );
         break;
       }
       default:
