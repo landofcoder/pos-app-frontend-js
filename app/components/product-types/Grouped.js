@@ -3,20 +3,43 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
   updateIsShowingProductOption,
-  onGroupedChangeQty
+  onGroupedChangeQty,
+  addToCart
 } from '../../actions/homeAction';
 
 type Props = {
   optionValue: Object,
   updateIsShowingProductOption: (payload: string) => void,
-  onGroupedChangeQty: (payload: string) => void
+  onGroupedChangeQty: (payload: string) => void,
+  addToCart: (payload: Object) => void
 };
 
 class Grouped extends Component<Props> {
   props: Props;
 
   addToCart = () => {
-    console.log('add to cart');
+    const { optionValue } = this.props;
+    const { items } = optionValue;
+
+    for (let i = 0; i < items.length; i += 1) {
+      const { product, qty } = items[i];
+      if (qty > 0) {
+        this.preAddToCart(product, qty);
+      }
+    }
+  };
+
+  /**
+   * Pre add to cart
+   * @param product
+   * @param qty
+   */
+  preAddToCart = (product, qty) => {
+    const productReAssign = Object.assign({}, product);
+    const { addToCart } = this.props;
+    productReAssign.qty = qty;
+    console.log('product before assign:', productReAssign);
+    addToCart(productReAssign);
   };
 
   qtyOnChange = (index, evt) => {
@@ -31,6 +54,7 @@ class Grouped extends Component<Props> {
 
   render() {
     const { optionValue, updateIsShowingProductOption } = this.props;
+    console.log('item:', optionValue);
     const isLoading = !optionValue;
     return (
       <div>
@@ -109,7 +133,8 @@ function mapDispatchToProps(dispatch) {
   return {
     updateIsShowingProductOption: payload =>
       dispatch(updateIsShowingProductOption(payload)),
-    onGroupedChangeQty: payload => dispatch(onGroupedChangeQty(payload))
+    onGroupedChangeQty: payload => dispatch(onGroupedChangeQty(payload)),
+    addToCart: payload => dispatch(addToCart(payload))
   };
 }
 export default connect(

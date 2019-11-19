@@ -254,19 +254,24 @@ export async function getDetailProductGroupedService(payload) {
               items {
                 qty
                 position
-                product {
-                  sku
-                  name
-                  type_id
-                  url_key
-                  price {
-                    regularPrice {
-                      amount {
-                        value
+                 product {
+                    id
+                    media_gallery_entries {
+                      file
+                    }
+                    sku
+                    name
+                    price {
+                      regularPrice {
+                        amount {
+                          value
+                          currency
+                        }
                       }
                     }
-                  }
-                }
+                    type_id
+                    url_key
+                  }                
               }
             }
           }
