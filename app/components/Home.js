@@ -295,6 +295,18 @@ export default class Home extends Component<Props> {
             <div className="col-md-3">
               <div className={CommonStyle.wrapLevel1}>
                 <div className={CommonStyle.wrapCartPanelPosition}>
+                  <div className={CommonStyle.wrapCustomerOrder}>
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      data-container="body"
+                      data-toggle="popover"
+                      data-placement="bottom"
+                      data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."
+                    >
+                      Popover on bottom
+                    </button>
+                  </div>
                   <ListCart />
                   <div className={CommonStyle.subTotalContainer}>
                     <div className={CommonStyle.wrapSubTotal}>
