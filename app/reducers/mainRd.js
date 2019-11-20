@@ -57,6 +57,9 @@ const mainRd = (state = initialState, action) =>
         draft.productOption.optionValue = action.payload;
         break;
       }
+      case types.REMOVE_ITEM_OUT_CART:
+        draft.cartCurrent.data.splice(action.payload, 1);
+        break;
       case types.UPDATE_CONFIGURABLE_PRODUCT_OPTION: {
         const { index } = action.payload.payload;
         const { value } = action.payload.payload.event.target;
