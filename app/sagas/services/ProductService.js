@@ -43,7 +43,7 @@ export async function searchProductService(payload) {
               attribute_code
               values {
                 value_index
-                label
+                label             
               }
               product_id
             }
@@ -154,6 +154,133 @@ export async function getDetailProductConfigurableService(payload) {
         }
       }
     }`
+    })
+  });
+  const data = await response.json();
+  return data;
+}
+
+/**
+ * Get detail product bundle service
+ * @returns {Promise<void>}
+ */
+export async function getDetailProductBundleService(payload) {
+  const response = await fetch(graphqlPath, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${adminToken}`
+    },
+    body: JSON.stringify({
+      query: `{
+        products(filter: {sku:
+          {eq: "${payload.payload}"}
+        })
+         {
+            items{
+               sku
+               type_id
+               id
+               name
+                ... on BundleProduct {
+                dynamic_sku
+                dynamic_price
+                dynamic_weight
+                price_view
+                media_gallery_entries {
+                  file
+                }
+                ship_bundle_items
+                items {
+                  option_id
+                  title
+                  required
+                  type
+                  position
+                  sku
+                  options {
+                    id
+                    qty
+                    position
+                    is_default
+                    price
+                    price_type
+                    can_change_quantity
+                    label
+                    product {
+                      id
+                      name
+                      sku
+                      type_id
+                      price {
+                      regularPrice {
+                      amount  {
+                          value
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+         }
+      }
+      `
+    })
+  });
+  const data = await response.json();
+  return data;
+}
+
+/**
+ * Get detail product grouped service
+ * @returns {Promise<void>}
+ */
+export async function getDetailProductGroupedService(payload) {
+  const response = await fetch(graphqlPath, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${adminToken}`
+    },
+    body: JSON.stringify({
+      query: `
+           {
+        products(filter: {sku: {eq: "${payload.payload}"}}) {
+          items {
+            id
+            name
+            sku
+            type_id
+            ... on GroupedProduct {
+              items {
+                qty
+                position
+                 product {
+                    id
+                    media_gallery_entries {
+                      file
+                    }
+                    sku
+                    name
+                    price {
+                      regularPrice {
+                        amount {
+                          value
+                          currency
+                        }
+                      }
+                    }
+                    type_id
+                    url_key
+                  }                
+              }
+            }
+          }
+        }
+      }
+      `
     })
   });
   const data = await response.json();

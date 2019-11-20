@@ -13,7 +13,9 @@
         "Function": true
       }
     ],
-    "no-shadow": "off"
+    "import/prefer-default-export": "off",
+    "no-shadow": "off",
+    "react/no-array-index-key": "off"
   },
   "settings": {
     "import/resolver": {

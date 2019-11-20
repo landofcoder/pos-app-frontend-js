@@ -1,27 +1,49 @@
 // @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { updateIsShowingProductOption } from '../../actions/homeAction';
+import {
+  updateIsShowingProductOption,
+  onConfigurableSelectOnChange,
+  addToCart
+} from '../../actions/homeAction';
 
 type Props = {
   optionValue: Object,
-  updateIsShowingProductOption: (payload: string) => void
+  updateIsShowingProductOption: (payload: string) => void,
+  onConfigurableSelectOnChange: (payload: Object) => void,
+  addToCart: (payload: Object) => void
 };
 
 class Configuration extends Component<Props> {
   props: Props;
 
+  addToCart = () => {
+    const { addToCart, optionValue, updateIsShowingProductOption } = this.props;
+    addToCart(optionValue.usedProduct.product);
+    // Hide modal
+    updateIsShowingProductOption(false);
+    console.log('conf add to cart:', optionValue.usedProduct.product);
+  };
+
   render() {
-    const { optionValue, updateIsShowingProductOption } = this.props;
-    const isLoading = !optionValue.data;
-    let productDetail = null;
+    const {
+      optionValue,
+      updateIsShowingProductOption,
+      onConfigurableSelectOnChange
+    } = this.props;
+    const isLoading = !optionValue;
+    let parentProduct = null;
     let configurableOptions;
-    if (optionValue.data) {
+    let variantProductPrice = null;
+
+    if (optionValue) {
       // eslint-disable-next-line prefer-destructuring
-      productDetail = optionValue.data.products.items[0];
-      configurableOptions = productDetail.configurable_options;
+      parentProduct = optionValue;
+      configurableOptions = parentProduct.configurable_options;
+      const usedProduct = parentProduct.usedProduct.product;
+
+      variantProductPrice = usedProduct.price.regularPrice.amount.value;
     }
-    console.log('configurable:', configurableOptions);
     return (
       <>
         {isLoading ? (
@@ -35,27 +57,35 @@ class Configuration extends Component<Props> {
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title" id="exampleModalLongTitle">
-                  {productDetail.name}
+                  {parentProduct.name}
                 </h5>
                 <button
                   type="button"
                   className="close"
                   data-dismiss="modal"
-                  onClick={() => updateIsShowingProductOption(false)}
                   aria-label="Close"
                 >
-                  $40
+                  {variantProductPrice}
                 </button>
               </div>
               <div className="modal-body">
-                {configurableOptions.map(item => {
+                {configurableOptions.map((item, index) => {
                   return (
                     <div key={item.id}>
                       <div className="form-group">
-                        <label>{item.label}</label>
+                        <label htmlFor={`option-select-${item.id}`}>
+                          {item.label}
+                        </label>
                         <select
                           id={`option-select-${item.id}`}
+                          value={item.pos_selected}
                           className="custom-select"
+                          onChange={event =>
+                            onConfigurableSelectOnChange({
+                              event,
+                              index
+                            })
+                          }
                         >
                           {item.values.map(option => {
                             return (
@@ -85,6 +115,7 @@ class Configuration extends Component<Props> {
                 </div>
                 <div className="col-md-6 p-0">
                   <button
+                    onClick={this.addToCart}
                     type="button"
                     className="btn btn-primary btn-lg btn-block"
                   >
@@ -109,7 +140,10 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     updateIsShowingProductOption: payload =>
-      dispatch(updateIsShowingProductOption(payload))
+      dispatch(updateIsShowingProductOption(payload)),
+    onConfigurableSelectOnChange: payload =>
+      dispatch(onConfigurableSelectOnChange(payload)),
+    addToCart: payload => dispatch(addToCart(payload))
   };
 }
 
