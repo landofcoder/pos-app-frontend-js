@@ -70,7 +70,11 @@ export default class Home extends Component<Props> {
     const { cartCurrent } = this.props;
     let totalPrice = 0;
     cartCurrent.data.forEach(item => {
-      totalPrice += item.price;
+      if (item.type_id && item.type_id !== 'bundle') {
+        totalPrice += item.price;
+      } else {
+        // Bundle type
+      }
     });
     return totalPrice;
   };

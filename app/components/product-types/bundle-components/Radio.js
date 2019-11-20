@@ -69,7 +69,6 @@ class Radio extends Component<Props> {
             </div>
           );
         })}
-
         <div className="form-group">
           <label htmlFor="exampleFormControlInput1">Quantity</label>
           <input

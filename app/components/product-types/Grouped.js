@@ -18,7 +18,7 @@ class Grouped extends Component<Props> {
   props: Props;
 
   addToCart = () => {
-    const { optionValue } = this.props;
+    const { optionValue, updateIsShowingProductOption } = this.props;
     const { items } = optionValue;
 
     for (let i = 0; i < items.length; i += 1) {
@@ -27,6 +27,9 @@ class Grouped extends Component<Props> {
         this.preAddToCart(product, qty);
       }
     }
+
+    // Hide modal
+    updateIsShowingProductOption(false);
   };
 
   /**
@@ -38,7 +41,6 @@ class Grouped extends Component<Props> {
     const productReAssign = Object.assign({}, product);
     const { addToCart } = this.props;
     productReAssign.qty = qty;
-    console.log('product before assign:', productReAssign);
     addToCart(productReAssign);
   };
 

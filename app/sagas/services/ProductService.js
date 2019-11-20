@@ -187,6 +187,9 @@ export async function getDetailProductBundleService(payload) {
                 dynamic_price
                 dynamic_weight
                 price_view
+                media_gallery_entries {
+                  file
+                }
                 ship_bundle_items
                 items {
                   option_id

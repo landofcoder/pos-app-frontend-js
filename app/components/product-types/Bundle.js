@@ -5,7 +5,10 @@ import Select from './bundle-components/Select';
 import Multi from './bundle-components/Multi';
 import Radio from './bundle-components/Radio';
 import Checkbox from './bundle-components/Checkbox';
-import { updateIsShowingProductOption } from '../../actions/homeAction';
+import {
+  addToCart,
+  updateIsShowingProductOption
+} from '../../actions/homeAction';
 
 const RADIO = 'radio';
 const CHECKBOX = 'checkbox';
@@ -14,7 +17,8 @@ const SELECT = 'select';
 
 type Props = {
   optionValue: Object,
-  updateIsShowingProductOption: (payload: string) => void
+  updateIsShowingProductOption: (payload: string) => void,
+  addToCart: (payload: Object) => void
 };
 
 class Bundle extends Component<Props> {
@@ -35,9 +39,16 @@ class Bundle extends Component<Props> {
     }
   };
 
+  addToCart = () => {
+    const { optionValue, addToCart, updateIsShowingProductOption } = this.props;
+    addToCart(optionValue);
+
+    // Hide modal
+    updateIsShowingProductOption(false);
+  };
+
   render() {
     const { optionValue, updateIsShowingProductOption } = this.props;
-    console.log('bundle item:', optionValue);
     const isLoading = !optionValue;
     return (
       <div>
@@ -107,7 +118,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     updateIsShowingProductOption: payload =>
-      dispatch(updateIsShowingProductOption(payload))
+      dispatch(updateIsShowingProductOption(payload)),
+    addToCart: payload => dispatch(addToCart(payload))
   };
 }
 export default connect(
