@@ -21,6 +21,7 @@ import { baseUrl } from '../params';
 import Configuration from './product-types/Configuration';
 import Bundle from './product-types/Bundle';
 import Grouped from './product-types/Grouped';
+import CartCustomer from './customer/CartCustomer';
 
 type Props = {
   productList: Array,
@@ -319,6 +320,7 @@ export default class Home extends Component<Props> {
                       Popover on bottom
                     </button>
                   </div>
+                  <CartCustomer />
                   <ListCart />
                   <div className={CommonStyle.subTotalContainer}>
                     <div className={CommonStyle.wrapSubTotal}>
