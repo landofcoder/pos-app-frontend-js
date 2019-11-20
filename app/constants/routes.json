@@ -1,4 +1,5 @@
 {
   "HOME": "/",
-  "CHECKOUT": "/checkout"
+  "CHECKOUT": "/checkout",
+  "LOGIN": "/login"
 }

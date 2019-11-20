@@ -1,5 +1,8 @@
 @import 'variables';
-
+.contentColumn {
+  display: flex;
+  flex-direction: column;
+}
 .colorText {
   color: #9b9b9b;
 }
@@ -31,7 +34,6 @@
   }
 
   .wrapCenterContent {
-    width: 600px;
     margin-left: auto;
     margin-right: auto;
   }
