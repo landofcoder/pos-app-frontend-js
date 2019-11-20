@@ -256,11 +256,11 @@ export default class Home extends Component<Props> {
 
   render() {
     //  ================Check login======================
-    const { token } = this.props;
-    if (token === '') {
-      console.log('need to login');
-      return <Redirect to={routes.LOGIN} />;
-    }
+    // const { token } = this.props;
+    // if (token === '') {
+    //   console.log('need to login');
+    //   return <Redirect to={routes.LOGIN} />;
+    // }
     console.log('have a token');
     //  ================Check login======================
     const classWrapProductPanel = `pr-3 ${Styles.wrapProductPanel} row`;
