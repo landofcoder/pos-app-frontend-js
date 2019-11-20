@@ -32,10 +32,13 @@ class ListCart extends Component<Props> {
   };
 
   renderItemPrice = item => {
-    if (item.price.regularPrice) {
-      return item.price.regularPrice.amount.value;
+    if (item.type_id && item.type_id !== 'bundle') {
+      if (item.price.regularPrice) {
+        return item.price.regularPrice.amount.value;
+      }
+      return item.price;
     }
-    return item.price;
+    return 0;
   };
 
   render() {

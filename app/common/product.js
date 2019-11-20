@@ -7,11 +7,10 @@ export function handleProductType(productDetailSingle) {
   const productDetailSingleAssign = Object.assign({}, productDetailSingle);
   switch (productDetailSingleAssign.type_id) {
     case BUNDLE:
-      console.log('bundle type');
-      break;
+      return reformatBundleProduct(productDetailSingleAssign);
     case CONFIGURABLE:
       // Find usedProduct for configurable
-      return findUsedConfigurable(productDetailSingleAssign);
+      return reformatConfigurableProduct(productDetailSingleAssign);
     default:
       break;
   }
@@ -23,13 +22,49 @@ export function handleProductType(productDetailSingle) {
  * @param firstInit
  */
 export function reformatBundleProduct(item, firstInit = true) {
+  let reAssignItem = null;
+  /**
+   * If firstInit then just assign
+   * if not firstInit: item is object of react just read only, should convert to JSON from JSON stringify
+   */
+  if (firstInit) {
+    reAssignItem = Object.assign({}, item);
+  } else {
+    reAssignItem = JSON.parse(JSON.stringify(item));
+  }
 
+  if (reAssignItem.items.length > 0) {
+    reAssignItem.items.forEach((itemObj, itemIndex) => {
+      // If have selected option
+      const optionSelected = itemObj.option_selected;
+
+      const listIdOptionSelected = [];
+      itemObj.options.forEach(itemOption => {
+        // If option parent have exists selected field, then update all option to match with option selected
+        if (optionSelected) {
+          console.log('have option selected:', itemOption);
+        } else {
+          // Create option selected
+          console.log('have not selected:', itemOption);
+          if (itemOption.is_default) {
+            listIdOptionSelected.push(itemOption.id);
+          }
+        }
+      });
+
+      if (!optionSelected) {
+        // Add field option_selected to array
+        reAssignItem.items[itemIndex].option_selected = listIdOptionSelected;
+      }
+    });
+  }
+  return reAssignItem;
 }
 
 /**
  * Find used configurable
  */
-export function findUsedConfigurable(item, firstInit = true) {
+export function reformatConfigurableProduct(item, firstInit = true) {
   let reAssignItem = null;
 
   /**

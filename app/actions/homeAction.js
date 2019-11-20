@@ -66,6 +66,13 @@ export function getDetailProductBundle(payload) {
   };
 }
 
+export function getDetailProductGrouped(payload) {
+  return {
+    type: types.GET_DETAIL_PRODUCT_GROUPED,
+    payload
+  };
+}
+
 export function updateIsShowingProductOption(payload) {
   return {
     type: types.UPDATE_IS_SHOWING_PRODUCT_OPTION,
@@ -76,6 +83,62 @@ export function updateIsShowingProductOption(payload) {
 export function onConfigurableSelectOnChange(payload) {
   return {
     type: types.ON_CONFIGURABLE_SELECT_ONCHANGE,
+    payload
+  };
+}
+
+export function onBundleSelectedChange(payload) {
+  return {
+    type: types.ON_BUNDLE_SELECTED_RADIO_ONCHANGE,
+    payload
+  };
+}
+
+export function onBundleSelectedSelectChange(payload) {
+  return {
+    type: types.ON_BUNDLE_SELECTED_SELECT_ONCHANGE,
+    payload
+  };
+}
+
+export function onBundleCheckBoxOnChange(payload) {
+  return {
+    type: types.ON_BUNDLE_SELECTED_CHECKBOX_ONCHANGE,
+    payload
+  };
+}
+
+export function onBundleMultipleCheckboxOnChange(payload) {
+  return {
+    type: types.ON_BUNDLE_SELECTED_MULTIPLE_ONCHANGE,
+    payload
+  };
+}
+
+export function onBundleMultipleCheckboxRemoveItem(payload) {
+  return {
+    type: types.ON_BUNDLE_SELECTED_MULTIPLE_REMOVE_ITEM_ONCHANGE,
+    payload
+  };
+}
+
+export function onBundleMultipleCheckboxPushItem(payload) {
+  return {
+    type: types.ON_BUNDLE_SELECTED_MULTIPLE_PUSH_ITEM_ONCHANGE,
+    payload
+  };
+}
+
+export function onGroupedChangeQty(payload) {
+  return {
+    type: types.ON_GROUPED_QTY_CHANGE,
+    payload
+  };
+}
+
+export function onBundleProductQtyOnChange(payload) {
+  return {
+    type: types.ON_BUNDLE_PRODUCT_QTY_ONCHANGE,
     payload
   };
 }

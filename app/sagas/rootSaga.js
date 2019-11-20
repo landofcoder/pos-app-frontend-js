@@ -11,9 +11,13 @@ import {
 import {
   searchProductService,
   getDetailProductConfigurableService,
-  getDetailProductBundleService
+  getDetailProductBundleService,
+  getDetailProductGroupedService
 } from './services/ProductService';
-import { handleProductType, findUsedConfigurable } from '../common/product';
+import {
+  handleProductType,
+  reformatConfigurableProduct
+} from '../common/product';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
 const cartCurrentToken = state => state.mainRd.cartCurrent.token;
@@ -69,7 +73,7 @@ function* cashCheckout() {
  */
 function* getDefaultProduct() {
   const response = yield call(getProductsService);
-  const productResult = response.items ? response.items : [];
+  const productResult = response.data ? response.data.products.items : [];
   yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productResult });
 }
 
@@ -122,17 +126,38 @@ function* getDetailBundleProduct(payload) {
 
   const productDetail = yield call(getDetailProductBundleService, payload);
   const productDetailSingle = productDetail.data.products.items[0];
-
-  yield receivedProductOptionValue(productDetailSingle);
+  const productDetailReFormat = yield handleProductType(productDetailSingle);
+  yield receivedProductOptionValue(productDetailReFormat);
 
   yield getDetailProductEndTask();
 }
 
+/**
+ *
+ * @returns {Generator<*, *>}
+ */
+function* getDetailGroupedProduct(payload) {
+  yield startLoadingProductOption();
+
+  const productDetail = yield call(getDetailProductGroupedService, payload);
+  const products = productDetail.data.products.items[0];
+  yield receivedProductOptionValue(products);
+
+  yield getDetailProductEndTask();
+}
+/**
+ *
+ * @returns {Generator<<"PUT", PutEffectDescriptor<{payload: boolean, type: *}>>, *>}
+ */
 function* startLoadingProductOption() {
   // Start loading for get product detail and option
   yield put({ type: types.UPDATE_IS_LOADING_PRODUCT_OPTION, payload: true });
 }
 
+/**
+ *
+ * @returns {Generator<<"PUT", PutEffectDescriptor<{payload: boolean, type: *}>>, *>}
+ */
 function* getDetailProductEndTask() {
   // Set showProductOption to true
   yield put({ type: types.UPDATE_IS_SHOWING_PRODUCT_OPTION, payload: true });
@@ -149,7 +174,7 @@ function* onConfigurableSelectOnChange(payload) {
   yield put({ type: types.UPDATE_CONFIGURABLE_PRODUCT_OPTION, payload });
 
   const optionValueRd = yield select(optionValue);
-  const productDetailReFormat = yield findUsedConfigurable(
+  const productDetailReFormat = yield reformatConfigurableProduct(
     optionValueRd,
     false
   );
@@ -192,6 +217,7 @@ function* rootSaga() {
     onConfigurableSelectOnChange
   );
   yield takeEvery(types.GET_DETAIL_PRODUCT_BUNDLE, getDetailBundleProduct);
+  yield takeEvery(types.GET_DETAIL_PRODUCT_GROUPED, getDetailGroupedProduct);
 }
 
 export default rootSaga;

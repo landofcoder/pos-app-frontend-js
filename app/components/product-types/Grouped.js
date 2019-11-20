@@ -1,50 +1,57 @@
 // @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Select from './bundle-components/Select';
-import Multi from './bundle-components/Multi';
-import Radio from './bundle-components/Radio';
-import Checkbox from './bundle-components/Checkbox';
 import {
-  addToCart,
-  updateIsShowingProductOption
+  updateIsShowingProductOption,
+  onGroupedChangeQty,
+  addToCart
 } from '../../actions/homeAction';
-
-const RADIO = 'radio';
-const CHECKBOX = 'checkbox';
-const MULTI = 'multi';
-const SELECT = 'select';
 
 type Props = {
   optionValue: Object,
   updateIsShowingProductOption: (payload: string) => void,
+  onGroupedChangeQty: (payload: string) => void,
   addToCart: (payload: Object) => void
 };
 
-class Bundle extends Component<Props> {
+class Grouped extends Component<Props> {
   props: Props;
 
-  renderViewByComponent = (item, index) => {
-    switch (item.type) {
-      case SELECT:
-        return <Select item={item} index={index} />;
-      case RADIO:
-        return <Radio item={item} index={index} />;
-      case CHECKBOX:
-        return <Checkbox item={item} index={index} />;
-      case MULTI:
-        return <Multi item={item} index={index} />;
-      default:
-        return <Select item={item} index={index} />;
-    }
-  };
-
   addToCart = () => {
-    const { optionValue, addToCart, updateIsShowingProductOption } = this.props;
-    addToCart(optionValue);
+    const { optionValue, updateIsShowingProductOption } = this.props;
+    const { items } = optionValue;
+
+    for (let i = 0; i < items.length; i += 1) {
+      const { product, qty } = items[i];
+      if (qty > 0) {
+        this.preAddToCart(product, qty);
+      }
+    }
 
     // Hide modal
     updateIsShowingProductOption(false);
+  };
+
+  /**
+   * Pre add to cart
+   * @param product
+   * @param qty
+   */
+  preAddToCart = (product, qty) => {
+    const productReAssign = Object.assign({}, product);
+    const { addToCart } = this.props;
+    productReAssign.qty = qty;
+    addToCart(productReAssign);
+  };
+
+  qtyOnChange = (index, evt) => {
+    const { value } = evt.target;
+    const { onGroupedChangeQty } = this.props;
+    onGroupedChangeQty({ index, value });
+  };
+
+  getPriceProductItem = item => {
+    return item.product.price.regularPrice.amount.value;
   };
 
   render() {
@@ -65,18 +72,26 @@ class Bundle extends Component<Props> {
                 <h5 className="modal-title" id="exampleModalLongTitle">
                   {optionValue.name}
                 </h5>
-                <button
-                  type="button"
-                  className="close"
-                  data-dismiss="modal"
-                  aria-label="Close"
-                />
               </div>
               <div className="modal-body">
                 {optionValue.items.map((item, index) => {
                   return (
-                    <div key={index}>
-                      {this.renderViewByComponent(item, index)}
+                    <div className="form-group" key={index}>
+                      <div className="row">
+                        <div className="col-md-6">{item.product.name}</div>
+                        <div className="col-md-6">
+                          <input
+                            className="form-control"
+                            value={item.qty}
+                            onChange={evt => this.qtyOnChange(index, evt)}
+                          />
+                        </div>
+                        <div className="col-md-12">
+                          <p className="font-weight-bold">
+                            {this.getPriceProductItem(item)}
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   );
                 })}
@@ -119,10 +134,11 @@ function mapDispatchToProps(dispatch) {
   return {
     updateIsShowingProductOption: payload =>
       dispatch(updateIsShowingProductOption(payload)),
+    onGroupedChangeQty: payload => dispatch(onGroupedChangeQty(payload)),
     addToCart: payload => dispatch(addToCart(payload))
   };
 }
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Bundle);
+)(Grouped);
