@@ -145,6 +145,10 @@ const mainRd = (state = initialState, action) =>
         break;
       case types.SELECT_CUSTOMER_FOR_CURRENT_CART:
         console.log('selected customer:', action.payload);
+        draft.cartCurrent.customer = action.payload;
+        break;
+      case types.UN_SELECT_CUSTOMER_FOR_CURRENT_CART:
+        draft.cartCurrent.customer = null;
         break;
       default:
         break;

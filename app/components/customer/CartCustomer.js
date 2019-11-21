@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import {
   toggleModalCustomer,
   searchCustomer,
-  selectCustomerForCurrentCart
+  selectCustomerForCurrentCart,
+  unSelectCustomerForCurrentCart
 } from '../../actions/homeAction';
 import Styles from './cart-customer.scss';
 import ModalStyle from '../styles/modal.scss';
@@ -16,7 +17,8 @@ type Props = {
   searchCustomer: () => void,
   isLoadingSearchCustomer: boolean,
   customerSearchResult: Array,
-  selectCustomerForCurrentCart: (payload: Object) => void
+  selectCustomerForCurrentCart: (payload: Object) => void,
+  unSelectCustomerForCurrentCart: (payload: Object) => void
 };
 
 class CartCustomer extends Component<Props> {
@@ -48,8 +50,11 @@ class CartCustomer extends Component<Props> {
       toggleModalCustomer,
       isLoadingSearchCustomer,
       customerSearchResult,
-      selectCustomerForCurrentCart
+      selectCustomerForCurrentCart,
+      unSelectCustomerForCurrentCart
     } = this.props;
+    console.log('cart customer:', customer);
+
     return (
       <div className={Styles.wrapCartCustomer}>
         {isOpenFindCustomer === true ? (
@@ -130,7 +135,16 @@ class CartCustomer extends Component<Props> {
               <span className={Styles.customerName}>Guest customer</span>
             </div>
           ) : (
-            <div className="col-md-6">Customer</div>
+            <div className="col-md-6 text-center">
+              <span className={Styles.customerName}>
+                <a href="#" className="badge badge-secondary">
+                  {customer.firstname} {customer.lastname}
+                </a>
+                <button type="button" className="close" aria-label="Close" onClick={unSelectCustomerForCurrentCart}>
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </span>
+            </div>
           )}
           <div className="col-md-6 text-right">
             <button
@@ -159,7 +173,9 @@ const mapDispatchToProps = dispatch => {
     toggleModalCustomer: payload => dispatch(toggleModalCustomer(payload)),
     searchCustomer: payload => dispatch(searchCustomer(payload)),
     selectCustomerForCurrentCart: payload =>
-      dispatch(selectCustomerForCurrentCart(payload))
+      dispatch(selectCustomerForCurrentCart(payload)),
+    unSelectCustomerForCurrentCart: payload =>
+      dispatch(unSelectCustomerForCurrentCart(payload))
   };
 };
 

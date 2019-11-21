@@ -163,3 +163,10 @@ export function selectCustomerForCurrentCart(payload) {
     payload
   };
 }
+
+export function unSelectCustomerForCurrentCart(payload) {
+  return {
+    type: types.UN_SELECT_CUSTOMER_FOR_CURRENT_CART,
+    payload
+  };
+}
