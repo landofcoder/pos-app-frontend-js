@@ -14,6 +14,7 @@ import {
   getDetailProductBundleService,
   getDetailProductGroupedService
 } from './services/ProductService';
+  import { searchCustomer } from './services/CustomerService';
 import {
   handleProductType,
   reformatConfigurableProduct
@@ -195,6 +196,11 @@ function* receivedProductOptionValue(productDetailReFormat) {
   });
 }
 
+function* getSearchCustomer(payload) {
+  console.log('on search customer:', payload);
+  yield call(searchCustomer);
+}
+
 /**
  * Default root saga
  * @returns {Generator<<"FORK", ForkEffectDescriptor<RT>>, *>}
@@ -218,6 +224,7 @@ function* rootSaga() {
   );
   yield takeEvery(types.GET_DETAIL_PRODUCT_BUNDLE, getDetailBundleProduct);
   yield takeEvery(types.GET_DETAIL_PRODUCT_GROUPED, getDetailGroupedProduct);
+  yield takeEvery(types.SEARCH_CUSTOMER, getSearchCustomer);
 }
 
 export default rootSaga;

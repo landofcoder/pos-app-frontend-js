@@ -9,8 +9,10 @@ const initialState = {
   productList: [],
   cartCurrent: {
     token: '',
-    data: []
+    data: [],
+    customer: null // Current customer for current cart
   },
+  isOpenFindCustomer: false,
   cartHoldList: [],
   orderPreparingCheckout: {}, // Detail order for preparing to checkout
   cashLoadingPreparingOrder: false, // Status cash loading for preparing to show cash payment form
@@ -130,6 +132,9 @@ const mainRd = (state = initialState, action) =>
         );
         break;
       }
+      case types.TOGGLE_MODAL_CUSTOMER:
+        draft.isOpenFindCustomer = action.payload;
+        break;
       default:
         break;
     }

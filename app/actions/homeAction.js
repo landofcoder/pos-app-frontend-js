@@ -142,3 +142,17 @@ export function onBundleProductQtyOnChange(payload) {
     payload
   };
 }
+
+export function toggleModalCustomer(payload) {
+  return {
+    type: types.TOGGLE_MODAL_CUSTOMER,
+    payload
+  };
+}
+
+export function searchCustomer(payload) {
+  return {
+    type: types.SEARCH_CUSTOMER,
+    payload
+  };
+}
