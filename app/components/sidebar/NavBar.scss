@@ -1,10 +1,12 @@
 .show{
   display: flex;
+  margin-right: 0x;
 }
 .off{
-  display: none !important;
+  margin-right: -250px;
 }
 .sidebar{
+  right: 0;
   position: absolute;
   background-color: white;
   z-index: 1;
@@ -12,6 +14,8 @@
   width: 250px;
   display: flex;
   flex-direction: column;
+  -webkit-transition:all 1s; /* Safari */
+  transition:all 1s;
 }
 .listBorder{
   border-left: 0px !important;
