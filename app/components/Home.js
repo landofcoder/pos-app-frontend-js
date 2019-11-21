@@ -7,6 +7,7 @@ import Styles from './Home.scss';
 import CommonStyle from './styles/common.scss';
 import ModalStyle from './styles/modal.scss';
 import CashPayment from './payment/Cash/Cash';
+import SideBar from './sidebar/NavBar';
 import {
   HOME_DEFAULT_PRODUCT_LIST,
   CASH_PANEL
@@ -46,7 +47,8 @@ export default class Home extends Component<Props> {
     super(props);
     this.state = {
       delayTimer: null,
-      typeId: ''
+      typeId: '',
+      sideBarShow: false
     };
     localStorage.setItem('posAppData', '');
     console.log('set cookie to null');
@@ -254,6 +256,20 @@ export default class Home extends Component<Props> {
     this.setState({ delayTimer: delayTimerRes });
   };
 
+  actionSideBar = () => {
+    const { sideBarShow } = this.state;
+    console.log('state');
+    console.log(sideBarShow);
+    if (sideBarShow) {
+      this.setState({ sideBarShow: false });
+    } else this.setState({ sideBarShow: true });
+  };
+
+  setOffNavBar = () => {
+    const { sideBarShow } = this.state;
+    if (sideBarShow) this.setState({ sideBarShow: false });
+  };
+
   render() {
     //  ================Check login======================
     const { token } = this.props;
@@ -268,6 +284,7 @@ export default class Home extends Component<Props> {
     // Enable checkout button or disable
     const disableCheckout = cartCurrent.data.length <= 0;
     const { productOption } = this.props;
+    const { sideBarShow } = this.state;
     const { isShowingProductOption } = productOption;
     return (
       <>
@@ -282,14 +299,26 @@ export default class Home extends Component<Props> {
             </div>
           </div>
           <div className="row" id={Styles.wrapPostContainerId}>
-            <div className="col-md-9">
+            <SideBar statusAction={sideBarShow} />
+            <div className="col-md-9" onClick={this.setOffNavBar}>
               <div className={classWrapProductPanel}>
                 <div className="col-md-12 mb-4 pr-0">
                   <div className="input-group flex-nowrap">
                     <div className="input-group-prepend">
-                      <span className="input-group-text" id="addon-wrapping">
+                      <button
+                        type="button"
+                        onClick={this.actionSideBar}
+                        className={`btn btn-info ${Styles.fixIndex}`}
+                      >
+                        SideBar
+                      </button>
+
+                      <button
+                        type="button"
+                        className={`btn btn-light ${Styles.fixIndex}`}
+                      >
                         Search
-                      </span>
+                      </button>
                     </div>
                     <input
                       type="text"
