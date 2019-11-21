@@ -4,11 +4,12 @@ import { adminToken, baseUrl } from '../../params';
  * Create guest cart service
  * @returns {Promise<any>}
  */
-export async function searchCustomer() {
+export async function searchCustomer(payload) {
+  const searchValue = payload.payload;
   const response = await fetch(
-    `${baseUrl}index.php/rest/V1/products/?searchCriteria[filter_groups][0][filters][0][field]=sku&searchCriteria[filter_groups][0][filters][0][value]=fchienvuhoang@gmail.com&searchCriteria[filter_groups][0][filters][0][condition_type]=like`,
+    `${baseUrl}index.php/rest/V1/customers/search?searchCriteria[filterGroups][0][filters][0][field]=entity_id&searchCriteria[filterGroups][0][filters][0][value]=${searchValue}&searchCriteria[filterGroups][0][filters][0][condition_type]=like&searchCriteria[filterGroups][0][filters][1][field]=email&searchCriteria[filterGroups][0][filters][1][value]=${searchValue}&searchCriteria[filterGroups][0][filters][1][condition_type]=like`,
     {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      method: 'GET', // *GET, POST, PUT, DELETE, etc.
       mode: 'cors', // no-cors, *cors, same-origin
       cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
       credentials: 'same-origin', // include, *same-origin, omit
@@ -18,8 +19,7 @@ export async function searchCustomer() {
         // 'Content-Type': 'application/x-www-form-urlencoded',
       },
       redirect: 'follow', // manual, *follow, error
-      referrer: 'no-referrer', // no-referrer, *client
-      body: JSON.stringify({}) // body data type must match "Content-Type" header
+      referrer: 'no-referrer' // no-referrer, *client
     }
   );
   const data = await response.json(); // parses JSON response into native JavaScript objects

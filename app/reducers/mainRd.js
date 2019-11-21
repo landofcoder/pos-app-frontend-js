@@ -13,6 +13,8 @@ const initialState = {
     customer: null // Current customer for current cart
   },
   isOpenFindCustomer: false,
+  isLoadingSearchCustomer: false,
+  customerSearchResult: [],
   cartHoldList: [],
   orderPreparingCheckout: {}, // Detail order for preparing to checkout
   cashLoadingPreparingOrder: false, // Status cash loading for preparing to show cash payment form
@@ -134,6 +136,15 @@ const mainRd = (state = initialState, action) =>
       }
       case types.TOGGLE_MODAL_CUSTOMER:
         draft.isOpenFindCustomer = action.payload;
+        break;
+      case types.UPDATE_IS_LOADING_SEARCH_CUSTOMER:
+        draft.isLoadingSearchCustomer = action.payload;
+        break;
+      case types.RECEIVED_CUSTOMER_SEARCH_RESULT:
+        draft.customerSearchResult = action.searchResult.items;
+        break;
+      case types.SELECT_CUSTOMER_FOR_CURRENT_CART:
+        console.log('selected customer:', action.payload);
         break;
       default:
         break;

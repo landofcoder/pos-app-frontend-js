@@ -1,7 +1,11 @@
 // @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { toggleModalCustomer, searchCustomer } from '../../actions/homeAction';
+import {
+  toggleModalCustomer,
+  searchCustomer,
+  selectCustomerForCurrentCart
+} from '../../actions/homeAction';
 import Styles from './cart-customer.scss';
 import ModalStyle from '../styles/modal.scss';
 
@@ -9,7 +13,10 @@ type Props = {
   customer: Object,
   isOpenFindCustomer: boolean,
   toggleModalCustomer: (payload: boolean) => void,
-  searchCustomer: () => void
+  searchCustomer: () => void,
+  isLoadingSearchCustomer: boolean,
+  customerSearchResult: Array,
+  selectCustomerForCurrentCart: (payload: Object) => void
 };
 
 class CartCustomer extends Component<Props> {
@@ -35,7 +42,14 @@ class CartCustomer extends Component<Props> {
   };
 
   render() {
-    const { customer, isOpenFindCustomer, toggleModalCustomer } = this.props;
+    const {
+      customer,
+      isOpenFindCustomer,
+      toggleModalCustomer,
+      isLoadingSearchCustomer,
+      customerSearchResult,
+      selectCustomerForCurrentCart
+    } = this.props;
     return (
       <div className={Styles.wrapCartCustomer}>
         {isOpenFindCustomer === true ? (
@@ -52,29 +66,46 @@ class CartCustomer extends Component<Props> {
                       <input
                         type="text"
                         className="form-control"
-                        placeholder="Eg: james blunt"
+                        placeholder="Search by: id or email"
                         aria-label="Recipient's username"
                         onChange={this.onSearchAction}
                         aria-describedby="button-addon2"
                       />
-                      <div className="input-group-append">
-                        <button
-                          className="btn btn-outline-secondary"
-                          type="button"
-                          id="button-addon2"
-                        >
-                          Search
-                        </button>
-                      </div>
                     </div>
                   </div>
-                  <ul className="list-group">
-                    <li className="list-group-item active">Cras justo odio</li>
-                    <li className="list-group-item">Dapibus ac facilisis in</li>
-                    <li className="list-group-item">Morbi leo risus</li>
-                    <li className="list-group-item">Porta ac consectetur ac</li>
-                    <li className="list-group-item">Vestibulum at eros</li>
-                  </ul>
+
+                  {isLoadingSearchCustomer ? (
+                    <div className="d-flex justify-content-center">
+                      <div
+                        className="spinner-border text-secondary"
+                        role="status"
+                      >
+                        <span className="sr-only">Loading...</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <ul className="list-group">
+                      {customerSearchResult.map((item, index) => {
+                        return (
+                          <button
+                            key={index}
+                            onClick={() => selectCustomerForCurrentCart(item)}
+                            type="button"
+                            className="list-group-item list-group-item-action"
+                          >
+                            {item.firstname} {item.lastname}
+                          </button>
+                        );
+                      })}
+                      {customerSearchResult.length === 0 ? (
+                        <div>
+                          <p className="text-muted">No result found</p>
+                        </div>
+                      ) : (
+                        <div></div>
+                      )}
+                    </ul>
+                  )}
                 </div>
                 <div className="modal-footer">
                   <div className="col-md-2 p-0">
@@ -118,13 +149,17 @@ class CartCustomer extends Component<Props> {
 
 const mapStateToProps = state => ({
   customer: state.mainRd.cartCurrent.customer,
-  isOpenFindCustomer: state.mainRd.isOpenFindCustomer
+  isOpenFindCustomer: state.mainRd.isOpenFindCustomer,
+  isLoadingSearchCustomer: state.mainRd.isLoadingSearchCustomer,
+  customerSearchResult: state.mainRd.customerSearchResult
 });
 
 const mapDispatchToProps = dispatch => {
   return {
     toggleModalCustomer: payload => dispatch(toggleModalCustomer(payload)),
-    searchCustomer: payload => dispatch(searchCustomer(payload))
+    searchCustomer: payload => dispatch(searchCustomer(payload)),
+    selectCustomerForCurrentCart: payload =>
+      dispatch(selectCustomerForCurrentCart(payload))
   };
 };
 

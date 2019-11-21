@@ -14,7 +14,7 @@ import {
   getDetailProductBundleService,
   getDetailProductGroupedService
 } from './services/ProductService';
-  import { searchCustomer } from './services/CustomerService';
+import { searchCustomer } from './services/CustomerService';
 import {
   handleProductType,
   reformatConfigurableProduct
@@ -196,9 +196,24 @@ function* receivedProductOptionValue(productDetailReFormat) {
   });
 }
 
+/**
+ * Search customer action
+ * @param payload
+ * @returns {Generator<<"CALL", CallEffectDescriptor>|<"PUT", PutEffectDescriptor<{payload: boolean, type: *}>>, *>}
+ */
 function* getSearchCustomer(payload) {
-  console.log('on search customer:', payload);
-  yield call(searchCustomer);
+  // Start search loading
+  yield put({ type: types.UPDATE_IS_LOADING_SEARCH_CUSTOMER, payload: true });
+
+  const searchResult = yield call(searchCustomer, payload);
+
+  yield put({
+    type: types.RECEIVED_CUSTOMER_SEARCH_RESULT,
+    searchResult
+  });
+
+  // Stop search loading
+  yield put({ type: types.UPDATE_IS_LOADING_SEARCH_CUSTOMER, payload: false });
 }
 
 /**

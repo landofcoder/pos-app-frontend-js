@@ -156,3 +156,10 @@ export function searchCustomer(payload) {
     payload
   };
 }
+
+export function selectCustomerForCurrentCart(payload) {
+  return {
+    type: types.SELECT_CUSTOMER_FOR_CURRENT_CART,
+    payload
+  };
+}
