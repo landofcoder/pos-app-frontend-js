@@ -7,6 +7,7 @@ import styles from './pagelogin.scss';
 import commonStyles from '../styles/common.scss';
 import Loading from '../wait/Loading';
 import * as routes from '../../constants/routes';
+import * as params from '../../params';
 
 type Props = {
   login: () => void,
@@ -19,8 +20,8 @@ class PageLogin extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      valueUser: 'roni_cost@example.com',
-      valuePass: 'roni_cost3@example.com'
+      valueUser: params.username,
+      valuePass: params.password
     };
     console.log(this.state);
   }
@@ -58,7 +59,7 @@ class PageLogin extends Component {
           className={`${commonStyles.wrapStaticPageContent} ${styles.wrapFullCenter} ${commonStyles.contentColumn}`}
         >
           <div className="col-5">
-            <div className={styles.contentColumn}>
+            <form className={styles.contentColumn}>
               <img
                 className="mb-4"
                 src="/docs/4.3/assets/brand/bootstrap-solid.svg"
@@ -67,16 +68,16 @@ class PageLogin extends Component {
                 height="72"
               />
               <h1 className="h3 mb-3 font-weight-normal">Please sign in</h1>
-              <label htmlFor="inputEmail" className="sr-only">
+              <label htmlFor="inputUsername" className="sr-only">
                 Email address
               </label>
               <input
                 value={valueUser}
                 onChange={this.handleChangeUser}
-                type="email"
-                id="inputEmail"
-                className="form-control"
-                placeholder="Email address"
+                type="text"
+                id="inputUsername"
+                className="form-control mb-1"
+                placeholder="Username"
                 required
               />
               <label htmlFor="inputPassword" className="sr-only">
@@ -93,7 +94,7 @@ class PageLogin extends Component {
               />
               <div className="checkbox mb-3"></div>
               {message !== '' ? (
-                <div class="alert alert-danger" role="alert">
+                <div className="alert alert-danger" role="alert">
                   {message}
                 </div>
               ) : (
@@ -107,7 +108,7 @@ class PageLogin extends Component {
                 Sign in
               </button>
               <p className="mt-5 mb-3 text-muted">&copy; 2017-2019</p>
-            </div>
+            </form>
           </div>
         </div>
       </>

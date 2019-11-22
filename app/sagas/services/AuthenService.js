@@ -4,7 +4,7 @@ async function posData(payload) {
   console.log('log payload user pass before fetch pos');
   console.log(payload);
   const response = await fetch(
-    `${baseUrl}index.php/rest/V1/integration/customer/token`,
+    `${baseUrl}index.php/rest/V1/integration/admin/token`,
     {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
       mode: 'cors', // no-cors, *cors, same-origin
