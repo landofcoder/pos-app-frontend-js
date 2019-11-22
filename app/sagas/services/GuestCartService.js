@@ -184,7 +184,7 @@ export async function placeCashOrderService(cartToken, payloadCart) {
     url = `${baseUrl}index.php/rest/V1/guest-carts/${cartToken}/order`;
   } else {
     // Customer logged
-    url = `${baseUrl}index.php/rest/V1/carts/mine/shipping-information`;
+    url = `${baseUrl}index.php/rest/V1/orders/${cartToken}`;
     token = payloadCart.customerToken;
   }
 
@@ -229,8 +229,8 @@ export async function placeCashOrderService(cartToken, payloadCart) {
           lastname: 'harrison',
           email: 'guestuser@gmail.com'
         },
-        shipping_method_code: 'flatrate',
-        shipping_carrier_code: 'flatrate'
+        shipping_method_code: 'pos_shipping_store_pickup',
+        shipping_carrier_code: 'pos_shipping_store_pickup'
       }
     })
   });
