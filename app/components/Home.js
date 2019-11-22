@@ -265,9 +265,8 @@ export default class Home extends Component<Props> {
     } else this.setState({ sideBarShow: true });
   };
 
-  setOffNavBar = () => {
-    const { sideBarShow } = this.state;
-    if (sideBarShow) this.setState({ sideBarShow: false });
+  setActionNavBar = action => {
+    this.setState({ sideBarShow: action });
   };
 
   render() {
@@ -298,21 +297,22 @@ export default class Home extends Component<Props> {
               {this.switchingProductSettings()}
             </div>
           </div>
+
+          <div
+            style={{ display: sideBarShow ? 'block' : 'none' }}
+            role="button"
+            tabIndex="0"
+            onClick={() => this.actionSideBar(false)}
+            onKeyDown={() => this.actionSideBar(false)}
+            className={ModalStyle.modal}
+          ></div>
           <div className="row" id={Styles.wrapPostContainerId}>
             <SideBar statusAction={sideBarShow} />
-            <div className="col-md-9" onClick={this.setOffNavBar}>
+            <div className="col-md-9">
               <div className={classWrapProductPanel}>
                 <div className="col-md-12 mb-4 pr-0">
                   <div className="input-group flex-nowrap">
                     <div className="input-group-prepend">
-                      <button
-                        type="button"
-                        onClick={this.actionSideBar}
-                        className={`btn btn-info ${Styles.fixIndex}`}
-                      >
-                        SideBar
-                      </button>
-
                       <button
                         type="button"
                         className={`btn btn-light ${Styles.fixIndex}`}
@@ -346,6 +346,13 @@ export default class Home extends Component<Props> {
                       data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."
                     >
                       Popover on bottom
+                    </button>
+                    <button
+                      type="button"
+                      onClick={this.actionSideBar}
+                      className={`btn btn-info ${Styles.fixIndex}`}
+                    >
+                      SideBar
                     </button>
                   </div>
                   <ListCart />
