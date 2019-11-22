@@ -7,6 +7,7 @@ const graphqlPath = `${baseUrl}graphql`;
  * @returns {Promise<any>}
  */
 export async function createGuestCartService() {
+  console.log('run to create guest cart');
   const response = await fetch(`${baseUrl}index.php/rest/V1/guest-carts/`, {
     method: 'POST', // *GET, POST, PUT, DELETE, etc.
     mode: 'cors', // no-cors, *cors, same-origin
@@ -111,9 +112,9 @@ export async function addShippingInformationService(cartToken) {
           postcode: 'A1B2C3',
           regionId: '1',
           city: 'California',
-          firstname: 'john',
-          lastname: 'harrison',
-          email: 'guestuser@gmail.com',
+          firstname: 'chien',
+          lastname: 'vu',
+          email: 'fchienvuhoang@gmail.com',
           sameAsBilling: 1
         },
         billingAddress: {
@@ -124,9 +125,9 @@ export async function addShippingInformationService(cartToken) {
           postcode: 'A1B2C3',
           regionId: '1',
           city: 'California',
-          firstname: 'john',
-          lastname: 'harrison',
-          email: 'guestuser@gmail.com'
+          firstname: 'chien',
+          lastname: 'vu',
+          email: 'fchienvuhoang@gmail.com'
         },
         shipping_method_code: 'flatrate',
         shipping_carrier_code: 'flatrate'

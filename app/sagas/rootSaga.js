@@ -40,7 +40,7 @@ function* cashCheckout() {
   // Show cash loading pre order
   yield put({ type: types.UPDATE_CASH_LOADING_PREPARING_ORDER, payload: true });
 
-  // Create quote
+  // Get cart customer
   const cartToken = yield call(createGuestCartService);
 
   // Update cart token to current quote
