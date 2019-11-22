@@ -140,7 +140,12 @@ class CartCustomer extends Component<Props> {
                 <a href="#" className="badge badge-secondary">
                   {customer.firstname} {customer.lastname}
                 </a>
-                <button type="button" className="close" aria-label="Close" onClick={unSelectCustomerForCurrentCart}>
+                <button
+                  type="button"
+                  className="close"
+                  aria-label="Close"
+                  onClick={unSelectCustomerForCurrentCart}
+                >
                   <span aria-hidden="true">&times;</span>
                 </button>
               </span>
