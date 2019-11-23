@@ -32,8 +32,8 @@ const initialState = {
 const mainRd = (state = initialState, action) =>
   produce(state, draft => {
     switch (action.type) {
-      case types.ADD_TO_CART:
-        draft.cartCurrent.data.push(action.payload);
+      case types.ADD_TO_CART_HANDLE:
+        draft.cartCurrent.data.push(action.payload.payload);
         break;
       case types.RECEIVED_ORDER_PREPARING_CHECKOUT:
         draft.orderPreparingCheckout = action.payload;

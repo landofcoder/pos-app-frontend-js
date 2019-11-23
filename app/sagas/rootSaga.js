@@ -222,6 +222,7 @@ function* getDetailGroupedProduct(payload) {
 
   yield getDetailProductEndTask();
 }
+
 /**
  *
  * @returns {Generator<<"PUT", PutEffectDescriptor<{payload: boolean, type: *}>>, *>}
@@ -292,6 +293,19 @@ function* getSearchCustomer(payload) {
   yield put({ type: types.UPDATE_IS_LOADING_SEARCH_CUSTOMER, payload: false });
 }
 
+function* addToCart(payload) {
+  // Find sky if exits sku, then increment qty
+  const listCartCurrent = yield select(cartCurrent);
+  const productSku = payload.payload.sku;
+  listCartCurrent.forEach(item => {
+    if (item.sku === productSku) {
+      console.log('exits up sku now');
+    }
+  });
+
+  yield put({ type: types.ADD_TO_CART_HANDLE, payload });
+}
+
 /**
  * Default root saga
  * @returns {Generator<<"FORK", ForkEffectDescriptor<RT>>, *>}
@@ -316,6 +330,7 @@ function* rootSaga() {
   yield takeEvery(types.GET_DETAIL_PRODUCT_BUNDLE, getDetailBundleProduct);
   yield takeEvery(types.GET_DETAIL_PRODUCT_GROUPED, getDetailGroupedProduct);
   yield takeEvery(types.SEARCH_CUSTOMER, getSearchCustomer);
+  yield takeEvery(types.ADD_TO_CART, addToCart);
 }
 
 export default rootSaga;
