@@ -2,17 +2,17 @@
 import { takeEvery, put, call, select, all } from 'redux-saga/effects';
 import * as types from '../constants/root';
 import {
+  addProductToQuote,
+  placeCashOrderService,
   createGuestCartService,
-  addShippingInformationService,
-  getProductsService,
-  placeCashOrderService
-} from './services/GuestCartService';
-import { addProductToQuote } from './services/CartService';
+  addShippingInformationService
+} from './services/CartService';
 import {
   searchProductService,
   getDetailProductConfigurableService,
   getDetailProductBundleService,
-  getDetailProductGroupedService
+  getDetailProductGroupedService,
+  getProductsService
 } from './services/ProductService';
 import {
   searchCustomer,

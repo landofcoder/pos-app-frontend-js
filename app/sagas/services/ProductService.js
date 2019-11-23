@@ -292,3 +292,57 @@ export async function getDetailProductGroupedService(payload) {
   const data = await response.json();
   return data;
 }
+
+/**
+ * Get products
+ * @returns {Promise<any>}
+ * @returns {Promise<any>}
+ */
+export async function getProductsService() {
+  const response = await fetch(graphqlPath, {
+    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+    mode: 'cors', // no-cors, *cors, same-origin
+    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    credentials: 'same-origin', // include, *same-origin, omit
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${adminToken}`
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    redirect: 'follow', // manual, *follow, error
+    referrer: 'no-referrer', // no-referrer, *client
+    body: JSON.stringify({
+      query: `{
+           products(filter:
+            {sku: {in: ["24-WG085_Group", "24-MB01", "MT07", "24-WG080"]}}
+          )
+          {
+            items {
+              id
+              name
+              sku
+              media_gallery_entries {
+                file
+              }
+              type_id
+              price {
+                regularPrice {
+                  amount {
+                    value
+                    currency
+                  }
+                }
+              }
+            }
+            total_count
+            page_info {
+              page_size
+            }
+          }
+        }
+      `
+    })
+  });
+  const data = await response.json();
+  return data;
+}
