@@ -7,15 +7,21 @@ import styles from './pagelogin.scss';
 import commonStyles from '../styles/common.scss';
 import Loading from '../wait/Loading';
 import * as routes from '../../constants/routes';
-import * as params from '../../params';
+import * as params from '../../params.json';
 
 type Props = {
-  login: () => void,
+  login: Object => void,
   message: string,
   token: string
 };
-class PageLogin extends Component {
+type State = {
+  valueUser: string,
+  valuePass: string
+};
+class PageLogin extends Component<Props, State> {
   props: Props;
+
+  state: State;
 
   constructor(props) {
     super(props);
@@ -68,9 +74,6 @@ class PageLogin extends Component {
                 height="72"
               />
               <h1 className="h3 mb-3 font-weight-normal">Please sign in</h1>
-              <label htmlFor="inputUsername" className="sr-only">
-                Email address
-              </label>
               <input
                 value={valueUser}
                 onChange={this.handleChangeUser}
@@ -80,9 +83,6 @@ class PageLogin extends Component {
                 placeholder="Username"
                 required
               />
-              <label htmlFor="inputPassword" className="sr-only">
-                Password
-              </label>
               <input
                 value={valuePass}
                 onChange={this.handleChangePass}
