@@ -25,7 +25,9 @@ import {
 } from '../common/product';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
-const cartCurrentToken = state => state.mainRd.cartCurrent.token;
+const cartCurrentToken = state => state.mainRd.cartCurrent.customerToken;
+const cartId = state => state.mainRd.cartCurrent.cartId;
+const cartIsGuestCustomer = state => state.mainRd.cartCurrent.isGuestCustomer;
 const optionValue = state => state.mainRd.productOption.optionValue;
 const customer = state => state.mainRd.cartCurrent.customer;
 
@@ -45,37 +47,17 @@ function* cashCheckout() {
   // Show cash loading pre order
   yield put({ type: types.UPDATE_CASH_LOADING_PREPARING_ORDER, payload: true });
 
-  const customerRdResult = yield select(customer);
-  let isGuestCustomer = true;
-  if (customerRdResult !== null) {
-    // Customer logged
-    isGuestCustomer = false;
-  }
-
-  let cartToken;
-  let customerToken;
-
-  if (isGuestCustomer) {
-    // Get guest cart customer
-    cartToken = yield call(createGuestCartService);
-  } else {
-    // Create customer cart
-    const customerId = customerRdResult.id;
-    customerToken = yield call(getCustomerCartTokenService, customerId);
-    cartToken = yield call(createCustomerCartService, customerToken);
-  }
-
-  // Update cart token to current quote
-  yield put({
-    type: types.UPDATE_CART_TOKEN_TO_CURRENT_CART,
-    payload: cartToken
-  });
+  const {
+    cartId,
+    isGuestCustomer,
+    customerToken
+  } = yield getCustomerCartToken();
 
   // Add product item to cart
   const cartCurrentResult = yield select(cartCurrent);
   yield all(
     cartCurrentResult.map(item =>
-      call(addProductToQuote, cartToken, item.sku, {
+      call(addProductToQuote, cartId, item.sku, {
         isGuestCustomer,
         customerToken
       })
@@ -83,7 +65,7 @@ function* cashCheckout() {
   );
 
   // Add shipping and get detail order
-  const response = yield call(addShippingInformationService, cartToken, {
+  const response = yield call(addShippingInformationService, cartId, {
     isGuestCustomer,
     customerToken
   });
@@ -96,6 +78,61 @@ function* cashCheckout() {
   yield put({
     type: types.UPDATE_CASH_LOADING_PREPARING_ORDER,
     payload: false
+  });
+}
+
+/**
+ * Create cart token for guest or customer user
+ * @returns {Generator<any, {isGuestCustomer: *, customerToken: *, cardId: *}>}
+ */
+function* getCustomerCartToken() {
+  const customerRdResult = yield select(customer);
+  let isGuestCustomer = true;
+  if (customerRdResult !== null) {
+    // Customer logged
+    isGuestCustomer = false;
+  }
+
+  let cartId;
+  let customerToken;
+
+  // Update isGuestCustomer to reducer
+  yield updateIsGuestCustomer(isGuestCustomer);
+
+  if (isGuestCustomer) {
+    // Get guest cart customer
+    cartId = yield call(createGuestCartService);
+  } else {
+    // Create customer cart
+    const customerId = customerRdResult.id;
+    customerToken = yield call(getCustomerCartTokenService, customerId);
+    cartId = yield call(createCustomerCartService, customerToken);
+  }
+
+  // Update cartId to reducer
+  yield put({ type: types.UPDATE_CART_ID_TO_CURRENT_CART, payload: cartId });
+
+  // Update cart token to current quote
+  yield put({
+    type: types.UPDATE_CART_TOKEN_TO_CURRENT_CART,
+    payload: customerToken
+  });
+
+  return {
+    cartId,
+    isGuestCustomer,
+    customerToken
+  };
+}
+
+/**
+ * Update isGuestCustomer to reducer
+ * @returns {Generator<<"PUT", PutEffectDescriptor<{payload: *, type: *}>>, *>}
+ */
+function* updateIsGuestCustomer(isGuestCustomer) {
+  yield put({
+    type: types.UPDATE_IS_GUEST_CUSTOMER_CURRENT_CART,
+    payload: isGuestCustomer
   });
 }
 
@@ -115,7 +152,15 @@ function* getDefaultProduct() {
  */
 function* cashCheckoutPlaceOrder() {
   const cartCurrentTokenResult = yield select(cartCurrentToken);
-  const response = yield call(placeCashOrderService, cartCurrentTokenResult);
+  const isGuestCustomer = yield select(cartIsGuestCustomer);
+  const cartIdResult = yield select(cartId);
+
+  const response = yield call(placeCashOrderService, cartCurrentTokenResult, {
+    cartIdResult,
+    isGuestCustomer,
+    customerToken: cartCurrentTokenResult
+  });
+
   console.log('place order response:', response);
 }
 

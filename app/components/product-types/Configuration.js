@@ -22,7 +22,6 @@ class Configuration extends Component<Props> {
     addToCart(optionValue.usedProduct.product);
     // Hide modal
     updateIsShowingProductOption(false);
-    console.log('conf add to cart:', optionValue.usedProduct.product);
   };
 
   render() {

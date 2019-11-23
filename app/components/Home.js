@@ -318,10 +318,9 @@ export default class Home extends Component<Props> {
     //  ================Check login======================
     const { token } = this.props;
     if (token === '') {
-      console.log('need to login');
-      return <Redirect to={routes.LOGIN} />;
+      // return <Redirect to={routes.LOGIN} />;
     }
-    console.log('have a token');
+
     //  ================Check login======================
     const classWrapProductPanel = `pr-3 ${Styles.wrapProductPanel} row`;
     const { productList, holdAction, cartCurrent } = this.props;

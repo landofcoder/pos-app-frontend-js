@@ -2,16 +2,16 @@ import { adminToken, baseUrl } from '../../params';
 
 /**
  * Add product to quote
- * @param cartToken
+ * @param cartId
  * @param sku
  * @param payloadCart
  * @returns {Promise<void>}
  */
-export async function addProductToQuote(cartToken, sku, payloadCart) {
+export async function addProductToQuote(cartId, sku, payloadCart) {
   let url = '';
   let token = adminToken;
   if (payloadCart.isGuestCustomer) {
-    url = `${baseUrl}index.php/rest/V1/guest-carts/${cartToken}/items`;
+    url = `${baseUrl}index.php/rest/V1/guest-carts/${cartId}/items`;
   } else {
     // Customer logged
     url = `${baseUrl}index.php/rest/V1/carts/mine/items`;
@@ -20,7 +20,7 @@ export async function addProductToQuote(cartToken, sku, payloadCart) {
 
   const cartItem = {
     cartItem: {
-      quote_id: cartToken,
+      quote_id: cartId,
       sku,
       qty: 1
     }

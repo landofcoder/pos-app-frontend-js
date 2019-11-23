@@ -8,9 +8,11 @@ const initialState = {
   loading: false,
   productList: [],
   cartCurrent: {
-    token: '',
+    cartId: '',
+    customerToken: '',
     data: [],
-    customer: null // Current customer for current cart
+    customer: null, // Current customer for current cart
+    isGuestCustomer: true
   },
   isOpenFindCustomer: false,
   isLoadingSearchCustomer: false,
@@ -46,7 +48,7 @@ const mainRd = (state = initialState, action) =>
         draft.mainPanelType = action.payload;
         break;
       case types.UPDATE_CART_TOKEN_TO_CURRENT_CART:
-        draft.cartCurrent.token = action.payload;
+        draft.cartCurrent.customerToken = action.payload;
         break;
       case types.UPDATE_IS_LOADING_PRODUCT_OPTION:
         draft.productOption.isLoadingProductOption = action.payload;
@@ -144,11 +146,16 @@ const mainRd = (state = initialState, action) =>
         draft.customerSearchResult = action.searchResult.items;
         break;
       case types.SELECT_CUSTOMER_FOR_CURRENT_CART:
-        console.log('selected customer:', action.payload);
         draft.cartCurrent.customer = action.payload;
         break;
       case types.UN_SELECT_CUSTOMER_FOR_CURRENT_CART:
         draft.cartCurrent.customer = null;
+        break;
+      case types.UPDATE_IS_GUEST_CUSTOMER_CURRENT_CART:
+        draft.cartCurrent.isGuestCustomer = action.payload;
+        break;
+      case types.UPDATE_CART_ID_TO_CURRENT_CART:
+        draft.cartCurrent.cartId = action.payload;
         break;
       default:
         break;

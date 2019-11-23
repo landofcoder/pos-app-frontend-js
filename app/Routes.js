@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import routes from './constants/routes';
 import App from './containers/App';
 import HomePage from './containers/HomeContainer';
@@ -9,8 +9,8 @@ function Routes() {
   return (
     <App>
       <Switch>
-        <Route path={routes.LOGIN} component={PageLogin} />
         <Route path={routes.HOME} component={HomePage} />
+        <Route path={routes.LOGIN} component={PageLogin} />
       </Switch>
     </App>
   );
