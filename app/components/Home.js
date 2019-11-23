@@ -7,6 +7,7 @@ import Styles from './Home.scss';
 import CommonStyle from './styles/common.scss';
 import ModalStyle from './styles/modal.scss';
 import CashPayment from './payment/Cash/Cash';
+import SideBar from './sidebar/NavBar';
 import {
   HOME_DEFAULT_PRODUCT_LIST,
   CASH_PANEL
@@ -47,7 +48,8 @@ export default class Home extends Component<Props> {
     super(props);
     this.state = {
       delayTimer: null,
-      typeId: ''
+      typeId: '',
+      sideBarShow: false
     };
     localStorage.setItem('posAppData', '');
     console.log('set cookie to null');
@@ -299,13 +301,26 @@ export default class Home extends Component<Props> {
     this.setState({ delayTimer: delayTimerRes });
   };
 
+  actionSideBar = () => {
+    const { sideBarShow } = this.state;
+    console.log('state');
+    console.log(sideBarShow);
+    if (sideBarShow) {
+      this.setState({ sideBarShow: false });
+    } else this.setState({ sideBarShow: true });
+  };
+
+  setActionNavBar = action => {
+    this.setState({ sideBarShow: action });
+  };
+
   render() {
     //  ================Check login======================
-    // const { token } = this.props;
-    // if (token === '') {
-    //   console.log('need to login');
-    //   return <Redirect to={routes.LOGIN} />;
-    // }
+    const { token } = this.props;
+    if (token === '') {
+      console.log('need to login');
+      return <Redirect to={routes.LOGIN} />;
+    }
     console.log('have a token');
     //  ================Check login======================
     const classWrapProductPanel = `pr-3 ${Styles.wrapProductPanel} row`;
@@ -313,6 +328,7 @@ export default class Home extends Component<Props> {
     // Enable checkout button or disable
     const disableCheckout = cartCurrent.data.length <= 0;
     const { productOption } = this.props;
+    const { sideBarShow } = this.state;
     const { isShowingProductOption } = productOption;
     return (
       <>
@@ -326,15 +342,28 @@ export default class Home extends Component<Props> {
               {this.switchingProductSettings()}
             </div>
           </div>
+
+          <div
+            style={{ display: sideBarShow ? 'block' : 'none' }}
+            role="button"
+            tabIndex="0"
+            onClick={() => this.actionSideBar(false)}
+            onKeyDown={() => this.actionSideBar(false)}
+            className={ModalStyle.modal}
+          ></div>
           <div className="row" id={Styles.wrapPostContainerId}>
+            <SideBar statusAction={sideBarShow} />
             <div className="col-md-9">
               <div className={classWrapProductPanel}>
                 <div className="col-md-12 mb-4 pr-0">
                   <div className="input-group flex-nowrap">
                     <div className="input-group-prepend">
-                      <span className="input-group-text" id="addon-wrapping">
+                      <button
+                        type="button"
+                        className={`btn btn-light ${Styles.fixIndex}`}
+                      >
                         Search
-                      </span>
+                      </button>
                     </div>
                     <input
                       type="text"
@@ -352,6 +381,25 @@ export default class Home extends Component<Props> {
             <div className="col-md-3">
               <div className={CommonStyle.wrapLevel1}>
                 <div className={CommonStyle.wrapCartPanelPosition}>
+                  <div className={CommonStyle.wrapCustomerOrder}>
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      data-container="body"
+                      data-toggle="popover"
+                      data-placement="bottom"
+                      data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."
+                    >
+                      Popover on bottom
+                    </button>
+                    <button
+                      type="button"
+                      onClick={this.actionSideBar}
+                      className={`btn btn-info ${Styles.fixIndex}`}
+                    >
+                      SideBar
+                    </button>
+                  </div>
                   <CartCustomer />
                   <ListCart />
                   <div className={CommonStyle.subTotalContainer}>

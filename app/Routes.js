@@ -8,12 +8,10 @@ import PageLogin from './components/login/PageLogin';
 function Routes() {
   return (
     <App>
-      <Router>
-        <Switch>
-          <Route path={routes.LOGIN} component={PageLogin} />
-          <Route path={routes.HOME} component={HomePage} />
-        </Switch>
-      </Router>
+      <Switch>
+        <Route path={routes.LOGIN} component={PageLogin} />
+        <Route path={routes.HOME} component={HomePage} />
+      </Switch>
     </App>
   );
 }

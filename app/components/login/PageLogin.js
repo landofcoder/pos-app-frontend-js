@@ -19,8 +19,8 @@ class PageLogin extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      valueUser: 'roni_cost@example.com',
-      valuePass: 'roni_cost3@example.com'
+      valueUser: '',
+      valuePass: ''
     };
     console.log(this.state);
   }
