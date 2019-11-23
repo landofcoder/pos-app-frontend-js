@@ -135,6 +135,9 @@ export async function getDetailProductConfigurableService(payload) {
                 ... on PhysicalProductInterface {
                   weight
                 }
+                 media_gallery_entries {
+                  file
+                }
                 price {
                   regularPrice {
                     amount {
@@ -212,6 +215,9 @@ export async function getDetailProductBundleService(payload) {
                       name
                       sku
                       type_id
+                      media_gallery_entries {
+                        file
+                      }
                       price {
                       regularPrice {
                       amount  {

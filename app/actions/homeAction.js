@@ -142,3 +142,31 @@ export function onBundleProductQtyOnChange(payload) {
     payload
   };
 }
+
+export function toggleModalCustomer(payload) {
+  return {
+    type: types.TOGGLE_MODAL_CUSTOMER,
+    payload
+  };
+}
+
+export function searchCustomer(payload) {
+  return {
+    type: types.SEARCH_CUSTOMER,
+    payload
+  };
+}
+
+export function selectCustomerForCurrentCart(payload) {
+  return {
+    type: types.SELECT_CUSTOMER_FOR_CURRENT_CART,
+    payload
+  };
+}
+
+export function unSelectCustomerForCurrentCart(payload) {
+  return {
+    type: types.UN_SELECT_CUSTOMER_FOR_CURRENT_CART,
+    payload
+  };
+}

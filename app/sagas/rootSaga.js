@@ -3,17 +3,22 @@ import { takeEvery, put, call, select, all } from 'redux-saga/effects';
 import * as types from '../constants/root';
 import {
   createGuestCartService,
-  addProductToQuote,
   addShippingInformationService,
   getProductsService,
   placeCashOrderService
 } from './services/GuestCartService';
+import { addProductToQuote } from './services/CartService';
 import {
   searchProductService,
   getDetailProductConfigurableService,
   getDetailProductBundleService,
   getDetailProductGroupedService
 } from './services/ProductService';
+import {
+  searchCustomer,
+  getCustomerCartTokenService
+} from './services/CustomerService';
+import { createCustomerCartService } from './services/CustomerCartService';
 import {
   handleProductType,
   reformatConfigurableProduct
@@ -22,6 +27,7 @@ import {
 const cartCurrent = state => state.mainRd.cartCurrent.data;
 const cartCurrentToken = state => state.mainRd.cartCurrent.token;
 const optionValue = state => state.mainRd.productOption.optionValue;
+const customer = state => state.mainRd.cartCurrent.customer;
 
 /**
  * Get list product
@@ -39,8 +45,25 @@ function* cashCheckout() {
   // Show cash loading pre order
   yield put({ type: types.UPDATE_CASH_LOADING_PREPARING_ORDER, payload: true });
 
-  // Create quote
-  const cartToken = yield call(createGuestCartService);
+  const customerRdResult = yield select(customer);
+  let isGuestCustomer = true;
+  if (customerRdResult !== null) {
+    // Customer logged
+    isGuestCustomer = false;
+  }
+
+  let cartToken;
+  let customerToken;
+
+  if (isGuestCustomer) {
+    // Get guest cart customer
+    cartToken = yield call(createGuestCartService);
+  } else {
+    // Create customer cart
+    const customerId = customerRdResult.id;
+    customerToken = yield call(getCustomerCartTokenService, customerId);
+    cartToken = yield call(createCustomerCartService, customerToken);
+  }
 
   // Update cart token to current quote
   yield put({
@@ -51,10 +74,19 @@ function* cashCheckout() {
   // Add product item to cart
   const cartCurrentResult = yield select(cartCurrent);
   yield all(
-    cartCurrentResult.map(item => call(addProductToQuote, cartToken, item.sku))
+    cartCurrentResult.map(item =>
+      call(addProductToQuote, cartToken, item.sku, {
+        isGuestCustomer,
+        customerToken
+      })
+    )
   );
+
   // Add shipping and get detail order
-  const response = yield call(addShippingInformationService, cartToken);
+  const response = yield call(addShippingInformationService, cartToken, {
+    isGuestCustomer,
+    customerToken
+  });
   yield put({
     type: types.RECEIVED_ORDER_PREPARING_CHECKOUT,
     payload: response
@@ -196,6 +228,26 @@ function* receivedProductOptionValue(productDetailReFormat) {
 }
 
 /**
+ * Search customer action
+ * @param payload
+ * @returns {Generator<<"CALL", CallEffectDescriptor>|<"PUT", PutEffectDescriptor<{payload: boolean, type: *}>>, *>}
+ */
+function* getSearchCustomer(payload) {
+  // Start search loading
+  yield put({ type: types.UPDATE_IS_LOADING_SEARCH_CUSTOMER, payload: true });
+
+  const searchResult = yield call(searchCustomer, payload);
+
+  yield put({
+    type: types.RECEIVED_CUSTOMER_SEARCH_RESULT,
+    searchResult
+  });
+
+  // Stop search loading
+  yield put({ type: types.UPDATE_IS_LOADING_SEARCH_CUSTOMER, payload: false });
+}
+
+/**
  * Default root saga
  * @returns {Generator<<"FORK", ForkEffectDescriptor<RT>>, *>}
  */
@@ -218,6 +270,7 @@ function* rootSaga() {
   );
   yield takeEvery(types.GET_DETAIL_PRODUCT_BUNDLE, getDetailBundleProduct);
   yield takeEvery(types.GET_DETAIL_PRODUCT_GROUPED, getDetailGroupedProduct);
+  yield takeEvery(types.SEARCH_CUSTOMER, getSearchCustomer);
 }
 
 export default rootSaga;

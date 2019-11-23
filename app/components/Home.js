@@ -22,6 +22,7 @@ import { baseUrl } from '../params';
 import Configuration from './product-types/Configuration';
 import Bundle from './product-types/Bundle';
 import Grouped from './product-types/Grouped';
+import CartCustomer from './customer/CartCustomer';
 
 type Props = {
   productList: Array,
@@ -72,17 +73,61 @@ export default class Home extends Component<Props> {
     return `${baseUrl}pub/media/catalog/product/`;
   };
 
+  /**
+   * Handle total price
+   * @returns {number}
+   */
   sumTotalPrice = () => {
     const { cartCurrent } = this.props;
     let totalPrice = 0;
     cartCurrent.data.forEach(item => {
-      if (item.type_id && item.type_id !== 'bundle') {
-        totalPrice += item.price;
+      if (!item.type_id || item.type_id !== 'bundle') {
+        totalPrice += item.price.regularPrice.amount.value;
       } else {
-        // Bundle type
+        totalPrice += this.sumBundlePrice(item);
       }
     });
+
     return totalPrice;
+  };
+
+  /**
+   * Sum bundle price
+   * @param item
+   */
+  sumBundlePrice = item => {
+    // Bundle type
+    let price = 0;
+    const { items } = item;
+    items.forEach(itemBundle => {
+      const listOptionSelected = this.findOptionSelected(
+        itemBundle.option_selected,
+        itemBundle.options
+      );
+      if (listOptionSelected.length > 0) {
+        // Get product
+        listOptionSelected.forEach(itemOption => {
+          price += itemOption.product.price.regularPrice.amount.value;
+        });
+      }
+    });
+    return price;
+  };
+
+  /**
+   * Find option selected
+   * @param optionSelected
+   * @param options
+   */
+  findOptionSelected = (optionSelected, options) => {
+    const listProductSelected = [];
+    options.forEach(item => {
+      if (optionSelected.indexOf(item.id) !== -1) {
+        // Exists item
+        listProductSelected.push(item);
+      }
+    });
+    return listProductSelected;
   };
 
   /**
@@ -355,6 +400,7 @@ export default class Home extends Component<Props> {
                       SideBar
                     </button>
                   </div>
+                  <CartCustomer />
                   <ListCart />
                   <div className={CommonStyle.subTotalContainer}>
                     <div className={CommonStyle.wrapSubTotal}>

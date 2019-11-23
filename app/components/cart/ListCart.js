@@ -20,6 +20,7 @@ class ListCart extends Component<Props> {
   };
 
   getFirstMedia = item => {
+    console.log('media:', item);
     const gallery = item.media_gallery_entries
       ? item.media_gallery_entries
       : [];
@@ -32,13 +33,52 @@ class ListCart extends Component<Props> {
   };
 
   renderItemPrice = item => {
-    if (item.type_id && item.type_id !== 'bundle') {
+    if (!item.type_id || item.type_id !== 'bundle') {
       if (item.price.regularPrice) {
         return item.price.regularPrice.amount.value;
       }
       return item.price;
     }
-    return 0;
+    return this.sumBundlePrice(item);
+  };
+
+  /**
+   * Sum bundle price
+   * @param item
+   */
+  sumBundlePrice = item => {
+    // Bundle type
+    let price = 0;
+    const { items } = item;
+    items.forEach(itemBundle => {
+      const listOptionSelected = this.findOptionSelected(
+        itemBundle.option_selected,
+        itemBundle.options
+      );
+      if (listOptionSelected.length > 0) {
+        // Get product
+        listOptionSelected.forEach(itemOption => {
+          price += itemOption.product.price.regularPrice.amount.value;
+        });
+      }
+    });
+    return price;
+  };
+
+  /**
+   * Find option selected
+   * @param optionSelected
+   * @param options
+   */
+  findOptionSelected = (optionSelected, options) => {
+    const listProductSelected = [];
+    options.forEach(item => {
+      if (optionSelected.indexOf(item.id) !== -1) {
+        // Exists item
+        listProductSelected.push(item);
+      }
+    });
+    return listProductSelected;
   };
 
   render() {

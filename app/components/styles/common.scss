@@ -1,8 +1,10 @@
 @import 'variables';
+
 .contentColumn {
   display: flex;
   flex-direction: column;
 }
+
 .colorText {
   color: #9b9b9b;
 }
@@ -75,10 +77,6 @@
     background: #fff;
     border-radius: 5px;
     width: 100%;
-
-    .wrapCustomerOrder {
-
-    }
 
     .subTotalContainer {
       position: absolute;
