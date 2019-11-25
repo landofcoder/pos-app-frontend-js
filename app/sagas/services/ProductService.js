@@ -314,7 +314,7 @@ export async function getProductsService() {
     body: JSON.stringify({
       query: `{
            products(filter:
-            {sku: {in: ["24-WG085_Group", "24-MB01", "MT07", "24-WG080"]}}
+            {sku: {in: ["24-WG085_Group", "24-MB01", "MT07", "24-WG080", "MS12", "MS08", "MS09", "MS10", "MS11", "MS12", "MSH12", "MS06", "MS07", "WJ12", "WJ11", "WJ10", "WJ09"]}}
           )
           {
             items {

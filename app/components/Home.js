@@ -206,7 +206,7 @@ export default class Home extends Component<Props> {
             className={`col-md-3 mb-3 pr-0 ${Styles.wrapProductItem} ${Styles.itemSameHeight}`}
             key={item.id}
           >
-            <div className="card">
+            <div className={`card ${Styles.itemCart}`}>
               <div className="card-body">
                 <a
                   role="presentation"
@@ -419,14 +419,14 @@ export default class Home extends Component<Props> {
               <button
                 type="button"
                 onClick={holdAction}
-                className="btn btn-secondary btn-lg btn-block"
+                className="btn btn-outline-dark btn-lg btn-block"
               >
                 Hold
               </button>
             </div>
             <div className="col-md-2 pl-0 pr-1">
               <Link
-                className="btn btn-danger btn-lg btn-block"
+                className="btn btn-outline-danger btn-lg btn-block"
                 to={routes.CHECKOUT}
               >
                 Empty cart

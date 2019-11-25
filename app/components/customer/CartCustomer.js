@@ -129,7 +129,7 @@ class CartCustomer extends Component<Props> {
         ) : (
           <></>
         )}
-        <button type="button" className="btn btn-secondary btn-lg btn-block">
+        <button type="button" className="btn btn-outline-dark btn-lg btn-block">
           Customer
         </button>
         {/* {customer == null ? ( */}
