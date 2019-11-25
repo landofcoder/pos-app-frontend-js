@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import ListCart from './cart/ListCart';
 import routes from '../constants/routes';
 import Styles from './Home.scss';
@@ -351,27 +351,25 @@ export default class Home extends Component<Props> {
             className={ModalStyle.modal}
           ></div>
           <div className="row" id={Styles.wrapPostContainerId}>
-            <SideBar statusAction={sideBarShow} />
+            {/* <SideBar statusAction={sideBarShow} /> */}
             <div className="col-md-9">
               <div className={classWrapProductPanel}>
-                <div className="col-md-12 mb-4 pr-0">
+                <div className="col-md-12 mb-0 pr-0">
                   <div className="input-group flex-nowrap">
-                    <div className="input-group-prepend">
-                      <button
-                        type="button"
-                        className={`btn btn-light ${Styles.fixIndex}`}
-                      >
-                        Search
-                      </button>
+                    <div className="input-group mb-3">
+                      <div className="input-group-prepend">
+                        <span className="input-group-text" id="basic-addon1">
+                          Search
+                        </span>
+                      </div>
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="sku, product name"
+                        aria-label="Username"
+                        aria-describedby="basic-addon1"
+                      />
                     </div>
-                    <input
-                      type="text"
-                      className="form-control"
-                      onChange={this.searchTyping}
-                      placeholder="name, sku"
-                      aria-label="Username"
-                      aria-describedby="addon-wrapping"
-                    />
                   </div>
                 </div>
                 {this.renderSwitchPanel(productList)}
@@ -383,23 +381,13 @@ export default class Home extends Component<Props> {
                   <div className={CommonStyle.wrapCustomerOrder}>
                     <button
                       type="button"
-                      className="btn btn-secondary"
-                      data-container="body"
-                      data-toggle="popover"
-                      data-placement="bottom"
-                      data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."
-                    >
-                      Popover on bottom
-                    </button>
-                    <button
-                      type="button"
                       onClick={this.actionSideBar}
+                      style={{ display: 'none' }}
                       className={`btn btn-info ${Styles.fixIndex}`}
                     >
                       SideBar
                     </button>
                   </div>
-                  <CartCustomer />
                   <ListCart />
                   <div className={CommonStyle.subTotalContainer}>
                     <div className={CommonStyle.wrapSubTotal}>
@@ -427,7 +415,7 @@ export default class Home extends Component<Props> {
         </div>
         <div className={Styles.wrapFooterAction}>
           <div className={Styles.wrapAction}>
-            <div className="col-md-2 pr-0">
+            <div className="col-md-2 pr-1">
               <button
                 type="button"
                 onClick={holdAction}
@@ -436,13 +424,16 @@ export default class Home extends Component<Props> {
                 Hold
               </button>
             </div>
-            <div className="col-md-2">
+            <div className="col-md-2 pl-0 pr-1">
               <Link
                 className="btn btn-danger btn-lg btn-block"
                 to={routes.CHECKOUT}
               >
                 Empty cart
               </Link>
+            </div>
+            <div className="col-md-2 pr-1 pl-0">
+              <CartCustomer />
             </div>
             <div className="col-md-3 pl-0 pr-0">
               <button

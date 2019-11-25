@@ -9,6 +9,7 @@ import {
 } from '../../actions/homeAction';
 import Styles from './cart-customer.scss';
 import ModalStyle from '../styles/modal.scss';
+import { CASH_PANEL } from '../../constants/main-panel-types';
 
 type Props = {
   customer: Object,
@@ -53,7 +54,6 @@ class CartCustomer extends Component<Props> {
       selectCustomerForCurrentCart,
       unSelectCustomerForCurrentCart
     } = this.props;
-    console.log('cart customer:', customer);
 
     return (
       <div className={Styles.wrapCartCustomer}>
@@ -129,38 +129,40 @@ class CartCustomer extends Component<Props> {
         ) : (
           <></>
         )}
-        <div className="row">
-          {customer == null ? (
-            <div className="col-md-6 text-center">
-              <span className={Styles.customerName}>Guest customer</span>
-            </div>
-          ) : (
-            <div className="col-md-6 text-center">
-              <span className={Styles.customerName}>
-                <a href="#" className="badge badge-secondary">
-                  {customer.firstname} {customer.lastname}
-                </a>
-                <button
-                  type="button"
-                  className="close"
-                  aria-label="Close"
-                  onClick={unSelectCustomerForCurrentCart}
-                >
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </span>
-            </div>
-          )}
-          <div className="col-md-6 text-right">
-            <button
-              type="button"
-              onClick={() => toggleModalCustomer(true)}
-              className="btn btn-link btn-sm"
-            >
-              Customers
-            </button>
-          </div>
-        </div>
+        <button type="button" className="btn btn-secondary btn-lg btn-block">
+          Customer
+        </button>
+        {/* {customer == null ? ( */}
+        {/*  <div className={Styles.wrapLabel}> */}
+        {/*    <span className={Styles.customerName}>Guest customer</span> */}
+        {/*  </div> */}
+        {/* ) : ( */}
+        {/*  <div className={Styles.wrapLabel}> */}
+        {/*    <span className={Styles.customerName}> */}
+        {/*      <a href="#" className="badge badge-secondary"> */}
+        {/*        {customer.firstname} {customer.lastname} */}
+        {/*      </a> */}
+        {/*      <button */}
+        {/*        type="button" */}
+        {/*        className="close" */}
+        {/*        aria-label="Close" */}
+        {/*        onClick={unSelectCustomerForCurrentCart} */}
+        {/*      > */}
+        {/*        <span aria-hidden="true">&times;</span> */}
+        {/*      </button> */}
+        {/*    </span> */}
+        {/*  </div> */}
+        {/* )} */}
+
+        {/* <div className={Styles.wrapValue}> */}
+        {/*  <button */}
+        {/*    type="button" */}
+        {/*    onClick={() => toggleModalCustomer(true)} */}
+        {/*    className="btn btn-link btn-sm" */}
+        {/*  > */}
+        {/*    Customers */}
+        {/*  </button> */}
+        {/* </div> */}
       </div>
     );
   }
