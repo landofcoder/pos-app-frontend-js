@@ -6,8 +6,6 @@ import routes from '../constants/routes';
 import Styles from './Home.scss';
 import CommonStyle from './styles/common.scss';
 import ModalStyle from './styles/modal.scss';
-import CashPayment from './payment/Cash/Cash';
-import SideBar from './sidebar/NavBar';
 import {
   HOME_DEFAULT_PRODUCT_LIST,
   CASH_PANEL
@@ -23,6 +21,7 @@ import Configuration from './product-types/Configuration';
 import Bundle from './product-types/Bundle';
 import Grouped from './product-types/Grouped';
 import CartCustomer from './customer/CartCustomer';
+import CashPanel from './payment/Cash/Cash';
 
 type Props = {
   productList: Array,
@@ -38,7 +37,9 @@ type Props = {
   getDetailProductBundle: (sku: string) => void,
   getDetailProductGrouped: (sku: string) => void,
   productOption: Object,
-  token: string
+  isShowCashPaymentModel: boolean,
+  token: string,
+  showCashModal: (payload: boolean) => void
 };
 
 export default class Home extends Component<Props> {
@@ -215,10 +216,7 @@ export default class Home extends Component<Props> {
                 >
                   <div className={Styles.wrapProductImage}>
                     <div className={Styles.inside}>
-                      <img
-                        alt="name"
-                        src={this.getFirstMedia(item)}
-                      />
+                      <img alt="name" src={this.getFirstMedia(item)} />
                     </div>
                   </div>
                   <div className={Styles.wrapProductInfo}>
@@ -240,8 +238,6 @@ export default class Home extends Component<Props> {
             </div>
           </div>
         ));
-      case CASH_PANEL:
-        return <CashPayment></CashPayment>;
       default:
         return <></>;
     }
@@ -253,8 +249,10 @@ export default class Home extends Component<Props> {
    */
   switchToPaymentType = paymentType => {
     // Switch main panel type
-    const { updateMainPanelType } = this.props;
-    updateMainPanelType(paymentType);
+    // const { updateMainPanelType } = this.props;
+    // updateMainPanelType(paymentType);
+
+    console.log('payment type:', paymentType);
 
     // After switch to payment, run cashCheckoutAction to load discount to quote
     const { cashCheckoutAction } = this.props;
@@ -306,8 +304,6 @@ export default class Home extends Component<Props> {
 
   actionSideBar = () => {
     const { sideBarShow } = this.state;
-    console.log('state');
-    console.log(sideBarShow);
     if (sideBarShow) {
       this.setState({ sideBarShow: false });
     } else this.setState({ sideBarShow: true });
@@ -329,7 +325,7 @@ export default class Home extends Component<Props> {
     const { productList, holdAction, cartCurrent } = this.props;
     // Enable checkout button or disable
     const disableCheckout = cartCurrent.data.length <= 0;
-    const { productOption } = this.props;
+    const { productOption, isShowCashPaymentModel } = this.props;
     const { sideBarShow } = this.state;
     const { isShowingProductOption } = productOption;
     return (
@@ -342,6 +338,16 @@ export default class Home extends Component<Props> {
           >
             <div className={ModalStyle.modalContent}>
               {this.switchingProductSettings()}
+            </div>
+          </div>
+
+          <div
+            className={ModalStyle.modal}
+            id="cashPaymentModal"
+            style={{ display: isShowCashPaymentModel ? 'block' : 'none' }}
+          >
+            <div className={ModalStyle.modalContent}>
+              {isShowCashPaymentModel ? <CashPanel /> : <></>}
             </div>
           </div>
 

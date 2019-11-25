@@ -170,3 +170,10 @@ export function unSelectCustomerForCurrentCart(payload) {
     payload
   };
 }
+
+export function showCashModal(payload) {
+  return {
+    type: types.UPDATE_SHOW_CASH_MODAL,
+    payload
+  };
+}

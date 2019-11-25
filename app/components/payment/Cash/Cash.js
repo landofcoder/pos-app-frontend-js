@@ -24,6 +24,9 @@ class CashPayment extends Component<Props> {
       updateMainPanelType,
       cashPlaceOrderAction
     } = this.props;
+
+    console.log('order checkout:', orderPreparingCheckout);
+
     return (
       <div className={`ml-3 pl-4 ${commonStyle.wrapStaticPageContent}`}>
         <div className={commonStyle.wrapCenterContent}>

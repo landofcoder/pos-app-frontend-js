@@ -9,6 +9,7 @@ function mapStateToProps(state) {
     productList: state.mainRd.productList,
     cartCurrent: state.mainRd.cartCurrent,
     mainPanelType: state.mainRd.mainPanelType,
+    isShowCashPaymentModel: state.mainRd.isShowCashPaymentModel,
     productOption: state.mainRd.productOption,
     token: state.authenRd.token
   };

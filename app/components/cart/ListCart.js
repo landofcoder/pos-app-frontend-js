@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import styles from './listcart.scss';
 import { baseUrl } from '../../params';
-import CommonStyles from '../styles/common.scss';
 import { deleteItemCart } from '../../actions/homeAction';
 
 type Props = {
@@ -20,7 +19,6 @@ class ListCart extends Component<Props> {
   };
 
   getFirstMedia = item => {
-    console.log('media:', item);
     const gallery = item.media_gallery_entries
       ? item.media_gallery_entries
       : [];
@@ -104,44 +102,13 @@ class ListCart extends Component<Props> {
                       </div>
                     </div>
                   </div>
-                  <div className={styles.wrapClose}>
+                  <div
+                    className={styles.wrapClose}
+                    onClick={() => this.deleteAction(index)}
+                  >
                     <i className="fas fa-times"></i>
                   </div>
                 </div>
-
-                {/* <div className={`${styles.tableFlex}`}> */}
-                {/*  <div */}
-                {/*    className={`${styles.tableFlex} ${styles.tableFlexLeft} pr-2 pb-2`} */}
-                {/*  > */}
-                {/*    <img */}
-                {/*      className={styles.sizeimgsmall} */}
-                {/*      src={this.getFirstMedia(item)} */}
-                {/*      alt="" */}
-                {/*    /> */}
-                {/*  </div> */}
-                {/*  <div */}
-                {/*    className={`${styles.tableFlex} ${styles.tableFlexRight} ${styles.divElement} ${styles.wrapContent}`} */}
-                {/*  > */}
-                {/*    <div className={`${styles.title}`}> */}
-                {/*      <span className={styles.productName}>{item.name}</span> */}
-                {/*      <span className={styles.sku}>{item.sku}</span> */}
-                {/*    </div> */}
-                {/*    <div className={`pr-5 ${styles.spaceTable} ${styles.cost}`}> */}
-                {/*      <div> */}
-                {/*        <span>${this.renderItemPrice(item)}</span> */}
-                {/*      </div> */}
-                {/*    </div> */}
-                {/*  </div> */}
-                {/*  <div className={`p-0 ${styles.cancel}`}> */}
-                {/*    <a */}
-                {/*      onClick={() => this.deleteAction(index)} */}
-                {/*      role="presentation" */}
-                {/*      className={CommonStyles.pointer} */}
-                {/*    > */}
-                {/*      <i className="fas fa-times"></i> */}
-                {/*    </a> */}
-                {/*  </div> */}
-                {/* </div> */}
               </li>
             );
           })}

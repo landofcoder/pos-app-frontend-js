@@ -44,6 +44,9 @@ function* getListProduct() {
  * @returns {IterableIterator<*>}
  */
 function* cashCheckout() {
+  // Show cash modal
+  yield put({ type: types.UPDATE_SHOW_CASH_MODAL, payload: true });
+
   // Show cash loading pre order
   yield put({ type: types.UPDATE_CASH_LOADING_PREPARING_ORDER, payload: true });
 
@@ -161,6 +164,7 @@ function* cashCheckoutPlaceOrder() {
     customerToken: cartCurrentTokenResult
   });
 
+  // Hide cash model
   console.log('place order response:', response);
 }
 

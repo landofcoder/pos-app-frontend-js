@@ -6,9 +6,3 @@ export function cashPlaceOrderAction() {
     type: types.CASH_CHECKOUT_PLACE_ORDER_ACTION
   };
 }
-
-export function defaultTestAction() {
-  return {
-    type: ''
-  };
-}

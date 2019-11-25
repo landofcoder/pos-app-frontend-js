@@ -20,6 +20,7 @@ const initialState = {
   cartHoldList: [],
   orderPreparingCheckout: {}, // Detail order for preparing to checkout
   cashLoadingPreparingOrder: false, // Status cash loading for preparing to show cash payment form
+  isShowCashPaymentModel: false,
   productOption: {
     // State product option for all product type configurable, bundle, grouped product
     isLoadingProductOption: false, // Show a loading in screen for product option loading
@@ -156,6 +157,9 @@ const mainRd = (state = initialState, action) =>
         break;
       case types.UPDATE_CART_ID_TO_CURRENT_CART:
         draft.cartCurrent.cartId = action.payload;
+        break;
+      case types.UPDATE_SHOW_CASH_MODAL:
+        draft.isShowCashPaymentModel = action.payload;
         break;
       default:
         break;
