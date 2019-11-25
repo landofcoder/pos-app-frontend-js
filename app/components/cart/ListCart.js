@@ -89,39 +89,59 @@ class ListCart extends Component<Props> {
           {cartCurrent.data.map((item, index) => {
             return (
               <li key={`${item.id}${index}`} className={`${styles.item}`}>
-                <div className={`${styles.tableFlex}`}>
-                  <div
-                    className={`${styles.tableFlex} ${styles.tableFlexLeft} pr-1 pb-2`}
-                  >
-                    <img
-                      className={styles.sizeimgsmall}
-                      src={this.getFirstMedia(item)}
-                      alt=""
-                    />
+                <div className={styles.wrapLineProduct}>
+                  <div className={styles.wrapImage}>
+                    <img src={this.getFirstMedia(item)} alt="" />
                   </div>
-                  <div
-                    className={`${styles.tableFlex} ${styles.tableFlexRight} ${styles.divElement} ${styles.wrapContent}`}
-                  >
-                    <div className={`${styles.title}`}>
+                  <div className={styles.wrapInfo}>
+                    <div className={styles.wrapProductName}>
                       <span>{item.name}</span>
-                      <span className={styles.blockquote}>{item.sku}</span>
                     </div>
-                    <div className={`pr-5 ${styles.spaceTable} ${styles.cost}`}>
-                      <div>
-                        <span>${this.renderItemPrice(item)}</span>
+                    <div className={styles.wrapPriceInfo}>
+                      <div className={styles.wrapSku}>{item.sku}</div>
+                      <div className={styles.wrapPrice}>
+                        ${this.renderItemPrice(item)}
                       </div>
                     </div>
                   </div>
-                  <div className={`p-0 ${styles.cancel}`}>
-                    <a
-                      onClick={() => this.deleteAction(index)}
-                      role="presentation"
-                      className={CommonStyles.pointer}
-                    >
-                      <i className={`far fa-times-circle ${styles.icon}`}></i>
-                    </a>
+                  <div className={styles.wrapClose}>
+                    <i className="fas fa-times"></i>
                   </div>
                 </div>
+
+                {/* <div className={`${styles.tableFlex}`}> */}
+                {/*  <div */}
+                {/*    className={`${styles.tableFlex} ${styles.tableFlexLeft} pr-2 pb-2`} */}
+                {/*  > */}
+                {/*    <img */}
+                {/*      className={styles.sizeimgsmall} */}
+                {/*      src={this.getFirstMedia(item)} */}
+                {/*      alt="" */}
+                {/*    /> */}
+                {/*  </div> */}
+                {/*  <div */}
+                {/*    className={`${styles.tableFlex} ${styles.tableFlexRight} ${styles.divElement} ${styles.wrapContent}`} */}
+                {/*  > */}
+                {/*    <div className={`${styles.title}`}> */}
+                {/*      <span className={styles.productName}>{item.name}</span> */}
+                {/*      <span className={styles.sku}>{item.sku}</span> */}
+                {/*    </div> */}
+                {/*    <div className={`pr-5 ${styles.spaceTable} ${styles.cost}`}> */}
+                {/*      <div> */}
+                {/*        <span>${this.renderItemPrice(item)}</span> */}
+                {/*      </div> */}
+                {/*    </div> */}
+                {/*  </div> */}
+                {/*  <div className={`p-0 ${styles.cancel}`}> */}
+                {/*    <a */}
+                {/*      onClick={() => this.deleteAction(index)} */}
+                {/*      role="presentation" */}
+                {/*      className={CommonStyles.pointer} */}
+                {/*    > */}
+                {/*      <i className="fas fa-times"></i> */}
+                {/*    </a> */}
+                {/*  </div> */}
+                {/* </div> */}
               </li>
             );
           })}

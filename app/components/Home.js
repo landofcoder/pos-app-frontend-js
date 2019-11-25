@@ -213,14 +213,17 @@ export default class Home extends Component<Props> {
                   className={CommonStyle.pointer}
                   onClick={() => this.preAddToCart(item)}
                 >
-                  <img
-                    alt="name"
-                    className={Styles.wrapImage}
-                    src={this.getFirstMedia(item)}
-                  />
-                  <div className={Styles.titleCard}>
-                    <span>{item.name}</span>
-                    <span className={CommonStyle.colorText}>{item.sku}</span>
+                  <div className={Styles.wrapProductImage}>
+                    <div className={Styles.inside}>
+                      <img
+                        alt="name"
+                        src={this.getFirstMedia(item)}
+                      />
+                    </div>
+                  </div>
+                  <div className={Styles.wrapProductInfo}>
+                    <span className={Styles.wrapProductName}>{item.name}</span>
+                    <span className={Styles.wrapSku}>{item.sku}</span>
                   </div>
                   {isLoadingProductOption ? (
                     <div
@@ -414,8 +417,71 @@ export default class Home extends Component<Props> {
           </div>
         </div>
         <div className={Styles.wrapFooterAction}>
-          <div className={Styles.wrapAction}>
-            <div className="col-md-2 pr-1">
+          <div className={Styles.wrapActionFirstLine}>
+            <div className="col-md-1 pr-1 pl-0">
+              <button
+                type="button"
+                onClick={holdAction}
+                className="btn btn-outline-secondary btn-lg btn-block"
+              >
+                7
+              </button>
+            </div>
+            <div className="col-md-1 pr-1 pl-0">
+              <button
+                type="button"
+                onClick={holdAction}
+                className="btn btn-outline-secondary btn-lg btn-block"
+              >
+                6
+              </button>
+            </div>
+            <div className="col-md-1 pr-1 pl-0">
+              <button
+                type="button"
+                onClick={holdAction}
+                className="btn btn-outline-secondary btn-lg btn-block"
+              >
+                5
+              </button>
+            </div>
+            <div className="col-md-1 pr-1 pl-0">
+              <button
+                type="button"
+                onClick={holdAction}
+                className="btn btn-outline-secondary btn-lg btn-block"
+              >
+                4
+              </button>
+            </div>
+            <div className="col-md-1 pr-1 pl-0">
+              <button
+                type="button"
+                onClick={holdAction}
+                className="btn btn-outline-secondary btn-lg btn-block"
+              >
+                3
+              </button>
+            </div>
+            <div className="col-md-1 pr-1 pl-0">
+              <button
+                type="button"
+                onClick={holdAction}
+                className="btn btn-outline-secondary btn-lg btn-block"
+              >
+                2
+              </button>
+            </div>
+            <div className="col-md-1 pr-1 pl-0">
+              <button
+                type="button"
+                onClick={holdAction}
+                className="btn btn-outline-secondary btn-lg btn-block"
+              >
+                1
+              </button>
+            </div>
+            <div className="col-md-2 pr-1 pl-0">
               <button
                 type="button"
                 onClick={holdAction}
@@ -423,6 +489,16 @@ export default class Home extends Component<Props> {
               >
                 Hold
               </button>
+            </div>
+          </div>
+          <div className={Styles.wrapActionSecondLine}>
+            <div className="col-md-1 pl-0 pr-1">
+              <Link
+                className="btn btn-outline-secondary btn-lg btn-block"
+                to={routes.CHECKOUT}
+              >
+                Account
+              </Link>
             </div>
             <div className="col-md-2 pl-0 pr-1">
               <Link
@@ -443,6 +519,15 @@ export default class Home extends Component<Props> {
                 onClick={() => this.switchToPaymentType(CASH_PANEL)}
               >
                 CASH
+              </button>
+            </div>
+            <div className="col-md-2 pl-1 pr-0">
+              <button
+                type="button"
+                className="btn btn-outline-primary btn-lg btn-block"
+                onClick={() => this.switchToPaymentType(CASH_PANEL)}
+              >
+                Card
               </button>
             </div>
           </div>
