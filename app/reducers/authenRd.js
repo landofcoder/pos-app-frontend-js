@@ -21,7 +21,7 @@ const authenRd = (state = initialState, action) =>
         break;
       case typesAuthen.ACCESS_TOKEN:
         draft.token = action.payload;
-        localStorage.setItem('posAppData', action.payload);
+        localStorage.setItem('loginAvailable', action.payload);
         break;
       case typesAuthen.ERROR_LOGIN:
         draft.message =

@@ -22,6 +22,7 @@ import { baseUrl } from '../params';
 import Configuration from './product-types/Configuration';
 import Bundle from './product-types/Bundle';
 import Grouped from './product-types/Grouped';
+import { checkLogin } from '../actions/authenAction';
 
 type Props = {
   productList: Array,
@@ -39,9 +40,15 @@ type Props = {
   productOption: Object,
   token: string
 };
-
-export default class Home extends Component<Props> {
+type State = {
+  delayTimer: () => void,
+  typeId: string,
+  sideBarShow: boolean
+};
+export default class Home extends Component<Props, State> {
   props: Props;
+
+  state: State;
 
   constructor(props) {
     super(props);
@@ -50,9 +57,6 @@ export default class Home extends Component<Props> {
       typeId: '',
       sideBarShow: false
     };
-    localStorage.setItem('posAppData', '');
-    console.log('set cookie to null');
-    console.log(localStorage.getItem('posAppData'));
   }
 
   componentDidMount(): * {
@@ -272,11 +276,12 @@ export default class Home extends Component<Props> {
   render() {
     //  ================Check login======================
     const { token } = this.props;
-    if (token === '') {
+
+    if (checkLogin(localStorage, token)) {
       console.log('need to login');
       return <Redirect to={routes.LOGIN} />;
     }
-    console.log('have a token');
+
     //  ================Check login======================
     const classWrapProductPanel = `pr-3 ${Styles.wrapProductPanel} row`;
     const { productList, holdAction, cartCurrent } = this.props;

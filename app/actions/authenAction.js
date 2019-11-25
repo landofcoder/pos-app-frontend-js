@@ -14,3 +14,19 @@ export function login(payload) {
     payload
   };
 }
+
+export function checkLogin(localState, token) {
+  if (
+    localState.getItem('loginAvailable') === '' ||
+    localState.getItem('loginAvailable') === null
+  ) {
+    if (token !== '') {
+      console.log('have token');
+      console.log(token);
+      localStorage.setItem('loginAvailable', token);
+      return false;
+    }
+    return true;
+  }
+  return false;
+}
