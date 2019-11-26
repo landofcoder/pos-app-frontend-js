@@ -18,7 +18,13 @@ const initialState = {
   isLoadingSearchCustomer: false,
   customerSearchResult: [],
   cartHoldList: [],
-  orderPreparingCheckout: {}, // Detail order for preparing to checkout
+  orderPreparingCheckout: {
+    totals: {
+      discount_amount: 0,
+      grand_total: 0,
+      tax_amount: 0
+    }
+  }, // Detail order for preparing to checkout
   cashLoadingPreparingOrder: false, // Status cash loading for preparing to show cash payment form
   isShowCashPaymentModel: false,
   productOption: {

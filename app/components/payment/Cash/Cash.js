@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { cashPlaceOrderAction } from '../../../actions/checkoutActions';
 import { updateShowCashModal } from '../../../actions/homeAction';
+import Styles from './cash.scss';
 
 type Props = {
   cashLoadingPreparingOrder: boolean,
@@ -51,7 +52,9 @@ class CashPayment extends Component<Props> {
                       <span className="sr-only">Loading...</span>
                     </div>
                   ) : (
-                    <div className="font-weight-bold">{orderPreparingCheckout.totals.grand_total}</div>
+                    <div className="font-weight-bold">
+                      {orderPreparingCheckout.totals.grand_total}
+                    </div>
                   )}
                 </p>
               </div>
@@ -59,14 +62,19 @@ class CashPayment extends Component<Props> {
                 Discount Amount
               </label>
               <div className="col-sm-8 pt-1">
-                <p className="font-weight-bold">$0</p>
+                <p className="font-weight-bold">
+                  {Math.abs(orderPreparingCheckout.totals.discount_amount)}
+                </p>
               </div>
               <label htmlFor="staticEmail" className="col-sm-4 col-form-label">
                 Tax Amount
               </label>
               <div className="col-sm-8 pt-1">
-                <p className="font-weight-bold">$0</p>
+                <p className="font-weight-bold">
+                  {orderPreparingCheckout.totals.tax_amount}
+                </p>
               </div>
+              <div className={Styles.lineSubTotal} />
               <label htmlFor="staticEmail" className="col-sm-4 col-form-label">
                 Grand Total
               </label>
@@ -80,7 +88,9 @@ class CashPayment extends Component<Props> {
                       <span className="sr-only">Loading...</span>
                     </div>
                   ) : (
-                    <div className="font-weight-bold">{orderPreparingCheckout.totals.grand_total}</div>
+                    <div className="font-weight-bold">
+                      {orderPreparingCheckout.totals.grand_total}
+                    </div>
                   )}
                 </p>
               </div>

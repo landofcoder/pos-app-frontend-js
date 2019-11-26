@@ -158,14 +158,18 @@ function* cashCheckoutPlaceOrder() {
   const isGuestCustomer = yield select(cartIsGuestCustomer);
   const cartIdResult = yield select(cartId);
 
-  const response = yield call(placeCashOrderService, cartCurrentTokenResult, {
-    cartIdResult,
-    isGuestCustomer,
-    customerToken: cartCurrentTokenResult
-  });
+  const orderResponse = yield call(
+    placeCashOrderService,
+    cartCurrentTokenResult,
+    {
+      cartIdResult,
+      isGuestCustomer,
+      customerToken: cartCurrentTokenResult
+    }
+  );
 
   // Hide cash model
-  console.log('place order response:', response);
+  console.log('place order response:', orderResponse);
 }
 
 /**
