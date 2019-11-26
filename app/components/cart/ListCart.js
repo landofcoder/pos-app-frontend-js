@@ -108,6 +108,9 @@ class ListCart extends Component<Props> {
                   >
                     <i className="fas fa-times"></i>
                   </div>
+                  <div className={styles.wrapQtyNumber}>
+                    <span>{item.pos_qty}</span>
+                  </div>
                 </div>
               </li>
             );

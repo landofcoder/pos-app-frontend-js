@@ -315,17 +315,41 @@ function* getSearchCustomer(payload) {
   yield put({ type: types.UPDATE_IS_LOADING_SEARCH_CUSTOMER, payload: false });
 }
 
+/**
+ * Add to cart function
+ * @param payload
+ * @returns {Generator<<"PUT", PutEffectDescriptor<{payload: *, type: *}>>|<"SELECT", SelectEffectDescriptor>, *>}
+ */
 function* addToCart(payload) {
   // Find sky if exits sku, then increment qty
   const listCartCurrent = yield select(cartCurrent);
   const productSku = payload.payload.sku;
-  listCartCurrent.forEach(item => {
-    if (item.sku === productSku) {
-      console.log('exits up sku now');
-    }
-  });
 
-  yield put({ type: types.ADD_TO_CART_HANDLE, payload });
+  let found = 0;
+  let foundItem = null;
+  let foundIndex = 0;
+
+  for (let i = 0; i < listCartCurrent.length; i += 1) {
+    const item = listCartCurrent[i];
+
+    if (item.sku === productSku) {
+      foundIndex = i;
+      found = 1;
+      foundItem = item;
+    }
+  }
+
+  if (found === 1) {
+    // Edit
+    console.log('edit item update qty now');
+    yield put({
+      type: types.UPDATE_ITEM_CART,
+      payload: { index: foundIndex, item: foundItem }
+    });
+  } else {
+    // Add new
+    yield put({ type: types.ADD_ITEM_TO_CART, payload });
+  }
 }
 
 /**

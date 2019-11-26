@@ -40,9 +40,6 @@ const initialState = {
 const mainRd = (state = initialState, action) =>
   produce(state, draft => {
     switch (action.type) {
-      case types.ADD_TO_CART_HANDLE:
-        draft.cartCurrent.data.push(action.payload.payload);
-        break;
       case types.RECEIVED_ORDER_PREPARING_CHECKOUT:
         draft.orderPreparingCheckout = action.payload;
         break;
@@ -171,6 +168,26 @@ const mainRd = (state = initialState, action) =>
       case types.UPDATE_CASH_PLACE_ORDER_LOADING:
         draft.isLoadingCashPlaceOrder = action.payload;
         break;
+      case types.UPDATE_ITEM_CART:
+        {
+          const { index } = action.payload;
+          let oldQty = draft.cartCurrent.data[index].pos_qty
+            ? draft.cartCurrent.data[index].pos_qty
+            : 0;
+          oldQty += 1;
+          draft.cartCurrent.data[index].pos_qty = oldQty;
+        }
+        break;
+      case types.ADD_ITEM_TO_CART: {
+        const product = Object.assign({}, action.payload.payload);
+        // If pos_qty is not exists
+        if (!product.pos_qty) {
+          // Add default pos_qty
+          product.pos_qty = 1;
+        }
+        draft.cartCurrent.data.push(product);
+        break;
+      }
       default:
         break;
     }
