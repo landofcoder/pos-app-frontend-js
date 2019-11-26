@@ -260,7 +260,8 @@ function* startLoadingProductOption() {
  */
 function* getDetailProductEndTask() {
   // Set showProductOption to true
-  yield put({ type: types.UPDATE_IS_SHOWING_PRODUCT_OPTION, payload: true });
+  // yield put({ type: types.UPDATE_IS_SHOWING_PRODUCT_OPTION, payload: true });
+
   // Stop loading
   yield put({ type: types.UPDATE_IS_LOADING_PRODUCT_OPTION, payload: false });
 }

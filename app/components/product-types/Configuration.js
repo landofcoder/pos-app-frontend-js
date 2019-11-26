@@ -45,15 +45,33 @@ class Configuration extends Component<Props> {
     }
     return (
       <>
-        {isLoading ? (
-          <div className="d-flex justify-content-center">
-            <div className="spinner-border" role="status">
-              <span className="sr-only">Loading...</span>
-            </div>
-          </div>
-        ) : (
-          <>
-            <div className="modal-content">
+        <div className="modal-content">
+          {isLoading ? (
+            <>
+              <div className="modal-body">
+                <div className="d-flex justify-content-center">
+                  <div
+                    className="spinner-border text-secondary spinner-border-sm"
+                    role="status"
+                  >
+                    <span className="sr-only">Loading...</span>
+                  </div>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <div className="col-md-12">
+                  <button
+                    type="button"
+                    onClick={() => updateIsShowingProductOption(false)}
+                    className="btn btn-outline-secondary"
+                  >
+                    CANCEL
+                  </button>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
               <div className="modal-header">
                 <h5 className="modal-title" id="exampleModalLongTitle">
                   {parentProduct.name}
@@ -122,9 +140,9 @@ class Configuration extends Component<Props> {
                   </button>
                 </div>
               </div>
-            </div>
-          </>
-        )}
+            </>
+          )}
+        </div>
       </>
     );
   }

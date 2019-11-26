@@ -38,7 +38,7 @@ type Props = {
   productOption: Object,
   isShowCashPaymentModel: boolean,
   token: string,
-  showCashModal: (payload: boolean) => void
+  updateIsShowingProductOption: () => void
 };
 
 export default class Home extends Component<Props> {
@@ -144,6 +144,12 @@ export default class Home extends Component<Props> {
     // Set type_id to state for switchingProductSettings render settings form
     this.setState({ typeId: item.type_id });
 
+    if (item.type_id !== 'simple') {
+      // Show product option
+      const { updateIsShowingProductOption } = this.props;
+      updateIsShowingProductOption(true);
+    }
+
     switch (item.type_id) {
       case CONFIGURABLE:
         {
@@ -196,8 +202,7 @@ export default class Home extends Component<Props> {
    * @returns {*}
    */
   renderSwitchPanel = productList => {
-    const { mainPanelType, productOption } = this.props;
-    const { isLoadingProductOption } = productOption;
+    const { mainPanelType } = this.props;
 
     switch (mainPanelType) {
       case HOME_DEFAULT_PRODUCT_LIST:
@@ -222,16 +227,6 @@ export default class Home extends Component<Props> {
                     <span className={Styles.wrapProductName}>{item.name}</span>
                     <span className={Styles.wrapSku}>{item.sku}</span>
                   </div>
-                  {isLoadingProductOption ? (
-                    <div
-                      className="spinner-border spinner-border-sm"
-                      role="status"
-                    >
-                      <span className="sr-only">Loading...</span>
-                    </div>
-                  ) : (
-                    <></>
-                  )}
                 </a>
               </div>
             </div>
@@ -240,22 +235,6 @@ export default class Home extends Component<Props> {
       default:
         return <></>;
     }
-  };
-
-  /**
-   * Change payment type for switching left panel
-   * @param paymentType
-   */
-  switchToPaymentType = paymentType => {
-    // Switch main panel type
-    // const { updateMainPanelType } = this.props;
-    // updateMainPanelType(paymentType);
-
-    console.log('payment type:', paymentType);
-
-    // After switch to payment, run cashCheckoutAction to load discount to quote
-    const { cashCheckoutAction } = this.props;
-    cashCheckoutAction();
   };
 
   /**
@@ -337,7 +316,7 @@ export default class Home extends Component<Props> {
       <>
         <div data-tid="container">
           <div
-            id="myModal"
+            id="modalProductOption"
             style={{ display: isShowingProductOption ? 'block' : 'none' }}
             className={ModalStyle.modal}
           >
@@ -365,7 +344,6 @@ export default class Home extends Component<Props> {
             className={ModalStyle.modal}
           ></div>
           <div className="row" id={Styles.wrapPostContainerId}>
-            {/* <SideBar statusAction={sideBarShow} /> */}
             <div className="col-md-9">
               <div className={classWrapProductPanel}>
                 <div className="col-md-12 mb-0 pr-0">
@@ -536,7 +514,6 @@ export default class Home extends Component<Props> {
               <button
                 type="button"
                 className="btn btn-outline-primary btn-lg btn-block"
-                onClick={() => this.switchToPaymentType(CASH_PANEL)}
               >
                 Card
               </button>
