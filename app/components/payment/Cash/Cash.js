@@ -1,17 +1,14 @@
 // @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { HOME_DEFAULT_PRODUCT_LIST } from '../../../constants/main-panel-types';
 import { cashPlaceOrderAction } from '../../../actions/checkoutActions';
-import { updateMainPanelType } from '../../../actions/homeAction';
-import commonStyle from '../../styles/common.scss';
-import styles from './cash.scss';
+import { updateShowCashModal } from '../../../actions/homeAction';
 
 type Props = {
   cashLoadingPreparingOrder: boolean,
   orderPreparingCheckout: Object,
-  updateMainPanelType: (payload: string) => void,
-  cashPlaceOrderAction: () => void
+  cashPlaceOrderAction: () => void,
+  updateShowCashModal: () => void
 };
 
 class CashPayment extends Component<Props> {
@@ -21,82 +18,94 @@ class CashPayment extends Component<Props> {
     const {
       cashLoadingPreparingOrder,
       orderPreparingCheckout,
-      updateMainPanelType,
-      cashPlaceOrderAction
+      cashPlaceOrderAction,
+      updateShowCashModal
     } = this.props;
 
-    console.log('order checkout:', orderPreparingCheckout);
-
     return (
-      <div className={`ml-3 pl-4 ${commonStyle.wrapStaticPageContent}`}>
-        <div className={commonStyle.wrapCenterContent}>
-          <div className={commonStyle.contentColumn}>
-            <i
-              className={`fa fa-money-bill-wave fa-3x ${commonStyle.headerIcon}`}
+      <div>
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title" id="modalCashPayment">
+              Checkout
+            </h5>
+            <button
+              type="button"
+              className="close"
+              data-dismiss="modal"
+              aria-label="Close"
             />
-            <span className={`${commonStyle.colorText}`}>Total</span>
-            <span className={`${commonStyle.sizeFont}`}>$233.53</span>
-            <div className={`col-md-12 ${styles.wrapTable} row`}>
-              <span className={`${commonStyle.colorText} ${styles.forLeft}`}>
-                Amount
-              </span>
-              <span className={`${commonStyle.sizeFont} ${styles.forRight}`}>
-                $233.53
-              </span>
+          </div>
+          <div className="modal-body">
+            <div className="form-group row">
+              <label htmlFor="staticEmail" className="col-sm-4 col-form-label">
+                Subtotal Total
+              </label>
+              <div className="col-sm-8 pt-1">
+                <p className="font-weight-bold">
+                  {cashLoadingPreparingOrder ? (
+                    <div
+                      className="spinner-border spinner-border-sm"
+                      role="status"
+                    >
+                      <span className="sr-only">Loading...</span>
+                    </div>
+                  ) : (
+                    <div className="font-weight-bold">{orderPreparingCheckout.totals.grand_total}</div>
+                  )}
+                </p>
+              </div>
+              <label htmlFor="staticEmail" className="col-sm-4 col-form-label">
+                Discount Amount
+              </label>
+              <div className="col-sm-8 pt-1">
+                <p className="font-weight-bold">$0</p>
+              </div>
+              <label htmlFor="staticEmail" className="col-sm-4 col-form-label">
+                Tax Amount
+              </label>
+              <div className="col-sm-8 pt-1">
+                <p className="font-weight-bold">$0</p>
+              </div>
+              <label htmlFor="staticEmail" className="col-sm-4 col-form-label">
+                Grand Total
+              </label>
+              <div className="col-sm-8 pt-1">
+                <p className="font-weight-bold">
+                  {cashLoadingPreparingOrder ? (
+                    <div
+                      className="spinner-border spinner-border-sm"
+                      role="status"
+                    >
+                      <span className="sr-only">Loading...</span>
+                    </div>
+                  ) : (
+                    <div className="font-weight-bold">{orderPreparingCheckout.totals.grand_total}</div>
+                  )}
+                </p>
+              </div>
             </div>
           </div>
-          <button
-            type="button"
-            className={`btn btn-lg btn-secondary ${commonStyle.buttonBody}`}
-          >
-            $233.53
-          </button>
-          <button
-            type="button"
-            className={`btn btn-lg btn-secondary ${commonStyle.buttonBody}`}
-          >
-            $250.00
-          </button>
-          <button
-            type="button"
-            className={`btn btn-lg btn-secondary ${commonStyle.buttonBody}`}
-          >
-            $260.00
-          </button>
-          <button
-            type="button"
-            className={`btn btn-lg btn-secondary ${commonStyle.buttonBody}`}
-          >
-            $300.00
-          </button>
-        </div>
-        <div className={commonStyle.footerButton}>
-          <div className="col-md-2 pr-0">
-            <button
-              type="button"
-              onClick={() => updateMainPanelType(HOME_DEFAULT_PRODUCT_LIST)}
-              className="btn btn-lg btn-secondary btn-block"
-            >
-              Back
-            </button>
-          </div>
-
-          <div className="col-md-3 pr-0">
-            <button
-              type="button"
-              className="btn btn-primary btn-lg"
-              onClick={cashPlaceOrderAction}
-            >
-              {cashLoadingPreparingOrder ? (
-                <span
-                  className="spinner-border"
-                  role="status"
-                  aria-hidden="true"
-                ></span>
-              ) : (
-                <>{orderPreparingCheckout.totals.grand_total}</>
-              )}
-            </button>
+          <div className="modal-footer">
+            <div className="col-md-6 p-0">
+              <button
+                type="button"
+                onClick={() => updateShowCashModal(false)}
+                className="btn btn-outline-secondary btn-lg btn-block"
+              >
+                CANCEL
+              </button>
+            </div>
+            <div className="col-md-6 p-0">
+              <button
+                onClick={cashPlaceOrderAction}
+                disabled={cashLoadingPreparingOrder}
+                type="button"
+                className="btn btn-primary btn-lg btn-block"
+              >
+                PLACE ORDER
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -114,7 +123,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     cashPlaceOrderAction: () => dispatch(cashPlaceOrderAction()),
-    updateMainPanelType: payload => dispatch(updateMainPanelType(payload))
+    updateShowCashModal: payload => dispatch(updateShowCashModal(payload))
   };
 }
 

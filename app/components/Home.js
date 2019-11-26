@@ -31,7 +31,6 @@ type Props = {
   getDefaultProductAction: () => void,
   cartCurrent: Array,
   mainPanelType: string,
-  updateMainPanelType: (payload: string) => void,
   cashCheckoutAction: () => void,
   getDetailProductConfigurable: (sku: string) => void,
   getDetailProductBundle: (sku: string) => void,
@@ -322,12 +321,18 @@ export default class Home extends Component<Props> {
 
     //  ================Check login======================
     const classWrapProductPanel = `pr-3 ${Styles.wrapProductPanel} row`;
-    const { productList, holdAction, cartCurrent } = this.props;
+    const {
+      productList,
+      holdAction,
+      cartCurrent,
+      cashCheckoutAction
+    } = this.props;
     // Enable checkout button or disable
     const disableCheckout = cartCurrent.data.length <= 0;
     const { productOption, isShowCashPaymentModel } = this.props;
     const { sideBarShow } = this.state;
     const { isShowingProductOption } = productOption;
+
     return (
       <>
         <div data-tid="container">
@@ -522,7 +527,7 @@ export default class Home extends Component<Props> {
                 type="button"
                 disabled={disableCheckout}
                 className="btn btn-primary btn-lg btn-block"
-                onClick={() => this.switchToPaymentType(CASH_PANEL)}
+                onClick={cashCheckoutAction}
               >
                 CASH
               </button>

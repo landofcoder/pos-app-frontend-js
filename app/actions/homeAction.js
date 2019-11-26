@@ -171,7 +171,7 @@ export function unSelectCustomerForCurrentCart(payload) {
   };
 }
 
-export function showCashModal(payload) {
+export function updateShowCashModal(payload) {
   return {
     type: types.UPDATE_SHOW_CASH_MODAL,
     payload
