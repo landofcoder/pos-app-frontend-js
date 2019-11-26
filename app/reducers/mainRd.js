@@ -27,6 +27,7 @@ const initialState = {
   }, // Detail order for preparing to checkout
   cashLoadingPreparingOrder: false, // Status cash loading for preparing to show cash payment form
   isShowCashPaymentModel: false,
+  isLoadingCashPlaceOrder: false,
   productOption: {
     // State product option for all product type configurable, bundle, grouped product
     isLoadingProductOption: false, // Show a loading in screen for product option loading
@@ -166,6 +167,9 @@ const mainRd = (state = initialState, action) =>
         break;
       case types.UPDATE_SHOW_CASH_MODAL:
         draft.isShowCashPaymentModel = action.payload;
+        break;
+      case types.UPDATE_CASH_PLACE_ORDER_LOADING:
+        draft.isLoadingCashPlaceOrder = action.payload;
         break;
       default:
         break;

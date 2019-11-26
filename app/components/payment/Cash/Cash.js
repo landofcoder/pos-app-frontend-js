@@ -9,7 +9,8 @@ type Props = {
   cashLoadingPreparingOrder: boolean,
   orderPreparingCheckout: Object,
   cashPlaceOrderAction: () => void,
-  updateShowCashModal: () => void
+  updateShowCashModal: () => void,
+  isLoadingCashPlaceOrder: boolean
 };
 
 class CashPayment extends Component<Props> {
@@ -20,8 +21,11 @@ class CashPayment extends Component<Props> {
       cashLoadingPreparingOrder,
       orderPreparingCheckout,
       cashPlaceOrderAction,
-      updateShowCashModal
+      updateShowCashModal,
+      isLoadingCashPlaceOrder
     } = this.props;
+
+    console.log('pre data:', orderPreparingCheckout);
 
     return (
       <div>
@@ -43,20 +47,20 @@ class CashPayment extends Component<Props> {
                 Subtotal Total
               </label>
               <div className="col-sm-8 pt-1">
-                <p className="font-weight-bold">
-                  {cashLoadingPreparingOrder ? (
-                    <div
-                      className="spinner-border spinner-border-sm"
-                      role="status"
-                    >
-                      <span className="sr-only">Loading...</span>
-                    </div>
-                  ) : (
-                    <div className="font-weight-bold">
+                {cashLoadingPreparingOrder ? (
+                  <div
+                    className="spinner-border spinner-border-sm"
+                    role="status"
+                  >
+                    <span className="sr-only">Loading...</span>
+                  </div>
+                ) : (
+                  <div className="font-weight-bold">
+                    <p className="font-weight-bold">
                       {orderPreparingCheckout.totals.grand_total}
-                    </div>
-                  )}
-                </p>
+                    </p>
+                  </div>
+                )}
               </div>
               <label htmlFor="staticEmail" className="col-sm-4 col-form-label">
                 Discount Amount
@@ -79,20 +83,20 @@ class CashPayment extends Component<Props> {
                 Grand Total
               </label>
               <div className="col-sm-8 pt-1">
-                <p className="font-weight-bold">
-                  {cashLoadingPreparingOrder ? (
-                    <div
-                      className="spinner-border spinner-border-sm"
-                      role="status"
-                    >
-                      <span className="sr-only">Loading...</span>
-                    </div>
-                  ) : (
-                    <div className="font-weight-bold">
+                {cashLoadingPreparingOrder ? (
+                  <div
+                    className="spinner-border spinner-border-sm"
+                    role="status"
+                  >
+                    <span className="sr-only">Loading...</span>
+                  </div>
+                ) : (
+                  <div className="font-weight-bold">
+                    <p className="font-weight-bold">
                       {orderPreparingCheckout.totals.grand_total}
-                    </div>
-                  )}
-                </p>
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -109,10 +113,19 @@ class CashPayment extends Component<Props> {
             <div className="col-md-6 p-0">
               <button
                 onClick={cashPlaceOrderAction}
-                disabled={cashLoadingPreparingOrder}
+                disabled={cashLoadingPreparingOrder || isLoadingCashPlaceOrder}
                 type="button"
                 className="btn btn-primary btn-lg btn-block"
               >
+                {isLoadingCashPlaceOrder ? (
+                  <span
+                    className="spinner-border spinner-border"
+                    role="status"
+                    aria-hidden="true"
+                  />
+                ) : (
+                  <></>
+                )}
                 PLACE ORDER
               </button>
             </div>
@@ -126,7 +139,8 @@ class CashPayment extends Component<Props> {
 function mapStateToProps(state) {
   return {
     cashLoadingPreparingOrder: state.mainRd.cashLoadingPreparingOrder,
-    orderPreparingCheckout: state.mainRd.orderPreparingCheckout
+    orderPreparingCheckout: state.mainRd.orderPreparingCheckout,
+    isLoadingCashPlaceOrder: state.mainRd.isLoadingCashPlaceOrder
   };
 }
 

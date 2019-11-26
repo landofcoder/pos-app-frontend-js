@@ -5,7 +5,9 @@ import {
   addProductToQuote,
   placeCashOrderService,
   createGuestCartService,
-  addShippingInformationService
+  addShippingInformationService,
+  createInvoiceService,
+  createShipmentService
 } from './services/CartService';
 import {
   searchProductService,
@@ -23,6 +25,7 @@ import {
   handleProductType,
   reformatConfigurableProduct
 } from '../common/product';
+import { adminToken } from '../params';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
 const cartCurrentToken = state => state.mainRd.cartCurrent.customerToken;
@@ -154,22 +157,33 @@ function* getDefaultProduct() {
  * @returns {Generator<<"CALL", CallEffectDescriptor<RT>>, *>}
  */
 function* cashCheckoutPlaceOrder() {
+  // Start cash place order loading
+  yield put({ type: types.UPDATE_CASH_PLACE_ORDER_LOADING, payload: true });
+
   const cartCurrentTokenResult = yield select(cartCurrentToken);
   const isGuestCustomer = yield select(cartIsGuestCustomer);
   const cartIdResult = yield select(cartId);
 
-  const orderResponse = yield call(
-    placeCashOrderService,
-    cartCurrentTokenResult,
-    {
-      cartIdResult,
-      isGuestCustomer,
-      customerToken: cartCurrentTokenResult
-    }
+  const orderId = yield call(placeCashOrderService, cartCurrentTokenResult, {
+    cartIdResult,
+    isGuestCustomer,
+    customerToken: cartCurrentTokenResult
+  });
+
+  // Create invoice
+  yield call(createInvoiceService, adminToken, orderId);
+
+  // Create shipment
+  const responseShipment = yield call(
+    createShipmentService,
+    adminToken,
+    orderId
   );
 
-  // Hide cash model
-  console.log('place order response:', orderResponse);
+  // Stop cash loading order loading
+  yield put({ type: types.UPDATE_CASH_PLACE_ORDER_LOADING, payload: false });
+
+  console.log('res invoice:', responseShipment);
 }
 
 /**
