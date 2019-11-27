@@ -7,8 +7,7 @@ import Styles from './Home.scss';
 import CommonStyle from './styles/common.scss';
 import ModalStyle from './styles/modal.scss';
 import {
-  HOME_DEFAULT_PRODUCT_LIST,
-  CASH_PANEL
+  HOME_DEFAULT_PRODUCT_LIST
 } from '../constants/main-panel-types';
 import {
   SIMPLE,
@@ -38,7 +37,8 @@ type Props = {
   productOption: Object,
   isShowCashPaymentModel: boolean,
   token: string,
-  updateIsShowingProductOption: () => void
+  updateIsShowingProductOption: () => void,
+  mainProductListLoading: boolean
 };
 
 export default class Home extends Component<Props> {
@@ -364,6 +364,7 @@ export default class Home extends Component<Props> {
                     </div>
                   </div>
                 </div>
+                
                 {this.renderSwitchPanel(productList)}
               </div>
             </div>

@@ -11,7 +11,8 @@ function mapStateToProps(state) {
     mainPanelType: state.mainRd.mainPanelType,
     isShowCashPaymentModel: state.mainRd.isShowCashPaymentModel,
     productOption: state.mainRd.productOption,
-    token: state.authenRd.token
+    token: state.authenRd.token,
+    mainProductListLoading: state.mainRd.mainProductListLoading
   };
 }
 

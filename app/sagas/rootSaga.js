@@ -342,7 +342,6 @@ function* addToCart(payload) {
 
   if (found === 1) {
     // Edit
-    console.log('edit item update qty now');
     yield put({
       type: types.UPDATE_ITEM_CART,
       payload: { index: foundIndex, item: foundItem }
