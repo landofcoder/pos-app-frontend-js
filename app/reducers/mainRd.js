@@ -188,6 +188,9 @@ const mainRd = (state = initialState, action) =>
         draft.cartCurrent.data.push(product);
         break;
       }
+      case types.UPDATE_MAIN_PRODUCT_LOADING:
+        draft.mainProductListLoading = action.payload;
+        break;
       default:
         break;
     }

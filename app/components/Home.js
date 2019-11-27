@@ -6,9 +6,7 @@ import routes from '../constants/routes';
 import Styles from './Home.scss';
 import CommonStyle from './styles/common.scss';
 import ModalStyle from './styles/modal.scss';
-import {
-  HOME_DEFAULT_PRODUCT_LIST
-} from '../constants/main-panel-types';
+import { HOME_DEFAULT_PRODUCT_LIST } from '../constants/main-panel-types';
 import {
   SIMPLE,
   CONFIGURABLE,
@@ -293,7 +291,7 @@ export default class Home extends Component<Props> {
 
   render() {
     //  ================Check login======================
-    const { token } = this.props;
+    const { token, mainProductListLoading } = this.props;
     if (token === '') {
       // return <Redirect to={routes.LOGIN} />;
     }
@@ -364,8 +362,20 @@ export default class Home extends Component<Props> {
                     </div>
                   </div>
                 </div>
-                
-                {this.renderSwitchPanel(productList)}
+                {mainProductListLoading ? (
+                  <div className="col-md-12">
+                    <div className="d-flex justify-content-center">
+                      <div
+                        className="spinner-border text-secondary"
+                        role="status"
+                      >
+                        <span className="sr-only">Loading...</span>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  this.renderSwitchPanel(productList)
+                )}
               </div>
             </div>
             <div className="col-md-3">

@@ -35,14 +35,6 @@ const optionValue = state => state.mainRd.productOption.optionValue;
 const customer = state => state.mainRd.cartCurrent.customer;
 
 /**
- * Get list product
- * @returns {IterableIterator<*>}
- */
-function* getListProduct() {
-  yield put({ type: types.RECEIVED_LIST_PRODUCT });
-}
-
-/**
  * Create quote function
  * @returns {IterableIterator<*>}
  */
@@ -147,9 +139,15 @@ function* updateIsGuestCustomer(isGuestCustomer) {
  * @returns {Generator<*, *>}
  */
 function* getDefaultProduct() {
+  // Start loading
+  yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: true });
+
   const response = yield call(getProductsService);
   const productResult = response.data ? response.data.products.items : [];
   yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productResult });
+
+  // Stop loading
+  yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: false });
 }
 
 /**
@@ -357,7 +355,6 @@ function* addToCart(payload) {
  * @returns {Generator<<"FORK", ForkEffectDescriptor<RT>>, *>}
  */
 function* rootSaga() {
-  yield takeEvery(types.FETCH_LIST_PRODUCT, getListProduct);
   yield takeEvery(types.CASH_CHECKOUT_ACTION, cashCheckout);
   yield takeEvery(types.SEARCH_ACTION, search);
   yield takeEvery(types.GET_DEFAULT_PRODUCT, getDefaultProduct);
