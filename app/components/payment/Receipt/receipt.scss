@@ -1,18 +1,30 @@
-.wrapHeader {
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-top: 20px;
-  .wrapHeadLogo {
-    display: flex;
-  }
+.wrapMainReceipt {
+  color: #666;
+  .wrapHeader {
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 20px;
 
-  .wrapHeadInfo {
-    display: flex;
-    font-size: 14px;
+    .wrapHeadLogo {
+      display: flex;
+    }
 
-    .wrapTime {
-      span {
+    .wrapHeadInfo {
+      display: flex;
+      margin-top: 25px;
 
+      .wrapTime {
+        width: 50%;
+
+        span {
+
+        }
+      }
+
+      .wrapOrderId {
+        width: 50%;
+        display: flex;
+        justify-content: flex-end;
       }
     }
   }

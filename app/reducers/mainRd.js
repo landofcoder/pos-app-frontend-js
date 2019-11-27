@@ -17,7 +17,7 @@ const initialState = {
     isGuestCustomer: true
   },
   receipt: {
-    isOpenReceiptModal: true
+    isOpenReceiptModal: false
   },
   isOpenFindCustomer: false,
   isLoadingSearchCustomer: false,

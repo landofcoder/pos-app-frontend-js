@@ -330,7 +330,7 @@ export default class POS extends Component<Props> {
             className={ModalStyle.modal}
             style={{ display: isOpenReceiptModal ? 'block' : 'none' }}
           >
-            <div className={ModalStyle.modalContent}>
+            <div className={ModalStyle.modalContent} style={{ width: '450px' }}>
               <Receipt />
             </div>
           </div>
