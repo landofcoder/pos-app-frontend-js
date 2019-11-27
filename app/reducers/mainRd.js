@@ -2,6 +2,7 @@
 import produce from 'immer';
 import * as types from '../constants/root';
 import { HOME_DEFAULT_PRODUCT_LIST } from '../constants/main-panel-types';
+import { cartCurrentDefaultData } from './common';
 
 const initialState = {
   isLoadingSystemConfig: true,
@@ -9,13 +10,7 @@ const initialState = {
   mainPanelType: HOME_DEFAULT_PRODUCT_LIST, // Main panel type for switching all main panel
   mainProductListLoading: false, // Main product list loading
   productList: [],
-  cartCurrent: {
-    cartId: '',
-    customerToken: '',
-    data: [],
-    customer: null, // Current customer for current cart
-    isGuestCustomer: true
-  },
+  cartCurrent: cartCurrentDefaultData,
   receipt: {
     isOpenReceiptModal: false
   },
@@ -201,6 +196,23 @@ const mainRd = (state = initialState, action) =>
         break;
       case types.UPDATE_IS_LOADING_SYSTEM_CONFIG:
         draft.isLoadingSystemConfig = action.payload;
+        break;
+      case types.HOLD_ACTION: {
+        // Clone current cart and push to cart hold
+        const currentCart = Object.assign({}, draft.cartCurrent);
+        draft.cartHoldList.push(currentCart);
+        // Clear current cart
+        draft.cartCurrent = cartCurrentDefaultData;
+        break;
+      }
+      case types.SWITCH_TO_HOLD_ITEM_CART: {
+        const index = action.payload;
+        // Get item hold cart and set to current cart
+        draft.cartCurrent = Object.assign({}, draft.cartHoldList[index]);
+        break;
+      }
+      case types.EMPTY_CART:
+        draft.cartCurrent = cartCurrentDefaultData;
         break;
       default:
         break;

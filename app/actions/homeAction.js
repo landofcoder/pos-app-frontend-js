@@ -14,6 +14,7 @@ export function deleteItemCart(payload) {
     payload
   };
 }
+
 export function checkoutAction() {
   return {
     type: types.CHECK_OUT_ACTION
@@ -23,6 +24,18 @@ export function checkoutAction() {
 export function holdAction() {
   return {
     type: types.HOLD_ACTION
+  };
+}
+
+/**
+ * Switching to hold cart
+ * @param payload index of hold cart item
+ * @returns {{type: string}}
+ */
+export function switchToHoldItemCart(payload) {
+  return {
+    type: types.SWITCH_TO_HOLD_ITEM_CART,
+    payload
   };
 }
 
@@ -181,5 +194,11 @@ export function updateShowCashModal(payload) {
 export function getPostGeneralConfig() {
   return {
     type: types.GET_POS_GENERAL_CONFIG
+  };
+}
+
+export function emptyCart() {
+  return {
+    type: types.EMPTY_CART
   };
 }

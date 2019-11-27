@@ -27,7 +27,7 @@ type Props = {
   holdAction: () => void,
   searchAction: (payload: string) => void,
   getDefaultProductAction: () => void,
-  cartCurrent: Array,
+  cartCurrent: Object,
   mainPanelType: string,
   cashCheckoutAction: () => void,
   getDetailProductConfigurable: (sku: string) => void,
@@ -38,10 +38,13 @@ type Props = {
   token: string,
   updateIsShowingProductOption: () => void,
   mainProductListLoading: boolean,
-  isOpenReceiptModal: Object
+  isOpenReceiptModal: Object,
+  cartHoldList: Array,
+  switchToHoldItemCart: () => void,
+  emptyCart: () => void
 };
 
-export default class POS extends Component<Props> {
+export default class Pos extends Component<Props> {
   props: Props;
 
   constructor(props) {
@@ -280,7 +283,13 @@ export default class POS extends Component<Props> {
   };
 
   render() {
-    const { token, mainProductListLoading } = this.props;
+    const {
+      token,
+      mainProductListLoading,
+      cartHoldList,
+      switchToHoldItemCart,
+      emptyCart
+    } = this.props;
     // Check login
     if (token === '') {
       // return <Redirect to={routes.LOGIN} />;
@@ -401,73 +410,25 @@ export default class POS extends Component<Props> {
         </div>
         <div className={Styles.wrapFooterAction}>
           <div className={Styles.wrapActionFirstLine}>
-            <div className="col-md-1 pr-1 pl-0">
-              <button
-                type="button"
-                onClick={holdAction}
-                className="btn btn-outline-secondary btn-lg btn-block"
-              >
-                7
-              </button>
-            </div>
-            <div className="col-md-1 pr-1 pl-0">
-              <button
-                type="button"
-                onClick={holdAction}
-                className="btn btn-outline-secondary btn-lg btn-block"
-              >
-                6
-              </button>
-            </div>
-            <div className="col-md-1 pr-1 pl-0">
-              <button
-                type="button"
-                onClick={holdAction}
-                className="btn btn-outline-secondary btn-lg btn-block"
-              >
-                5
-              </button>
-            </div>
-            <div className="col-md-1 pr-1 pl-0">
-              <button
-                type="button"
-                onClick={holdAction}
-                className="btn btn-outline-secondary btn-lg btn-block"
-              >
-                4
-              </button>
-            </div>
-            <div className="col-md-1 pr-1 pl-0">
-              <button
-                type="button"
-                onClick={holdAction}
-                className="btn btn-outline-secondary btn-lg btn-block"
-              >
-                3
-              </button>
-            </div>
-            <div className="col-md-1 pr-1 pl-0">
-              <button
-                type="button"
-                onClick={holdAction}
-                className="btn btn-outline-secondary btn-lg btn-block"
-              >
-                2
-              </button>
-            </div>
-            <div className="col-md-1 pr-1 pl-0">
-              <button
-                type="button"
-                onClick={holdAction}
-                className="btn btn-outline-secondary btn-lg btn-block"
-              >
-                1
-              </button>
-            </div>
+            {cartHoldList.map((item, index) => {
+              return (
+                <div key={index} className="col-md-1 pr-1 pl-0">
+                  <button
+                    type="button"
+                    onClick={() => switchToHoldItemCart(index)}
+                    className="btn btn-outline-secondary btn-lg btn-block"
+                  >
+                    {index + 1}
+                  </button>
+                </div>
+              );
+            })}
+
             <div className="col-md-2 pr-1 pl-0">
               <button
                 type="button"
                 onClick={holdAction}
+                disabled={cartCurrent.data.length <= 0}
                 className="btn btn-outline-dark btn-lg btn-block"
               >
                 Hold
@@ -484,12 +445,13 @@ export default class POS extends Component<Props> {
               </Link>
             </div>
             <div className="col-md-2 pl-0 pr-1">
-              <Link
+              <button
+                disabled={cartCurrent.data.length <= 0}
                 className="btn btn-outline-danger btn-lg btn-block"
-                to={routes.CHECKOUT}
+                onClick={emptyCart}
               >
                 Empty cart
-              </Link>
+              </button>
             </div>
             <div className="col-md-2 pr-1 pl-0">
               <CartCustomer />
