@@ -383,7 +383,7 @@ export default class POS extends Component<Props> {
                           className={CommonStyle.wrapLabel}
                           data-grand-total="1"
                         >
-                          <span>GRAND TOTAL</span>
+                          <span>ORDER TOTAL</span>
                         </div>
                         <div
                           className={CommonStyle.wrapValue}

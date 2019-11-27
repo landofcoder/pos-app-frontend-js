@@ -42,7 +42,7 @@ class CashPayment extends Component<Props> {
           <div className="modal-body">
             <div className="form-group row">
               <label htmlFor="staticEmail" className="col-sm-4 col-form-label">
-                Subtotal Total
+                Subtotal
               </label>
               <div className="col-sm-8 pt-1">
                 {cashLoadingPreparingOrder ? (
@@ -61,11 +61,11 @@ class CashPayment extends Component<Props> {
                 )}
               </div>
               <label htmlFor="staticEmail" className="col-sm-4 col-form-label">
-                Discount Amount
+                Discount
               </label>
               <div className="col-sm-8 pt-1">
                 <p className="font-weight-bold">
-                  {Math.abs(orderPreparingCheckout.totals.discount_amount)}
+                  {orderPreparingCheckout.totals.discount_amount}
                 </p>
               </div>
               <label htmlFor="staticEmail" className="col-sm-4 col-form-label">
@@ -78,7 +78,7 @@ class CashPayment extends Component<Props> {
               </div>
               <div className={Styles.lineSubTotal} />
               <label htmlFor="staticEmail" className="col-sm-4 col-form-label">
-                Grand Total
+                Order total
               </label>
               <div className="col-sm-8 pt-1">
                 {cashLoadingPreparingOrder ? (
@@ -91,7 +91,10 @@ class CashPayment extends Component<Props> {
                 ) : (
                   <div className="font-weight-bold">
                     <p className="font-weight-bold">
-                      {orderPreparingCheckout.totals.grand_total}
+                      {
+                        orderPreparingCheckout.totals
+                          .base_subtotal_with_discount
+                      }
                     </p>
                   </div>
                 )}

@@ -1,24 +1,24 @@
 // @flow
-import { takeEvery, put, call, select, all } from 'redux-saga/effects';
+import { all, call, put, select, takeEvery } from 'redux-saga/effects';
 import * as types from '../constants/root';
 import {
   addProductToQuote,
-  placeCashOrderService,
-  createGuestCartService,
   addShippingInformationService,
+  createGuestCartService,
   createInvoiceService,
-  createShipmentService
+  createShipmentService,
+  placeCashOrderService
 } from './services/CartService';
 import {
-  searchProductService,
-  getDetailProductConfigurableService,
   getDetailProductBundleService,
+  getDetailProductConfigurableService,
   getDetailProductGroupedService,
-  getProductsService
+  getProductsService,
+  searchProductService
 } from './services/ProductService';
 import {
-  searchCustomer,
-  getCustomerCartTokenService
+  getCustomerCartTokenService,
+  searchCustomer
 } from './services/CustomerService';
 import { createCustomerCartService } from './services/CustomerCartService';
 import { getSystemConfigService } from './services/CommonService';
@@ -27,8 +27,11 @@ import {
   reformatConfigurableProduct
 } from '../common/product';
 import { adminToken } from '../params';
+import {
+  getDefaultShippingMethod,
+  getDefaultPaymentMethod
+} from './common/orderSaga';
 
-const posSystemConfigRd = state => state.mainRd.posSystemConfig;
 const cartCurrent = state => state.mainRd.cartCurrent.data;
 const cartCurrentToken = state => state.mainRd.cartCurrent.customerToken;
 const cartId = state => state.mainRd.cartCurrent.cartId;
@@ -46,16 +49,9 @@ function* cashCheckout() {
   // Show cash loading pre order
   yield put({ type: types.UPDATE_CASH_LOADING_PREPARING_ORDER, payload: true });
 
-  const posSystemConfig = yield select(posSystemConfigRd);
   // Add product item to cart
   const cartCurrentResult = yield select(cartCurrent);
-
-  console.log('pos system config:', posSystemConfig);
-
-  const shippingConfig = posSystemConfig[3];
-  const defaultShippingMethod = shippingConfig.default_shipping_method;
-
-  console.log('default shipping method:', defaultShippingMethod);
+  const defaultShippingMethod = yield getDefaultShippingMethod();
 
   const {
     cartId,
@@ -173,10 +169,16 @@ function* cashCheckoutPlaceOrder() {
   const isGuestCustomer = yield select(cartIsGuestCustomer);
   const cartIdResult = yield select(cartId);
 
+  const defaultShippingMethod = yield getDefaultShippingMethod();
+  // Default payment
+  const defaultPaymentMethod = yield getDefaultPaymentMethod();
+
   const orderId = yield call(placeCashOrderService, cartCurrentTokenResult, {
     cartIdResult,
     isGuestCustomer,
-    customerToken: cartCurrentTokenResult
+    customerToken: cartCurrentTokenResult,
+    defaultShippingMethod,
+    defaultPaymentMethod
   });
 
   // Create Receipt

@@ -11,26 +11,30 @@ class CartReceipt extends Component<Props> {
     return (
       <div className={style.wrapCartReceipt}>
         <table>
-          <tr>
-            <th>Product</th>
-            <th>Quantity</th>
-            <th>Price</th>
-          </tr>
-          <tr>
-            <td>Affirm Water Bottle</td>
-            <td>1</td>
-            <td>$7.00</td>
-          </tr>
-          <tr>
-            <td>Affirm Water Bottle</td>
-            <td>1</td>
-            <td>$7.00</td>
-          </tr>
-          <tr>
-            <td>Affirm Water Bottle</td>
-            <td>1</td>
-            <td>$7.00</td>
-          </tr>
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Quantity</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Affirm Water Bottle</td>
+              <td>1</td>
+              <td>$7.00</td>
+            </tr>
+            <tr>
+              <td>Affirm Water Bottle</td>
+              <td>1</td>
+              <td>$7.00</td>
+            </tr>
+            <tr>
+              <td>Affirm Water Bottle</td>
+              <td>1</td>
+              <td>$7.00</td>
+            </tr>
+          </tbody>
         </table>
         <hr />
         <div className="form-group row">

@@ -53,6 +53,7 @@ export async function placeCashOrderService(cartToken, payloadCart) {
   let url = '';
   let token = adminToken;
   const cartId = payloadCart.cartIdResult;
+  const { defaultShippingMethod, defaultPaymentMethod } = payloadCart;
   let method = 'PUT';
 
   if (payloadCart.isGuestCustomer) {
@@ -77,7 +78,7 @@ export async function placeCashOrderService(cartToken, payloadCart) {
     redirect: 'follow', // manual, *follow, error
     referrer: 'no-referrer', // no-referrer, *client
     body: JSON.stringify({
-      paymentMethod: { method: 'checkmo' },
+      paymentMethod: { method: defaultPaymentMethod },
       app: 'LOF_POS',
       addressInformation: {
         shippingAddress: {
@@ -105,8 +106,8 @@ export async function placeCashOrderService(cartToken, payloadCart) {
           lastname: 'harrison',
           email: 'guestuser@gmail.com'
         },
-        shipping_method_code: 'pos_shipping_store_pickup',
-        shipping_carrier_code: 'pos_shipping_store_pickup'
+        shipping_method_code: defaultShippingMethod,
+        shipping_carrier_code: defaultShippingMethod
       }
     })
   });
@@ -147,7 +148,6 @@ export async function addShippingInformationService(cartToken, payloadCart) {
   let url = '';
   let token = adminToken;
   const { defaultShippingMethod } = payloadCart;
-  console.log('shipping method:', defaultShippingMethod);
   if (payloadCart.isGuestCustomer) {
     url = `${baseUrl}index.php/rest/V1/guest-carts/${cartToken}/shipping-information`;
   } else {
@@ -195,8 +195,8 @@ export async function addShippingInformationService(cartToken, payloadCart) {
           lastname: 'vu',
           email: 'fchienvuhoang@gmail.com'
         },
-        shipping_method_code: 'pos_shipping_store_pickup',
-        shipping_carrier_code: 'pos_shipping_store_pickup'
+        shipping_method_code: defaultShippingMethod,
+        shipping_carrier_code: defaultShippingMethod
       }
     })
   });
