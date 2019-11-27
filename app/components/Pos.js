@@ -439,7 +439,7 @@ export default class Pos extends Component<Props> {
             <div className="col-md-1 pl-0 pr-1">
               <Link
                 className="btn btn-outline-secondary btn-lg btn-block"
-                to={routes.CHECKOUT}
+                to={routes.ACCOUNT}
               >
                 Account
               </Link>

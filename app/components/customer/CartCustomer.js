@@ -9,7 +9,6 @@ import {
 } from '../../actions/homeAction';
 import Styles from './cart-customer.scss';
 import ModalStyle from '../styles/modal.scss';
-import { CASH_PANEL } from '../../constants/main-panel-types';
 
 type Props = {
   customer: Object,
@@ -63,9 +62,11 @@ class CartCustomer extends Component<Props> {
             style={{ display: isOpenFindCustomer ? 'block' : 'none' }}
           >
             <div className={ModalStyle.modalContent}>
-              <div className="card">
-                <div className="card-body">
-                  <h5 className="card-title">Find customer</h5>
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Find customer</h5>
+                </div>
+                <div className="modal-body">
                   <div>
                     <div className="input-group mb-3">
                       <input
@@ -129,7 +130,11 @@ class CartCustomer extends Component<Props> {
         ) : (
           <></>
         )}
-        <button type="button" className="btn btn-outline-dark btn-lg btn-block">
+        <button
+          type="button"
+          className="btn btn-outline-dark btn-lg btn-block"
+          onClick={() => toggleModalCustomer(true)}
+        >
           Customer
         </button>
         {/* {customer == null ? ( */}
