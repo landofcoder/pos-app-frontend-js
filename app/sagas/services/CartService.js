@@ -203,7 +203,7 @@ export async function addShippingInformationService(cartToken, payloadCart) {
 }
 
 /**
- * Create invoice service
+ * Create receipt service
  * @param adminToken
  * @param orderId
  * @returns {Promise<any>}

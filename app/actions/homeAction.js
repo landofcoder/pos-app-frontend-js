@@ -177,3 +177,9 @@ export function updateShowCashModal(payload) {
     payload
   };
 }
+
+export function getPostGeneralConfig() {
+  return {
+    type: types.GET_POS_GENERAL_CONFIG
+  };
+}

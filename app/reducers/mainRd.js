@@ -4,6 +4,8 @@ import * as types from '../constants/root';
 import { HOME_DEFAULT_PRODUCT_LIST } from '../constants/main-panel-types';
 
 const initialState = {
+  isLoadingSystemConfig: true,
+  posSystemConfig: {}, // General config for pos
   mainPanelType: HOME_DEFAULT_PRODUCT_LIST, // Main panel type for switching all main panel
   mainProductListLoading: false, // Main product list loading
   productList: [],
@@ -190,6 +192,12 @@ const mainRd = (state = initialState, action) =>
       }
       case types.UPDATE_MAIN_PRODUCT_LOADING:
         draft.mainProductListLoading = action.payload;
+        break;
+      case types.RECEIVED_POST_GENERAL_CONFIG:
+        draft.posSystemConfig = action.payload;
+        break;
+      case types.UPDATE_IS_LOADING_SYSTEM_CONFIG:
+        draft.isLoadingSystemConfig = action.payload;
         break;
       default:
         break;

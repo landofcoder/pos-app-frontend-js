@@ -21,6 +21,7 @@ import {
   getCustomerCartTokenService
 } from './services/CustomerService';
 import { createCustomerCartService } from './services/CustomerCartService';
+import { getSystemConfigService } from './services/CommonService';
 import {
   handleProductType,
   reformatConfigurableProduct
@@ -168,7 +169,7 @@ function* cashCheckoutPlaceOrder() {
     customerToken: cartCurrentTokenResult
   });
 
-  // Create invoice
+  // Create receipt
   yield call(createInvoiceService, adminToken, orderId);
 
   // Create shipment
@@ -181,7 +182,7 @@ function* cashCheckoutPlaceOrder() {
   // Stop cash loading order loading
   yield put({ type: types.UPDATE_CASH_PLACE_ORDER_LOADING, payload: false });
 
-  console.log('res invoice:', responseShipment);
+  console.log('res receipt:', responseShipment);
 }
 
 /**
@@ -351,6 +352,24 @@ function* addToCart(payload) {
 }
 
 /**
+ * Get pos general config
+ * @returns {Generator<<"CALL", CallEffectDescriptor>, void, ?>}
+ */
+function* getPostConfigGeneralConfig() {
+  // Start loading
+  yield put({ type: types.UPDATE_IS_LOADING_SYSTEM_CONFIG, payload: true });
+
+  const configGeneralResponse = yield call(getSystemConfigService);
+  yield put({
+    type: types.RECEIVED_POST_GENERAL_CONFIG,
+    payload: configGeneralResponse
+  });
+
+  // Stop loading
+  yield put({ type: types.UPDATE_IS_LOADING_SYSTEM_CONFIG, payload: false });
+}
+
+/**
  * Default root saga
  * @returns {Generator<<"FORK", ForkEffectDescriptor<RT>>, *>}
  */
@@ -374,6 +393,7 @@ function* rootSaga() {
   yield takeEvery(types.GET_DETAIL_PRODUCT_GROUPED, getDetailGroupedProduct);
   yield takeEvery(types.SEARCH_CUSTOMER, getSearchCustomer);
   yield takeEvery(types.ADD_TO_CART, addToCart);
+  yield takeEvery(types.GET_POS_GENERAL_CONFIG, getPostConfigGeneralConfig);
 }
 
 export default rootSaga;
