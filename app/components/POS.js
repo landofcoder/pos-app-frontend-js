@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import ListCart from './cart/ListCart';
 import routes from '../constants/routes';
-import Styles from './Home.scss';
+import Styles from './pos.scss';
 import CommonStyle from './styles/common.scss';
 import ModalStyle from './styles/modal.scss';
 import { HOME_DEFAULT_PRODUCT_LIST } from '../constants/main-panel-types';
@@ -19,6 +19,7 @@ import Bundle from './product-types/Bundle';
 import Grouped from './product-types/Grouped';
 import CartCustomer from './customer/CartCustomer';
 import CashPanel from './payment/Cash/Cash';
+import Receipt from './payment/Receipt/Receipt';
 
 type Props = {
   productList: Array,
@@ -36,18 +37,18 @@ type Props = {
   isShowCashPaymentModel: boolean,
   token: string,
   updateIsShowingProductOption: () => void,
-  mainProductListLoading: boolean
+  mainProductListLoading: boolean,
+  isOpenReceiptModal: Object
 };
 
-export default class Home extends Component<Props> {
+export default class POS extends Component<Props> {
   props: Props;
 
   constructor(props) {
     super(props);
     this.state = {
       delayTimer: null,
-      typeId: '',
-      sideBarShow: false
+      typeId: ''
     };
     localStorage.setItem('posAppData', '');
     console.log('set cookie to null');
@@ -278,25 +279,12 @@ export default class Home extends Component<Props> {
     this.setState({ delayTimer: delayTimerRes });
   };
 
-  actionSideBar = () => {
-    const { sideBarShow } = this.state;
-    if (sideBarShow) {
-      this.setState({ sideBarShow: false });
-    } else this.setState({ sideBarShow: true });
-  };
-
-  setActionNavBar = action => {
-    this.setState({ sideBarShow: action });
-  };
-
   render() {
-    //  ================Check login======================
     const { token, mainProductListLoading } = this.props;
+    // Check login
     if (token === '') {
       // return <Redirect to={routes.LOGIN} />;
     }
-
-    //  ================Check login======================
     const classWrapProductPanel = `pr-3 ${Styles.wrapProductPanel} row`;
     const {
       productList,
@@ -306,13 +294,17 @@ export default class Home extends Component<Props> {
     } = this.props;
     // Enable checkout button or disable
     const disableCheckout = cartCurrent.data.length <= 0;
-    const { productOption, isShowCashPaymentModel } = this.props;
-    const { sideBarShow } = this.state;
+    const {
+      productOption,
+      isShowCashPaymentModel,
+      isOpenReceiptModal
+    } = this.props;
     const { isShowingProductOption } = productOption;
 
     return (
       <>
         <div data-tid="container">
+          {/* OPTION MODEL (PRODUCT CONFIGURABLE, PRODUCT BUNDLE, PRODUCT GROUPED) */}
           <div
             id="modalProductOption"
             style={{ display: isShowingProductOption ? 'block' : 'none' }}
@@ -322,7 +314,7 @@ export default class Home extends Component<Props> {
               {this.switchingProductSettings()}
             </div>
           </div>
-
+          {/* CASH PAYMENT MODAL */}
           <div
             className={ModalStyle.modal}
             id="cashPaymentModal"
@@ -332,15 +324,16 @@ export default class Home extends Component<Props> {
               {isShowCashPaymentModel ? <CashPanel /> : <></>}
             </div>
           </div>
-
+          {/* RECEIPT MODAL */}
           <div
-            style={{ display: sideBarShow ? 'block' : 'none' }}
-            role="button"
-            tabIndex="0"
-            onClick={() => this.actionSideBar(false)}
-            onKeyDown={() => this.actionSideBar(false)}
+            id="receiptModal"
             className={ModalStyle.modal}
-          ></div>
+            style={{ display: isOpenReceiptModal ? 'block' : 'none' }}
+          >
+            <div className={ModalStyle.modalContent}>
+              <Receipt />
+            </div>
+          </div>
           <div className="row" id={Styles.wrapPostContainerId}>
             <div className="col-md-9">
               <div className={classWrapProductPanel}>
@@ -381,16 +374,6 @@ export default class Home extends Component<Props> {
             <div className="col-md-3">
               <div className={CommonStyle.wrapLevel1}>
                 <div className={CommonStyle.wrapCartPanelPosition}>
-                  <div className={CommonStyle.wrapCustomerOrder}>
-                    <button
-                      type="button"
-                      onClick={this.actionSideBar}
-                      style={{ display: 'none' }}
-                      className={`btn btn-info ${Styles.fixIndex}`}
-                    >
-                      SideBar
-                    </button>
-                  </div>
                   <ListCart />
                   <div className={CommonStyle.subTotalContainer}>
                     <div className={CommonStyle.wrapSubTotal}>

@@ -28,6 +28,7 @@ import {
 } from '../common/product';
 import { adminToken } from '../params';
 
+const posSystemConfigRd = state => state.mainRd.posSystemConfig;
 const cartCurrent = state => state.mainRd.cartCurrent.data;
 const cartCurrentToken = state => state.mainRd.cartCurrent.customerToken;
 const cartId = state => state.mainRd.cartCurrent.cartId;
@@ -42,9 +43,19 @@ const customer = state => state.mainRd.cartCurrent.customer;
 function* cashCheckout() {
   // Show cash modal
   yield put({ type: types.UPDATE_SHOW_CASH_MODAL, payload: true });
-
   // Show cash loading pre order
   yield put({ type: types.UPDATE_CASH_LOADING_PREPARING_ORDER, payload: true });
+
+  const posSystemConfig = yield select(posSystemConfigRd);
+  // Add product item to cart
+  const cartCurrentResult = yield select(cartCurrent);
+
+  console.log('pos system config:', posSystemConfig);
+
+  const shippingConfig = posSystemConfig[3];
+  const defaultShippingMethod = shippingConfig.default_shipping_method;
+
+  console.log('default shipping method:', defaultShippingMethod);
 
   const {
     cartId,
@@ -52,8 +63,6 @@ function* cashCheckout() {
     customerToken
   } = yield getCustomerCartToken();
 
-  // Add product item to cart
-  const cartCurrentResult = yield select(cartCurrent);
   yield all(
     cartCurrentResult.map(item =>
       call(addProductToQuote, cartId, item.sku, {
@@ -66,7 +75,8 @@ function* cashCheckout() {
   // Add shipping and get detail order
   const response = yield call(addShippingInformationService, cartId, {
     isGuestCustomer,
-    customerToken
+    customerToken,
+    defaultShippingMethod
   });
   yield put({
     type: types.RECEIVED_ORDER_PREPARING_CHECKOUT,
@@ -169,7 +179,7 @@ function* cashCheckoutPlaceOrder() {
     customerToken: cartCurrentTokenResult
   });
 
-  // Create receipt
+  // Create Receipt
   yield call(createInvoiceService, adminToken, orderId);
 
   // Create shipment
@@ -182,7 +192,7 @@ function* cashCheckoutPlaceOrder() {
   // Stop cash loading order loading
   yield put({ type: types.UPDATE_CASH_PLACE_ORDER_LOADING, payload: false });
 
-  console.log('res receipt:', responseShipment);
+  console.log('res Receipt:', responseShipment);
 }
 
 /**

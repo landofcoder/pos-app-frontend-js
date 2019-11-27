@@ -146,6 +146,8 @@ export async function createGuestCartService() {
 export async function addShippingInformationService(cartToken, payloadCart) {
   let url = '';
   let token = adminToken;
+  const { defaultShippingMethod } = payloadCart;
+  console.log('shipping method:', defaultShippingMethod);
   if (payloadCart.isGuestCustomer) {
     url = `${baseUrl}index.php/rest/V1/guest-carts/${cartToken}/shipping-information`;
   } else {
@@ -203,7 +205,7 @@ export async function addShippingInformationService(cartToken, payloadCart) {
 }
 
 /**
- * Create receipt service
+ * Create Receipt service
  * @param adminToken
  * @param orderId
  * @returns {Promise<any>}

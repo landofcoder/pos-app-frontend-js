@@ -25,8 +25,6 @@ class CashPayment extends Component<Props> {
       isLoadingCashPlaceOrder
     } = this.props;
 
-    console.log('pre data:', orderPreparingCheckout);
-
     return (
       <div>
         <div className="modal-content">

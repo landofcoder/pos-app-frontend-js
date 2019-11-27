@@ -16,6 +16,9 @@ const initialState = {
     customer: null, // Current customer for current cart
     isGuestCustomer: true
   },
+  receipt: {
+    isOpenReceiptModal: true
+  },
   isOpenFindCustomer: false,
   isLoadingSearchCustomer: false,
   customerSearchResult: [],

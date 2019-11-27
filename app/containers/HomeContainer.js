@@ -1,7 +1,7 @@
 // @flow
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import Home from '../components/Home';
+import POS from '../components/POS';
 import * as homeActions from '../actions/homeAction';
 
 function mapStateToProps(state) {
@@ -12,7 +12,8 @@ function mapStateToProps(state) {
     isShowCashPaymentModel: state.mainRd.isShowCashPaymentModel,
     productOption: state.mainRd.productOption,
     token: state.authenRd.token,
-    mainProductListLoading: state.mainRd.mainProductListLoading
+    mainProductListLoading: state.mainRd.mainProductListLoading,
+    isOpenReceiptModal: state.mainRd.receipt.isOpenReceiptModal
   };
 }
 
@@ -23,4 +24,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Home);
+)(POS);
