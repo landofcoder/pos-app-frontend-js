@@ -12,7 +12,8 @@ const initialState = {
   productList: [],
   cartCurrent: cartCurrentDefaultData,
   receipt: {
-    isOpenReceiptModal: false
+    isOpenReceiptModal: true,
+    cartForReceipt: cartCurrentDefaultData // When customer checkout succeed, copy current cart to cartForReceipt
   },
   isOpenFindCustomer: false,
   isLoadingSearchCustomer: false,
@@ -213,6 +214,9 @@ const mainRd = (state = initialState, action) =>
       }
       case types.EMPTY_CART:
         draft.cartCurrent = cartCurrentDefaultData;
+        break;
+      case types.PLACE_ORDER_SUCCESS:
+        console.log('run to place order:');
         break;
       default:
         break;

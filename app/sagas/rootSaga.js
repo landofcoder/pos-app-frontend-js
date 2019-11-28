@@ -191,10 +191,11 @@ function* cashCheckoutPlaceOrder() {
     orderId
   );
 
+  // Place order success, let show receipt and copy current cart to cartForReceipt
+  yield put({ type: types.PLACE_ORDER_SUCCESS });
+
   // Stop cash loading order loading
   yield put({ type: types.UPDATE_CASH_PLACE_ORDER_LOADING, payload: false });
-
-  console.log('res Receipt:', responseShipment);
 }
 
 /**
