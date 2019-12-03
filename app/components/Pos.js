@@ -91,29 +91,6 @@ export default class Pos extends Component<Props> {
   };
 
   /**
-   * Sum bundle price
-   * @param item
-   */
-  sumBundlePrice = item => {
-    // Bundle type
-    let price = 0;
-    const { items } = item;
-    items.forEach(itemBundle => {
-      const listOptionSelected = this.findOptionSelected(
-        itemBundle.option_selected,
-        itemBundle.options
-      );
-      if (listOptionSelected.length > 0) {
-        // Get product
-        listOptionSelected.forEach(itemOption => {
-          price += itemOption.product.price.regularPrice.amount.value;
-        });
-      }
-    });
-    return price;
-  };
-
-  /**
    * Find option selected
    * @param optionSelected
    * @param options

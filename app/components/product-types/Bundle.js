@@ -9,6 +9,7 @@ import {
   addToCart,
   updateIsShowingProductOption
 } from '../../actions/homeAction';
+import { sumBundlePrice } from '../../common/productPrice';
 
 const RADIO = 'radio';
 const CHECKBOX = 'checkbox';
@@ -18,7 +19,8 @@ const SELECT = 'select';
 type Props = {
   optionValue: Object,
   updateIsShowingProductOption: (payload: string) => void,
-  addToCart: (payload: Object) => void
+  addToCart: (payload: Object) => void,
+  currencyCode: string
 };
 
 class Bundle extends Component<Props> {
@@ -48,8 +50,17 @@ class Bundle extends Component<Props> {
   };
 
   render() {
-    const { optionValue, updateIsShowingProductOption } = this.props;
+    const {
+      optionValue,
+      updateIsShowingProductOption,
+      currencyCode
+    } = this.props;
+
     const isLoading = !optionValue;
+    let totalPrice = 0;
+    if (optionValue) {
+      totalPrice = sumBundlePrice(optionValue, currencyCode).pos_totalPriceFormat;
+    }
     return (
       <div className="modal-content">
         {isLoading ? (
@@ -86,8 +97,9 @@ class Bundle extends Component<Props> {
                 type="button"
                 className="close"
                 data-dismiss="modal"
-                aria-label="Close"
-              />
+                aria-label="Close">
+                {totalPrice}
+              </button>
             </div>
             <div className="modal-body">
               {optionValue.items.map((item, index) => {
@@ -127,7 +139,8 @@ class Bundle extends Component<Props> {
 
 function mapStateToProps(state) {
   return {
-    optionValue: state.mainRd.productOption.optionValue
+    optionValue: state.mainRd.productOption.optionValue,
+    currencyCode: state.mainRd.shopInfoConfig[0]
   };
 }
 

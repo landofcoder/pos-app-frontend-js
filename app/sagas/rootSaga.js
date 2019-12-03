@@ -35,6 +35,7 @@ import {
   getDefaultPaymentMethod
 } from './common/orderSaga';
 import { calcPrice } from '../common/productPrice';
+import { BUNDLE } from '../constants/product-types';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
 const cartCurrentToken = state => state.mainRd.cartCurrent.customerToken;
@@ -355,6 +356,7 @@ function* addToCart(payload) {
 
   const product = Object.assign({}, payload.payload);
   const productSku = product.sku;
+  const typeId = product.type_id;
 
   // Add default pos_qty, if it does not exists
   // pos_qty always NULL because passed from product list
@@ -365,16 +367,18 @@ function* addToCart(payload) {
   let found = 0;
   let foundItem = null;
   let foundIndex = 0;
+  // Just update qty with type is not bundle type
+  if (typeId !== BUNDLE) {
+    // Find exists product to update qty
+    for (let i = 0; i < listCartCurrent.length; i += 1) {
+      const item = listCartCurrent[i];
 
-  // Find exists product to update qty
-  for (let i = 0; i < listCartCurrent.length; i += 1) {
-    const item = listCartCurrent[i];
-
-    // Update exists product with qty increment
-    if (item.sku === productSku) {
-      foundIndex = i;
-      found = 1;
-      foundItem = item;
+      // Update exists product with qty increment
+      if (item.sku === productSku) {
+        foundIndex = i;
+        found = 1;
+        foundItem = item;
+      }
     }
   }
 

@@ -2,7 +2,7 @@ import { BUNDLE, SIMPLE } from '../constants/product-types';
 import { formatCurrencyCode } from './product';
 
 export function calcPrice(product, currencyCode) {
-  const productAssign = Object.assign({}, product);
+  let productAssign = Object.assign({}, product);
   const typeId = productAssign.type_id;
   switch (typeId) {
     case SIMPLE:
@@ -19,31 +19,35 @@ export function calcPrice(product, currencyCode) {
     }
     case BUNDLE: {
       // Calculator price for bundle product
-      let price = 0;
-      const { items } = productAssign;
-      items.forEach(itemBundle => {
-        const listOptionSelected = findOptionSelected(
-          itemBundle.option_selected,
-          itemBundle.options
-        );
-        if (listOptionSelected.length > 0) {
-          // Get product
-          listOptionSelected.forEach(itemOption => {
-            price += itemOption.product.price.regularPrice.amount.value;
-          });
-        }
-      });
-      productAssign.pos_totalPrice = price;
-      productAssign.pos_totalPriceFormat = formatCurrencyCode(
-        price,
-        currencyCode
-      );
+      productAssign = sumBundlePrice(productAssign, currencyCode);
       break;
     }
     default:
       console.log('run to default');
       break;
   }
+  return productAssign;
+}
+
+export function sumBundlePrice(product, currencyCode) {
+  const productAssign = Object.assign({}, product);
+  // Calculator price for bundle product
+  let price = 0;
+  const { items } = productAssign;
+  items.forEach(itemBundle => {
+    const listOptionSelected = findOptionSelected(
+      itemBundle.option_selected,
+      itemBundle.options
+    );
+    if (listOptionSelected.length > 0) {
+      // Get product
+      listOptionSelected.forEach(itemOption => {
+        price += itemOption.product.price.regularPrice.amount.value;
+      });
+    }
+  });
+  productAssign.pos_totalPrice = price;
+  productAssign.pos_totalPriceFormat = formatCurrencyCode(price, currencyCode);
   return productAssign;
 }
 
