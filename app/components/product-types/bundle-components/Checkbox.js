@@ -2,15 +2,22 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { onBundleCheckBoxOnChange } from '../../../actions/homeAction';
+import { formatCurrencyCode } from '../../../common/product';
 
 type Props = {
   item: Object,
   index: number,
-  onBundleCheckBoxOnChange: (payload: Object) => void
+  onBundleCheckBoxOnChange: (payload: Object) => void,
+  currencyCode: string
 };
 
 class Checkbox extends Component<Props> {
   props: Props;
+
+  componentDidMount() {
+    const { item } = this.props;
+    console.log('item:', item);
+  }
 
   getOptionSelected = (id, listOptionSelected) => {
     return listOptionSelected.indexOf(id) !== -1;
@@ -28,11 +35,18 @@ class Checkbox extends Component<Props> {
     onBundleCheckBoxOnChange({ index, arraySelected });
   };
 
+  renderOptionPrice = item => {
+    const { currencyCode } = this.props;
+    const { product } = item;
+    const price = product.price.regularPrice.amount.value;
+    return formatCurrencyCode(price, currencyCode);
+  };
+
   render() {
     const { item } = this.props;
     return (
       <div>
-        <p className="font-weight-bold">{item.title}</p>
+        <p className="font-weight-bold mb-1">{item.title}</p>
         {item.options.map((itemOption, index) => {
           return (
             <div key={index}>
@@ -52,7 +66,7 @@ class Checkbox extends Component<Props> {
                   className="form-check-label"
                   htmlFor={`chk-option${item.option_id}${index}`}
                 >
-                  {itemOption.label}
+                  {itemOption.label} + {this.renderOptionPrice(itemOption)}
                 </label>
               </div>
             </div>
@@ -65,7 +79,8 @@ class Checkbox extends Component<Props> {
 
 function mapStateToProps(state) {
   return {
-    optionValue: state.mainRd.productOption.optionValue
+    optionValue: state.mainRd.productOption.optionValue,
+    currencyCode: state.mainRd.shopInfoConfig[0]
   };
 }
 

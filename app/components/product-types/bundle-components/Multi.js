@@ -5,11 +5,13 @@ import {
   onBundleMultipleCheckboxOnChange,
   onBundleMultipleCheckboxRemoveItem
 } from '../../../actions/homeAction';
+import { formatCurrencyCode } from '../../../common/product';
 
 type Props = {
   item: Object,
   index: number,
-  onBundleMultipleCheckboxOnChange: (payload: Object) => void
+  onBundleMultipleCheckboxOnChange: (payload: Object) => void,
+  currencyCode: string
 };
 
 class Multi extends Component<Props> {
@@ -33,6 +35,13 @@ class Multi extends Component<Props> {
     onBundleMultipleCheckboxOnChange({ index, arraySelected });
   };
 
+  renderOptionPrice = item => {
+    const { currencyCode } = this.props;
+    const { product } = item;
+    const price = product.price.regularPrice.amount.value;
+    return formatCurrencyCode(price, currencyCode);
+  };
+
   render() {
     const { item } = this.props;
     const { required } = item;
@@ -48,7 +57,7 @@ class Multi extends Component<Props> {
           {item.options.map((itemOption, index) => {
             return (
               <option key={index} value={itemOption.id}>
-                {itemOption.label}
+                {itemOption.label} + {this.renderOptionPrice(itemOption)}
               </option>
             );
           })}
@@ -60,7 +69,8 @@ class Multi extends Component<Props> {
 
 function mapStateToProps(state) {
   return {
-    optionValue: state.mainRd.productOption.optionValue
+    optionValue: state.mainRd.productOption.optionValue,
+    currencyCode: state.mainRd.shopInfoConfig[0]
   };
 }
 

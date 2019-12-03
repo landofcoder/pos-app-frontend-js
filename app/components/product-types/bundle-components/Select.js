@@ -6,12 +6,14 @@ import {
   onBundleProductQtyOnChange
 } from '../../../actions/homeAction';
 import { findOptionById } from '../../../utils/common';
+import { formatCurrencyCode } from '../../../common/product';
 
 type Props = {
   item: Object,
   index: number,
   onBundleSelectedSelectChange: (payload: Object) => void,
-  onBundleProductQtyOnChange: (payload: Object) => void
+  onBundleProductQtyOnChange: (payload: Object) => void,
+  currencyCode: string
 };
 
 class Select extends Component<Props> {
@@ -35,13 +37,20 @@ class Select extends Component<Props> {
     onBundleProductQtyOnChange({ index, optionId, value });
   };
 
+  renderOptionPrice = item => {
+    const { currencyCode } = this.props;
+    const { product } = item;
+    const price = product.price.regularPrice.amount.value;
+    return formatCurrencyCode(price, currencyCode);
+  };
+
   render() {
     const { item } = this.props;
     const { required } = item;
     const currentActiveItem = findOptionById(this.props);
     return (
       <div>
-        <p className="font-weight-bold">{item.title}</p>
+        <p className="font-weight-bold mb-1">{item.title}</p>
         <select
           value={this.getSelectedValue()}
           onChange={e => this.onSelectChange(e)}
@@ -54,7 +63,7 @@ class Select extends Component<Props> {
           {item.options.map((itemOption, index) => {
             return (
               <option key={index} value={itemOption.id}>
-                {itemOption.label}
+                {itemOption.label} + {this.renderOptionPrice(itemOption)}
               </option>
             );
           })}
@@ -76,7 +85,8 @@ class Select extends Component<Props> {
 
 function mapStateToProps(state) {
   return {
-    optionValue: state.mainRd.productOption.optionValue
+    optionValue: state.mainRd.productOption.optionValue,
+    currencyCode: state.mainRd.shopInfoConfig[0]
   };
 }
 

@@ -6,12 +6,14 @@ import {
   onBundleSelectedChange
 } from '../../../actions/homeAction';
 import { findOptionById } from '../../../utils/common';
+import { formatCurrencyCode } from '../../../common/product';
 
 type Props = {
   item: Object,
   index: number,
   onBundleSelectedChange: (payload: Object) => void,
-  onBundleProductQtyOnChange: (payload: Object) => void
+  onBundleProductQtyOnChange: (payload: Object) => void,
+  currencyCode: string
 };
 
 class Radio extends Component<Props> {
@@ -37,12 +39,19 @@ class Radio extends Component<Props> {
     onBundleProductQtyOnChange({ index, optionId, value });
   };
 
+  renderOptionPrice = item => {
+    const { currencyCode } = this.props;
+    const { product } = item;
+    const price = product.price.regularPrice.amount.value;
+    return formatCurrencyCode(price, currencyCode);
+  };
+
   render() {
     const { item } = this.props;
     const currentActiveItem = findOptionById(this.props);
     return (
       <div>
-        <p className="font-weight-bold">{item.title}</p>
+        <p className="font-weight-bold mb-1">{item.title}</p>
         {item.options.map((itemOption, index) => {
           return (
             <div key={index}>
@@ -63,7 +72,7 @@ class Radio extends Component<Props> {
                   className="form-check-label"
                   htmlFor={`exampleRadios${itemOption.id}${index}`}
                 >
-                  {itemOption.label}
+                  {itemOption.label} + {this.renderOptionPrice(itemOption)}
                 </label>
               </div>
             </div>
@@ -86,7 +95,8 @@ class Radio extends Component<Props> {
 
 function mapStateToProps(state) {
   return {
-    optionValue: state.mainRd.productOption.optionValue
+    optionValue: state.mainRd.productOption.optionValue,
+    currencyCode: state.mainRd.shopInfoConfig[0]
   };
 }
 
