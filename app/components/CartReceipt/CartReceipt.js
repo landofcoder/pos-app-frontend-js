@@ -17,15 +17,16 @@ class CartReceipt extends Component<Props> {
   render() {
     const { cartForReceipt, orderPreparingCheckout, currencyCode } = this.props;
     const { totals } = orderPreparingCheckout;
-    const grandTotal = formatCurrencyCode(totals.grand_total, currencyCode);
+    const subTotal = formatCurrencyCode(totals.base_subtotal, currencyCode);
     const discountAmount = formatCurrencyCode(
       totals.discount_amount,
       currencyCode
     );
-    const baseSubTotalWithDiscount = formatCurrencyCode(
-      totals.base_subtotal_with_discount,
+    const shippingAmount = formatCurrencyCode(
+      totals.base_shipping_amount,
       currencyCode
     );
+    const grandTotal = formatCurrencyCode(totals.grand_total, currencyCode);
     return (
       <div className={style.wrapCartReceipt}>
         <table>
@@ -58,7 +59,18 @@ class CartReceipt extends Component<Props> {
           </label>
           <div className="col-sm-8 text-right">
             <p id="receiptLblGrandTotal" className="font-weight-bold">
-              {grandTotal}
+              {subTotal}
+            </p>
+          </div>
+          <label
+            htmlFor="receiptLblGrandTotal"
+            className="col-sm-4 col-form-label"
+          >
+            Shipping & Handling
+          </label>
+          <div className="col-sm-8 text-right">
+            <p id="receiptLblGrandTotal" className="font-weight-bold">
+              {shippingAmount}
             </p>
           </div>
           <label
@@ -80,7 +92,7 @@ class CartReceipt extends Component<Props> {
           </label>
           <div className="col-sm-8 text-right">
             <p id="receiptLblOrderTotal" className="font-weight-bold">
-              {baseSubTotalWithDiscount}
+              {grandTotal}
             </p>
           </div>
         </div>

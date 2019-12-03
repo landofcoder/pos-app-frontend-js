@@ -27,22 +27,23 @@ class CashPayment extends Component<Props> {
       isLoadingCashPlaceOrder,
       currencyCode
     } = this.props;
-    const grandTotal = formatCurrencyCode(
-      orderPreparingCheckout.totals.grand_total,
+    const subTotal = formatCurrencyCode(
+      orderPreparingCheckout.totals.base_subtotal,
       currencyCode
     );
     const discountAmount = formatCurrencyCode(
       orderPreparingCheckout.totals.discount_amount,
       currencyCode
     );
-    const taxAmount = formatCurrencyCode(
-      orderPreparingCheckout.totals.tax_amount,
+    const shippingAmount = formatCurrencyCode(
+      orderPreparingCheckout.totals.base_shipping_amount,
       currencyCode
     );
-    const baseSubTotalWithDiscount = formatCurrencyCode(
-      orderPreparingCheckout.totals.base_subtotal_with_discount,
+    const grandTotal = formatCurrencyCode(
+      orderPreparingCheckout.totals.grand_total,
       currencyCode
     );
+    console.log('order preparing:', orderPreparingCheckout);
     return (
       <div>
         <div className="modal-content">
@@ -72,7 +73,7 @@ class CashPayment extends Component<Props> {
                   </div>
                 ) : (
                   <div className="font-weight-bold">
-                    <p className="font-weight-bold">{grandTotal}</p>
+                    <p className="font-weight-bold">{subTotal}</p>
                   </div>
                 )}
               </div>
@@ -88,11 +89,11 @@ class CashPayment extends Component<Props> {
                 </p>
               </div>
               <label htmlFor="lblTaxAmount" className="col-sm-4 col-form-label">
-                Tax Amount
+                Shipping & Handling
               </label>
               <div className="col-sm-8 pt-1">
                 <p className="font-weight-bold" id="lblTaxAmount">
-                  {taxAmount}
+                  {shippingAmount}
                 </p>
               </div>
               <div className={Styles.lineSubTotal} />
@@ -110,7 +111,7 @@ class CashPayment extends Component<Props> {
                 ) : (
                   <div className="font-weight-bold">
                     <p className="font-weight-bold">
-                      {baseSubTotalWithDiscount}
+                      {grandTotal}
                     </p>
                   </div>
                 )}

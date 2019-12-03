@@ -29,7 +29,8 @@ const initialState = {
       discount_amount: 0,
       base_subtotal: 0,
       grand_total: 0,
-      tax_amount: 0
+      tax_amount: 0,
+      base_shipping_amount: 0
     }
   }, // Detail order for preparing to checkout
   cashLoadingPreparingOrder: false, // Status cash loading for preparing to show cash payment form
