@@ -6,12 +6,14 @@ import {
   onGroupedChangeQty,
   addToCart
 } from '../../actions/homeAction';
+import { formatCurrencyCode } from '../../common/product';
 
 type Props = {
   optionValue: Object,
   updateIsShowingProductOption: (payload: string) => void,
   onGroupedChangeQty: (payload: string) => void,
-  addToCart: (payload: Object) => void
+  addToCart: (payload: Object) => void,
+  currencyCode: string
 };
 
 class Grouped extends Component<Props> {
@@ -51,7 +53,9 @@ class Grouped extends Component<Props> {
   };
 
   getPriceProductItem = item => {
-    return item.product.price.regularPrice.amount.value;
+    const price = item.product.price.regularPrice.amount.value;
+    const { currencyCode } = this.props;
+    return formatCurrencyCode(price, currencyCode);
   };
 
   render() {
@@ -142,7 +146,8 @@ class Grouped extends Component<Props> {
 
 function mapStateToProps(state) {
   return {
-    optionValue: state.mainRd.productOption.optionValue
+    optionValue: state.mainRd.productOption.optionValue,
+    currencyCode: state.mainRd.shopInfoConfig[0]
   };
 }
 
