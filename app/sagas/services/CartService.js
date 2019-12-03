@@ -3,7 +3,7 @@ import { adminToken, baseUrl } from '../../params';
 /**
  * Add product to quote
  * @param cartId
- * @param sku
+ * @param item
  * @param payloadCart
  * @returns {Promise<void>}
  */
