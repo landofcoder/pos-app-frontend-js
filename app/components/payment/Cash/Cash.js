@@ -110,9 +110,7 @@ class CashPayment extends Component<Props> {
                   </div>
                 ) : (
                   <div className="font-weight-bold">
-                    <p className="font-weight-bold">
-                      {grandTotal}
-                    </p>
+                    <p className="font-weight-bold">{grandTotal}</p>
                   </div>
                 )}
               </div>
