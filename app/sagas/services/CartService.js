@@ -7,9 +7,11 @@ import { adminToken, baseUrl } from '../../params';
  * @param payloadCart
  * @returns {Promise<void>}
  */
-export async function addProductToQuote(cartId, sku, payloadCart) {
+export async function addProductToQuote(cartId, item, payloadCart) {
   let url = '';
   let token = adminToken;
+  const { sku } = item;
+  const posQty = item.pos_qty;
   if (payloadCart.isGuestCustomer) {
     url = `${baseUrl}index.php/rest/V1/guest-carts/${cartId}/items`;
   } else {
@@ -22,7 +24,7 @@ export async function addProductToQuote(cartId, sku, payloadCart) {
     cartItem: {
       quote_id: cartId,
       sku,
-      qty: 1
+      qty: posQty
     }
   };
   const response = await fetch(url, {

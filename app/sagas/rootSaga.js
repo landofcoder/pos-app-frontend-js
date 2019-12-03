@@ -67,7 +67,7 @@ function* cashCheckout() {
 
   yield all(
     cartCurrentResult.map(item =>
-      call(addProductToQuote, cartId, item.sku, {
+      call(addProductToQuote, cartId, item, {
         isGuestCustomer,
         customerToken
       })
