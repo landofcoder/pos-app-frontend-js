@@ -6,12 +6,14 @@ import {
   onConfigurableSelectOnChange,
   addToCart
 } from '../../actions/homeAction';
+import { formatCurrencyCode } from '../../common/product';
 
 type Props = {
   optionValue: Object,
   updateIsShowingProductOption: (payload: string) => void,
   onConfigurableSelectOnChange: (payload: Object) => void,
-  addToCart: (payload: Object) => void
+  addToCart: (payload: Object) => void,
+  currencyCode: string
 };
 
 class Configuration extends Component<Props> {
@@ -40,8 +42,14 @@ class Configuration extends Component<Props> {
       parentProduct = optionValue;
       configurableOptions = parentProduct.configurable_options;
       const usedProduct = parentProduct.usedProduct.product;
-
       variantProductPrice = usedProduct.price.regularPrice.amount.value;
+
+      // Reformat product price
+      const { currencyCode } = this.props;
+      variantProductPrice = formatCurrencyCode(
+        variantProductPrice,
+        currencyCode
+      );
     }
     return (
       <>
@@ -150,7 +158,8 @@ class Configuration extends Component<Props> {
 
 function mapStateToProps(state) {
   return {
-    optionValue: state.mainRd.productOption.optionValue
+    optionValue: state.mainRd.productOption.optionValue,
+    currencyCode: state.mainRd.shopInfoConfig[0]
   };
 }
 

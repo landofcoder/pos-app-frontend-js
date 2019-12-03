@@ -20,6 +20,7 @@ import Grouped from './product-types/Grouped';
 import CartCustomer from './customer/CartCustomer';
 import CashPanel from './payment/Cash/Cash';
 import Receipt from './payment/Receipt/Receipt';
+import { formatCurrencyCode } from '../common/product';
 
 type Props = {
   productList: Array,
@@ -41,7 +42,8 @@ type Props = {
   isOpenReceiptModal: Object,
   cartHoldList: Array,
   switchToHoldItemCart: () => void,
-  emptyCart: () => void
+  emptyCart: () => void,
+  currencyCode: string
 };
 
 export default class Pos extends Component<Props> {
@@ -79,13 +81,13 @@ export default class Pos extends Component<Props> {
    * @returns {number}
    */
   sumTotalPrice = () => {
-    const { cartCurrent } = this.props;
+    const { cartCurrent, currencyCode } = this.props;
     let totalPrice = 0;
     cartCurrent.data.forEach(item => {
       totalPrice += item.pos_totalPrice;
     });
 
-    return totalPrice;
+    return formatCurrencyCode(totalPrice, currencyCode);
   };
 
   /**
@@ -155,7 +157,6 @@ export default class Pos extends Component<Props> {
         }
         break;
       case SIMPLE:
-        console.log('before add to cart:', item);
         addToCart(item);
         break;
       case BUNDLE:

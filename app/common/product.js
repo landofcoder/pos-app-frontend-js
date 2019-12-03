@@ -1,3 +1,4 @@
+import LocaleCurrency from 'locale-currency';
 import { CONFIGURABLE, BUNDLE } from '../constants/product-types';
 
 /**
@@ -131,4 +132,15 @@ export function reformatConfigurableProduct(item, firstInit = true) {
   }
   // Before return
   return reAssignItem;
+}
+
+export function formatCurrencyCode(value, currencyCode) {
+  console.log('dd1:', value);
+  console.log('dd2:', currencyCode);
+  const locale = LocaleCurrency.getLocales(currencyCode)[0];
+  const formatter = new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: currencyCode
+  });
+  return formatter.format(value);
 }

@@ -14,7 +14,8 @@ function mapStateToProps(state) {
     token: state.authenRd.token,
     mainProductListLoading: state.mainRd.mainProductListLoading,
     isOpenReceiptModal: state.mainRd.receipt.isOpenReceiptModal,
-    cartHoldList: state.mainRd.cartHoldList
+    cartHoldList: state.mainRd.cartHoldList,
+    currencyCode: state.mainRd.shopInfoConfig[0]
   };
 }
 

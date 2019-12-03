@@ -21,7 +21,10 @@ import {
   searchCustomer
 } from './services/CustomerService';
 import { createCustomerCartService } from './services/CustomerCartService';
-import { getSystemConfigService } from './services/CommonService';
+import {
+  getSystemConfigService,
+  getShopInfoService
+} from './services/CommonService';
 import {
   handleProductType,
   reformatConfigurableProduct
@@ -39,6 +42,7 @@ const cartId = state => state.mainRd.cartCurrent.cartId;
 const cartIsGuestCustomer = state => state.mainRd.cartCurrent.isGuestCustomer;
 const optionValue = state => state.mainRd.productOption.optionValue;
 const customer = state => state.mainRd.cartCurrent.customer;
+const shopInfoConfig = state => state.mainRd.shopInfoConfig;
 
 /**
  * Create quote function
@@ -345,6 +349,10 @@ function* getSearchCustomer(payload) {
 function* addToCart(payload) {
   // Find sky if exits sku, then increment qty
   const listCartCurrent = yield select(cartCurrent);
+  let currencyCode = yield select(shopInfoConfig);
+  // eslint-disable-next-line prefer-destructuring
+  currencyCode = currencyCode[0];
+
   const product = Object.assign({}, payload.payload);
   const productSku = product.sku;
 
@@ -374,14 +382,14 @@ function* addToCart(payload) {
   if (found === 1) {
     foundItem = yield updateQtyProduct(foundItem);
 
-    const productAssign = yield calcPrice(foundItem);
+    const productAssign = yield calcPrice(foundItem, currencyCode);
     yield put({
       type: types.UPDATE_ITEM_CART,
       payload: { index: foundIndex, item: productAssign }
     });
   } else {
     // Update product price
-    const productAssign = yield calcPrice(product);
+    const productAssign = yield calcPrice(product, currencyCode);
 
     // Add new
     yield put({ type: types.ADD_ITEM_TO_CART, payload: productAssign });
@@ -407,10 +415,20 @@ function* getPostConfigGeneralConfig() {
   // Start loading
   yield put({ type: types.UPDATE_IS_LOADING_SYSTEM_CONFIG, payload: true });
 
+  // Get system config settings
   const configGeneralResponse = yield call(getSystemConfigService);
+
+  // Get shop info
+  const shopInfoResponse = yield call(getShopInfoService);
+
   yield put({
     type: types.RECEIVED_POST_GENERAL_CONFIG,
     payload: configGeneralResponse
+  });
+
+  yield put({
+    type: types.RECEIVED_SHOP_INFO_CONFIG,
+    payload: shopInfoResponse
   });
 
   // Stop loading

@@ -4,10 +4,12 @@ import { connect } from 'react-redux';
 import styles from './listcart.scss';
 import { baseUrl } from '../../params';
 import { deleteItemCart } from '../../actions/homeAction';
+import { formatCurrencyCode } from '../../common/product';
 
 type Props = {
   cartCurrent: Array,
-  deleteItemCart: (payload: object) => void
+  deleteItemCart: (payload: object) => void,
+  currencyCode: string
 };
 
 class ListCart extends Component<Props> {
@@ -31,9 +33,14 @@ class ListCart extends Component<Props> {
   };
 
   renderItemPrice = item => {
+    const { currencyCode } = this.props;
+    console.log('currency code:', currencyCode);
     if (!item.type_id || item.type_id !== 'bundle') {
       if (item.price.regularPrice) {
-        return item.price.regularPrice.amount.value;
+        return formatCurrencyCode(
+          item.price.regularPrice.amount.value,
+          currencyCode
+        );
       }
       return item.price;
     }
@@ -98,7 +105,7 @@ class ListCart extends Component<Props> {
                     <div className={styles.wrapPriceInfo}>
                       <div className={styles.wrapSku}>{item.sku}</div>
                       <div className={styles.wrapPrice}>
-                        {item.pos_totalPrice}
+                        {item.pos_totalPriceFormat}
                       </div>
                     </div>
                   </div>
@@ -112,6 +119,9 @@ class ListCart extends Component<Props> {
                     <span>{item.pos_qty}</span>
                   </div>
                 </div>
+                <div className={styles.wrapPriceUnit}>
+                  <span>1 Unit(s) at {this.renderItemPrice(item)}/Unit</span>
+                </div>
               </li>
             );
           })}
@@ -122,7 +132,8 @@ class ListCart extends Component<Props> {
 }
 
 const mapStateToProps = state => ({
-  cartCurrent: state.mainRd.cartCurrent
+  cartCurrent: state.mainRd.cartCurrent,
+  currencyCode: state.mainRd.shopInfoConfig[0]
 });
 
 const mapDispatchToProps = dispatch => {

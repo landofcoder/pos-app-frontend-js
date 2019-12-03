@@ -49,6 +49,7 @@
         .wrapPrice {
           width: 50%;
           text-align: right;
+          font-size: 15px;
         }
       }
 
@@ -77,6 +78,13 @@
         border-radius: 50%;
         color: #444;
         background: #E3E8EE;
+      }
+    }
+
+    .wrapPriceUnit {
+      span {
+        font-size: 13px;
+        color: #666;
       }
     }
 

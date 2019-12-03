@@ -1,6 +1,7 @@
 import { BUNDLE, SIMPLE } from '../constants/product-types';
+import { formatCurrencyCode } from './product';
 
-export function calcPrice(product) {
+export function calcPrice(product, currencyCode) {
   const productAssign = Object.assign({}, product);
   const typeId = productAssign.type_id;
   switch (typeId) {
@@ -8,7 +9,12 @@ export function calcPrice(product) {
     case undefined: {
       const price = productAssign.price.regularPrice.amount.value;
       const qty = productAssign.pos_qty;
-      productAssign.pos_totalPrice = price * qty;
+      const finalPrice = price * qty;
+      productAssign.pos_totalPrice = finalPrice;
+      productAssign.pos_totalPriceFormat = formatCurrencyCode(
+        finalPrice,
+        currencyCode
+      );
       break;
     }
     case BUNDLE: {
@@ -28,6 +34,10 @@ export function calcPrice(product) {
         }
       });
       productAssign.pos_totalPrice = price;
+      productAssign.pos_totalPriceFormat = formatCurrencyCode(
+        price,
+        currencyCode
+      );
       break;
     }
     default:

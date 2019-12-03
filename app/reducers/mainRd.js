@@ -10,6 +10,7 @@ import {
 const initialState = {
   isLoadingSystemConfig: true,
   posSystemConfig: {}, // General config for pos
+  shopInfoConfig: {}, // Shop info config
   mainPanelType: HOME_DEFAULT_PRODUCT_LIST, // Main panel type for switching all main panel
   mainProductListLoading: false, // Main product list loading
   productList: [],
@@ -226,6 +227,9 @@ const mainRd = (state = initialState, action) =>
       }
       case types.CLOSE_RECEIPT_MODAL:
         draft.receipt.isOpenReceiptModal = false;
+        break;
+      case types.RECEIVED_SHOP_INFO_CONFIG:
+        draft.shopInfoConfig = action.payload;
         break;
       default:
         break;
