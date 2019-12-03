@@ -80,6 +80,10 @@ export async function placeCashOrderService(cartToken, payloadCart) {
     body: JSON.stringify({
       paymentMethod: { method: defaultPaymentMethod },
       app: 'LOF_POS',
+      cashier_name: 'nguyen tuan',
+      cashier_email: 'nhtuan@gmail.com',
+      cashier_phone: '0123456789',
+      cashier_address: 'ha noi',
       addressInformation: {
         shippingAddress: {
           country_id: 'US',
