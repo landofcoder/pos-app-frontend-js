@@ -29,6 +29,12 @@ export function calcPrice(product, currencyCode) {
   return productAssign;
 }
 
+/**
+ * Sum bundle price
+ * @param product
+ * @param currencyCode
+ * @returns {any}
+ */
 export function sumBundlePrice(product, currencyCode) {
   const productAssign = Object.assign({}, product);
   // Calculator price for bundle product
@@ -42,7 +48,9 @@ export function sumBundlePrice(product, currencyCode) {
     if (listOptionSelected.length > 0) {
       // Get product
       listOptionSelected.forEach(itemOption => {
-        price += itemOption.product.price.regularPrice.amount.value;
+        console.log('item option:', itemOption);
+        price +=
+          itemOption.product.price.regularPrice.amount.value * itemOption.qty;
       });
     }
   });

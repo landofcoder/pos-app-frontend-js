@@ -14,11 +14,6 @@ type Props = {
 class Checkbox extends Component<Props> {
   props: Props;
 
-  componentDidMount() {
-    const { item } = this.props;
-    console.log('item:', item);
-  }
-
   getOptionSelected = (id, listOptionSelected) => {
     return listOptionSelected.indexOf(id) !== -1;
   };
@@ -66,7 +61,8 @@ class Checkbox extends Component<Props> {
                   className="form-check-label"
                   htmlFor={`chk-option${item.option_id}${index}`}
                 >
-                  {itemOption.label} + {this.renderOptionPrice(itemOption)}
+                  {itemOption.qty} x {itemOption.label} +{' '}
+                  {this.renderOptionPrice(itemOption)}
                 </label>
               </div>
             </div>

@@ -34,7 +34,6 @@ class ListCart extends Component<Props> {
 
   renderItemPrice = item => {
     const { currencyCode } = this.props;
-    console.log('currency code:', currencyCode);
     if (!item.type_id || item.type_id !== 'bundle') {
       if (item.price.regularPrice) {
         return formatCurrencyCode(

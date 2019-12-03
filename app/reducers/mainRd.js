@@ -140,7 +140,7 @@ const mainRd = (state = initialState, action) =>
         ].options = draft.productOption.optionValue.items[index].options.map(
           item => {
             if (item.id === optionId) {
-              item.qty = value;
+              item.qty = Number(value);
               return item;
             }
             return item;

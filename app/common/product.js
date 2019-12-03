@@ -135,8 +135,6 @@ export function reformatConfigurableProduct(item, firstInit = true) {
 }
 
 export function formatCurrencyCode(value, currencyCode) {
-  console.log('dd1:', value);
-  console.log('dd2:', currencyCode);
   const locale = LocaleCurrency.getLocales(currencyCode)[0];
   const formatter = new Intl.NumberFormat(locale, {
     style: 'currency',
