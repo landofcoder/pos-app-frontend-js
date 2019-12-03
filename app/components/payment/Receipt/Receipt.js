@@ -20,6 +20,15 @@ class Receipt extends Component<Props> {
     };
   }
 
+  printReceipt = () => {
+    const printContents = document.getElementById('wrap-main-receipt')
+      .innerHTML;
+    const originalContents = document.body.innerHTML;
+    document.body.innerHTML = printContents;
+    window.print();
+    document.body.innerHTML = originalContents;
+  };
+
   formatDate = date => {
     const monthNames = [
       'January',
@@ -48,25 +57,27 @@ class Receipt extends Component<Props> {
     return (
       <div className={Style.wrapMainReceipt}>
         <div className="modal-content">
-          <div className={Style.wrapHeader}>
-            <div className={Style.wrapHeadLogo}>
-              <h5 className="modal-title" id="modalReceipt">
-                Luma outlet
-              </h5>
-            </div>
-            <div className={Style.wrapHeadInfo}>
-              <div className={Style.wrapTime}>
-                <span>{dateTime}</span>
+          <div id="wrap-main-receipt">
+            <div className={Style.wrapHeader}>
+              <div className={Style.wrapHeadLogo}>
+                <h5 className="modal-title" id="modalReceipt">
+                  Luma outlet
+                </h5>
               </div>
-              <div className={Style.wrapOrderId}>
-                <span>OrderId:&nbsp;</span>
-                <span>{orderId}</span>
+              <div className={Style.wrapHeadInfo}>
+                <div className={Style.wrapTime}>
+                  <span>{dateTime}</span>
+                </div>
+                <div className={Style.wrapOrderId}>
+                  <span>OrderId:&nbsp;</span>
+                  <span>{orderId}</span>
+                </div>
               </div>
             </div>
-          </div>
-          <div className="modal-body">
-            <div>
-              <CartReceipt />
+            <div className="modal-body">
+              <div>
+                <CartReceipt />
+              </div>
             </div>
           </div>
           <div className="modal-footer">
@@ -82,6 +93,7 @@ class Receipt extends Component<Props> {
             <div className="col-md-6 p-0">
               <button
                 type="button"
+                onClick={this.printReceipt}
                 className="btn btn-primary btn-lg btn-block"
               >
                 PRINT

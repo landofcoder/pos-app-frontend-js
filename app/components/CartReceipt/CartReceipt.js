@@ -3,18 +3,29 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { deleteItemCart } from '../../actions/homeAction';
 import style from './cartReceipt.scss';
+import { formatCurrencyCode } from '../../common/product';
 
 type Props = {
   cartForReceipt: Array,
-  orderPreparingCheckout: Object
+  orderPreparingCheckout: Object,
+  currencyCode: string
 };
 
 class CartReceipt extends Component<Props> {
   props: Props;
 
   render() {
-    const { cartForReceipt, orderPreparingCheckout } = this.props;
+    const { cartForReceipt, orderPreparingCheckout, currencyCode } = this.props;
     const { totals } = orderPreparingCheckout;
+    const grandTotal = formatCurrencyCode(totals.grand_total, currencyCode);
+    const discountAmount = formatCurrencyCode(
+      totals.discount_amount,
+      currencyCode
+    );
+    const baseSubTotalWithDiscount = formatCurrencyCode(
+      totals.base_subtotal_with_discount,
+      currencyCode
+    );
     return (
       <div className={style.wrapCartReceipt}>
         <table>
@@ -31,7 +42,7 @@ class CartReceipt extends Component<Props> {
                 <tr key={index}>
                   <td>{item.name}</td>
                   <td>{item.pos_qty}</td>
-                  <td>{item.pos_totalPrice}</td>
+                  <td>{item.pos_totalPriceFormat}</td>
                 </tr>
               );
             })}
@@ -39,25 +50,47 @@ class CartReceipt extends Component<Props> {
         </table>
         <hr />
         <div className="form-group row">
-          <label className="col-sm-4 col-form-label">Subtotal</label>
+          <label
+            htmlFor="receiptLblGrandTotal"
+            className="col-sm-4 col-form-label"
+          >
+            Subtotal
+          </label>
           <div className="col-sm-8 text-right">
-            <p className="font-weight-bold">{totals.base_subtotal}</p>
+            <p id="receiptLblGrandTotal" className="font-weight-bold">
+              {grandTotal}
+            </p>
           </div>
-          <label className="col-sm-4 col-form-label">Discount</label>
+          <label
+            htmlFor="receiptLblDiscountAmount"
+            className="col-sm-4 col-form-label"
+          >
+            Discount
+          </label>
           <div className="col-sm-8 text-right">
-            <p className="font-weight-bold">{totals.discount_amount}</p>
+            <p id="receiptLblDiscountAmount" className="font-weight-bold">
+              {discountAmount}
+            </p>
           </div>
-          <label className="col-sm-4 col-form-label">ORDER TOTAL</label>
+          <label
+            htmlFor="receiptLblOrderTotal"
+            className="col-sm-4 col-form-label"
+          >
+            ORDER TOTAL
+          </label>
           <div className="col-sm-8 text-right">
-            <p className="font-weight-bold">
-              {totals.base_subtotal_with_discount}
+            <p id="receiptLblOrderTotal" className="font-weight-bold">
+              {baseSubTotalWithDiscount}
             </p>
           </div>
         </div>
         <hr />
         <div className="form-group row">
-          <label className="col-sm-4 col-form-label">
-            Cashier name: JOHN DOE
+          <label
+            htmlFor="receiptLblCashierName"
+            className="col-sm-4 col-form-label"
+          >
+            <span id="receiptLblCashierName">Cashier name: JOHN DOE</span>
           </label>
         </div>
         <hr />
@@ -69,7 +102,8 @@ class CartReceipt extends Component<Props> {
 
 const mapStateToProps = state => ({
   cartForReceipt: state.mainRd.receipt.cartForReceipt.data,
-  orderPreparingCheckout: state.mainRd.orderPreparingCheckout
+  orderPreparingCheckout: state.mainRd.orderPreparingCheckout,
+  currencyCode: state.mainRd.shopInfoConfig[0]
 });
 
 const mapDispatchToProps = dispatch => {

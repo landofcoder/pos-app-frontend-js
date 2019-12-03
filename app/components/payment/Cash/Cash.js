@@ -4,13 +4,15 @@ import { connect } from 'react-redux';
 import { cashPlaceOrderAction } from '../../../actions/checkoutActions';
 import { updateShowCashModal } from '../../../actions/homeAction';
 import Styles from './cash.scss';
+import { formatCurrencyCode } from '../../../common/product';
 
 type Props = {
   cashLoadingPreparingOrder: boolean,
   orderPreparingCheckout: Object,
   cashPlaceOrderAction: () => void,
   updateShowCashModal: () => void,
-  isLoadingCashPlaceOrder: boolean
+  isLoadingCashPlaceOrder: boolean,
+  currencyCode: string
 };
 
 class CashPayment extends Component<Props> {
@@ -22,9 +24,25 @@ class CashPayment extends Component<Props> {
       orderPreparingCheckout,
       cashPlaceOrderAction,
       updateShowCashModal,
-      isLoadingCashPlaceOrder
+      isLoadingCashPlaceOrder,
+      currencyCode
     } = this.props;
-
+    const grandTotal = formatCurrencyCode(
+      orderPreparingCheckout.totals.grand_total,
+      currencyCode
+    );
+    const discountAmount = formatCurrencyCode(
+      orderPreparingCheckout.totals.discount_amount,
+      currencyCode
+    );
+    const taxAmount = formatCurrencyCode(
+      orderPreparingCheckout.totals.tax_amount,
+      currencyCode
+    );
+    const baseSubTotalWithDiscount = formatCurrencyCode(
+      orderPreparingCheckout.totals.base_subtotal_with_discount,
+      currencyCode
+    );
     return (
       <div>
         <div className="modal-content">
@@ -54,26 +72,27 @@ class CashPayment extends Component<Props> {
                   </div>
                 ) : (
                   <div className="font-weight-bold">
-                    <p className="font-weight-bold">
-                      {orderPreparingCheckout.totals.grand_total}
-                    </p>
+                    <p className="font-weight-bold">{grandTotal}</p>
                   </div>
                 )}
               </div>
-              <label htmlFor="staticEmail" className="col-sm-4 col-form-label">
+              <label
+                htmlFor="lblDiscountAmount"
+                className="col-sm-4 col-form-label"
+              >
                 Discount
               </label>
               <div className="col-sm-8 pt-1">
-                <p className="font-weight-bold">
-                  {orderPreparingCheckout.totals.discount_amount}
+                <p className="font-weight-bold" id="lblDiscountAmount">
+                  {discountAmount}
                 </p>
               </div>
-              <label htmlFor="staticEmail" className="col-sm-4 col-form-label">
+              <label htmlFor="lblTaxAmount" className="col-sm-4 col-form-label">
                 Tax Amount
               </label>
               <div className="col-sm-8 pt-1">
-                <p className="font-weight-bold">
-                  {orderPreparingCheckout.totals.tax_amount}
+                <p className="font-weight-bold" id="lblTaxAmount">
+                  {taxAmount}
                 </p>
               </div>
               <div className={Styles.lineSubTotal} />
@@ -91,9 +110,7 @@ class CashPayment extends Component<Props> {
                 ) : (
                   <div className="font-weight-bold">
                     <p className="font-weight-bold">
-                      {
-                        orderPreparingCheckout.totals.base_subtotal_with_discount
-                      }
+                      {baseSubTotalWithDiscount}
                     </p>
                   </div>
                 )}
@@ -140,7 +157,8 @@ function mapStateToProps(state) {
   return {
     cashLoadingPreparingOrder: state.mainRd.cashLoadingPreparingOrder,
     orderPreparingCheckout: state.mainRd.orderPreparingCheckout,
-    isLoadingCashPlaceOrder: state.mainRd.isLoadingCashPlaceOrder
+    isLoadingCashPlaceOrder: state.mainRd.isLoadingCashPlaceOrder,
+    currencyCode: state.mainRd.shopInfoConfig[0]
   };
 }
 

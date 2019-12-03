@@ -198,10 +198,6 @@ function* cashCheckoutPlaceOrder() {
   // Place order success, let show receipt and copy current cart to cartForReceipt
   yield put({ type: types.PLACE_ORDER_SUCCESS, orderId });
 
-  // Select cart current
-  const cartCurrentResponse = yield select(cartCurrent);
-  console.log('debug1:', JSON.stringify(cartCurrentResponse));
-
   // Stop cash loading order loading
   yield put({ type: types.UPDATE_CASH_PLACE_ORDER_LOADING, payload: false });
 
