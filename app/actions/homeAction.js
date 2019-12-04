@@ -1,6 +1,6 @@
 // @flow
 import * as types from '../constants/root';
-
+import * as typesAuthen from '../constants/authen.json';
 export function addToCart(payload) {
   return {
     type: types.ADD_TO_CART,
@@ -207,4 +207,11 @@ export function closeReceiptModal() {
   return {
     type: types.CLOSE_RECEIPT_MODAL
   };
+}
+
+export function setToken(payload) {
+  return {
+    type: typesAuthen.SET_TOKEN,
+    payload
+  }
 }

@@ -32,8 +32,11 @@ const authenRd = (state = initialState, action) =>
         break;
       case typesAuthen.CASHIER_INFO:
         draft.cashierInfo = action.payload
-      default:
         break;
+      case typesAuthen.SET_TOKEN:
+        draft.token = action.payload
+        break;
+      default:
     }
   });
 

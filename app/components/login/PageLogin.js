@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { login } from '../../actions/authenAction';
+import { setToken } from '../../actions/homeAction'
 import styles from './pagelogin.scss';
 import commonStyles from '../styles/common.scss';
 import Loading from '../wait/Loading';
@@ -23,7 +24,6 @@ class PageLogin extends Component {
       valuePass: ''
     };
   }
-
   handleChangeUser = event => {
     this.setState({ valueUser: event.target.value });
   };
@@ -40,51 +40,38 @@ class PageLogin extends Component {
       password: valuePass
     };
     login(payload);
+    console.log(this.props.loading);
   };
 
   render() {
-    const { token, message } = this.props;
+    const { token, message, loading } = this.props;
     const { valueUser, valuePass } = this.state;
     if (token !== '') {
       return <Redirect to={routes.HOME} />;
     }
     return (
       <>
-        <Loading />
         <div
           className={`${commonStyles.wrapStaticPageContent} ${styles.wrapFullCenter} ${commonStyles.contentColumn}`}
         >
-          <div className="col-5">
-            <div className={styles.contentColumn}>
-              <img
-                className="mb-4"
-                src="/docs/4.3/assets/brand/bootstrap-solid.svg"
-                alt=""
-                width="72"
-                height="72"
-              />
+          <div className="col-sm-12 col-md-4 col-lg-3 ">
+            <form className={`${styles.contentColumn} form-group`}>
               <h1 className="h3 mb-3 font-weight-normal">Please sign in</h1>
-              <label htmlFor="inputEmail" className="sr-only">
-                Email address
-              </label>
               <input
                 value={valueUser}
                 onChange={this.handleChangeUser}
                 type="email"
                 id="inputEmail"
-                className="form-control"
+                className="form-control mb-3"
                 placeholder="Email address"
                 required
               />
-              <label htmlFor="inputPassword" className="sr-only">
-                Password
-              </label>
               <input
                 value={valuePass}
                 onChange={this.handleChangePass}
                 type="password"
                 id="inputPassword"
-                className="form-control"
+                className="form-control mb-3"
                 placeholder="Password"
                 required
               />
@@ -101,10 +88,9 @@ class PageLogin extends Component {
                 className="btn btn-lg btn-primary btn-block"
                 type="submit"
               >
-                Sign in
+                {loading?(<Loading />):(<>Sign In</>)}
               </button>
-              <p className="mt-5 mb-3 text-muted">&copy; 2017-2019</p>
-            </div>
+            </form>
           </div>
         </div>
       </>
@@ -114,13 +100,15 @@ class PageLogin extends Component {
 
 function mapDispatchToProps(dispatch) {
   return {
-    login: payload => dispatch(login(payload))
+    login: payload => dispatch(login(payload)),
+    setToken: payload => dispatch(setToken(payload))
   };
 }
 function mapStateToProps(state) {
   return {
     message: state.authenRd.message,
-    token: state.authenRd.token
+    token: state.authenRd.token,
+    loading: state.authenRd.loading
   };
 }
 export default connect(

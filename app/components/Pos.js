@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { Link,/* Redirect */ } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import ListCart from './cart/ListCart';
 import routes from '../constants/routes';
 import Styles from './pos.scss';
@@ -43,7 +43,8 @@ type Props = {
   cartHoldList: Array,
   switchToHoldItemCart: () => void,
   emptyCart: () => void,
-  currencyCode: string
+  currencyCode: string,
+  setToken: (payload: string) => void
 };
 
 export default class Pos extends Component<Props> {
@@ -261,11 +262,19 @@ export default class Pos extends Component<Props> {
       mainProductListLoading,
       cartHoldList,
       switchToHoldItemCart,
-      emptyCart
+      emptyCart,
+      setToken
     } = this.props;
     // Check login
+    console.log(localStorage.getItem('posAppData'));
+
     if (token === '') {
-      // return <Redirect to={routes.LOGIN} />;
+      if(localStorage.getItem('posAppData')){
+        let data = localStorage.getItem('posAppData');
+        console.log(localStorage.getItem('posAppData'));
+      }
+      else
+        return <Redirect to={routes.LOGIN} />;
     }
     const classWrapProductPanel = `pr-3 ${Styles.wrapProductPanel} row`;
     const {
