@@ -59,7 +59,7 @@ function* cashCheckout() {
   // Add product item to cart
   const cartCurrentResult = yield select(cartCurrent);
   const posSystemConfigResult = yield select(posSystemConfig);
-  const posSystemConfigCustomer = posSystemConfigResult[3];
+  const posSystemConfigGuestCustomer = posSystemConfigResult[3];
   const defaultShippingMethod = yield getDefaultShippingMethod();
 
   const {
@@ -82,7 +82,7 @@ function* cashCheckout() {
     isGuestCustomer,
     customerToken,
     defaultShippingMethod,
-    posSystemConfigCustomer
+    posSystemConfigGuestCustomer
   });
   yield put({
     type: types.RECEIVED_ORDER_PREPARING_CHECKOUT,
