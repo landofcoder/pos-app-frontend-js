@@ -56,7 +56,6 @@ export default class Pos extends Component<Props> {
       delayTimer: null,
       typeId: ''
     };
-    localStorage.setItem('posAppData', '');
   }
 
   componentDidMount(): * {
@@ -271,6 +270,7 @@ export default class Pos extends Component<Props> {
     if (token === '') {
       if(localStorage.getItem('posAppData')){
         let data = localStorage.getItem('posAppData');
+        setToken(localStorage.getItem('posAppData'));
         console.log(localStorage.getItem('posAppData'));
       }
       else
