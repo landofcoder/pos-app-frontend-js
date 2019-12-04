@@ -1,11 +1,13 @@
 import produce from 'immer';
 import * as typesAuthen from '../constants/authen';
+import { SSL_OP_DONT_INSERT_EMPTY_FRAGMENTS } from 'constants';
 
 const initialState = {
   token: '',
   authenticate: '',
   loading: false,
-  message: ''
+  message: '',
+  cashierInfo: {}
 };
 /*  eslint no-param-reassign: "error" */
 const authenRd = (state = initialState, action) =>
@@ -28,6 +30,8 @@ const authenRd = (state = initialState, action) =>
       case typesAuthen.SUCCESS_LOGIN:
         draft.message = 'SUCCESS';
         break;
+      case typesAuthen.CASHIER_INFO:
+        draft.cashierInfo = action.payload
       default:
         break;
     }

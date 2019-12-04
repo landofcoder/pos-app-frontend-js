@@ -35,16 +35,16 @@ export default class Account extends Component<Props> {
           data-tid="container"
           className={`${Styles.wrapFullHeight} pr-0 pl-0`}
         >
-          <div class="row">
-            <div class="col-3">
+          <div className="row">
+            <div className="col-3">
               <div
-                class="nav flex-column nav-pills"
+                className="nav flex-column nav-pills"
                 id="v-pills-tab"
                 role="tablist"
                 aria-orientation="vertical"
               >
                 <a
-                  class={`nav-link ${cashierSelect}`}
+                  className={`nav-link ${cashierSelect}`}
                   id="v-pills-home-tab"
                   data-toggle="pill"
                   href="#v-pills-home"
@@ -55,7 +55,7 @@ export default class Account extends Component<Props> {
                   Cashier
                 </a>
                 <a
-                  class={`nav-link ${orderHistorySelect}`}
+                  className={`nav-link ${orderHistorySelect}`}
                   id="v-pills-profile-tab"
                   data-toggle="pill"
                   href="#v-pills-profile"
@@ -67,7 +67,7 @@ export default class Account extends Component<Props> {
                 </a>
               </div>
             </div>
-            <div class="col-9">
+            <div className="col-9">
               <OrderHistory />
             </div>
           </div>

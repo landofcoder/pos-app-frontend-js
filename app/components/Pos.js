@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link,/* Redirect */ } from 'react-router-dom';
 import ListCart from './cart/ListCart';
 import routes from '../constants/routes';
 import Styles from './pos.scss';
@@ -56,7 +56,6 @@ export default class Pos extends Component<Props> {
       typeId: ''
     };
     localStorage.setItem('posAppData', '');
-    console.log(localStorage.getItem('posAppData'));
   }
 
   componentDidMount(): * {

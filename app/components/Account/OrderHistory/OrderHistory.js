@@ -5,7 +5,7 @@ class OrderHistory extends Component<Props> {
   render() {
     return (
       <>
-        <table class="table">
+        <table className="table">
           <thead>
             <tr className={Styles.fixBorderTop}>
               <th scope="col">#</th>

@@ -22,7 +22,6 @@ class PageLogin extends Component {
       valueUser: '',
       valuePass: ''
     };
-    console.log(this.state);
   }
 
   handleChangeUser = event => {
@@ -36,8 +35,6 @@ class PageLogin extends Component {
   loginAction = () => {
     const { login } = this.props;
     const { valueUser, valuePass } = this.state;
-    console.log(`user name :${valueUser}`);
-    console.log(`pass name :${valuePass}`);
     const payload = {
       username: valueUser,
       password: valuePass
@@ -93,7 +90,7 @@ class PageLogin extends Component {
               />
               <div className="checkbox mb-3"></div>
               {message !== '' ? (
-                <div class="alert alert-danger" role="alert">
+                <div className="alert alert-danger" role="alert">
                   {message}
                 </div>
               ) : (
