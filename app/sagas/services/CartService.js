@@ -86,35 +86,35 @@ export async function placeCashOrderService(cartToken, payloadCart) {
       cashier_email: 'nhtuan@gmail.com',
       cashier_phone: '0123456789',
       cashier_address: 'ha noi',
-      addressInformation: {
-        shippingAddress: {
-          country_id: 'US',
-          street: ['Street Address'],
-          company: 'Company',
-          telephone: '2313131312',
-          postcode: 'A1B2C3',
-          regionId: '1',
-          city: 'California',
-          firstname: 'john',
-          lastname: 'harrison',
-          email: 'guestuser@gmail.com',
-          sameAsBilling: 1
-        },
-        billingAddress: {
-          country_id: 'US',
-          street: ['Street Address'],
-          company: 'Company',
-          telephone: '2313131312',
-          postcode: 'A1B2C3',
-          regionId: '1',
-          city: 'California',
-          firstname: 'john',
-          lastname: 'harrison',
-          email: 'guestuser@gmail.com'
-        },
-        shipping_method_code: defaultShippingMethod,
-        shipping_carrier_code: defaultShippingMethod
-      }
+      // addressInformation: {
+      //   shippingAddress: {
+      //     country_id: 'US',
+      //     street: ['Street Address'],
+      //     company: 'Company',
+      //     telephone: '2313131312',
+      //     postcode: 'A1B2C3',
+      //     regionId: '1',
+      //     city: 'California',
+      //     firstname: 'john',
+      //     lastname: 'harrison',
+      //     email: 'guestuser@gmail.com',
+      //     sameAsBilling: 1
+      //   },
+      //   billingAddress: {
+      //     country_id: 'US',
+      //     street: ['Street Address'],
+      //     company: 'Company',
+      //     telephone: '2313131312',
+      //     postcode: 'A1B2C3',
+      //     regionId: '1',
+      //     city: 'California',
+      //     firstname: 'john',
+      //     lastname: 'harrison',
+      //     email: 'guestuser@gmail.com'
+      //   },
+      //   shipping_method_code: defaultShippingMethod,
+      //   shipping_carrier_code: defaultShippingMethod
+      // }
     })
   });
   const data = await response.json();

@@ -44,6 +44,7 @@ const cartIsGuestCustomer = state => state.mainRd.cartCurrent.isGuestCustomer;
 const optionValue = state => state.mainRd.productOption.optionValue;
 const customer = state => state.mainRd.cartCurrent.customer;
 const shopInfoConfig = state => state.mainRd.shopInfoConfig;
+const posSystemConfig = state => state.mainRd.posSystemConfig;
 
 /**
  * Create quote function
@@ -57,6 +58,8 @@ function* cashCheckout() {
 
   // Add product item to cart
   const cartCurrentResult = yield select(cartCurrent);
+  const posSystemConfigResult = yield select(posSystemConfig);
+  const posSystemConfigCustomer = posSystemConfigResult[3];
   const defaultShippingMethod = yield getDefaultShippingMethod();
 
   const {
@@ -78,7 +81,8 @@ function* cashCheckout() {
   const response = yield call(addShippingInformationService, cartId, {
     isGuestCustomer,
     customerToken,
-    defaultShippingMethod
+    defaultShippingMethod,
+    posSystemConfigCustomer
   });
   yield put({
     type: types.RECEIVED_ORDER_PREPARING_CHECKOUT,
@@ -174,6 +178,8 @@ function* cashCheckoutPlaceOrder() {
   const cartCurrentTokenResult = yield select(cartCurrentToken);
   const isGuestCustomer = yield select(cartIsGuestCustomer);
   const cartIdResult = yield select(cartId);
+  const posSystemConfigResult = yield select(posSystemConfig);
+  const posSystemConfigCustomer = posSystemConfigResult[3];
 
   const defaultShippingMethod = yield getDefaultShippingMethod();
 
@@ -186,7 +192,8 @@ function* cashCheckoutPlaceOrder() {
     isGuestCustomer,
     customerToken: cartCurrentTokenResult,
     defaultShippingMethod,
-    defaultPaymentMethod
+    defaultPaymentMethod,
+    posSystemConfigCustomer
   });
 
   // Step 2: Create invoice

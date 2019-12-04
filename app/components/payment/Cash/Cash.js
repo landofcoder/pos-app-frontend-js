@@ -43,7 +43,6 @@ class CashPayment extends Component<Props> {
       orderPreparingCheckout.totals.grand_total,
       currencyCode
     );
-    console.log('order preparing:', orderPreparingCheckout);
     return (
       <div>
         <div className="modal-content">
