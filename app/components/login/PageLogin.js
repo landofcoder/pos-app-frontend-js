@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { login } from '../../actions/authenAction';
-import { setToken } from '../../actions/homeAction'
+import { setToken } from '../../actions/homeAction';
 import styles from './pagelogin.scss';
 import commonStyles from '../styles/common.scss';
 import Loading from '../wait/Loading';
@@ -55,41 +55,46 @@ class PageLogin extends Component {
           className={`${commonStyles.wrapStaticPageContent} ${styles.wrapFullCenter} ${commonStyles.contentColumn}`}
         >
           <div className="col-sm-12 col-md-4 col-lg-3 ">
-            <form className={`${styles.contentColumn} form-group`}>
+            <form className={`${styles.contentColumn}`}>
               <h1 className="h3 mb-3 font-weight-normal">Please sign in</h1>
-              <input
-                value={valueUser}
-                onChange={this.handleChangeUser}
-                type="email"
-                id="inputEmail"
-                className="form-control mb-3"
-                placeholder="Email address"
-                required
-              />
-              <input
-                value={valuePass}
-                onChange={this.handleChangePass}
-                type="password"
-                id="inputPassword"
-                className="form-control mb-3"
-                placeholder="Password"
-                required
-              />
-              <div className="checkbox mb-3"></div>
-              {message !== '' ? (
-                <div className="alert alert-danger" role="alert">
-                  {message}
-                </div>
-              ) : (
-                <></>
-              )}
-              <button
-                onClick={this.loginAction}
-                className="btn btn-lg btn-primary btn-block"
-                type="submit"
-              >
-                {loading?(<Loading />):(<>Sign In</>)}
-              </button>
+              <div className="form-group">
+                <input
+                  value={valueUser}
+                  onChange={this.handleChangeUser}
+                  type="email"
+                  id="inputEmail"
+                  className="form-control"
+                  placeholder="Email address"
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <input
+                  value={valuePass}
+                  onChange={this.handleChangePass}
+                  type="password"
+                  id="inputPassword"
+                  className="form-control"
+                  placeholder="Password"
+                  required
+                />
+              </div>
+              <div className="form-group">
+                {message !== '' ? (
+                  <div className="alert alert-danger" role="alert">
+                    {message}
+                  </div>
+                ) : (
+                  <></>
+                )}
+                <button
+                  onClick={this.loginAction}
+                  className="btn btn-lg btn-primary btn-block"
+                  type="submit"
+                >
+                  {loading ? <Loading /> : <>Sign In</>}
+                </button>
+              </div>
             </form>
           </div>
         </div>
