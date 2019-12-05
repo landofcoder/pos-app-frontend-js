@@ -220,9 +220,16 @@ function* cashCheckoutPlaceOrder() {
  * @param searchValue
  * @returns {Generator<<"CALL", CallEffectDescriptor<RT>>, *>}
  */
-function* search(searchValue) {
+function* searchProduct(searchValue) {
+  // Start loading
+  yield put({ type: types.UPDATE_IS_LOADING_SEARCH_HANDLE, payload: true });
+
   const searchResult = yield call(searchProductService, searchValue);
-  console.log('search result:', searchResult);
+  const productResult = searchResult.data ? searchResult.data.products.items : [];
+  yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productResult });
+
+  // Stop loading
+  yield put({ type: types.UPDATE_IS_LOADING_SEARCH_HANDLE, payload: false });
 }
 
 /**
@@ -448,7 +455,7 @@ function* getPostConfigGeneralConfig() {
  */
 function* rootSaga() {
   yield takeEvery(types.CASH_CHECKOUT_ACTION, cashCheckout);
-  yield takeEvery(types.SEARCH_ACTION, search);
+  yield takeEvery(types.SEARCH_ACTION, searchProduct);
   yield takeEvery(types.GET_DEFAULT_PRODUCT, getDefaultProduct);
   yield takeEvery(
     types.CASH_CHECKOUT_PLACE_ORDER_ACTION,

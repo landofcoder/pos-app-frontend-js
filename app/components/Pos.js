@@ -26,7 +26,7 @@ type Props = {
   productList: Array,
   addToCart: (payload: Object) => void,
   holdAction: () => void,
-  searchAction: (payload: string) => void,
+  searchProductAction: (payload: string) => void,
   getDefaultProductAction: () => void,
   cartCurrent: Object,
   mainPanelType: string,
@@ -43,7 +43,8 @@ type Props = {
   cartHoldList: Array,
   switchToHoldItemCart: () => void,
   emptyCart: () => void,
-  currencyCode: string
+  currencyCode: string,
+  isLoadingSearchHandle: boolean
 };
 
 export default class Pos extends Component<Props> {
@@ -247,11 +248,11 @@ export default class Pos extends Component<Props> {
   searchTyping = e => {
     const { value } = e.target;
     const { delayTimer } = this.state;
-    const { searchAction } = this.props;
+    const { searchProductAction } = this.props;
     clearTimeout(delayTimer);
     const delayTimerRes = setTimeout(() => {
       // Do the ajax stuff
-      searchAction(value);
+      searchProductAction(value);
     }, 300); // Will do the ajax stuff after 1000 ms, or 1 s
     this.setState({ delayTimer: delayTimerRes });
   };
@@ -262,7 +263,8 @@ export default class Pos extends Component<Props> {
       mainProductListLoading,
       cartHoldList,
       switchToHoldItemCart,
-      emptyCart
+      emptyCart,
+      isLoadingSearchHandle
     } = this.props;
     // Check login
     if (token === '') {
@@ -332,9 +334,21 @@ export default class Pos extends Component<Props> {
                         type="text"
                         className="form-control"
                         placeholder="sku, product name"
+                        onInput={this.searchTyping}
                         aria-label="Username"
                         aria-describedby="basic-addon1"
                       />
+                      {isLoadingSearchHandle ? (
+                        <div id={Styles.wrapSearchLoading}>
+                          <div className="d-flex justify-content-center">
+                            <div className="spinner-border text-secondary spinner-border-sm" role="status">
+                              <span className="sr-only">Loading...</span>
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <></>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -420,6 +434,7 @@ export default class Pos extends Component<Props> {
             </div>
             <div className="col-md-2 pl-0 pr-1">
               <button
+                type="button"
                 disabled={cartCurrent.data.length <= 0}
                 className="btn btn-outline-danger btn-lg btn-block"
                 onClick={emptyCart}

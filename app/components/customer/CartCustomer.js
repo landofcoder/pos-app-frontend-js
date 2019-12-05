@@ -31,7 +31,7 @@ class CartCustomer extends Component<Props> {
     };
   }
 
-  onSearchAction = e => {
+  onSearchCustomer = e => {
     const { searchCustomer } = this.props;
     const { value } = e.target;
     const { delayTimer } = this.state;
@@ -98,7 +98,7 @@ class CartCustomer extends Component<Props> {
                         className="form-control"
                         placeholder="Search by id or email customer's"
                         aria-label="Recipient's username"
-                        onChange={this.onSearchAction}
+                        onChange={this.onSearchCustomer}
                         aria-describedby="button-addon2"
                       />
                     </div>

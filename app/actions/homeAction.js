@@ -45,7 +45,7 @@ export function cashCheckoutAction() {
   };
 }
 
-export function searchAction(payload) {
+export function searchProductAction(payload) {
   return {
     type: types.SEARCH_ACTION,
     payload
