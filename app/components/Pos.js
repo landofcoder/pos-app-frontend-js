@@ -44,7 +44,8 @@ type Props = {
   switchToHoldItemCart: () => void,
   emptyCart: () => void,
   currencyCode: string,
-  isLoadingSearchHandle: boolean
+  isLoadingSearchHandle: boolean,
+  isShowHaveNoSearchResultFound: boolean
 };
 
 export default class Pos extends Component<Props> {
@@ -264,7 +265,8 @@ export default class Pos extends Component<Props> {
       cartHoldList,
       switchToHoldItemCart,
       emptyCart,
-      isLoadingSearchHandle
+      isLoadingSearchHandle,
+      isShowHaveNoSearchResultFound
     } = this.props;
     // Check login
     if (token === '') {
@@ -341,7 +343,10 @@ export default class Pos extends Component<Props> {
                       {isLoadingSearchHandle ? (
                         <div id={Styles.wrapSearchLoading}>
                           <div className="d-flex justify-content-center">
-                            <div className="spinner-border text-secondary spinner-border-sm" role="status">
+                            <div
+                              className="spinner-border text-secondary spinner-border-sm"
+                              role="status"
+                            >
                               <span className="sr-only">Loading...</span>
                             </div>
                           </div>
@@ -351,6 +356,15 @@ export default class Pos extends Component<Props> {
                       )}
                     </div>
                   </div>
+                  {isShowHaveNoSearchResultFound ? (
+                    <>
+                      <p className="text-center text-muted">
+                        Have no item found
+                      </p>
+                    </>
+                  ) : (
+                    <></>
+                  )}
                 </div>
                 {mainProductListLoading ? (
                   <div className="col-md-12">
