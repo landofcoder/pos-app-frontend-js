@@ -21,8 +21,11 @@ async function posData(payload) {
       }) // body data type must match "Content-Type" header
     }
   );
-  const data = await response.json(); // parses JSON response into native JavaScript objects
-  return data;
+  if (response.ok) {
+    const data = await response.json(); // parses JSON response into native JavaScript objects
+    return { data, ok: true };
+  }
+  return { ok: false };
 }
 export async function AuthenService(payload) {
   try {
@@ -40,7 +43,7 @@ export async function getInfoCashierService(adminToken) {
     credentials: 'same-origin', // include, *same-origin, omit
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${adminToken}`
+      Authorization: `Bearer ${adminToken.data}`
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
     redirect: 'follow', // manual, *follow, error
