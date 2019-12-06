@@ -265,16 +265,11 @@ export default class Pos extends Component<Props> {
       setToken
     } = this.props;
     // Check login
-    console.log(localStorage.getItem('posAppData'));
 
     if (token === '') {
-      if(localStorage.getItem('posAppData')){
-        let data = localStorage.getItem('posAppData');
+      if (localStorage.getItem('posAppData')) {
         setToken(localStorage.getItem('posAppData'));
-        console.log(localStorage.getItem('posAppData'));
-      }
-      else
-        return <Redirect to={routes.LOGIN} />;
+      } else return <Redirect to={routes.LOGIN} />;
     }
     const classWrapProductPanel = `pr-3 ${Styles.wrapProductPanel} row`;
     const {
@@ -427,6 +422,7 @@ export default class Pos extends Component<Props> {
               </Link>
             </div>
             <div className="col-md-2 pl-0 pr-1">
+              {/* eslint-disable-next-line react/button-has-type */}
               <button
                 disabled={cartCurrent.data.length <= 0}
                 className="btn btn-outline-danger btn-lg btn-block"

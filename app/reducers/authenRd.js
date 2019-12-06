@@ -1,6 +1,5 @@
 import produce from 'immer';
 import * as typesAuthen from '../constants/authen';
-import { SSL_OP_DONT_INSERT_EMPTY_FRAGMENTS } from 'constants';
 
 const initialState = {
   token: '',
@@ -31,10 +30,7 @@ const authenRd = (state = initialState, action) =>
         draft.message = 'SUCCESS';
         break;
       case typesAuthen.CASHIER_INFO:
-        draft.cashierInfo = action.payload
-        break;
-      case typesAuthen.SET_TOKEN:
-        draft.token = action.payload
+        draft.cashierInfo = action.payload;
         break;
       default:
     }

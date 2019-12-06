@@ -2,8 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
-import { login } from '../../actions/authenAction';
-import { setToken } from '../../actions/homeAction';
+import { login, setToken } from '../../actions/authenAction';
 import styles from './pagelogin.scss';
 import commonStyles from '../styles/common.scss';
 import Loading from '../wait/Loading';
@@ -12,7 +11,9 @@ import * as routes from '../../constants/routes';
 type Props = {
   login: () => void,
   message: string,
-  token: string
+  token: string,
+  loading: boolean,
+  setToken: () => void
 };
 class PageLogin extends Component {
   props: Props;
@@ -24,6 +25,7 @@ class PageLogin extends Component {
       valuePass: ''
     };
   }
+
   handleChangeUser = event => {
     this.setState({ valueUser: event.target.value });
   };
@@ -40,13 +42,16 @@ class PageLogin extends Component {
       password: valuePass
     };
     login(payload);
-    console.log(this.props.loading);
   };
 
   render() {
-    const { token, message, loading } = this.props;
+    const { token, message, loading, setToken } = this.props;
     const { valueUser, valuePass } = this.state;
     if (token !== '') {
+      return <Redirect to={routes.HOME} />;
+    }
+    if (localStorage.getItem('posAppData')) {
+      setToken(localStorage.getItem('posAppData'));
       return <Redirect to={routes.HOME} />;
     }
     return (

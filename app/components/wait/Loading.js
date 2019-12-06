@@ -7,8 +7,6 @@ class Loading extends Component {
 
   render() {
     const { loading } = this.props;
-    console.log("loading in loading ");
-    console.log(loading);
     return loading ? (
       <div className="spinner-border" role="status">
         <span className="sr-only">Loading...</span>
