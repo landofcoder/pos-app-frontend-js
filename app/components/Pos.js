@@ -265,16 +265,12 @@ export default class Pos extends Component<Props> {
       setToken
     } = this.props;
     // Check login
-    console.log(localStorage.getItem('posAppData'));
 
     if (token === '') {
-      if(localStorage.getItem('posAppData')){
+      if (localStorage.getItem('posAppData')) {
         let data = localStorage.getItem('posAppData');
         setToken(localStorage.getItem('posAppData'));
-        console.log(localStorage.getItem('posAppData'));
-      }
-      else
-        return <Redirect to={routes.LOGIN} />;
+      } else return <Redirect to={routes.LOGIN} />;
     }
     const classWrapProductPanel = `pr-3 ${Styles.wrapProductPanel} row`;
     const {

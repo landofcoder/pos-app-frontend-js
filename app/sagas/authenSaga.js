@@ -9,7 +9,7 @@ function* loginAction(payload) {
   yield put({ type: types.STARTLOADING });
   try {
     const data = yield call(AuthenService, payload);
-    if (typeof data === 'string') {
+    if (data.ok === true) {
       let info = yield call(getInfoCashierService, data);
       yield put({ type: types.ACCESS_TOKEN, payload: data });
       yield put({ type: types.SUCCESS_LOGIN });
