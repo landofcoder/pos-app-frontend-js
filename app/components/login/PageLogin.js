@@ -69,7 +69,7 @@ class PageLogin extends Component {
                   type="email"
                   id="inputEmail"
                   className="form-control"
-                  placeholder="Email address"
+                  placeholder="Username"
                   required
                 />
               </div>
