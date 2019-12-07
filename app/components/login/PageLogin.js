@@ -57,11 +57,11 @@ class PageLogin extends Component {
     return (
       <>
         <div
-          className={`${commonStyles.wrapStaticPageContent} ${styles.wrapFullCenter} ${commonStyles.contentColumn}`}
+          className={`${commonStyles.contentColumn} ${styles.wrapLoginPage}`}
         >
           <div className="col-sm-12 col-md-4 col-lg-3 ">
             <form className={`${styles.contentColumn}`}>
-              <h1 className="h3 mb-3 font-weight-normal">Please sign in</h1>
+              <h1 className="h3 mb-3 font-weight-normal">Sign in</h1>
               <div className="form-group">
                 <input
                   value={valueUser}
