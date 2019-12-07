@@ -5,7 +5,8 @@ const initialState = {
   token: '',
   authenticate: '',
   loading: false,
-  message: ''
+  message: '',
+  cashierInfo: {}
 };
 /*  eslint no-param-reassign: "error" */
 const authenRd = (state = initialState, action) =>
@@ -28,8 +29,13 @@ const authenRd = (state = initialState, action) =>
       case typesAuthen.SUCCESS_LOGIN:
         draft.message = 'SUCCESS';
         break;
-      default:
+      case typesAuthen.RECEIVED_CASHIER_INFO:
+        draft.cashierInfo = action.payload;
         break;
+      case typesAuthen.SET_TOKEN:
+        draft.token = action.payload;
+        break;
+      default:
     }
   });
 

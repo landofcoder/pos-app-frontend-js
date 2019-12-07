@@ -12,3 +12,9 @@ export function login(payload) {
     payload
   };
 }
+export function setToken(payload) {
+  return {
+    type: types.ACCESS_TOKEN,
+    payload
+  };
+}

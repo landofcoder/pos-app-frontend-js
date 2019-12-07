@@ -1,8 +1,6 @@
 import { baseUrl } from '../../params';
 
 async function posData(payload) {
-  console.log('log payload user pass before fetch pos');
-  console.log(payload);
   const response = await fetch(
     `${baseUrl}index.php/rest/V1/integration/admin/token`,
     {
@@ -23,21 +21,34 @@ async function posData(payload) {
       }) // body data type must match "Content-Type" header
     }
   );
-  console.log('step 1:');
-  const data = await response.json(); // parses JSON response into native JavaScript objects
-  console.log('step 2:');
-  console.log(data);
-  return data;
+  if (response.ok) {
+    const data = await response.json(); // parses JSON response into native JavaScript objects
+    return { data, ok: true };
+  }
+  return { ok: false };
 }
-export default async function AuthenService(payload) {
+export async function AuthenService(payload) {
   try {
     const data = await posData(payload);
-    console.log('go try');
-    console.log(data);
     return data;
   } catch (error) {
-    console.log('go error');
-    console.log(error);
-    return error;
+    throw error;
   }
+}
+export async function getInfoCashierService(adminToken) {
+  const response = await fetch(`${baseUrl}index.php/rest/V1/lof-cashier`, {
+    method: 'GET', // *GET, POST, PUT, DELETE, etc.
+    mode: 'cors', // no-cors, *cors, same-origin
+    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    credentials: 'same-origin', // include, *same-origin, omit
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${adminToken.data}`
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    redirect: 'follow', // manual, *follow, error
+    referrer: 'no-referrer' // no-referrer, *clien
+  });
+  const data = await response.json(); // parses JSON response into native JavaScript objects
+  return data;
 }

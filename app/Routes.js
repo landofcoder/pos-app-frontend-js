@@ -10,9 +10,9 @@ function Routes() {
   return (
     <App>
       <Switch>
-        <Route path={routes.HOME} component={HomePage} />
         <Route path={routes.ACCOUNT} component={Account} />
         <Route path={routes.LOGIN} component={PageLogin} />
+        <Route path={routes.HOME} component={HomePage} />
       </Switch>
     </App>
   );

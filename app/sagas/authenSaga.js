@@ -1,27 +1,24 @@
 // @flow
 import { takeEvery, call, put } from 'redux-saga/effects';
 import * as types from '../constants/authen';
-import AuthenService from './services/AuthenService';
+import { AuthenService, getInfoCashierService } from './services/AuthenService';
 
 function* loginAction(payload) {
   // start
   yield put({ type: types.STARTLOADING });
   try {
-    console.log('step 0.1');
+    console.log(payload);
     const data = yield call(AuthenService, payload);
-    console.log('step 10');
-    if (typeof data === 'string') {
-      console.log('got token');
-      console.log(data);
+    console.log(data);
+    if (data.ok === true) {
       yield put({ type: types.ACCESS_TOKEN, payload: data });
       yield put({ type: types.SUCCESS_LOGIN });
+      const info = yield call(getInfoCashierService, data);
+      yield put({ type: types.RECEIVED_CASHIER_INFO, payload: info });
     } else {
-      console.log('wrong pass word or user name');
-      console.log(data);
       yield put({ type: types.ERROR_LOGIN });
     }
   } catch (err) {
-    console.log('ERROR');
     console.log(err);
   }
   yield put({ type: types.STOPLOADING });

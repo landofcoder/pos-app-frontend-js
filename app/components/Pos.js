@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import ListCart from './cart/ListCart';
 import routes from '../constants/routes';
 import Styles from './pos.scss';
@@ -44,6 +44,7 @@ type Props = {
   switchToHoldItemCart: () => void,
   emptyCart: () => void,
   currencyCode: string,
+  setToken: (payload: string) => void,
   isLoadingSearchHandle: boolean,
   isShowHaveNoSearchResultFound: boolean
 };
@@ -57,8 +58,6 @@ export default class Pos extends Component<Props> {
       delayTimer: null,
       typeId: ''
     };
-    localStorage.setItem('posAppData', '');
-    console.log(localStorage.getItem('posAppData'));
   }
 
   componentDidMount(): * {
@@ -266,11 +265,15 @@ export default class Pos extends Component<Props> {
       switchToHoldItemCart,
       emptyCart,
       isLoadingSearchHandle,
-      isShowHaveNoSearchResultFound
+      isShowHaveNoSearchResultFound,
+      setToken
     } = this.props;
     // Check login
+
     if (token === '') {
-      // return <Redirect to={routes.LOGIN} />;
+      if (localStorage.getItem('posAppData')) {
+        setToken(localStorage.getItem('posAppData'));
+      } else return <Redirect to={routes.LOGIN} />;
     }
     const classWrapProductPanel = `pr-3 ${Styles.wrapProductPanel} row`;
     const {
