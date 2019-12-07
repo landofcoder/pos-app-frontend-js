@@ -9,6 +9,8 @@ import {
 
 const initialState = {
   isLoadingSystemConfig: true,
+  isLoadingSearchHandle: false, // Main search loading
+  isShowHaveNoSearchResultFound: false,
   posSystemConfig: {}, // General config for pos
   shopInfoConfig: {}, // Shop info config
   mainPanelType: HOME_DEFAULT_PRODUCT_LIST, // Main panel type for switching all main panel
@@ -231,6 +233,12 @@ const mainRd = (state = initialState, action) =>
         break;
       case types.RECEIVED_SHOP_INFO_CONFIG:
         draft.shopInfoConfig = action.payload;
+        break;
+      case types.UPDATE_IS_LOADING_SEARCH_HANDLE:
+        draft.isLoadingSearchHandle = action.payload;
+        break;
+      case types.UPDATE_IS_SHOW_HAVE_NO_SEARCH_RESULT_FOUND:
+        draft.isShowHaveNoSearchResultFound = action.payload;
         break;
       default:
         break;
