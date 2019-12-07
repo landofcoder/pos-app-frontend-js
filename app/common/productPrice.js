@@ -48,7 +48,6 @@ export function sumBundlePrice(product, currencyCode) {
     if (listOptionSelected.length > 0) {
       // Get product
       listOptionSelected.forEach(itemOption => {
-        console.log('item option:', itemOption);
         price +=
           itemOption.product.price.regularPrice.amount.value * itemOption.qty;
       });

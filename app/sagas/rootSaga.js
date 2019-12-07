@@ -44,10 +44,10 @@ const optionValue = state => state.mainRd.productOption.optionValue;
 const customer = state => state.mainRd.cartCurrent.customer;
 const shopInfoConfig = state => state.mainRd.shopInfoConfig;
 const posSystemConfig = state => state.mainRd.posSystemConfig;
+const cashierInfo = state => state.authenRd.cashierInfo;
 
 /**
  * Create quote function
- * @returns {IterableIterator<*>}
  */
 function* cashCheckout() {
   // Show cash modal
@@ -158,8 +158,13 @@ function* getDefaultProduct() {
   // Start loading
   yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: true });
 
+  // Set empty if want get default response from magento2
+  const defaultProducts = '24-WG080';
+
   // const response = yield call(getDefaultProductsService);
-  const response = yield call(searchProductService, { payload: '' });
+  const response = yield call(searchProductService, {
+    payload: defaultProducts
+  });
   const productResult = response.data ? response.data.products.items : [];
   yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productResult });
 
@@ -186,6 +191,8 @@ function* cashCheckoutPlaceOrder() {
   // Default payment
   const defaultPaymentMethod = yield getDefaultPaymentMethod();
 
+  const cashierInfo = yield select(cashierInfo);
+
   // Step 1: Create order
   const orderId = yield call(placeCashOrderService, cartCurrentTokenResult, {
     cartIdResult,
@@ -193,7 +200,8 @@ function* cashCheckoutPlaceOrder() {
     customerToken: cartCurrentTokenResult,
     defaultShippingMethod,
     defaultPaymentMethod,
-    posSystemConfigCustomer
+    posSystemConfigCustomer,
+    cashierInfo
   });
 
   // Step 2: Create invoice

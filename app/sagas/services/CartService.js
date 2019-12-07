@@ -8,6 +8,7 @@ import { adminToken, baseUrl } from '../../params';
  * @returns {Promise<void>}
  */
 export async function addProductToQuote(cartId, item, payloadCart) {
+  console.log('add product to quote:', item);
   let url = '';
   let token = adminToken;
   const { sku } = item;
@@ -55,7 +56,7 @@ export async function placeCashOrderService(cartToken, payloadCart) {
   let url = '';
   let token = adminToken;
   const cartId = payloadCart.cartIdResult;
-  const { defaultShippingMethod, defaultPaymentMethod } = payloadCart;
+  const { defaultPaymentMethod } = payloadCart;
   let method = 'PUT';
 
   if (payloadCart.isGuestCustomer) {
@@ -164,24 +165,24 @@ export async function addShippingInformationService(cartToken, payloadCart) {
  * @returns {{firstname: *, regionId: string, city: *, street: *, postcode: string, company: string, telephone: string, sameAsBilling: number, country_id: (*|string), email: *, lastname: *}}
  */
 function renderShippingAddress(customerConfig) {
-  const { city } = customerConfig;
-  const { country } = customerConfig;
-  const { email } = customerConfig;
-  const firstName = customerConfig.first_name;
-  const lastName = customerConfig.last_name;
-  const { street } = customerConfig;
-  const { telephone } = customerConfig;
+  const city = customerConfig ? customerConfig.city : 'California';
+  const country = customerConfig ? customerConfig.country : 'US';
+  const email = customerConfig ? customerConfig.email : 'guestemail@gmail.com';
+  const firstName = customerConfig ? customerConfig.first_name : 'john';
+  const lastName = customerConfig ? customerConfig.harrison : 'harrison';
+  const street = customerConfig ? customerConfig.street : ['Street Address'];
+  const telephone = customerConfig ? customerConfig.telephone : '2313131312';
   return {
-    country_id: country || 'US',
-    street: street || ['Street Address'],
+    country_id: country,
+    street,
     company: '',
-    telephone: telephone || '2313131312',
+    telephone,
     postcode: 'A1B2C3',
     regionId: '1',
-    city: city || 'California',
+    city,
     firstname: firstName || 'john',
     lastname: lastName || 'harrison',
-    email: email || 'guestemail@gmail.com',
+    email,
     sameAsBilling: 1
   };
 }
