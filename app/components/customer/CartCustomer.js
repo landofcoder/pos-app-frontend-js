@@ -31,7 +31,7 @@ class CartCustomer extends Component<Props> {
     };
   }
 
-  onSearchAction = e => {
+  onSearchCustomer = e => {
     const { searchCustomer } = this.props;
     const { value } = e.target;
     const { delayTimer } = this.state;
@@ -53,6 +53,10 @@ class CartCustomer extends Component<Props> {
       selectCustomerForCurrentCart,
       unSelectCustomerForCurrentCart
     } = this.props;
+    let firstName = '';
+    if (customer) {
+      firstName = customer.firstname;
+    }
 
     return (
       <div className={Styles.wrapCartCustomer}>
@@ -68,13 +72,33 @@ class CartCustomer extends Component<Props> {
                 </div>
                 <div className="modal-body">
                   <div>
+                    <div className="form-group">
+                      {customer ? (
+                        <div className="row">
+                          <div className="col-md-6">
+                            <button type="button" className="btn btn-primary">
+                              {firstName}
+                            </button>
+                            <span className={Styles.wrapCloseIcon}>
+                              <i
+                                onClick={unSelectCustomerForCurrentCart}
+                                className="fas fa-times"
+                              />
+                            </span>
+                          </div>
+                          <div className="col-md-6" />
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+                    </div>
                     <div className="input-group mb-3">
                       <input
-                        type="text"
+                        type="text by email or id customer's"
                         className="form-control"
-                        placeholder="Search by: id or email"
+                        placeholder="Search by id or email customer's"
                         aria-label="Recipient's username"
-                        onChange={this.onSearchAction}
+                        onChange={this.onSearchCustomer}
                         aria-describedby="button-addon2"
                       />
                     </div>
@@ -135,39 +159,8 @@ class CartCustomer extends Component<Props> {
           className="btn btn-outline-dark btn-lg btn-block"
           onClick={() => toggleModalCustomer(true)}
         >
-          Customer
+          Customer {customer ? `(${customer.firstname})` : ''}
         </button>
-        {/* {customer == null ? ( */}
-        {/*  <div className={Styles.wrapLabel}> */}
-        {/*    <span className={Styles.customerName}>Guest customer</span> */}
-        {/*  </div> */}
-        {/* ) : ( */}
-        {/*  <div className={Styles.wrapLabel}> */}
-        {/*    <span className={Styles.customerName}> */}
-        {/*      <a href="#" className="badge badge-secondary"> */}
-        {/*        {customer.firstname} {customer.lastname} */}
-        {/*      </a> */}
-        {/*      <button */}
-        {/*        type="button" */}
-        {/*        className="close" */}
-        {/*        aria-label="Close" */}
-        {/*        onClick={unSelectCustomerForCurrentCart} */}
-        {/*      > */}
-        {/*        <span aria-hidden="true">&times;</span> */}
-        {/*      </button> */}
-        {/*    </span> */}
-        {/*  </div> */}
-        {/* )} */}
-
-        {/* <div className={Styles.wrapValue}> */}
-        {/*  <button */}
-        {/*    type="button" */}
-        {/*    onClick={() => toggleModalCustomer(true)} */}
-        {/*    className="btn btn-link btn-sm" */}
-        {/*  > */}
-        {/*    Customers */}
-        {/*  </button> */}
-        {/* </div> */}
       </div>
     );
   }

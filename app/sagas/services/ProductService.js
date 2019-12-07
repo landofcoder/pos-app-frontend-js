@@ -22,6 +22,9 @@ export async function searchProductService(payload) {
           name
           sku
           type_id
+          media_gallery_entries {
+             file
+          }
           price {
             regularPrice {
               amount {
@@ -43,7 +46,7 @@ export async function searchProductService(payload) {
               attribute_code
               values {
                 value_index
-                label             
+                label
               }
               product_id
             }
@@ -59,7 +62,7 @@ export async function searchProductService(payload) {
                 price {
                   regularPrice {
                     amount {
-                      value 
+                      value
                       currency
                     }
                   }
@@ -141,7 +144,7 @@ export async function getDetailProductConfigurableService(payload) {
                 price {
                   regularPrice {
                     amount {
-                      value 
+                      value
                       currency
                     }
                   }
@@ -280,7 +283,7 @@ export async function getDetailProductGroupedService(payload) {
                     }
                     type_id
                     url_key
-                  }                
+                  }
               }
             }
           }
@@ -298,7 +301,7 @@ export async function getDetailProductGroupedService(payload) {
  * @returns {Promise<any>}
  * @returns {Promise<any>}
  */
-export async function getProductsService() {
+export async function getDefaultProductsService() {
   const response = await fetch(graphqlPath, {
     method: 'POST', // *GET, POST, PUT, DELETE, etc.
     mode: 'cors', // no-cors, *cors, same-origin

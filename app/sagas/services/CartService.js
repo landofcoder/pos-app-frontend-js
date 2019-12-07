@@ -85,36 +85,7 @@ export async function placeCashOrderService(cartToken, payloadCart) {
       cashier_name: 'nguyen tuan',
       cashier_email: 'nhtuan@gmail.com',
       cashier_phone: '0123456789',
-      cashier_address: 'ha noi',
-      // addressInformation: {
-      //   shippingAddress: {
-      //     country_id: 'US',
-      //     street: ['Street Address'],
-      //     company: 'Company',
-      //     telephone: '2313131312',
-      //     postcode: 'A1B2C3',
-      //     regionId: '1',
-      //     city: 'California',
-      //     firstname: 'john',
-      //     lastname: 'harrison',
-      //     email: 'guestuser@gmail.com',
-      //     sameAsBilling: 1
-      //   },
-      //   billingAddress: {
-      //     country_id: 'US',
-      //     street: ['Street Address'],
-      //     company: 'Company',
-      //     telephone: '2313131312',
-      //     postcode: 'A1B2C3',
-      //     regionId: '1',
-      //     city: 'California',
-      //     firstname: 'john',
-      //     lastname: 'harrison',
-      //     email: 'guestuser@gmail.com'
-      //   },
-      //   shipping_method_code: defaultShippingMethod,
-      //   shipping_carrier_code: defaultShippingMethod
-      // }
+      cashier_address: 'ha noi'
     })
   });
   const data = await response.json();
@@ -153,7 +124,7 @@ export async function createGuestCartService() {
 export async function addShippingInformationService(cartToken, payloadCart) {
   let url = '';
   let token = adminToken;
-  const { defaultShippingMethod } = payloadCart;
+  const { defaultShippingMethod, posSystemConfigCustomer } = payloadCart;
   if (payloadCart.isGuestCustomer) {
     url = `${baseUrl}index.php/rest/V1/guest-carts/${cartToken}/shipping-information`;
   } else {
@@ -176,31 +147,8 @@ export async function addShippingInformationService(cartToken, payloadCart) {
     referrer: 'no-referrer', // no-referrer, *client
     body: JSON.stringify({
       addressInformation: {
-        shippingAddress: {
-          country_id: 'US',
-          street: ['Street Address'],
-          company: 'Company',
-          telephone: '2313131312',
-          postcode: 'A1B2C3',
-          regionId: '1',
-          city: 'California',
-          firstname: 'chien',
-          lastname: 'vu',
-          email: 'fchienvuhoang@gmail.com',
-          sameAsBilling: 1
-        },
-        billingAddress: {
-          country_id: 'US',
-          street: ['Street Address'],
-          company: 'Company',
-          telephone: '2313131312',
-          postcode: 'A1B2C3',
-          regionId: '1',
-          city: 'California',
-          firstname: 'chien',
-          lastname: 'vu',
-          email: 'fchienvuhoang@gmail.com'
-        },
+        shippingAddress: renderShippingAddress(posSystemConfigCustomer),
+        billingAddress: renderShippingAddress(posSystemConfigCustomer),
         shipping_method_code: defaultShippingMethod,
         shipping_carrier_code: defaultShippingMethod
       }
@@ -208,6 +156,34 @@ export async function addShippingInformationService(cartToken, payloadCart) {
   });
   const data = await response.json();
   return data;
+}
+
+/**
+ * Render shipping address
+ * @param customerConfig
+ * @returns {{firstname: *, regionId: string, city: *, street: *, postcode: string, company: string, telephone: string, sameAsBilling: number, country_id: (*|string), email: *, lastname: *}}
+ */
+function renderShippingAddress(customerConfig) {
+  const { city } = customerConfig;
+  const { country } = customerConfig;
+  const { email } = customerConfig;
+  const firstName = customerConfig.first_name;
+  const lastName = customerConfig.last_name;
+  const { street } = customerConfig;
+  const { telephone } = customerConfig;
+  return {
+    country_id: country || 'US',
+    street: street || ['Street Address'],
+    company: '',
+    telephone: telephone || '2313131312',
+    postcode: 'A1B2C3',
+    regionId: '1',
+    city: city || 'California',
+    firstname: firstName || 'john',
+    lastname: lastName || 'harrison',
+    email: email || 'guestemail@gmail.com',
+    sameAsBilling: 1
+  };
 }
 
 /**

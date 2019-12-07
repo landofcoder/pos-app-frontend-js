@@ -13,7 +13,6 @@ import {
   getDetailProductBundleService,
   getDetailProductConfigurableService,
   getDetailProductGroupedService,
-  getProductsService,
   searchProductService
 } from './services/ProductService';
 import {
@@ -59,7 +58,7 @@ function* cashCheckout() {
   // Add product item to cart
   const cartCurrentResult = yield select(cartCurrent);
   const posSystemConfigResult = yield select(posSystemConfig);
-  const posSystemConfigCustomer = posSystemConfigResult[3];
+  const posSystemConfigGuestCustomer = posSystemConfigResult[3];
   const defaultShippingMethod = yield getDefaultShippingMethod();
 
   const {
@@ -82,7 +81,7 @@ function* cashCheckout() {
     isGuestCustomer,
     customerToken,
     defaultShippingMethod,
-    posSystemConfigCustomer
+    posSystemConfigGuestCustomer
   });
   yield put({
     type: types.RECEIVED_ORDER_PREPARING_CHECKOUT,
@@ -159,7 +158,8 @@ function* getDefaultProduct() {
   // Start loading
   yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: true });
 
-  const response = yield call(getProductsService);
+  // const response = yield call(getDefaultProductsService);
+  const response = yield call(searchProductService, { payload: '' });
   const productResult = response.data ? response.data.products.items : [];
   yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productResult });
 
@@ -217,12 +217,38 @@ function* cashCheckoutPlaceOrder() {
 
 /**
  * Search action
- * @param searchValue
  * @returns {Generator<<"CALL", CallEffectDescriptor<RT>>, *>}
+ * @param payload
  */
-function* search(searchValue) {
-  const searchResult = yield call(searchProductService, searchValue);
-  console.log('search result:', searchResult);
+function* searchProduct(payload) {
+  // Start loading
+  yield put({ type: types.UPDATE_IS_LOADING_SEARCH_HANDLE, payload: true });
+
+  const searchResult = yield call(searchProductService, payload);
+  const productResult = searchResult.data
+    ? searchResult.data.products.items
+    : [];
+
+  // If have no product result => update showSearchEmptyResult = 1
+  if (productResult.length === 0) {
+    // If search value have no empty
+    if (payload !== '') {
+      yield put({
+        type: types.UPDATE_IS_SHOW_HAVE_NO_SEARCH_RESULT_FOUND,
+        payload: true
+      });
+    }
+  } else {
+    yield put({
+      type: types.UPDATE_IS_SHOW_HAVE_NO_SEARCH_RESULT_FOUND,
+      payload: false
+    });
+  }
+
+  yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productResult });
+
+  // Stop loading
+  yield put({ type: types.UPDATE_IS_LOADING_SEARCH_HANDLE, payload: false });
 }
 
 /**
@@ -448,7 +474,7 @@ function* getPostConfigGeneralConfig() {
  */
 function* rootSaga() {
   yield takeEvery(types.CASH_CHECKOUT_ACTION, cashCheckout);
-  yield takeEvery(types.SEARCH_ACTION, search);
+  yield takeEvery(types.SEARCH_ACTION, searchProduct);
   yield takeEvery(types.GET_DEFAULT_PRODUCT, getDefaultProduct);
   yield takeEvery(
     types.CASH_CHECKOUT_PLACE_ORDER_ACTION,

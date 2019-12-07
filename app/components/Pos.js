@@ -26,7 +26,7 @@ type Props = {
   productList: Array,
   addToCart: (payload: Object) => void,
   holdAction: () => void,
-  searchAction: (payload: string) => void,
+  searchProductAction: (payload: string) => void,
   getDefaultProductAction: () => void,
   cartCurrent: Object,
   mainPanelType: string,
@@ -44,7 +44,9 @@ type Props = {
   switchToHoldItemCart: () => void,
   emptyCart: () => void,
   currencyCode: string,
-  setToken: (payload: string) => void
+  setToken: (payload: string) => void,
+  isLoadingSearchHandle: boolean,
+  isShowHaveNoSearchResultFound: boolean
 };
 
 export default class Pos extends Component<Props> {
@@ -246,11 +248,11 @@ export default class Pos extends Component<Props> {
   searchTyping = e => {
     const { value } = e.target;
     const { delayTimer } = this.state;
-    const { searchAction } = this.props;
+    const { searchProductAction } = this.props;
     clearTimeout(delayTimer);
     const delayTimerRes = setTimeout(() => {
       // Do the ajax stuff
-      searchAction(value);
+      searchProductAction(value);
     }, 300); // Will do the ajax stuff after 1000 ms, or 1 s
     this.setState({ delayTimer: delayTimerRes });
   };
@@ -262,6 +264,8 @@ export default class Pos extends Component<Props> {
       cartHoldList,
       switchToHoldItemCart,
       emptyCart,
+      isLoadingSearchHandle,
+      isShowHaveNoSearchResultFound,
       setToken
     } = this.props;
     // Check login
@@ -335,11 +339,35 @@ export default class Pos extends Component<Props> {
                         type="text"
                         className="form-control"
                         placeholder="sku, product name"
+                        onInput={this.searchTyping}
                         aria-label="Username"
                         aria-describedby="basic-addon1"
                       />
+                      {isLoadingSearchHandle ? (
+                        <div id={Styles.wrapSearchLoading}>
+                          <div className="d-flex justify-content-center">
+                            <div
+                              className="spinner-border text-secondary spinner-border-sm"
+                              role="status"
+                            >
+                              <span className="sr-only">Loading...</span>
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <></>
+                      )}
                     </div>
                   </div>
+                  {isShowHaveNoSearchResultFound ? (
+                    <>
+                      <p className="text-center text-muted">
+                        Have no item found
+                      </p>
+                    </>
+                  ) : (
+                    <></>
+                  )}
                 </div>
                 {mainProductListLoading ? (
                   <div className="col-md-12">
@@ -422,8 +450,8 @@ export default class Pos extends Component<Props> {
               </Link>
             </div>
             <div className="col-md-2 pl-0 pr-1">
-              {/* eslint-disable-next-line react/button-has-type */}
               <button
+                type="button"
                 disabled={cartCurrent.data.length <= 0}
                 className="btn btn-outline-danger btn-lg btn-block"
                 onClick={emptyCart}
