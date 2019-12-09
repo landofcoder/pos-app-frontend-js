@@ -142,3 +142,34 @@ export function formatCurrencyCode(value, currencyCode) {
   });
   return formatter.format(value);
 }
+
+/**
+ * Get bundle option with selected id
+ * @param item
+ * @returns {[]}
+ */
+export function getBundleOption(item) {
+  const bundleOption = [];
+  const { items } = item;
+  items.forEach(itemObj => {
+    let qty = 1;
+    if (itemObj.type === 'radio' || itemObj.type === 'select') {
+      // Get selected and find qty in list option
+      const selectId = itemObj.option_selected[0];
+      const { options } = itemObj;
+      options.forEach(objOption => {
+        if (selectId === objOption.id) {
+          // eslint-disable-next-line prefer-destructuring
+          qty = objOption.qty;
+        }
+      });
+    }
+    const objPush = {
+      option_id: itemObj.option_id,
+      option_selections: itemObj.option_selected,
+      option_qty: qty
+    };
+    bundleOption.push(objPush);
+  });
+  return bundleOption;
+}

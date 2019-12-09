@@ -13,7 +13,8 @@ import {
   getDetailProductBundleService,
   getDetailProductConfigurableService,
   getDetailProductGroupedService,
-  searchProductService
+  searchProductService,
+  getDefaultProductsService
 } from './services/ProductService';
 import {
   getCustomerCartTokenService,

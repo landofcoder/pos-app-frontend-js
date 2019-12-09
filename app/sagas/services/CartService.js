@@ -1,4 +1,6 @@
 import { adminToken, baseUrl } from '../../params';
+import { BUNDLE } from '../../constants/product-types';
+import { getBundleOption } from '../../common/product';
 
 /**
  * Add product to quote
@@ -8,7 +10,6 @@ import { adminToken, baseUrl } from '../../params';
  * @returns {Promise<void>}
  */
 export async function addProductToQuote(cartId, item, payloadCart) {
-  console.log('add product to quote:', item);
   let url = '';
   let token = adminToken;
   const { sku } = item;
@@ -21,11 +22,18 @@ export async function addProductToQuote(cartId, item, payloadCart) {
     token = payloadCart.customerToken;
   }
 
+  let productOption = {};
+  const bundleOption = getBundleOption(item);
+  if (item.type_id === BUNDLE) {
+    productOption = { extension_attributes: { bundle_options: bundleOption } };
+  }
+
   const cartItem = {
     cartItem: {
       quote_id: cartId,
       sku,
-      qty: posQty
+      qty: posQty,
+      product_option: productOption
     }
   };
   const response = await fetch(url, {
