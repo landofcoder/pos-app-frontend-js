@@ -270,9 +270,6 @@ export default class Pos extends Component<Props> {
       setToken
     } = this.props;
 
-    console.log('dd1:', token);
-    console.log('dd2:', localStorage.getItem(POS_LOGIN_STORAGE));
-
     // Check login
     if (token === '') {
       if (localStorage.getItem(POS_LOGIN_STORAGE)) {

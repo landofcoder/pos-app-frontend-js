@@ -43,7 +43,7 @@ export async function getInfoCashierService(adminToken) {
     credentials: 'same-origin', // include, *same-origin, omit
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${adminToken.data}`
+      Authorization: `Bearer ${adminToken}`
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
     redirect: 'follow', // manual, *follow, error

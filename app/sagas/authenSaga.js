@@ -1,18 +1,18 @@
 // @flow
-import { takeEvery, call, put } from 'redux-saga/effects';
+import { takeEvery, takeLatest, call, put, select } from 'redux-saga/effects';
 import * as types from '../constants/authen';
 import { AuthenService, getInfoCashierService } from './services/AuthenService';
 
+const adminToken = state => state.authenRd.token;
+
 function* loginAction(payload) {
-  // start
+  // Start loading
   yield put({ type: types.START_LOADING });
   try {
     const data = yield call(AuthenService, payload);
     if (data.ok === true) {
       yield put({ type: types.RECEIVED_TOKEN, payload: data.data });
       yield put({ type: types.SUCCESS_LOGIN });
-      const info = yield call(getInfoCashierService, data);
-      yield put({ type: types.RECEIVED_CASHIER_INFO, payload: info });
     } else {
       yield put({ type: types.ERROR_LOGIN });
     }
@@ -23,8 +23,17 @@ function* loginAction(payload) {
   // stop
 }
 
+function* takeLatestToken() {
+  const adminTokenResult = yield select(adminToken);
+  console.log('admin token:', adminTokenResult);
+  const cashierInfo = yield call(getInfoCashierService, adminTokenResult);
+  console.log('cashier info:', cashierInfo);
+  yield put({ type: types.RECEIVED_CASHIER_INFO, payload: cashierInfo });
+}
+
 function* authenSaga() {
   yield takeEvery(types.LOGIN_ACTION, loginAction);
+  yield takeLatest(types.RECEIVED_TOKEN, takeLatestToken);
 }
 
 export default authenSaga;
