@@ -268,8 +268,8 @@ export default class Pos extends Component<Props> {
       isShowHaveNoSearchResultFound,
       setToken
     } = this.props;
-    // Check login
 
+    // Check login
     if (token === '') {
       if (localStorage.getItem('posAppData')) {
         setToken(localStorage.getItem('posAppData'));

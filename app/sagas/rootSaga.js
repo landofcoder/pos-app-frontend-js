@@ -160,7 +160,7 @@ function* getDefaultProduct() {
   yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: true });
 
   // Set empty if want get default response from magento2
-  const defaultProducts = '24-WG080';
+  const defaultProducts = '';
 
   // const response = yield call(getDefaultProductsService);
   const response = yield call(searchProductService, {
