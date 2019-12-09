@@ -21,6 +21,7 @@ import CartCustomer from './customer/CartCustomer';
 import CashPanel from './payment/Cash/Cash';
 import Receipt from './payment/Receipt/Receipt';
 import { formatCurrencyCode } from '../common/product';
+import { POS_LOGIN_STORAGE } from '../constants/authen';
 
 type Props = {
   productList: Array,
@@ -269,10 +270,13 @@ export default class Pos extends Component<Props> {
       setToken
     } = this.props;
 
+    console.log('dd1:', token);
+    console.log('dd2:', localStorage.getItem(POS_LOGIN_STORAGE));
+
     // Check login
     if (token === '') {
-      if (localStorage.getItem('posAppData')) {
-        setToken(localStorage.getItem('posAppData'));
+      if (localStorage.getItem(POS_LOGIN_STORAGE)) {
+        setToken(localStorage.getItem(POS_LOGIN_STORAGE));
       } else return <Redirect to={routes.LOGIN} />;
     }
     const classWrapProductPanel = `pr-3 ${Styles.wrapProductPanel} row`;

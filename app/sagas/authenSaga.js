@@ -5,13 +5,11 @@ import { AuthenService, getInfoCashierService } from './services/AuthenService';
 
 function* loginAction(payload) {
   // start
-  yield put({ type: types.STARTLOADING });
+  yield put({ type: types.START_LOADING });
   try {
-    console.log(payload);
     const data = yield call(AuthenService, payload);
-    console.log(data);
     if (data.ok === true) {
-      yield put({ type: types.ACCESS_TOKEN, payload: data });
+      yield put({ type: types.RECEIVED_TOKEN, payload: data.data });
       yield put({ type: types.SUCCESS_LOGIN });
       const info = yield call(getInfoCashierService, data);
       yield put({ type: types.RECEIVED_CASHIER_INFO, payload: info });
@@ -21,7 +19,7 @@ function* loginAction(payload) {
   } catch (err) {
     console.log(err);
   }
-  yield put({ type: types.STOPLOADING });
+  yield put({ type: types.STOP_LOADING });
   // stop
 }
 

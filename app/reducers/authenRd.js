@@ -12,15 +12,15 @@ const initialState = {
 const authenRd = (state = initialState, action) =>
   produce(state, draft => {
     switch (action.type) {
-      case typesAuthen.STARTLOADING:
+      case typesAuthen.START_LOADING:
         draft.loading = true;
         break;
-      case typesAuthen.STOPLOADING:
+      case typesAuthen.STOP_LOADING:
         draft.loading = false;
         break;
-      case typesAuthen.ACCESS_TOKEN:
+      case typesAuthen.RECEIVED_TOKEN:
         draft.token = action.payload;
-        localStorage.setItem('posAppData', action.payload);
+        localStorage.setItem(typesAuthen.POS_LOGIN_STORAGE, action.payload);
         break;
       case typesAuthen.ERROR_LOGIN:
         draft.message =
@@ -31,9 +31,6 @@ const authenRd = (state = initialState, action) =>
         break;
       case typesAuthen.RECEIVED_CASHIER_INFO:
         draft.cashierInfo = action.payload;
-        break;
-      case typesAuthen.SET_TOKEN:
-        draft.token = action.payload;
         break;
       default:
     }
