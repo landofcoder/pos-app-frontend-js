@@ -57,7 +57,8 @@ export default class Pos extends Component<Props> {
     super(props);
     this.state = {
       delayTimer: null,
-      typeId: ''
+      typeId: '',
+      redirectToAccount: false
     };
   }
 
@@ -91,7 +92,9 @@ export default class Pos extends Component<Props> {
 
     return formatCurrencyCode(totalPrice, currencyCode);
   };
-
+  handleRedirectToAccount = () => {
+    this.setState({redirectToAccount: true})
+  }
   /**
    * Find option selected
    * @param optionSelected
@@ -269,12 +272,21 @@ export default class Pos extends Component<Props> {
       isShowHaveNoSearchResultFound,
       setToken
     } = this.props;
-
+    const { redirectToAccount} = this.state;
     // Check login
     if (token === '') {
       if (localStorage.getItem(POS_LOGIN_STORAGE)) {
+        console.log("HAVE in local_storage");
         setToken(localStorage.getItem(POS_LOGIN_STORAGE));
       } else return <Redirect to={routes.LOGIN} />;
+    }
+    else{
+      console.log("I have token");
+      console.log(token);
+    }
+    // Check Redirect To Layout Account
+    if(redirectToAccount){
+      return <Redirect to={routes.ACCOUNT} />
     }
     const classWrapProductPanel = `pr-3 ${Styles.wrapProductPanel} row`;
     const {
@@ -443,12 +455,12 @@ export default class Pos extends Component<Props> {
           </div>
           <div className={Styles.wrapActionSecondLine}>
             <div className="col-md-1 pl-0 pr-1">
-              <Link
+              <a
                 className="btn btn-outline-secondary btn-lg btn-block"
-                to={routes.ACCOUNT}
+                onClick={this.handleRedirectToAccount}
               >
                 Account
-              </Link>
+              </a>
             </div>
             <div className="col-md-2 pl-0 pr-1">
               <button

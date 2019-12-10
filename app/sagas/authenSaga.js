@@ -30,7 +30,6 @@ function* takeLatestToken() {
   console.log('cashier info:', cashierInfo);
   yield put({ type: types.RECEIVED_CASHIER_INFO, payload: cashierInfo });
 }
-
 function* authenSaga() {
   yield takeEvery(types.LOGIN_ACTION, loginAction);
   yield takeLatest(types.RECEIVED_TOKEN, takeLatestToken);
