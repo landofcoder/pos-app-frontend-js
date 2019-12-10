@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import * as routes from '../../constants/routes.json';
 import OrderHistory from './OrderHistory/OrderHistory';
 import CashierInfo from './CashierInfo/CashierInfo';
-import Styles from './Account.scss';
+import Styles from './account.scss';
 
 export default class Account extends Component<Props> {
   props: Props;
@@ -45,7 +45,7 @@ export default class Account extends Component<Props> {
                   role="tablist"
                   aria-orientation="vertical"
                 >
-                  <div className="card-header">Account Setting</div>
+                  {/* {<div className="card-header"></div>} */}
                   <a
                     className={`nav-link ${orderHistorySelect} ${Styles.radiusButton}`}
                     id="v-pills-profile-tab"
@@ -66,11 +66,11 @@ export default class Account extends Component<Props> {
                     aria-controls="v-pills-home"
                     onClick={this.cashierAction}
                   >
-                    Cashier
+                    Account Setting
                   </a>
                 </div>
               </div>
-              <div className="col-9">
+              <div className="col-9 mt-2">
                 {orderHistorySelect ? <OrderHistory /> : null}
                 {cashierSelect ? <CashierInfo /> : null}
               </div>

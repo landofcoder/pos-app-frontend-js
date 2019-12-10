@@ -23,8 +23,8 @@ export async function addProductToQuote(cartId, item, payloadCart) {
   }
 
   let productOption = {};
-  const bundleOption = getBundleOption(item);
   if (item.type_id === BUNDLE) {
+    const bundleOption = getBundleOption(item);
     productOption = { extension_attributes: { bundle_options: bundleOption } };
   }
 
