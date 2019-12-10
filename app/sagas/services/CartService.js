@@ -1,4 +1,6 @@
 import { adminToken, baseUrl } from '../../params';
+import { BUNDLE } from '../../constants/product-types';
+import { getBundleOption } from '../../common/product';
 
 /**
  * Add product to quote
@@ -20,11 +22,18 @@ export async function addProductToQuote(cartId, item, payloadCart) {
     token = payloadCart.customerToken;
   }
 
+  let productOption = {};
+  const bundleOption = getBundleOption(item);
+  if (item.type_id === BUNDLE) {
+    productOption = { extension_attributes: { bundle_options: bundleOption } };
+  }
+
   const cartItem = {
     cartItem: {
       quote_id: cartId,
       sku,
-      qty: posQty
+      qty: posQty,
+      product_option: productOption
     }
   };
   const response = await fetch(url, {
@@ -55,7 +64,7 @@ export async function placeCashOrderService(cartToken, payloadCart) {
   let url = '';
   let token = adminToken;
   const cartId = payloadCart.cartIdResult;
-  const { defaultShippingMethod, defaultPaymentMethod } = payloadCart;
+  const { defaultPaymentMethod } = payloadCart;
   let method = 'PUT';
 
   if (payloadCart.isGuestCustomer) {
@@ -85,36 +94,7 @@ export async function placeCashOrderService(cartToken, payloadCart) {
       cashier_name: 'nguyen tuan',
       cashier_email: 'nhtuan@gmail.com',
       cashier_phone: '0123456789',
-      cashier_address: 'ha noi',
-      // addressInformation: {
-      //   shippingAddress: {
-      //     country_id: 'US',
-      //     street: ['Street Address'],
-      //     company: 'Company',
-      //     telephone: '2313131312',
-      //     postcode: 'A1B2C3',
-      //     regionId: '1',
-      //     city: 'California',
-      //     firstname: 'john',
-      //     lastname: 'harrison',
-      //     email: 'guestuser@gmail.com',
-      //     sameAsBilling: 1
-      //   },
-      //   billingAddress: {
-      //     country_id: 'US',
-      //     street: ['Street Address'],
-      //     company: 'Company',
-      //     telephone: '2313131312',
-      //     postcode: 'A1B2C3',
-      //     regionId: '1',
-      //     city: 'California',
-      //     firstname: 'john',
-      //     lastname: 'harrison',
-      //     email: 'guestuser@gmail.com'
-      //   },
-      //   shipping_method_code: defaultShippingMethod,
-      //   shipping_carrier_code: defaultShippingMethod
-      // }
+      cashier_address: 'ha noi'
     })
   });
   const data = await response.json();
@@ -153,7 +133,7 @@ export async function createGuestCartService() {
 export async function addShippingInformationService(cartToken, payloadCart) {
   let url = '';
   let token = adminToken;
-  const { defaultShippingMethod } = payloadCart;
+  const { defaultShippingMethod, posSystemConfigCustomer } = payloadCart;
   if (payloadCart.isGuestCustomer) {
     url = `${baseUrl}index.php/rest/V1/guest-carts/${cartToken}/shipping-information`;
   } else {
@@ -176,31 +156,8 @@ export async function addShippingInformationService(cartToken, payloadCart) {
     referrer: 'no-referrer', // no-referrer, *client
     body: JSON.stringify({
       addressInformation: {
-        shippingAddress: {
-          country_id: 'US',
-          street: ['Street Address'],
-          company: 'Company',
-          telephone: '2313131312',
-          postcode: 'A1B2C3',
-          regionId: '1',
-          city: 'California',
-          firstname: 'chien',
-          lastname: 'vu',
-          email: 'fchienvuhoang@gmail.com',
-          sameAsBilling: 1
-        },
-        billingAddress: {
-          country_id: 'US',
-          street: ['Street Address'],
-          company: 'Company',
-          telephone: '2313131312',
-          postcode: 'A1B2C3',
-          regionId: '1',
-          city: 'California',
-          firstname: 'chien',
-          lastname: 'vu',
-          email: 'fchienvuhoang@gmail.com'
-        },
+        shippingAddress: renderShippingAddress(posSystemConfigCustomer),
+        billingAddress: renderShippingAddress(posSystemConfigCustomer),
         shipping_method_code: defaultShippingMethod,
         shipping_carrier_code: defaultShippingMethod
       }
@@ -208,6 +165,34 @@ export async function addShippingInformationService(cartToken, payloadCart) {
   });
   const data = await response.json();
   return data;
+}
+
+/**
+ * Render shipping address
+ * @param customerConfig
+ * @returns {{firstname: *, regionId: string, city: *, street: *, postcode: string, company: string, telephone: string, sameAsBilling: number, country_id: (*|string), email: *, lastname: *}}
+ */
+function renderShippingAddress(customerConfig) {
+  const city = customerConfig ? customerConfig.city : 'California';
+  const country = customerConfig ? customerConfig.country : 'US';
+  const email = customerConfig ? customerConfig.email : 'guestemail@gmail.com';
+  const firstName = customerConfig ? customerConfig.first_name : 'john';
+  const lastName = customerConfig ? customerConfig.harrison : 'harrison';
+  const street = customerConfig ? customerConfig.street : ['Street Address'];
+  const telephone = customerConfig ? customerConfig.telephone : '2313131312';
+  return {
+    country_id: country,
+    street,
+    company: '',
+    telephone,
+    postcode: 'A1B2C3',
+    regionId: '1',
+    city,
+    firstname: firstName || 'john',
+    lastname: lastName || 'harrison',
+    email,
+    sameAsBilling: 1
+  };
 }
 
 /**

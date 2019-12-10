@@ -15,7 +15,9 @@ function mapStateToProps(state) {
     mainProductListLoading: state.mainRd.mainProductListLoading,
     isOpenReceiptModal: state.mainRd.receipt.isOpenReceiptModal,
     cartHoldList: state.mainRd.cartHoldList,
-    currencyCode: state.mainRd.shopInfoConfig[0]
+    currencyCode: state.mainRd.shopInfoConfig[0],
+    isLoadingSearchHandle: state.mainRd.isLoadingSearchHandle,
+    isShowHaveNoSearchResultFound: state.mainRd.isShowHaveNoSearchResultFound
   };
 }
 

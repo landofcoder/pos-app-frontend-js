@@ -7,6 +7,7 @@ import styles from './pagelogin.scss';
 import commonStyles from '../styles/common.scss';
 import Loading from '../wait/Loading';
 import * as routes from '../../constants/routes';
+import { POS_LOGIN_STORAGE } from '../../constants/authen';
 
 type Props = {
   login: () => void,
@@ -34,7 +35,8 @@ class PageLogin extends Component {
     this.setState({ valuePass: event.target.value });
   };
 
-  loginAction = () => {
+  loginFormSubmit = e => {
+    e.preventDefault();
     const { login } = this.props;
     const { valueUser, valuePass } = this.state;
     const payload = {
@@ -50,26 +52,26 @@ class PageLogin extends Component {
     if (token !== '') {
       return <Redirect to={routes.HOME} />;
     }
-    if (localStorage.getItem('posAppData')) {
-      setToken(localStorage.getItem('posAppData'));
-      return <Redirect to={routes.HOME} />;
+    if (localStorage.getItem(POS_LOGIN_STORAGE)) {
+      // setToken(localStorage.getItem(POS_LOGIN_STORAGE));
+      // return <Redirect to={routes.HOME} />;
     }
     return (
       <>
         <div
-          className={`${commonStyles.wrapStaticPageContent} ${styles.wrapFullCenter} ${commonStyles.contentColumn}`}
+          className={`${commonStyles.contentColumn} ${styles.wrapLoginPage}`}
         >
           <div className="col-sm-12 col-md-4 col-lg-3 ">
-            <form className={`${styles.contentColumn}`}>
-              <h1 className="h3 mb-3 font-weight-normal">Please sign in</h1>
+            <form onSubmit={this.loginFormSubmit} className={`${styles.contentColumn}`}>
+              <h1 className="h3 mb-3 font-weight-normal">Sign in</h1>
               <div className="form-group">
                 <input
                   value={valueUser}
                   onChange={this.handleChangeUser}
-                  type="email"
+                  type="text"
                   id="inputEmail"
                   className="form-control"
-                  placeholder="Email address"
+                  placeholder="Username"
                   required
                 />
               </div>
@@ -93,7 +95,6 @@ class PageLogin extends Component {
                   <></>
                 )}
                 <button
-                  onClick={this.loginAction}
                   className="btn btn-lg btn-primary btn-block"
                   type="submit"
                 >

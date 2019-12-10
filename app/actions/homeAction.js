@@ -46,7 +46,7 @@ export function cashCheckoutAction() {
   };
 }
 
-export function searchAction(payload) {
+export function searchProductAction(payload) {
   return {
     type: types.SEARCH_ACTION,
     payload
@@ -212,7 +212,7 @@ export function closeReceiptModal() {
 
 export function setToken(payload) {
   return {
-    type: typesAuthen.ACCESS_TOKEN,
+    type: typesAuthen.RECEIVED_TOKEN,
     payload
   };
 }
