@@ -2,7 +2,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
-import { login, setToken } from '../../actions/authenAction';
+import { login } from '../../actions/authenAction';
+import { setToken } from '../../actions/homeAction';
 import styles from './pagelogin.scss';
 import commonStyles from '../styles/common.scss';
 import Loading from '../wait/Loading';
