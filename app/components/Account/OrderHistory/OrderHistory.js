@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import Styles from './OrderHistory.scss';
+
 class OrderHistory extends Component<Props> {
   props: Props;
+
   render() {
     return (
       <>
