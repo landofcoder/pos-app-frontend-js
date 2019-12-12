@@ -8,7 +8,7 @@ const posSystemConfigRd = state => state.mainRd.posSystemConfig;
  */
 export function* getDefaultShippingMethod() {
   const posSystemConfig = yield select(posSystemConfigRd);
-  const shippingConfig = posSystemConfig[2];
+  const shippingConfig = posSystemConfig.shipping_method;
   return shippingConfig.default_shipping_method;
 }
 
@@ -18,6 +18,6 @@ export function* getDefaultShippingMethod() {
  */
 export function* getDefaultPaymentMethod() {
   const posSystemConfig = yield select(posSystemConfigRd);
-  const config = posSystemConfig[1];
+  const config = posSystemConfig.payment_for_pos;
   return config.default_payment_method;
 }
