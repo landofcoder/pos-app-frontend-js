@@ -8,7 +8,8 @@ import { closeReceiptModal } from '../../../actions/homeAction';
 type Props = {
   closeReceiptModal: () => void,
   receipt: Object,
-  customReceipt: Object
+  customReceipt: Object,
+  detailOutlet: Object
 };
 
 class Receipt extends Component<Props> {
@@ -52,9 +53,16 @@ class Receipt extends Component<Props> {
   };
 
   render() {
-    const { receipt, closeReceiptModal, customReceipt } = this.props;
+    const {
+      receipt,
+      closeReceiptModal,
+      customReceipt,
+      detailOutlet
+    } = this.props;
+    console.log('detail outlet:', detailOutlet);
     const { dateTime } = this.state;
     const { orderId } = receipt;
+    const { outlet_name } = detailOutlet;
     const {
       receipt_title,
       outlet_name_display,
@@ -91,14 +99,20 @@ class Receipt extends Component<Props> {
         <div className="modal-content">
           <div id="wrap-main-receipt">
             <div className={Style.wrapHeader}>
+              <div className={Style.wrapReceiptTitle}>
+                {/* eslint-disable-next-line camelcase */}
+                <p>{receipt_title}</p>
+              </div>
               <div className={Style.wrapHeadLogo}>
                 <h5 className="modal-title" id="modalReceipt">
-                  Luma outlet
+                  {/* eslint-disable-next-line camelcase */}
+                  {outlet_name}
                 </h5>
               </div>
               <div className={Style.wrapHeadInfo}>
                 <div className={Style.wrapTime}>
-                  <span>{dateTime}</span>
+                  {// eslint-disable-next-line camelcase
+                  date_display === '1' ? <span>{dateTime}</span> : <></>}
                 </div>
                 <div className={Style.wrapOrderId}>
                   <span>OrderId:&nbsp;</span>
@@ -141,7 +155,8 @@ class Receipt extends Component<Props> {
 function mapStateToProps(state) {
   return {
     receipt: state.mainRd.receipt,
-    customReceipt: state.mainRd.customReceipt
+    customReceipt: state.mainRd.customReceipt,
+    detailOutlet: state.mainRd.detailOutlet
   };
 }
 

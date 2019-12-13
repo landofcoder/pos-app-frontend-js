@@ -1,9 +1,22 @@
 .wrapMainReceipt {
   color: #666;
+
   .wrapHeader {
     padding-left: 20px;
     padding-right: 20px;
     padding-top: 20px;
+
+    .wrapReceiptTitle {
+      border-bottom: 1px solid #dedede;
+      margin-bottom: 10px;
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+      p {
+        padding-bottom: 5px;
+        margin-bottom: 5px;
+      }
+    }
 
     .wrapHeadLogo {
       display: flex;
@@ -15,10 +28,6 @@
 
       .wrapTime {
         width: 50%;
-
-        span {
-
-        }
       }
 
       .wrapOrderId {

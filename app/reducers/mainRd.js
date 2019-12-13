@@ -54,6 +54,7 @@ const initialState = {
     tax_display: '0',
     tax_label: null
   },
+  detailOutlet: {},
   isOpenFindCustomer: false,
   isLoadingSearchCustomer: false,
   customerSearchResult: [],
@@ -275,6 +276,9 @@ const mainRd = (state = initialState, action) =>
         break;
       case types.RECEIVED_CUSTOM_RECEIPT:
         draft.customReceipt = action.payload;
+        break;
+      case types.RECEIVED_DETAIL_OUTLET:
+        draft.detailOutlet = action.payload;
         break;
       default:
         break;
