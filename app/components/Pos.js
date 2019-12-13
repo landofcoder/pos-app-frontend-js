@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import ListCart from './cart/ListCart';
 import routes from '../constants/routes';
 import Styles from './pos.scss';
@@ -92,9 +92,11 @@ export default class Pos extends Component<Props> {
 
     return formatCurrencyCode(totalPrice, currencyCode);
   };
+
   handleRedirectToAccount = () => {
-    this.setState({redirectToAccount: true})
-  }
+    this.setState({ redirectToAccount: true });
+  };
+
   /**
    * Find option selected
    * @param optionSelected
@@ -272,21 +274,18 @@ export default class Pos extends Component<Props> {
       isShowHaveNoSearchResultFound,
       setToken
     } = this.props;
-    const { redirectToAccount} = this.state;
+    const { redirectToAccount } = this.state;
     // Check login
     if (token === '') {
       if (localStorage.getItem(POS_LOGIN_STORAGE)) {
-        console.log("HAVE in local_storage");
         setToken(localStorage.getItem(POS_LOGIN_STORAGE));
       } else return <Redirect to={routes.LOGIN} />;
-    }
-    else{
-      console.log("I have token");
+    } else {
       console.log(token);
     }
     // Check Redirect To Layout Account
-    if(redirectToAccount){
-      return <Redirect to={routes.ACCOUNT} />
+    if (redirectToAccount) {
+      return <Redirect to={routes.ACCOUNT} />;
     }
     const classWrapProductPanel = `pr-3 ${Styles.wrapProductPanel} row`;
     const {

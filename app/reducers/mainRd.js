@@ -193,6 +193,7 @@ const mainRd = (state = initialState, action) =>
         draft.mainProductListLoading = action.payload;
         break;
       case types.RECEIVED_POST_GENERAL_CONFIG:
+        // eslint-disable-next-line prefer-destructuring
         draft.posSystemConfig = action.payload[0];
         break;
       case types.UPDATE_IS_LOADING_SYSTEM_CONFIG:

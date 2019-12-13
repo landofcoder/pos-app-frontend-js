@@ -25,9 +25,7 @@ function* loginAction(payload) {
 
 function* takeLatestToken() {
   const adminTokenResult = yield select(adminToken);
-  console.log('admin token:', adminTokenResult);
   const cashierInfo = yield call(getInfoCashierService, adminTokenResult);
-  console.log('cashier info:', cashierInfo);
   yield put({ type: types.RECEIVED_CASHIER_INFO, payload: cashierInfo });
 }
 function* authenSaga() {

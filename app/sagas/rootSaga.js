@@ -192,7 +192,7 @@ function* cashCheckoutPlaceOrder() {
   // Default payment
   const defaultPaymentMethod = yield getDefaultPaymentMethod();
 
-  const cashierInfo = yield select(cashierInfo);
+  const cashierInfoResult = yield select(cashierInfo);
 
   // Step 1: Create order
   const orderId = yield call(placeCashOrderService, cartCurrentTokenResult, {
@@ -202,7 +202,7 @@ function* cashCheckoutPlaceOrder() {
     defaultShippingMethod,
     defaultPaymentMethod,
     posSystemConfigCustomer,
-    cashierInfo
+    cashierInfo: cashierInfoResult
   });
 
   // Step 2: Create invoice

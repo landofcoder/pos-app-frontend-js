@@ -33,10 +33,9 @@ const authenRd = (state = initialState, action) =>
         draft.cashierInfo = action.payload;
         break;
       case typesAuthen.LOGOUT_ACTION:
-        console.log("detele draft");
-        draft.token = ``,
-        draft.message = ``,
-        draft.cashierInfo = {}
+        draft.token = '';
+        draft.message = '';
+        draft.cashierInfo = {};
         localStorage.clear();
         break;
       default:
