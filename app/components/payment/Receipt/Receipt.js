@@ -7,7 +7,8 @@ import { closeReceiptModal } from '../../../actions/homeAction';
 
 type Props = {
   closeReceiptModal: () => void,
-  receipt: Object
+  receipt: Object,
+  customReceipt: Object
 };
 
 class Receipt extends Component<Props> {
@@ -51,9 +52,40 @@ class Receipt extends Component<Props> {
   };
 
   render() {
-    const { receipt, closeReceiptModal } = this.props;
+    const { receipt, closeReceiptModal, customReceipt } = this.props;
     const { dateTime } = this.state;
     const { orderId } = receipt;
+    const {
+      receipt_title,
+      outlet_name_display,
+      date_display,
+      order_id_display,
+      order_id_label,
+      customer_display,
+      subtotal_display,
+      subtotal_label,
+      discount_display,
+      discount_label,
+      tax_display,
+      tax_label,
+      credit_amount_display,
+      credit_label,
+      change_amount_display,
+      change_label,
+      cashier_name_display,
+      cashier_label,
+      outlet_address_display,
+      grand_total_label,
+      logo_display,
+      icon,
+      image,
+      logo_width,
+      logo_height,
+      logo_alt,
+      header_content,
+      footer_content
+    } = customReceipt;
+
     return (
       <div className={Style.wrapMainReceipt}>
         <div className="modal-content">
@@ -108,7 +140,8 @@ class Receipt extends Component<Props> {
 
 function mapStateToProps(state) {
   return {
-    receipt: state.mainRd.receipt
+    receipt: state.mainRd.receipt,
+    customReceipt: state.mainRd.customReceipt
   };
 }
 

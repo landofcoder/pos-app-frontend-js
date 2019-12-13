@@ -19,8 +19,40 @@ const initialState = {
   cartCurrent: cartCurrentDefaultData,
   receipt: {
     orderId: 0, // Last order is inserted
-    isOpenReceiptModal: false,
+    isOpenReceiptModal: true,
     cartForReceipt: testCartCurrentForDefaultReceipt // When customer checkout succeed, copy current cart to this
+  },
+  customReceipt: {
+    cashier_label: null,
+    cashier_name_display: '0',
+    change_amount_display: '0',
+    change_label: null,
+    credit_amount_display: '0',
+    credit_label: null,
+    customer_display: '0',
+    date_display: '0',
+    discount_display: '0',
+    discount_label: null,
+    footer_content: null,
+    grand_total_label: null,
+    header_content: null,
+    icon: null,
+    image: null,
+    logo_alt: null,
+    logo_display: '0',
+    logo_height: null,
+    logo_width: null,
+    order_id_display: '0',
+    order_id_label: null,
+    outlet_address_display: '0',
+    outlet_name_display: '0',
+    receipt_id: '1',
+    receipt_title: 'chienmart-receipt',
+    status: '1',
+    subtotal_display: '0',
+    subtotal_label: null,
+    tax_display: '0',
+    tax_label: null
   },
   isOpenFindCustomer: false,
   isLoadingSearchCustomer: false,
@@ -240,6 +272,9 @@ const mainRd = (state = initialState, action) =>
         break;
       case types.UPDATE_IS_SHOW_HAVE_NO_SEARCH_RESULT_FOUND:
         draft.isShowHaveNoSearchResultFound = action.payload;
+        break;
+      case types.RECEIVED_CUSTOM_RECEIPT:
+        draft.customReceipt = action.payload;
         break;
       default:
         break;

@@ -216,3 +216,9 @@ export function setToken(payload) {
     payload
   };
 }
+
+export function getCustomReceipt() {
+  return {
+    type: types.GET_CUSTOM_RECEIPT
+  };
+}

@@ -13,8 +13,7 @@ import {
   getDetailProductBundleService,
   getDetailProductConfigurableService,
   getDetailProductGroupedService,
-  searchProductService,
-  getDefaultProductsService
+  searchProductService
 } from './services/ProductService';
 import {
   getCustomerCartTokenService,
@@ -23,7 +22,8 @@ import {
 import { createCustomerCartService } from './services/CustomerCartService';
 import {
   getSystemConfigService,
-  getShopInfoService
+  getShopInfoService,
+  getCustomReceiptService
 } from './services/CommonService';
 import {
   handleProductType,
@@ -477,6 +477,12 @@ function* getPostConfigGeneralConfig() {
   yield put({ type: types.UPDATE_IS_LOADING_SYSTEM_CONFIG, payload: false });
 }
 
+function* getCustomReceipt() {
+  const customReceiptResult = yield call(getCustomReceiptService);
+  const result = customReceiptResult[0];
+  yield put({ type: types.RECEIVED_CUSTOM_RECEIPT, payload: result.data });
+}
+
 /**
  * Default root saga
  * @returns {Generator<<"FORK", ForkEffectDescriptor<RT>>, *>}
@@ -502,6 +508,7 @@ function* rootSaga() {
   yield takeEvery(types.SEARCH_CUSTOMER, getSearchCustomer);
   yield takeEvery(types.ADD_TO_CART, addToCart);
   yield takeEvery(types.GET_POS_GENERAL_CONFIG, getPostConfigGeneralConfig);
+  yield takeEvery(types.GET_CUSTOM_RECEIPT, getCustomReceipt);
 }
 
 export default rootSaga;
