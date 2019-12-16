@@ -19,10 +19,10 @@ const initialState = {
   cartCurrent: cartCurrentDefaultData,
   receipt: {
     orderId: 0, // Last order is inserted
-    isOpenReceiptModal: true,
+    isOpenReceiptModal: false,
     cartForReceipt: testCartCurrentForDefaultReceipt // When customer checkout succeed, copy current cart to this
   },
-  allCategories: null,
+  allCategories: null, // Main store categories
   customReceipt: {
     cashier_label: null,
     cashier_name_display: '0',

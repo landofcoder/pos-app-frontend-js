@@ -21,6 +21,7 @@ import CartCustomer from './customer/CartCustomer';
 import CashPanel from './payment/Cash/Cash';
 import Receipt from './payment/Receipt/Receipt';
 import { formatCurrencyCode } from '../common/product';
+import Categories from './commons/Categories/Categories';
 import { POS_LOGIN_STORAGE } from '../constants/authen';
 
 type Props = {
@@ -339,7 +340,7 @@ export default class Pos extends Component<Props> {
           <div className="row" id={Styles.wrapPostContainerId}>
             <div className="col-md-9">
               <div className={classWrapProductPanel}>
-                <div className="col-md-12 mb-0 pr-0">
+                <div className="col-md-9 mb-0 pr-0">
                   <div className="input-group flex-nowrap">
                     <div className="input-group mb-3">
                       <div className="input-group-prepend">
@@ -381,6 +382,10 @@ export default class Pos extends Component<Props> {
                     <></>
                   )}
                 </div>
+                <div className="col-md-3">
+                  <Categories />
+                </div>
+
                 {mainProductListLoading ? (
                   <div className="col-md-12">
                     <div className="d-flex justify-content-center">
@@ -455,6 +460,7 @@ export default class Pos extends Component<Props> {
           <div className={Styles.wrapActionSecondLine}>
             <div className="col-md-1 pl-0 pr-1">
               <a
+                role="presentation"
                 className="btn btn-outline-secondary btn-lg btn-block"
                 onClick={this.handleRedirectToAccount}
               >
