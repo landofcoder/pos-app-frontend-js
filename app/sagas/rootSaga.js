@@ -23,7 +23,8 @@ import { createCustomerCartService } from './services/CustomerCartService';
 import {
   getSystemConfigService,
   getShopInfoService,
-  getCustomReceiptService
+  getCustomReceiptService,
+  getAllCategoriesService
 } from './services/CommonService';
 import {
   handleProductType,
@@ -472,6 +473,11 @@ function* getPostConfigGeneralConfig() {
     type: types.RECEIVED_SHOP_INFO_CONFIG,
     payload: shopInfoResponse
   });
+
+  // Get all categories
+  const allCategories = yield call(getAllCategoriesService);
+  console.log('all categories:', allCategories);
+  yield put({ type: types.RECEIVED_ALL_CATEGORIES, payload: allCategories });
 
   // Stop loading
   yield put({ type: types.UPDATE_IS_LOADING_SYSTEM_CONFIG, payload: false });

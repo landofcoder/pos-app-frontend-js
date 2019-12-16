@@ -22,6 +22,7 @@ const initialState = {
     isOpenReceiptModal: true,
     cartForReceipt: testCartCurrentForDefaultReceipt // When customer checkout succeed, copy current cart to this
   },
+  allCategories: null,
   customReceipt: {
     cashier_label: null,
     cashier_name_display: '0',
@@ -279,6 +280,9 @@ const mainRd = (state = initialState, action) =>
         break;
       case types.RECEIVED_DETAIL_OUTLET:
         draft.detailOutlet = action.payload;
+        break;
+      case types.RECEIVED_ALL_CATEGORIES:
+        draft.allCategories = action.payload;
         break;
       default:
         break;
