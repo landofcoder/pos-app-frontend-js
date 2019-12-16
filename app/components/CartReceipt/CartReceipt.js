@@ -26,7 +26,7 @@ class CartReceipt extends Component<Props> {
     } = this.props;
 
     /* eslint-disable-next-line */
-    const { subtotal_display, subtotal_label, discount_display, discount_label, cashier_name_display, cashier_label } = customReceipt;
+    const { subtotal_display, subtotal_label, discount_display, discount_label, cashier_name_display, cashier_label, grand_total_label } = customReceipt;
 
     const { totals } = orderPreparingCheckout;
     const subTotal = formatCurrencyCode(totals.base_subtotal, currencyCode);
@@ -42,7 +42,6 @@ class CartReceipt extends Component<Props> {
     // eslint-disable-next-line no-lone-blocks
     {/*eslint-disable*/
     }
-
 
     return (
       <div className={style.wrapCartReceipt}>
@@ -117,7 +116,7 @@ class CartReceipt extends Component<Props> {
             htmlFor="receiptLblOrderTotal"
             className="col-sm-4 col-form-label"
           >
-            ORDER TOTAL
+            {grand_total_label}
           </label>
           <div className="col-sm-8 text-right">
             <p id="receiptLblOrderTotal" className="font-weight-bold">
@@ -141,7 +140,6 @@ class CartReceipt extends Component<Props> {
                 <hr/>
               </> : <></>
           }
-        <p className="font-weight-bold">Thanks for shopping. Keep in touch.</p>
       </div>
     );
     // eslint-disable-next-line no-lone-blocks

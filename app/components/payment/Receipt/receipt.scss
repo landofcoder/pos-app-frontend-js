@@ -5,6 +5,13 @@
     padding-left: 20px;
     padding-right: 20px;
     padding-top: 20px;
+    text-align: center;
+
+    .wrapReceiptLogo {
+      img {
+        width: 160px;
+      }
+    }
 
     .wrapReceiptTitle {
       border-bottom: 1px solid #dedede;

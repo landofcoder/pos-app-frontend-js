@@ -71,10 +71,6 @@ class Receipt extends Component<Props> {
       order_id_display,
       order_id_label,
       customer_display,
-      cashier_name_display,
-      cashier_label,
-      outlet_address_display,
-      grand_total_label,
       logo_display,
       icon,
       image,
@@ -86,16 +82,18 @@ class Receipt extends Component<Props> {
     } = customReceipt;
     /* eslint-enable */
 
-    console.log('detail outlet:', detailOutlet);
-    console.log('customer:', customerReceipt);
-    console.log('customer display:', customer_display);
-
     /* eslint-disable */
     return (
       <div className={Style.wrapMainReceipt}>
         <div className="modal-content">
           <div id="wrap-main-receipt">
             <div className={Style.wrapHeader}>
+              {
+                Number(logo_display) === 1 ?
+                  <div className={Style.wrapReceiptLogo}>
+                    <img src={icon}/>
+                  </div> : <></>
+              }
               <div className={Style.wrapReceiptTitle}>
                 <p>{receipt_title}</p>
               </div>
@@ -128,9 +126,13 @@ class Receipt extends Component<Props> {
                   </div> : <></>
               }
             </div>
+            <div className="col-md-12">
+             <div dangerouslySetInnerHTML={{__html: header_content}} />
+            </div>
             <div className="modal-body">
               <div>
                 <CartReceipt/>
+                <div dangerouslySetInnerHTML={{__html: footer_content}} />
               </div>
             </div>
           </div>
