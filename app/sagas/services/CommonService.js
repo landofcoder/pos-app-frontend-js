@@ -73,7 +73,7 @@ export async function getDetailOutletService(payload) {
   console.log('receipt payload:', payload);
   const outletId = payload;
   const response = await fetch(
-    `${baseUrl}index.php/rest/V1/lof-outlet/getdetailoutlet?id=${outletId}`,
+    `${baseUrl}index.php/rest/V1/lof-outlet/get-detail-outlet?id=${outletId}`,
     {
       method: 'GET', // *GET, POST, PUT, DELETE, etc.
       mode: 'cors', // no-cors, *cors, same-origin

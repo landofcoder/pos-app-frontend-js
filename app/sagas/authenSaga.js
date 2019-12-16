@@ -32,6 +32,7 @@ function* takeLatestToken() {
   yield put({ type: types.RECEIVED_CASHIER_INFO, payload: cashierInfo });
 
   const outletId = cashierInfo.outlet_id;
+
   const detailOutlet = yield call(getDetailOutletService, outletId);
   yield put({ type: RECEIVED_DETAIL_OUTLET, payload: detailOutlet });
 }

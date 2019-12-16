@@ -59,9 +59,10 @@ class Receipt extends Component<Props> {
       customReceipt,
       detailOutlet
     } = this.props;
-    console.log('detail outlet:', detailOutlet);
     const { dateTime } = this.state;
-    const { orderId } = receipt;
+    const { orderId, cartForReceipt } = receipt;
+    const customerReceipt = cartForReceipt.customer;
+    /* eslint-disable */
     const { outlet_name } = detailOutlet;
     const {
       receipt_title,
@@ -70,16 +71,6 @@ class Receipt extends Component<Props> {
       order_id_display,
       order_id_label,
       customer_display,
-      subtotal_display,
-      subtotal_label,
-      discount_display,
-      discount_label,
-      tax_display,
-      tax_label,
-      credit_amount_display,
-      credit_label,
-      change_amount_display,
-      change_label,
       cashier_name_display,
       cashier_label,
       outlet_address_display,
@@ -93,36 +84,53 @@ class Receipt extends Component<Props> {
       header_content,
       footer_content
     } = customReceipt;
+    /* eslint-enable */
 
+    console.log('detail outlet:', detailOutlet);
+    console.log('customer:', customerReceipt);
+    console.log('customer display:', customer_display);
+
+    /* eslint-disable */
     return (
       <div className={Style.wrapMainReceipt}>
         <div className="modal-content">
           <div id="wrap-main-receipt">
             <div className={Style.wrapHeader}>
               <div className={Style.wrapReceiptTitle}>
-                {/* eslint-disable-next-line camelcase */}
                 <p>{receipt_title}</p>
+              </div>
+              <div className={Style.wraOutletAddress}>
+                <p>{detailOutlet.outlet_name}</p>
               </div>
               <div className={Style.wrapHeadLogo}>
                 <h5 className="modal-title" id="modalReceipt">
-                  {/* eslint-disable-next-line camelcase */}
-                  {outlet_name}
+                  {outlet_name_display ? outlet_name : ''}
                 </h5>
               </div>
               <div className={Style.wrapHeadInfo}>
                 <div className={Style.wrapTime}>
-                  {// eslint-disable-next-line camelcase
-                  date_display === '1' ? <span>{dateTime}</span> : <></>}
+                  {date_display === '1' ? <span>{dateTime}</span> : <></>}
                 </div>
-                <div className={Style.wrapOrderId}>
-                  <span>OrderId:&nbsp;</span>
-                  <span>{orderId}</span>
-                </div>
+                {order_id_display ? (
+                  <div className={Style.wrapOrderId}>
+                    <span>{order_id_label}&nbsp;</span>
+                    <span>{orderId}</span>
+                  </div>
+                ) : (
+                  <></>
+                )}
               </div>
+              {
+                customerReceipt && Number(customer_display) === 1 ?
+                  <div className={Style.wrapCustomerInfo}>
+                    <span>Customer:&nbsp;</span>
+                    <span>{customerReceipt.firstname}</span>
+                  </div> : <></>
+              }
             </div>
             <div className="modal-body">
               <div>
-                <CartReceipt />
+                <CartReceipt/>
               </div>
             </div>
           </div>
@@ -149,6 +157,7 @@ class Receipt extends Component<Props> {
         </div>
       </div>
     );
+    /* eslint-enable */
   }
 }
 

@@ -47,7 +47,7 @@ const initialState = {
     outlet_address_display: '0',
     outlet_name_display: '0',
     receipt_id: '1',
-    receipt_title: 'chienmart-receipt',
+    receipt_title: 'receipt',
     status: '1',
     subtotal_display: '0',
     subtotal_label: null,

@@ -8,14 +8,26 @@ import { formatCurrencyCode } from '../../common/product';
 type Props = {
   cartForReceipt: Array,
   orderPreparingCheckout: Object,
-  currencyCode: string
+  currencyCode: string,
+  customReceipt: Object,
+  cashierInfo: Object
 };
 
 class CartReceipt extends Component<Props> {
   props: Props;
 
   render() {
-    const { cartForReceipt, orderPreparingCheckout, currencyCode } = this.props;
+    const {
+      cartForReceipt,
+      orderPreparingCheckout,
+      currencyCode,
+      customReceipt,
+      cashierInfo
+    } = this.props;
+
+    /* eslint-disable-next-line */
+    const { subtotal_display, subtotal_label, discount_display, discount_label, cashier_name_display, cashier_label } = customReceipt;
+
     const { totals } = orderPreparingCheckout;
     const subTotal = formatCurrencyCode(totals.base_subtotal, currencyCode);
     const discountAmount = formatCurrencyCode(
@@ -27,41 +39,53 @@ class CartReceipt extends Component<Props> {
       currencyCode
     );
     const grandTotal = formatCurrencyCode(totals.grand_total, currencyCode);
+    // eslint-disable-next-line no-lone-blocks
+    {/*eslint-disable*/
+    }
+
+
     return (
       <div className={style.wrapCartReceipt}>
         <table>
           <thead>
-            <tr>
-              <th>Product</th>
-              <th>Quantity</th>
-              <th>Price</th>
-            </tr>
+          <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+          </tr>
           </thead>
           <tbody>
-            {cartForReceipt.map((item, index) => {
-              return (
-                <tr key={index}>
-                  <td>{item.name}</td>
-                  <td>{item.pos_qty}</td>
-                  <td>{item.pos_totalPriceFormat}</td>
-                </tr>
-              );
-            })}
+          {cartForReceipt.map((item, index) => {
+            return (
+              <tr key={index}>
+                <td>{item.name}</td>
+                <td>{item.pos_qty}</td>
+                <td>{item.pos_totalPriceFormat}</td>
+              </tr>
+            );
+          })}
           </tbody>
         </table>
-        <hr />
+        <hr/>
         <div className="form-group row">
-          <label
-            htmlFor="receiptLblGrandTotal"
-            className="col-sm-4 col-form-label"
-          >
-            Subtotal
-          </label>
-          <div className="col-sm-8 text-right">
-            <p id="receiptLblGrandTotal" className="font-weight-bold">
-              {subTotal}
-            </p>
-          </div>
+          {Number(subtotal_display) === 1 ? (
+            <>
+              <label
+                htmlFor="receiptLblGrandTotal"
+                className="col-sm-4 col-form-label"
+              >
+                {subtotal_label}
+              </label>
+              <div className="col-sm-8 text-right">
+                <p id="receiptLblGrandTotal" className="font-weight-bold">
+                  {subTotal}
+                </p>
+              </div>
+            </>
+          ) : (
+            <></>
+          )}
+
           <label
             htmlFor="receiptLblGrandTotal"
             className="col-sm-4 col-form-label"
@@ -73,17 +97,22 @@ class CartReceipt extends Component<Props> {
               {shippingAmount}
             </p>
           </div>
-          <label
-            htmlFor="receiptLblDiscountAmount"
-            className="col-sm-4 col-form-label"
-          >
-            Discount
-          </label>
-          <div className="col-sm-8 text-right">
-            <p id="receiptLblDiscountAmount" className="font-weight-bold">
-              {discountAmount}
-            </p>
-          </div>
+
+          {
+            Number(discount_display) === 1 ? <>
+              <label
+                htmlFor="receiptLblDiscountAmount"
+                className="col-sm-4 col-form-label"
+              >
+                {discount_label}
+              </label>
+              <div className="col-sm-8 text-right">
+                <p id="receiptLblDiscountAmount" className="font-weight-bold">
+                  {discountAmount}
+                </p>
+              </div>
+            </> : <></>
+          }
           <label
             htmlFor="receiptLblOrderTotal"
             className="col-sm-4 col-form-label"
@@ -96,26 +125,38 @@ class CartReceipt extends Component<Props> {
             </p>
           </div>
         </div>
-        <hr />
-        <div className="form-group row">
-          <label
-            htmlFor="receiptLblCashierName"
-            className="col-sm-4 col-form-label"
-          >
-            <span id="receiptLblCashierName">Cashier name: JOHN DOE</span>
-          </label>
-        </div>
-        <hr />
+        <hr/>
+          {
+            Number(cashier_name_display) === 1 ?
+              <>
+              <div className="form-group row">
+                <label
+                  htmlFor="receiptLblCashierName"
+                  className="col-sm-12 col-form-label"
+                >
+                  <span id="receiptLblCashierName">{cashier_label}&nbsp;</span>
+                  <span>{cashierInfo.first_name}</span>
+                </label>
+              </div>
+                <hr/>
+              </> : <></>
+          }
         <p className="font-weight-bold">Thanks for shopping. Keep in touch.</p>
       </div>
     );
+    // eslint-disable-next-line no-lone-blocks
+    {
+      /* eslint-enable */
+    }
   }
 }
 
 const mapStateToProps = state => ({
   cartForReceipt: state.mainRd.receipt.cartForReceipt.data,
   orderPreparingCheckout: state.mainRd.orderPreparingCheckout,
-  currencyCode: state.mainRd.shopInfoConfig[0]
+  currencyCode: state.mainRd.shopInfoConfig[0],
+  customReceipt: state.mainRd.customReceipt,
+  cashierInfo: state.authenRd.cashierInfo
 });
 
 const mapDispatchToProps = dispatch => {

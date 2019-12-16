@@ -12,9 +12,16 @@
       text-align: center;
       font-size: 20px;
       font-weight: bold;
+
       p {
         padding-bottom: 5px;
         margin-bottom: 5px;
+      }
+    }
+
+    .wraOutletAddress {
+      p {
+        text-align: center;
       }
     }
 
@@ -36,6 +43,10 @@
         justify-content: flex-end;
       }
     }
-  }
 
+    .wrapCustomerInfo {
+      display: block;
+      text-align: left;
+    }
+  }
 }
