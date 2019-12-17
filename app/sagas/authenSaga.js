@@ -31,14 +31,8 @@ function* loginAction(payload) {
 
 function* takeLatestToken() {
   const adminTokenResult = yield select(adminToken);
-<<<<<<< HEAD
-  //console.log('admin token:', adminTokenResult);
-  const cashierInfo = yield call(getInfoCashierService, adminTokenResult);
-  //console.log('cashier info:', cashierInfo);
-=======
 
   const cashierInfo = yield call(getInfoCashierService, adminTokenResult);
->>>>>>> c46093c03786626560b84a0da8cd0c777f494660
   yield put({ type: types.RECEIVED_CASHIER_INFO, payload: cashierInfo });
 
   const outletId = cashierInfo.outlet_id;

@@ -97,10 +97,6 @@ export default class Pos extends Component<Props> {
   handleRedirectToAccount = () => {
     this.setState({ redirectToAccount: true });
   };
-<<<<<<< HEAD
-=======
-
->>>>>>> c46093c03786626560b84a0da8cd0c777f494660
   /**
    * Find option selected
    * @param optionSelected
