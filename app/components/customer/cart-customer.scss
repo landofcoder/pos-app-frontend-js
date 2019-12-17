@@ -1,0 +1,12 @@
+.wrapCloseIcon {
+  i {
+    font-size: 20px;
+    margin-left: 9px;
+    color: #999;
+    cursor: pointer;
+
+    &:hover {
+      color: #666;
+    }
+  }
+}
