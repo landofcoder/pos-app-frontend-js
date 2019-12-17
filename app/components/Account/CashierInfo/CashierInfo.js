@@ -33,59 +33,62 @@ class CashierInfo extends Component<Props> {
     }
     return (
       <>
-        <div className="container-fluid mt-4">
-          <h5 className="card-title">Cashier Information</h5>
-          <div>
-            <div className={`${Styles.wrapContent} form-group`}>
-              <h5 className="card-title">First Name</h5>
+        <div className="card">
+          <h5 className={`card-header`}>Cashier Information</h5>
+          <div className={`card-body`}>
+            <div className={`form-group`}>
+              <p className="card-text font-weight-bold">First Name</p>
               <div className="form-group">
-                <input
-                  value={first_name}
-                  type="text"
-                  className="form-control"
-                  required
-                />
-              </div>
+                <label className="">{first_name}</label>
+                {/* {<input
 
-              <h5 className="card-title">Last Name</h5>
-              <div className="form-group">
-                <input
-                  value={last_name}
-                  type="text"
-                  className="form-control"
-                  required
-                />
+                    type="text"
+                    className="form-control"
+                    required
+                  />} */}
               </div>
-
-              <h5 className="card-title">Email Adrdress</h5>
+              <p className="card-text font-weight-bold">Last Name</p>
               <div className="form-group">
-                <input
-                  value={email}
-                  type="text"
-                  className="form-control"
-                  required
-                />
+                <label className="">{last_name}</label>
+                {/* {<input
+                    value={last_name}
+                    type="text"
+                    className="form-control"
+                    required
+                  />} */}
               </div>
-
-              <h5 className="card-title">Phone </h5>
+              <p className="card-text font-weight-bold">Email Adrdress</p>
               <div className="form-group">
-                <input
-                  value={phone}
-                  type="text"
-                  className="form-control"
-                  required
-                />
+                <label className="">{email}</label>
+                {/* {<input
+                    value={email}
+                    type="text"
+                    className="form-control"
+                    required
+                  />} */}
               </div>
-              <div>
-                <button
-                  type="button"
-                  className="btn btn-danger"
-                  onClick={this.handleSignOut}
-                >
-                  Sign out
-                </button>
+              <p className="card-text font-weight-bold">Phone</p>
+              <div className="form-group">
+                <label className="">{phone}</label>
+                {/* {<input
+                    value={phone}
+                    type="text"
+                    className="form-control"
+                    required
+                  />} */}
               </div>
             </div>
+          </div>
+        </div>
+        <div className="card mt-3">
+          <div className="card-body">
+            <button
+              type="button"
+              className="btn btn-danger"
+              onClick={this.handleSignOut}
+            >
+              Sign out
+            </button>
           </div>
         </div>
       </>
