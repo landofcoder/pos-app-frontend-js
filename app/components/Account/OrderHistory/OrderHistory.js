@@ -20,7 +20,7 @@ class OrderHistory extends Component<Props> {
     const { isLoading, orderHistoryItems } = this.props;
     if (isLoading) {
       return (
-        <div className="d-flex justify-content-center">
+        <div className="d-flex justify-content-center mt-4">
           <div className="spinner-border text-secondary" role="status">
             <span className="sr-only">Loading...</span>
           </div>
