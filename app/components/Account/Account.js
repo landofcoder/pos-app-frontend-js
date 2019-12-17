@@ -25,7 +25,7 @@ export default class Account extends Component<Props> {
 
   render() {
     const { cashierSelect, orderHistorySelect } = this.state;
-    console.log(`cashier select : ${cashierSelect}`);
+    //console.log(`cashier select : ${cashierSelect}`);
     return (
       <>
         <div data-tid="container" className="pr-0 pl-0 pt-2">
@@ -70,7 +70,7 @@ export default class Account extends Component<Props> {
                   </a>
                 </div>
               </div>
-              <div className="col-9 mt-2">
+              <div className="col-9 mt-4">
                 {orderHistorySelect ? <OrderHistory /> : null}
                 {cashierSelect ? <CashierInfo /> : null}
               </div>

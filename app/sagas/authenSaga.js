@@ -25,6 +25,10 @@ function* loginAction(payload) {
   // stop
 }
 
+// function* logoutAction(payload) {
+//   console.log('logout action saga');
+// }
+
 function* takeLatestToken() {
   const adminTokenResult = yield select(adminToken);
 
@@ -38,6 +42,7 @@ function* takeLatestToken() {
 }
 function* authenSaga() {
   yield takeEvery(types.LOGIN_ACTION, loginAction);
+  //yield takeEvery(types.LOGOUT_ACTION, logoutAction);
   yield takeLatest(types.RECEIVED_TOKEN, takeLatestToken);
 }
 
