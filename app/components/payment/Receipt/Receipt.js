@@ -7,7 +7,9 @@ import { closeReceiptModal } from '../../../actions/homeAction';
 
 type Props = {
   closeReceiptModal: () => void,
-  receipt: Object
+  receipt: Object,
+  customReceipt: Object,
+  detailOutlet: Object
 };
 
 class Receipt extends Component<Props> {
@@ -51,32 +53,86 @@ class Receipt extends Component<Props> {
   };
 
   render() {
-    const { receipt, closeReceiptModal } = this.props;
+    const {
+      receipt,
+      closeReceiptModal,
+      customReceipt,
+      detailOutlet
+    } = this.props;
     const { dateTime } = this.state;
-    const { orderId } = receipt;
+    const { orderId, cartForReceipt } = receipt;
+    const customerReceipt = cartForReceipt.customer;
+    /* eslint-disable */
+    const { outlet_name } = detailOutlet;
+    const {
+      receipt_title,
+      outlet_name_display,
+      date_display,
+      order_id_display,
+      order_id_label,
+      customer_display,
+      logo_display,
+      icon,
+      image,
+      logo_width,
+      logo_height,
+      logo_alt,
+      header_content,
+      footer_content
+    } = customReceipt;
+    /* eslint-enable */
+
+    /* eslint-disable */
     return (
       <div className={Style.wrapMainReceipt}>
         <div className="modal-content">
           <div id="wrap-main-receipt">
             <div className={Style.wrapHeader}>
+              {
+                Number(logo_display) === 1 ?
+                  <div className={Style.wrapReceiptLogo}>
+                    <img src={icon}/>
+                  </div> : <></>
+              }
+              <div className={Style.wrapReceiptTitle}>
+                <p>{receipt_title}</p>
+              </div>
+              <div className={Style.wraOutletAddress}>
+                <p>{detailOutlet.outlet_name}</p>
+              </div>
               <div className={Style.wrapHeadLogo}>
                 <h5 className="modal-title" id="modalReceipt">
-                  Luma outlet
+                  {outlet_name_display ? outlet_name : ''}
                 </h5>
               </div>
               <div className={Style.wrapHeadInfo}>
                 <div className={Style.wrapTime}>
-                  <span>{dateTime}</span>
+                  {date_display === '1' ? <span>{dateTime}</span> : <></>}
                 </div>
-                <div className={Style.wrapOrderId}>
-                  <span>OrderId:&nbsp;</span>
-                  <span>{orderId}</span>
-                </div>
+                {order_id_display ? (
+                  <div className={Style.wrapOrderId}>
+                    <span>{order_id_label}&nbsp;</span>
+                    <span>{orderId}</span>
+                  </div>
+                ) : (
+                  <></>
+                )}
               </div>
+              {
+                customerReceipt && Number(customer_display) === 1 ?
+                  <div className={Style.wrapCustomerInfo}>
+                    <span>Customer:&nbsp;</span>
+                    <span>{customerReceipt.firstname}</span>
+                  </div> : <></>
+              }
+            </div>
+            <div className="col-md-12">
+             <div dangerouslySetInnerHTML={{__html: header_content}} />
             </div>
             <div className="modal-body">
               <div>
-                <CartReceipt />
+                <CartReceipt/>
+                <div dangerouslySetInnerHTML={{__html: footer_content}} />
               </div>
             </div>
           </div>
@@ -103,12 +159,15 @@ class Receipt extends Component<Props> {
         </div>
       </div>
     );
+    /* eslint-enable */
   }
 }
 
 function mapStateToProps(state) {
   return {
-    receipt: state.mainRd.receipt
+    receipt: state.mainRd.receipt,
+    customReceipt: state.mainRd.customReceipt,
+    detailOutlet: state.mainRd.detailOutlet
   };
 }
 

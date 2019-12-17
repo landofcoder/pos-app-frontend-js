@@ -13,8 +13,7 @@ import {
   getDetailProductBundleService,
   getDetailProductConfigurableService,
   getDetailProductGroupedService,
-  searchProductService,
-  getDefaultProductsService
+  searchProductService
 } from './services/ProductService';
 import {
   getCustomerCartTokenService,
@@ -23,7 +22,9 @@ import {
 import { createCustomerCartService } from './services/CustomerCartService';
 import {
   getSystemConfigService,
-  getShopInfoService
+  getShopInfoService,
+  getCustomReceiptService,
+  getAllCategoriesService
 } from './services/CommonService';
 import {
   handleProductType,
@@ -192,7 +193,7 @@ function* cashCheckoutPlaceOrder() {
   // Default payment
   const defaultPaymentMethod = yield getDefaultPaymentMethod();
 
-  const cashierInfo = yield select(cashierInfo);
+  const cashierInfoResult = yield select(cashierInfo);
 
   // Step 1: Create order
   const orderId = yield call(placeCashOrderService, cartCurrentTokenResult, {
@@ -202,7 +203,7 @@ function* cashCheckoutPlaceOrder() {
     defaultShippingMethod,
     defaultPaymentMethod,
     posSystemConfigCustomer,
-    cashierInfo
+    cashierInfo: cashierInfoResult
   });
 
   // Step 2: Create invoice
@@ -473,8 +474,19 @@ function* getPostConfigGeneralConfig() {
     payload: shopInfoResponse
   });
 
+  // Get all categories
+  const allCategories = yield call(getAllCategoriesService);
+  console.log('all categories:', allCategories);
+  yield put({ type: types.RECEIVED_ALL_CATEGORIES, payload: allCategories });
+
   // Stop loading
   yield put({ type: types.UPDATE_IS_LOADING_SYSTEM_CONFIG, payload: false });
+}
+
+function* getCustomReceipt() {
+  const customReceiptResult = yield call(getCustomReceiptService);
+  const result = customReceiptResult[0];
+  yield put({ type: types.RECEIVED_CUSTOM_RECEIPT, payload: result.data });
 }
 
 /**
@@ -502,6 +514,7 @@ function* rootSaga() {
   yield takeEvery(types.SEARCH_CUSTOMER, getSearchCustomer);
   yield takeEvery(types.ADD_TO_CART, addToCart);
   yield takeEvery(types.GET_POS_GENERAL_CONFIG, getPostConfigGeneralConfig);
+  yield takeEvery(types.GET_CUSTOM_RECEIPT, getCustomReceipt);
 }
 
 export default rootSaga;

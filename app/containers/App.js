@@ -1,11 +1,12 @@
 // @flow
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { getPostGeneralConfig } from '../actions/homeAction';
+import { getPostGeneralConfig, getCustomReceipt } from '../actions/homeAction';
 
 type Props = {
   children: React.Node,
   getPostGeneralConfig: () => void,
+  getCustomReceipt: () => void,
   isLoadingSystemConfig: boolean
 };
 
@@ -13,8 +14,9 @@ class App extends React.Component<Props> {
   props: Props;
 
   componentDidMount() {
-    const { getPostGeneralConfig } = this.props;
+    const { getPostGeneralConfig, getCustomReceipt } = this.props;
     getPostGeneralConfig();
+    getCustomReceipt();
   }
 
   render() {
@@ -47,7 +49,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    getPostGeneralConfig: () => dispatch(getPostGeneralConfig())
+    getPostGeneralConfig: () => dispatch(getPostGeneralConfig()),
+    getCustomReceipt: () => dispatch(getCustomReceipt())
   };
 }
 
