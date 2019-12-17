@@ -282,7 +282,7 @@ export default class Pos extends Component<Props> {
         setToken(localStorage.getItem(POS_LOGIN_STORAGE));
       } else return <Redirect to={routes.LOGIN} />;
     } else {
-      console.log(token);
+      // console.log(token);
     }
     // Check Redirect To Layout Account
     if (redirectToAccount) {
@@ -385,7 +385,6 @@ export default class Pos extends Component<Props> {
                     <></>
                   )}
                 </div>
-
                 {mainProductListLoading ? (
                   <div className="col-md-12">
                     <div className="d-flex justify-content-center">

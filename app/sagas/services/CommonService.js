@@ -1,5 +1,9 @@
 import { adminToken, baseUrl } from '../../params';
 
+/**
+ * Get system config
+ * @returns {Promise<any>}
+ */
 export async function getSystemConfigService() {
   const response = await fetch(
     `${baseUrl}index.php/rest/V1/pos/getSystemConfig`,
@@ -49,6 +53,7 @@ export async function getShopInfoService() {
  * @returns {Promise<any>}
  */
 export async function getCustomReceiptService(payload) {
+  console.log('receipt payload:', payload);
   const response = await fetch(
     `${baseUrl}index.php/rest/V1/lof-posreceipt/pos/${1}`,
     {

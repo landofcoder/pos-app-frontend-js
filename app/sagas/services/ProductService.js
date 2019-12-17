@@ -349,3 +349,92 @@ export async function getDefaultProductsService() {
   const data = await response.json();
   return data;
 }
+
+/**
+ * Get products
+ * @returns {Promise<any>}
+ * @returns {Promise<any>}
+ */
+export async function getProductByCategoryService(categoryId) {
+  const response = await fetch(graphqlPath, {
+    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+    mode: 'cors', // no-cors, *cors, same-origin
+    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    credentials: 'same-origin', // include, *same-origin, omit
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${adminToken}`
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    redirect: 'follow', // manual, *follow, error
+    referrer: 'no-referrer', // no-referrer, *client
+    body: JSON.stringify({
+      query: `{
+      products(filter: {category_id: {eq: "${categoryId}"}}) {
+        items {
+          id
+          attribute_set_id
+          name
+          sku
+          type_id
+          media_gallery_entries {
+             file
+          }
+          price {
+            regularPrice {
+              amount {
+                value
+                currency
+              }
+            }
+          }
+          categories {
+            id
+          }
+          ... on ConfigurableProduct {
+            configurable_options {
+              id
+              attribute_id
+              label
+              position
+              use_default
+              attribute_code
+              values {
+                value_index
+                label
+              }
+              product_id
+            }
+            variants {
+              product {
+                id
+                name
+                sku
+                attribute_set_id
+                ... on PhysicalProductInterface {
+                  weight
+                }
+                price {
+                  regularPrice {
+                    amount {
+                      value
+                      currency
+                    }
+                  }
+                }
+              }
+              attributes {
+                label
+                code
+                value_index
+              }
+            }
+          }
+        }
+      }
+    }`
+    })
+  });
+  const data = await response.json();
+  return data;
+}

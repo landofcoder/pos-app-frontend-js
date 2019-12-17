@@ -1,14 +1,52 @@
 // @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { login } from '../../../actions/authenAction';
+import { getProductByCategory } from '../../../actions/homeAction';
 
 type Props = {
-  allCategories: () => void
+  allCategories: Object,
+  getProductByCategory: () => void
 };
 
 class Categories extends Component<Props> {
   props: Props;
+
+  getProductByCategory = item => {
+    const categoryId = item.id;
+    const { getProductByCategory } = this.props;
+    getProductByCategory(categoryId);
+  };
+
+  /**
+   * Render sub menu
+   * @param item
+   * @param index
+   * @returns {*}
+   */
+  renderSubMenu = (item, index) => {
+    console.log('', item);
+    return item.children_data && item.children_data.length > 0 ? (
+      <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
+        {item.children_data.map((childItem, indexChild) => {
+          console.log('category name:', childItem.name);
+          return (
+            <li key={`${index}${indexChild}`}>
+              <a href="#" onClick={() => this.getProductByCategory(childItem)}>
+                {childItem.name}
+              </a>
+              {childItem.children_data && childItem.children_data.length > 0 ? (
+                this.renderSubMenu(childItem, indexChild)
+              ) : (
+                <></>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    ) : (
+      <></>
+    );
+  };
 
   render() {
     const { allCategories } = this.props;
@@ -49,34 +87,26 @@ class Categories extends Component<Props> {
                     return (
                       <li
                         key={index}
-                        className={value.children_data ? 'dropdown' : ''}
+                        data-category-id={value.id}
+                        className={
+                          value.children_data && value.children_data.length > 0
+                            ? 'dropdown'
+                            : ''
+                        }
                       >
                         <a
                           href="#"
+                          onClick={() => this.getProductByCategory(value)}
                           className={
-                            value.children_data ? 'dropdown-toggle' : ''
+                            value.children_data &&
+                            value.children_data.length > 0
+                              ? 'dropdown-toggle'
+                              : ''
                           }
                         >
                           {value.name}
                         </a>
-                        {value.children_data ? (
-                          <ul
-                            className="dropdown-menu"
-                            aria-labelledby="navbarDropdown"
-                          >
-                            {value.children_data.map(
-                              (childItem, indexChild) => {
-                                return (
-                                  <li key={`${index}${indexChild}`}>
-                                    <a href="#">{childItem.name}</a>
-                                  </li>
-                                );
-                              }
-                            )}
-                          </ul>
-                        ) : (
-                          <></>
-                        )}
+                        {this.renderSubMenu(value, index)}
                       </li>
                     );
                   })}
@@ -146,7 +176,7 @@ class Categories extends Component<Props> {
 
 function mapDispatchToProps(dispatch) {
   return {
-    login: payload => dispatch(login(payload))
+    getProductByCategory: payload => dispatch(getProductByCategory(payload))
   };
 }
 
