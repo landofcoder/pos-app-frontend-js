@@ -1,11 +1,31 @@
 import React, { Component } from 'react';
-import Styles from './OrderHistory.scss';
 import { connect } from 'react-redux';
+import Styles from './OrderHistory.scss';
 import { getOrderHistory } from '../../../actions/accountAction';
+
+type Props = {
+  getOrderHistory: () => void,
+  isLoading: boolean
+};
 class OrderHistory extends Component<Props> {
   props: Props;
 
+  componentDidMount(): void {
+    const { getOrderHistory } = this.props;
+    getOrderHistory();
+  }
+
   render() {
+    const { isLoading } = this.props;
+    if (isLoading) {
+      return (
+        <div className="d-flex justify-content-center">
+          <div className="spinner-border text-secondary" role="status">
+            <span className="sr-only">Loading...</span>
+          </div>
+        </div>
+      );
+    }
     return (
       <>
         <table className="table">
@@ -43,9 +63,16 @@ class OrderHistory extends Component<Props> {
   }
 }
 function mapStateToProps(state) {
-
+  return {
+    isLoading: state.mainRd.isLoadingOrderHistory
+  };
 }
 function mapDispatchToProps(dispatch) {
-  getOrderHistory:() => dispatch(getOrderHistory())
+  return {
+    getOrderHistory: () => dispatch(getOrderHistory())
+  };
 }
-export default connect(mapStateToProps, mapDispatchToProps)(OrderHistory);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(OrderHistory);

@@ -24,6 +24,7 @@ const initialState = {
   },
   isOpenFindCustomer: false,
   isLoadingSearchCustomer: false,
+  isLoadingOrderHistory: false,
   customerSearchResult: [],
   cartHoldList: [],
   orderPreparingCheckout: {
@@ -241,7 +242,7 @@ const mainRd = (state = initialState, action) =>
         draft.isShowHaveNoSearchResultFound = action.payload;
         break;
       case types.RECEIVED_ORDER_HISTORY_ACTION:
-        console.log("in reducers");
+        console.log("order history in reducers");
       default:
         break;
     }
