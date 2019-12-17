@@ -33,7 +33,7 @@ class CashierInfo extends Component<Props> {
     }
     return (
       <>
-        <div className="card">
+        <div className="card mt-3">
           <h5 className={`card-header`}>Cashier Information</h5>
           <div className={`card-body`}>
             <div className={`form-group`}>
