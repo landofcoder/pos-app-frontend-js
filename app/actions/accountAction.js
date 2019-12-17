@@ -5,3 +5,4 @@ export function getOrderHistory() {
     type: type.GET_ORDER_HISTORY_ACTION
   };
 }
+
