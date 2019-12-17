@@ -64,7 +64,7 @@ export async function placeCashOrderService(cartToken, payloadCart) {
   let url = '';
   let token = adminToken;
   const cartId = payloadCart.cartIdResult;
-  const { defaultPaymentMethod } = payloadCart;
+  const { defaultPaymentMethod, cashierInfo } = payloadCart;
   let method = 'PUT';
 
   if (payloadCart.isGuestCustomer) {
@@ -91,10 +91,9 @@ export async function placeCashOrderService(cartToken, payloadCart) {
     body: JSON.stringify({
       paymentMethod: { method: defaultPaymentMethod },
       app: 'LOF_POS',
-      cashier_name: 'nguyen tuan',
-      cashier_email: 'nhtuan@gmail.com',
-      cashier_phone: '0123456789',
-      cashier_address: 'ha noi'
+      cashier_name: cashierInfo.first_name,
+      cashier_email: cashierInfo.email,
+      cashier_phone: cashierInfo.phone
     })
   });
   const data = await response.json();

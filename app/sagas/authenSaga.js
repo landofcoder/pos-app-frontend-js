@@ -2,6 +2,8 @@
 import { takeEvery, takeLatest, call, put, select } from 'redux-saga/effects';
 import * as types from '../constants/authen';
 import { AuthenService, getInfoCashierService } from './services/AuthenService';
+import { RECEIVED_DETAIL_OUTLET } from '../constants/root';
+import { getDetailOutletService } from './services/CommonService';
 
 const adminToken = state => state.authenRd.token;
 
@@ -29,10 +31,20 @@ function* loginAction(payload) {
 
 function* takeLatestToken() {
   const adminTokenResult = yield select(adminToken);
+<<<<<<< HEAD
   //console.log('admin token:', adminTokenResult);
   const cashierInfo = yield call(getInfoCashierService, adminTokenResult);
   //console.log('cashier info:', cashierInfo);
+=======
+
+  const cashierInfo = yield call(getInfoCashierService, adminTokenResult);
+>>>>>>> c46093c03786626560b84a0da8cd0c777f494660
   yield put({ type: types.RECEIVED_CASHIER_INFO, payload: cashierInfo });
+
+  const outletId = cashierInfo.outlet_id;
+
+  const detailOutlet = yield call(getDetailOutletService, outletId);
+  yield put({ type: RECEIVED_DETAIL_OUTLET, payload: detailOutlet });
 }
 function* authenSaga() {
   yield takeEvery(types.LOGIN_ACTION, loginAction);

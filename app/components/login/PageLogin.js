@@ -6,7 +6,7 @@ import { login } from '../../actions/authenAction';
 import { setToken } from '../../actions/homeAction';
 import styles from './pagelogin.scss';
 import commonStyles from '../styles/common.scss';
-import Loading from '../wait/Loading';
+import Loading from '../commons/Loading';
 import * as routes from '../../constants/routes';
 import { POS_LOGIN_STORAGE } from '../../constants/authen';
 

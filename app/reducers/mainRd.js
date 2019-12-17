@@ -22,6 +22,40 @@ const initialState = {
     isOpenReceiptModal: false,
     cartForReceipt: testCartCurrentForDefaultReceipt // When customer checkout succeed, copy current cart to this
   },
+  allCategories: null, // Main store categories
+  customReceipt: {
+    cashier_label: null,
+    cashier_name_display: '0',
+    change_amount_display: '0',
+    change_label: null,
+    credit_amount_display: '0',
+    credit_label: null,
+    customer_display: '0',
+    date_display: '0',
+    discount_display: '0',
+    discount_label: null,
+    footer_content: null,
+    grand_total_label: null,
+    header_content: null,
+    icon: null,
+    image: null,
+    logo_alt: null,
+    logo_display: '0',
+    logo_height: null,
+    logo_width: null,
+    order_id_display: '0',
+    order_id_label: null,
+    outlet_address_display: '0',
+    outlet_name_display: '0',
+    receipt_id: '1',
+    receipt_title: 'receipt',
+    status: '1',
+    subtotal_display: '0',
+    subtotal_label: null,
+    tax_display: '0',
+    tax_label: null
+  },
+  detailOutlet: {},
   isOpenFindCustomer: false,
   isLoadingSearchCustomer: false,
   isLoadingOrderHistory: false,
@@ -194,7 +228,8 @@ const mainRd = (state = initialState, action) =>
         draft.mainProductListLoading = action.payload;
         break;
       case types.RECEIVED_POST_GENERAL_CONFIG:
-        draft.posSystemConfig = action.payload;
+        // eslint-disable-next-line prefer-destructuring
+        draft.posSystemConfig = action.payload[0];
         break;
       case types.UPDATE_IS_LOADING_SYSTEM_CONFIG:
         draft.isLoadingSystemConfig = action.payload;
@@ -243,6 +278,15 @@ const mainRd = (state = initialState, action) =>
         break;
       case types.RECEIVED_ORDER_HISTORY_ACTION:
         console.log("order history in reducers");
+      case types.RECEIVED_CUSTOM_RECEIPT:
+        draft.customReceipt = action.payload;
+        break;
+      case types.RECEIVED_DETAIL_OUTLET:
+        draft.detailOutlet = action.payload;
+        break;
+      case types.RECEIVED_ALL_CATEGORIES:
+        draft.allCategories = action.payload;
+        break;
       default:
         break;
     }
