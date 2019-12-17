@@ -21,11 +21,13 @@ import {
 } from './services/CustomerService';
 import { createCustomerCartService } from './services/CustomerCartService';
 import {
+  getOrderHistoryService,
   getSystemConfigService,
   getShopInfoService,
   getCustomReceiptService,
   getAllCategoriesService
 } from './services/CommonService';
+
 import {
   handleProductType,
   reformatConfigurableProduct
@@ -489,6 +491,18 @@ function* getCustomReceipt() {
   yield put({ type: types.RECEIVED_CUSTOM_RECEIPT, payload: result.data });
 }
 
+function* getOrderHistory() {
+  console.log('in saga service ');
+  yield put({ type: types.TURN_ON_LOADING_ORDER_HISTORY });
+  const dataOrderHisotry = yield call(getOrderHistoryService);
+  console.log('in saga service ');
+  console.log(dataOrderHisotry);
+  yield put({
+    type: types.RECEIVED_ORDER_HISTORY_ACTION,
+    payload: dataOrderHisotry
+  });
+  yield put({ type: types.TURN_OFF_LOADING_ORDER_HISTORY });
+}
 /**
  * Default root saga
  * @returns {Generator<<"FORK", ForkEffectDescriptor<RT>>, *>}
@@ -515,6 +529,7 @@ function* rootSaga() {
   yield takeEvery(types.ADD_TO_CART, addToCart);
   yield takeEvery(types.GET_POS_GENERAL_CONFIG, getPostConfigGeneralConfig);
   yield takeEvery(types.GET_CUSTOM_RECEIPT, getCustomReceipt);
+  yield takeEvery(types.GET_ORDER_HISTORY_ACTION, getOrderHistory);
 }
 
 export default rootSaga;

@@ -56,8 +56,10 @@ const initialState = {
     tax_label: null
   },
   detailOutlet: {},
+  orderHistory: [],
   isOpenFindCustomer: false,
   isLoadingSearchCustomer: false,
+  isLoadingOrderHistory: false,
   customerSearchResult: [],
   cartHoldList: [],
   orderPreparingCheckout: {
@@ -274,6 +276,18 @@ const mainRd = (state = initialState, action) =>
         break;
       case types.UPDATE_IS_SHOW_HAVE_NO_SEARCH_RESULT_FOUND:
         draft.isShowHaveNoSearchResultFound = action.payload;
+        break;
+      case types.TURN_ON_LOADING_ORDER_HISTORY:
+        draft.isLoadingOrderHistory = true;
+        break;
+      case types.TURN_OFF_LOADING_ORDER_HISTORY:
+        draft.isLoadingOrderHistory = false;
+        break;
+      case types.GET_ORDER_HISTORY_ACTION:
+        console.log("get order history action in reducer");
+        break;
+      case types.RECEIVED_ORDER_HISTORY_ACTION:
+        draft.orderHistory = action.payload.items;
         break;
       case types.RECEIVED_CUSTOM_RECEIPT:
         draft.customReceipt = action.payload;
