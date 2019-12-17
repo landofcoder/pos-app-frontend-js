@@ -1,3 +1,6 @@
+Bootstrap dropdown menu
+https://bootsnipp.com/snippets/35p8X
+
 <img src="internals/img/erb-banner.png" width="100%" />
 
 <br>

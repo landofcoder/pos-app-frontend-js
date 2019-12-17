@@ -476,7 +476,6 @@ function* getPostConfigGeneralConfig() {
 
   // Get all categories
   const allCategories = yield call(getAllCategoriesService);
-  console.log('all categories:', allCategories);
   yield put({ type: types.RECEIVED_ALL_CATEGORIES, payload: allCategories });
 
   // Stop loading

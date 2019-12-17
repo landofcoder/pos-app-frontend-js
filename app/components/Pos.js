@@ -340,7 +340,10 @@ export default class Pos extends Component<Props> {
           <div className="row" id={Styles.wrapPostContainerId}>
             <div className="col-md-9">
               <div className={classWrapProductPanel}>
-                <div className="col-md-9 mb-0 pr-0">
+                <div className="col-md-2">
+                  <Categories />
+                </div>
+                <div className="col-md-10 mb-0 pr-0">
                   <div className="input-group flex-nowrap">
                     <div className="input-group mb-3">
                       <div className="input-group-prepend">
@@ -381,9 +384,6 @@ export default class Pos extends Component<Props> {
                   ) : (
                     <></>
                   )}
-                </div>
-                <div className="col-md-3">
-                  <Categories />
                 </div>
 
                 {mainProductListLoading ? (
