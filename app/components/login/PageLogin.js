@@ -9,7 +9,6 @@ import commonStyles from '../styles/common.scss';
 import Loading from '../commons/Loading';
 import * as routes from '../../constants/routes';
 import { POS_LOGIN_STORAGE } from '../../constants/authen';
-
 type Props = {
   login: () => void,
   message: string,
@@ -57,6 +56,8 @@ class PageLogin extends Component {
       // setToken(localStorage.getItem(POS_LOGIN_STORAGE));
       // return <Redirect to={routes.HOME} />;
     }
+    console.log("here");
+
     return (
       <>
         <div
