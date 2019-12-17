@@ -19,8 +19,8 @@ class Calculator extends Component {
       this.setState({solveValue: preValue + event })
   }
   calculate=()=>{
-    const {solveValue} = this.state;
     try {
+        const {solveValue} = this.state;
         var input = eval(solveValue);
         this.setState({solveValue: input})
     } catch(err){
