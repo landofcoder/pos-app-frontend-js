@@ -1,7 +1,34 @@
 import React, { Component } from "react";
 
 class Calculator extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      solveValue: ''
+    }
+  }
+  clearScreen=()=>{
+    this.setState({solveValue: ''})
+  };
+  btnPress = (event) => {
+    let preValue = this.state.solveValue;
+    if(preValue === "Error"){
+      this.setState({solveValue: event })
+    }
+    else
+      this.setState({solveValue: preValue + event })
+  }
+  calculate=()=>{
+    const {solveValue} = this.state;
+    try {
+        var input = eval(solveValue);
+        this.setState({solveValue: input})
+    } catch(err){
+        this.setState({solveValue: "Error"});
+    }
+  }
   render() {
+    const {solveValue} = this.state;
     return (
       <>
         <div className="h-100 bg-light">
@@ -18,10 +45,11 @@ class Calculator extends Component {
                   <div className="card-body">
                     <form className="mb-3" name="calc">
                       <input
+                        value={solveValue}
                         type="text"
                         className="screen form-control form-control-lg text-right"
                         name="result"
-                        readonly
+                        readOnly
                       />
                     </form>
                     <div className="px-1">
@@ -31,7 +59,7 @@ class Calculator extends Component {
                             id="allClear"
                             type="button"
                             className="btn btn-block btn-lg btn-danger"
-                            onclick="clearScreen()"
+                            onClick={()=>this.clearScreen()}
                           >
                             AC
                           </button>
@@ -41,17 +69,16 @@ class Calculator extends Component {
                             id="clear"
                             type="button"
                             className="btn btn-block btn-lg btn-warning"
-                            onclick="clearScreen()"
+                            onClick={()=>this.clearScreen()}
                           >
                             CE
                           </button>
                         </div>
                         <div className="col-3 p-1">
                           <button
-                            id="%"
                             type="button"
                             className="btn btn-block btn-lg btn-light border"
-                            onclick="btnPress(this.id)"
+                            onClick={()=>this.btnPress("%")}
                           >
                             %
                           </button>
@@ -61,7 +88,7 @@ class Calculator extends Component {
                             id="/"
                             type="button"
                             className="btn btn-block btn-lg btn-light border"
-                            onclick="btnPress(this.id)"
+                            onClick={()=>this.btnPress("/")}
                           >
                             ÷
                           </button>
@@ -70,40 +97,36 @@ class Calculator extends Component {
                       <div className="row px-2">
                         <div className="col-3 p-1">
                           <button
-                            id="7"
                             type="button"
                             className="btn btn-block btn-lg btn-light border"
-                            onclick="btnPress(this.id)"
+                            onClick={()=>this.btnPress("7")}
                           >
                             7
                           </button>
                         </div>
                         <div className="col-3 p-1">
                           <button
-                            id="8"
                             type="button"
                             className="btn btn-block btn-lg btn-light border"
-                            onclick="btnPress(this.id)"
+                            onClick={()=>this.btnPress("8")}
                           >
                             8
                           </button>
                         </div>
                         <div className="col-3 p-1">
                           <button
-                            id="9"
                             type="button"
                             className="btn btn-block btn-lg btn-light border"
-                            onclick="btnPress(this.id)"
+                            onClick={()=>this.btnPress("9")}
                           >
                             9
                           </button>
                         </div>
                         <div className="col-3 p-1">
                           <button
-                            id="*"
                             type="button"
                             className="btn btn-block btn-lg btn-light border"
-                            onclick="btnPress(this.id)"
+                            onClick={()=>this.btnPress("*")}
                           >
                             x
                           </button>
@@ -112,40 +135,36 @@ class Calculator extends Component {
                       <div className="row px-2">
                         <div className="col-3 p-1">
                           <button
-                            id="4"
                             type="button"
                             className="btn btn-block btn-lg btn-light border"
-                            onclick="btnPress(this.id)"
+                            onClick={()=>this.btnPress("4")}
                           >
                             4
                           </button>
                         </div>
                         <div className="col-3 p-1">
                           <button
-                            id="5"
                             type="button"
                             className="btn btn-block btn-lg btn-light border"
-                            onclick="btnPress(this.id)"
+                            onClick={()=>this.btnPress("5")}
                           >
                             5
                           </button>
                         </div>
                         <div className="col-3 p-1">
                           <button
-                            id="6"
                             type="button"
                             className="btn btn-block btn-lg btn-light border"
-                            onclick="btnPress(this.id)"
+                            onClick={()=>this.btnPress("6")}
                           >
                             6
                           </button>
                         </div>
                         <div className="col-3 p-1">
                           <button
-                            id="-"
                             type="button"
                             className="btn btn-block btn-lg btn-light border"
-                            onclick="btnPress(this.id)"
+                            onClick={()=>this.btnPress("-")}
                           >
                             -
                           </button>
@@ -154,40 +173,36 @@ class Calculator extends Component {
                       <div className="row px-2">
                         <div className="col-3 p-1">
                           <button
-                            id="1"
                             type="button"
                             className="btn btn-block btn-lg btn-light border"
-                            onclick="btnPress(this.id)"
+                            onClick={()=>this.btnPress("1")}
                           >
                             1
                           </button>
                         </div>
                         <div className="col-3 p-1">
                           <button
-                            id="2"
                             type="button"
                             className="btn btn-block btn-lg btn-light border"
-                            onclick="btnPress(this.id)"
+                            onClick={()=>this.btnPress("2")}
                           >
                             2
                           </button>
                         </div>
                         <div className="col-3 p-1">
                           <button
-                            id="3"
                             type="button"
                             className="btn btn-block btn-lg btn-light border"
-                            onclick="btnPress(this.id)"
+                            onClick={()=>this.btnPress("3")}
                           >
                             3
                           </button>
                         </div>
                         <div className="col-3 p-1">
                           <button
-                            id="+"
                             type="button"
                             className="btn btn-block btn-lg btn-light border"
-                            onclick="btnPress(this.id)"
+                            onClick={()=>this.btnPress("+")}
                           >
                             +
                           </button>
@@ -196,30 +211,27 @@ class Calculator extends Component {
                       <div className="row px-2">
                         <div className="col-3 p-1">
                           <button
-                            id="0"
                             type="button"
                             className="btn btn-block btn-lg btn-light border"
-                            onclick="btnPress(this.id)"
+                            onClick={()=>this.btnPress("0")}
                           >
                             0
                           </button>
                         </div>
                         <div className="col-3 p-1">
                           <button
-                            id="."
                             type="button"
                             className="btn btn-block btn-lg btn-light border"
-                            onclick="btnPress(this.id)"
+                            onClick={()=>this.btnPress(".")}
                           >
                             .
                           </button>
                         </div>
                         <div className="col-6 p-1">
                           <button
-                            id="equals"
                             type="button"
                             className="btn btn-block btn-lg btn-success"
-                            onclick="calculate()"
+                            onClick={()=>this.calculate("equals")}
                           >
                             =
                           </button>
