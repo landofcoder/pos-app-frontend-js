@@ -240,6 +240,8 @@ const mainRd = (state = initialState, action) =>
       case types.UPDATE_IS_SHOW_HAVE_NO_SEARCH_RESULT_FOUND:
         draft.isShowHaveNoSearchResultFound = action.payload;
         break;
+      case types.RECEIVED_ORDER_HISTORY_ACTION:
+        console.log("in reducers");
       default:
         break;
     }

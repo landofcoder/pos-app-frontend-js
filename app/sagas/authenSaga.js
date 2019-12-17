@@ -23,15 +23,20 @@ function* loginAction(payload) {
   // stop
 }
 
+// function* logoutAction(payload) {
+//   console.log('logout action saga');
+// }
+
 function* takeLatestToken() {
   const adminTokenResult = yield select(adminToken);
-  console.log('admin token:', adminTokenResult);
+  //console.log('admin token:', adminTokenResult);
   const cashierInfo = yield call(getInfoCashierService, adminTokenResult);
-  console.log('cashier info:', cashierInfo);
+  //console.log('cashier info:', cashierInfo);
   yield put({ type: types.RECEIVED_CASHIER_INFO, payload: cashierInfo });
 }
 function* authenSaga() {
   yield takeEvery(types.LOGIN_ACTION, loginAction);
+  //yield takeEvery(types.LOGOUT_ACTION, logoutAction);
   yield takeLatest(types.RECEIVED_TOKEN, takeLatestToken);
 }
 

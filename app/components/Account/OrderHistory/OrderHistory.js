@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Styles from './OrderHistory.scss';
-
+import { connect } from 'react-redux';
+import { getOrderHistory } from '../../../actions/accountAction';
 class OrderHistory extends Component<Props> {
   props: Props;
 
@@ -41,4 +42,10 @@ class OrderHistory extends Component<Props> {
     );
   }
 }
-export default OrderHistory;
+function mapStateToProps(state) {
+
+}
+function mapDispatchToProps(dispatch) {
+  getOrderHistory:() => dispatch(getOrderHistory())
+}
+export default connect(mapStateToProps, mapDispatchToProps)(OrderHistory);

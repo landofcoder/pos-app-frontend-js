@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
+import { logout } from '../../../actions/authenAction';
 import Styles from './CashierInfo.scss';
 import * as routes from '../../../constants/routes.json';
-import {logout} from '../../../actions/authenAction';
-import { Redirect } from 'react-router-dom';
+
 type Props = {
   cashierInfo: Object,
   logout: () => void
@@ -11,21 +12,24 @@ type Props = {
 
 class CashierInfo extends Component<Props> {
   props: Props;
-  constructor(props){
+
+  constructor(props) {
     super(props);
-    this.state = {redirect: false};
+    this.state = { redirect: false };
   }
+
   handleSignOut = () => {
-    this.props.logout();
-    this.setState({redirect: true});
-  }
+    const { logout } = this.props;
+    logout();
+    this.setState({ redirect: true });
+  };
+
   render() {
-    const { first_name, last_name, phone, email} = this.props.cashierInfo;
+    const { cashierInfo } = this.props;
+    const { first_name, last_name, phone, email } = cashierInfo;
     const { redirect } = this.state;
-    if(redirect){
-      return (
-        <Redirect to={routes.LOGIN} />
-      )
+    if (redirect) {
+      return <Redirect to={routes.LOGIN} />;
     }
     return (
       <>
@@ -73,7 +77,13 @@ class CashierInfo extends Component<Props> {
                 />
               </div>
               <div>
-                <button type="button" class="btn btn-danger" onClick={this.handleSignOut}>Sign out</button>
+                <button
+                  type="button"
+                  className="btn btn-danger"
+                  onClick={this.handleSignOut}
+                >
+                  Sign out
+                </button>
               </div>
             </div>
           </div>
@@ -90,8 +100,9 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     logout: () => dispatch(logout())
-  }
+  };
 }
 export default connect(
-  mapStateToProps, mapDispatchToProps
+  mapStateToProps,
+  mapDispatchToProps
 )(CashierInfo);
