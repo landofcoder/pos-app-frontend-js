@@ -135,25 +135,25 @@ export default class Pos extends Component<Props> {
 
     switch (item.type_id) {
       case CONFIGURABLE:
-        {
-          const { sku } = item;
-          getDetailProductConfigurable(sku);
-        }
+      {
+        const { sku } = item;
+        getDetailProductConfigurable(sku);
+      }
         break;
       case SIMPLE:
         addToCart(item);
         break;
       case BUNDLE:
-        {
-          const { sku } = item;
-          getDetailProductBundle(sku);
-        }
+      {
+        const { sku } = item;
+        getDetailProductBundle(sku);
+      }
         break;
       case GROUPED:
-        {
-          const { sku } = item;
-          getDetailProductGrouped(sku);
-        }
+      {
+        const { sku } = item;
+        getDetailProductGrouped(sku);
+      }
         break;
       default:
         addToCart(item);
@@ -281,7 +281,7 @@ export default class Pos extends Component<Props> {
         setToken(localStorage.getItem(POS_LOGIN_STORAGE));
       } else return <Redirect to={routes.LOGIN} />;
     } else {
-      console.log(token);
+      // console.log(token);
     }
     // Check Redirect To Layout Account
     if (redirectToAccount) {
@@ -339,7 +339,10 @@ export default class Pos extends Component<Props> {
           <div className="row" id={Styles.wrapPostContainerId}>
             <div className="col-md-9">
               <div className={classWrapProductPanel}>
-                <div className="col-md-9 mb-0 pr-0">
+                <div className="col-md-2">
+                  <Categories />
+                </div>
+                <div className="col-md-10 mb-0 pr-0">
                   <div className="input-group flex-nowrap">
                     <div className="input-group mb-3">
                       <div className="input-group-prepend">
@@ -381,10 +384,6 @@ export default class Pos extends Component<Props> {
                     <></>
                   )}
                 </div>
-                <div className="col-md-3">
-                  <Categories />
-                </div>
-
                 {mainProductListLoading ? (
                   <div className="col-md-12">
                     <div className="d-flex justify-content-center">

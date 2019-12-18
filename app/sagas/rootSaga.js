@@ -13,7 +13,8 @@ import {
   getDetailProductBundleService,
   getDetailProductConfigurableService,
   getDetailProductGroupedService,
-  searchProductService
+  searchProductService,
+  getProductByCategoryService
 } from './services/ProductService';
 import {
   getCustomerCartTokenService,
@@ -478,7 +479,6 @@ function* getPostConfigGeneralConfig() {
 
   // Get all categories
   const allCategories = yield call(getAllCategoriesService);
-  console.log('all categories:', allCategories);
   yield put({ type: types.RECEIVED_ALL_CATEGORIES, payload: allCategories });
 
   // Stop loading
@@ -489,6 +489,19 @@ function* getCustomReceipt() {
   const customReceiptResult = yield call(getCustomReceiptService);
   const result = customReceiptResult[0];
   yield put({ type: types.RECEIVED_CUSTOM_RECEIPT, payload: result.data });
+}
+
+function* getProductByCategory(payload) {
+  // Start loading
+  yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: true });
+
+  const categoryId = payload.payload;
+  const productByCategory = yield call(getProductByCategoryService, categoryId);
+  const productResult = productByCategory.data.products.items;
+  yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productResult });
+
+  // Stop loading
+  yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: false });
 }
 
 function* getOrderHistory() {
@@ -530,6 +543,7 @@ function* rootSaga() {
   yield takeEvery(types.GET_POS_GENERAL_CONFIG, getPostConfigGeneralConfig);
   yield takeEvery(types.GET_CUSTOM_RECEIPT, getCustomReceipt);
   yield takeEvery(types.GET_ORDER_HISTORY_ACTION, getOrderHistory);
+  yield takeEvery(types.GET_PRODUCT_BY_CATEGORY, getProductByCategory);
 }
 
 export default rootSaga;
