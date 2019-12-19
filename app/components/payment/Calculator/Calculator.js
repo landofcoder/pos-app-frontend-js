@@ -1,34 +1,44 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
 class Calculator extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       solveValue: ''
-    }
+    };
   }
-  clearScreen=()=>{
-    this.setState({solveValue: ''})
+
+  clearScreen = () => {
+    this.setState({ solveValue: '' });
   };
-  btnPress = (event) => {
-    let preValue = this.state.solveValue;
-    if(preValue === "Error"){
-      this.setState({solveValue: event })
-    }
-    else
-      this.setState({solveValue: preValue + event })
-  }
-  calculate=()=>{
+
+  backScreen = () => {
+    const { solveValue } = this.state;
+    this.setState({ solveValue: solveValue.slice(0, solveValue.length - 1) });
+  };
+
+  btnPress = event => {
+    const { solveValue } = this.state;
+    const preValue = solveValue;
+    if (preValue === 'Error') {
+      this.setState({ solveValue: event });
+    } else this.setState({ solveValue: preValue + event });
+  };
+
+  calculate = () => {
     try {
-        const {solveValue} = this.state;
-        var input = eval(solveValue);
-        this.setState({solveValue: input})
-    } catch(err){
-        this.setState({solveValue: "Error"});
+      const { solveValue } = this.state;
+      console.log(solveValue);
+      const input = eval(solveValue);
+      this.setState({ solveValue: input });
+    } catch (err) {
+      console.log(err);
+      this.setState({ solveValue: 'Error' });
     }
-  }
+  };
+
   render() {
-    const {solveValue} = this.state;
+    const { solveValue } = this.state;
     return (
       <>
         <div className="h-100 bg-light">
@@ -37,10 +47,7 @@ class Calculator extends Component {
               <div className="col-lg-4 col-md-7 col-sm-9 col-12">
                 <div className="card">
                   <div className="card-header">
-                    <h5 className="m-0">
-                      BootstrapSnippet<sup className="text-warning">.net</sup>{" "}
-                      Calculator
-                    </h5>
+                    <h5 className="m-0">Calculator</h5>
                   </div>
                   <div className="card-body">
                     <form className="mb-3" name="calc">
@@ -59,7 +66,7 @@ class Calculator extends Component {
                             id="allClear"
                             type="button"
                             className="btn btn-block btn-lg btn-danger"
-                            onClick={()=>this.clearScreen()}
+                            onClick={() => this.clearScreen()}
                           >
                             AC
                           </button>
@@ -69,7 +76,7 @@ class Calculator extends Component {
                             id="clear"
                             type="button"
                             className="btn btn-block btn-lg btn-warning"
-                            onClick={()=>this.clearScreen()}
+                            onClick={() => this.backScreen()}
                           >
                             CE
                           </button>
@@ -78,7 +85,7 @@ class Calculator extends Component {
                           <button
                             type="button"
                             className="btn btn-block btn-lg btn-light border"
-                            onClick={()=>this.btnPress("%")}
+                            onClick={() => this.btnPress('%')}
                           >
                             %
                           </button>
@@ -88,7 +95,7 @@ class Calculator extends Component {
                             id="/"
                             type="button"
                             className="btn btn-block btn-lg btn-light border"
-                            onClick={()=>this.btnPress("/")}
+                            onClick={() => this.btnPress('/')}
                           >
                             ÷
                           </button>
@@ -99,7 +106,7 @@ class Calculator extends Component {
                           <button
                             type="button"
                             className="btn btn-block btn-lg btn-light border"
-                            onClick={()=>this.btnPress("7")}
+                            onClick={() => this.btnPress('7')}
                           >
                             7
                           </button>
@@ -108,7 +115,7 @@ class Calculator extends Component {
                           <button
                             type="button"
                             className="btn btn-block btn-lg btn-light border"
-                            onClick={()=>this.btnPress("8")}
+                            onClick={() => this.btnPress('8')}
                           >
                             8
                           </button>
@@ -117,7 +124,7 @@ class Calculator extends Component {
                           <button
                             type="button"
                             className="btn btn-block btn-lg btn-light border"
-                            onClick={()=>this.btnPress("9")}
+                            onClick={() => this.btnPress('9')}
                           >
                             9
                           </button>
@@ -126,7 +133,7 @@ class Calculator extends Component {
                           <button
                             type="button"
                             className="btn btn-block btn-lg btn-light border"
-                            onClick={()=>this.btnPress("*")}
+                            onClick={() => this.btnPress('*')}
                           >
                             x
                           </button>
@@ -137,7 +144,7 @@ class Calculator extends Component {
                           <button
                             type="button"
                             className="btn btn-block btn-lg btn-light border"
-                            onClick={()=>this.btnPress("4")}
+                            onClick={() => this.btnPress('4')}
                           >
                             4
                           </button>
@@ -146,7 +153,7 @@ class Calculator extends Component {
                           <button
                             type="button"
                             className="btn btn-block btn-lg btn-light border"
-                            onClick={()=>this.btnPress("5")}
+                            onClick={() => this.btnPress('5')}
                           >
                             5
                           </button>
@@ -155,7 +162,7 @@ class Calculator extends Component {
                           <button
                             type="button"
                             className="btn btn-block btn-lg btn-light border"
-                            onClick={()=>this.btnPress("6")}
+                            onClick={() => this.btnPress('6')}
                           >
                             6
                           </button>
@@ -164,7 +171,7 @@ class Calculator extends Component {
                           <button
                             type="button"
                             className="btn btn-block btn-lg btn-light border"
-                            onClick={()=>this.btnPress("-")}
+                            onClick={() => this.btnPress('-')}
                           >
                             -
                           </button>
@@ -175,7 +182,7 @@ class Calculator extends Component {
                           <button
                             type="button"
                             className="btn btn-block btn-lg btn-light border"
-                            onClick={()=>this.btnPress("1")}
+                            onClick={() => this.btnPress('1')}
                           >
                             1
                           </button>
@@ -184,7 +191,7 @@ class Calculator extends Component {
                           <button
                             type="button"
                             className="btn btn-block btn-lg btn-light border"
-                            onClick={()=>this.btnPress("2")}
+                            onClick={() => this.btnPress('2')}
                           >
                             2
                           </button>
@@ -193,7 +200,7 @@ class Calculator extends Component {
                           <button
                             type="button"
                             className="btn btn-block btn-lg btn-light border"
-                            onClick={()=>this.btnPress("3")}
+                            onClick={() => this.btnPress('3')}
                           >
                             3
                           </button>
@@ -202,7 +209,7 @@ class Calculator extends Component {
                           <button
                             type="button"
                             className="btn btn-block btn-lg btn-light border"
-                            onClick={()=>this.btnPress("+")}
+                            onClick={() => this.btnPress('+')}
                           >
                             +
                           </button>
@@ -213,7 +220,7 @@ class Calculator extends Component {
                           <button
                             type="button"
                             className="btn btn-block btn-lg btn-light border"
-                            onClick={()=>this.btnPress("0")}
+                            onClick={() => this.btnPress('0')}
                           >
                             0
                           </button>
@@ -222,7 +229,7 @@ class Calculator extends Component {
                           <button
                             type="button"
                             className="btn btn-block btn-lg btn-light border"
-                            onClick={()=>this.btnPress(".")}
+                            onClick={() => this.btnPress('.')}
                           >
                             .
                           </button>
@@ -231,7 +238,7 @@ class Calculator extends Component {
                           <button
                             type="button"
                             className="btn btn-block btn-lg btn-success"
-                            onClick={()=>this.calculate("equals")}
+                            onClick={() => this.calculate('equals')}
                           >
                             =
                           </button>
