@@ -57,10 +57,7 @@ class PageLogin extends Component {
       // setToken(localStorage.getItem(POS_LOGIN_STORAGE));
       // return <Redirect to={routes.HOME} />;
     }
-    console.log("here");
-    return (
-      <Calculator />
-    )
+
     return (
       <>
         <div
