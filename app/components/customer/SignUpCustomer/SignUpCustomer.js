@@ -28,45 +28,45 @@ class SignUpCustomer extends Component {
               </div>
               <div className="modal-body">
                 <form>
-                  <div class="form-group">
-                    <label for="inputFirstName">First name</label>
+                  <div className="form-group">
+                    <label htmlFor="inputFirstName">First name</label>
                     <input
                       type="text"
-                      class="form-control"
+                      className="form-control"
                       id="inputFirstName"
                     />
                   </div>
-                  <div class="form-group">
-                    <label for="inputLastName">Last name</label>
+                  <div className="form-group">
+                    <label htmlFor="inputLastName">Last name</label>
                     <input
                       type="text"
-                      class="form-control"
+                      className="form-control"
                       id="inputLastName"
                     />
                   </div>
-                  <div class="form-row">
-                    <div class="form-group col-md-6">
-                      <label for="inputEmail4">Email</label>
+                  <div className="form-row">
+                    <div className="form-group col-md-6">
+                      <label htmlFor="inputEmail4">Email</label>
                       <input
                         type="email"
-                        class="form-control"
+                        className="form-control"
                         id="inputEmail4"
                       />
                     </div>
-                    <div class="form-group col-md-6">
-                      <label for="inputPassword4">Password</label>
+                    <div className="form-group col-md-6">
+                      <label htmlFor="inputPassword4">Password</label>
                       <input
                         type="password"
-                        class="form-control"
+                        className="form-control"
                         id="inputPassword4"
                       />
                     </div>
                   </div>
-                  <div class="form-group">
-                    <label for="inputConfirmPassword">Confirm Password</label>
+                  <div className="form-group">
+                    <label htmlFor="inputConfirmPassword">Confirm Password</label>
                     <input
                       type="text"
-                      class="form-control"
+                      className="form-control"
                       id="inputConfirmPassword"
                     />
                   </div>
