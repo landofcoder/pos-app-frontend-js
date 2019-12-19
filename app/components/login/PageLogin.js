@@ -9,7 +9,6 @@ import commonStyles from '../styles/common.scss';
 import Loading from '../commons/Loading';
 import * as routes from '../../constants/routes';
 import { POS_LOGIN_STORAGE } from '../../constants/authen';
-import Calculator from '../payment/Calculator/Calculator';
 type Props = {
   login: () => void,
   message: string,
