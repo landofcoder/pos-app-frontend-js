@@ -1,25 +1,25 @@
 import React, { Component } from 'react';
-import { toggleModalSignInCustomer } from '../../../actions/homeAction.js';
+import { toggleModalSignUpCustomer } from '../../../actions/homeAction.js';
 import { connect } from 'react-redux';
-import Styles from './sign-in-customer.scss';
+import Styles from './sign-up-customer.scss';
 import ModalStyle from '../../styles/modal.scss';
 
 type Props = {
-  toggleModalSignInCustomer: (payload: object) => void,
-  isOpenSignInCustomer: boolean
+  toggleModalSignUpCustomer: (payload: object) => void,
+  isOpenSignUpCustomer: boolean
 };
-class SignInCustomer extends Component {
+class SignUpCustomer extends Component {
   props: Props;
   constructor(props) {
     super(props);
   }
   render() {
-    const { isOpenSignInCustomer, toggleModalSignInCustomer } = this.props;
+    const { isOpenSignUpCustomer, toggleModalSignUpCustomer } = this.props;
     return (
       <div className={Styles.wrapCartCustomer}>
         <div
           className={ModalStyle.modal}
-          style={{ display: isOpenSignInCustomer ? 'block' : 'none' }}
+          style={{ display: isOpenSignUpCustomer ? 'block' : 'none' }}
         >
           <div className={ModalStyle.modalContent}>
             <div className="modal-content">
@@ -77,7 +77,7 @@ class SignInCustomer extends Component {
                   <button
                     type="button"
                     className="btn btn-secondary btn-block"
-                    onClick={() => toggleModalSignInCustomer(false)}
+                    onClick={() => toggleModalSignUpCustomer(false)}
                   >
                     CLOSE
                   </button>
@@ -97,12 +97,12 @@ class SignInCustomer extends Component {
 }
 function mapStateToProps(state) {
   return {
-    isOpenSignInCustomer: state.mainRd.isOpenSignInCustomer
+    isOpenSignUpCustomer: state.mainRd.isOpenSignUpCustomer
   };
 }
 function mapDispatchToProps(dispatch) {
   return {
-    toggleModalSignInCustomer: () => dispatch(toggleModalSignInCustomer())
+    toggleModalSignUpCustomer: () => dispatch(toggleModalSignUpCustomer())
   };
 }
-export default connect(mapStateToProps, mapDispatchToProps)(SignInCustomer);
+export default connect(mapStateToProps, mapDispatchToProps)(SignUpCustomer);

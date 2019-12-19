@@ -164,9 +164,9 @@ export function toggleModalCustomer(payload) {
   };
 }
 
-export function toggleModalSignInCustomer(payload) {
+export function toggleModalSignUpCustomer(payload) {
   return {
-    type: types.TOGGLE_MODAL_SIGNIN_CUSTOMER,
+    type: types.TOGGLE_MODAL_SIGNUP_CUSTOMER,
     payload
   };
 }
@@ -235,4 +235,11 @@ export function getProductByCategory(payload) {
     type: types.GET_PRODUCT_BY_CATEGORY,
     payload
   };
+}
+
+export function signUpCustomer(payload) {
+  return {
+    type: types.SIGN_UP_CUSTOMER,
+    payload
+  }
 }

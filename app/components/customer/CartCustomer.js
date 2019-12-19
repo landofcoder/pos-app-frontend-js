@@ -6,7 +6,7 @@ import {
   searchCustomer,
   selectCustomerForCurrentCart,
   unSelectCustomerForCurrentCart,
-  toggleModalSignInCustomer
+  toggleModalSignUpCustomer
 } from '../../actions/homeAction';
 import Styles from './cart-customer.scss';
 import ModalStyle from '../styles/modal.scss';
@@ -20,7 +20,7 @@ type Props = {
   customerSearchResult: Array,
   selectCustomerForCurrentCart: (payload: Object) => void,
   unSelectCustomerForCurrentCart: (payload: Object) => void,
-  toggleModalSignInCustomer: (payload: boolean) => void
+  toggleModalSignUpCustomer: (payload: boolean) => void
 };
 
 class CartCustomer extends Component<Props> {
@@ -50,7 +50,7 @@ class CartCustomer extends Component<Props> {
       customer,
       isOpenFindCustomer,
       toggleModalCustomer,
-      toggleModalSignInCustomer,
+      toggleModalSignUpCustomer,
       isLoadingSearchCustomer,
       customerSearchResult,
       selectCustomerForCurrentCart,
@@ -76,7 +76,7 @@ class CartCustomer extends Component<Props> {
                     <button
                       type="button"
                       className="btn btn-secondary btn-block"
-                      onClick={() => toggleModalSignInCustomer(true)}
+                      onClick={() => toggleModalSignUpCustomer(true)}
                     >
                       Add customer
                     </button>
@@ -193,8 +193,8 @@ const mapDispatchToProps = dispatch => {
       dispatch(selectCustomerForCurrentCart(payload)),
     unSelectCustomerForCurrentCart: payload =>
       dispatch(unSelectCustomerForCurrentCart(payload)),
-    toggleModalSignInCustomer: payload =>
-      dispatch(toggleModalSignInCustomer(payload))
+    toggleModalSignUpCustomer: payload =>
+      dispatch(toggleModalSignUpCustomer(payload))
   };
 };
 
