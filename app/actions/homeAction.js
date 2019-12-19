@@ -166,7 +166,7 @@ export function toggleModalCustomer(payload) {
 
 export function toggleModalSignUpCustomer(payload) {
   return {
-    type: types.TOGGLE_MODAL_SIGNUP_CUSTOMER,
+    type: types.TOGGLE_MODAL_SIGN_UP_CUSTOMER,
     payload
   };
 }
@@ -240,6 +240,13 @@ export function getProductByCategory(payload) {
 export function signUpCustomer(payload) {
   return {
     type: types.SIGN_UP_CUSTOMER,
+    payload
+  }
+}
+
+export function changeSignUpLoadingCustomer(payload){
+  return {
+    type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER,
     payload
   }
 }

@@ -15,6 +15,7 @@ const initialState = {
   shopInfoConfig: {}, // Shop info config
   mainPanelType: HOME_DEFAULT_PRODUCT_LIST, // Main panel type for switching all main panel
   mainProductListLoading: false, // Main product list loading
+  messageSignUpCustomer: null,
   productList: [],
   cartCurrent: cartCurrentDefaultData,
   receipt: {
@@ -61,6 +62,7 @@ const initialState = {
   isOpenSignUpCustomer: false,
   isLoadingSearchCustomer: false,
   isLoadingOrderHistory: false,
+  isLoadingSignUpCustomer: false,
   customerSearchResult: [],
   cartHoldList: [],
   orderPreparingCheckout: {
@@ -191,7 +193,7 @@ const mainRd = (state = initialState, action) =>
       case types.TOGGLE_MODAL_CUSTOMER:
         draft.isOpenFindCustomer = action.payload;
         break;
-      case types.TOGGLE_MODAL_SIGNUP_CUSTOMER:
+      case types.TOGGLE_MODAL_SIGN_UP_CUSTOMER:
         draft.isOpenSignUpCustomer = action.payload;
         break;
       case types.UPDATE_IS_LOADING_SEARCH_CUSTOMER:
@@ -301,6 +303,12 @@ const mainRd = (state = initialState, action) =>
         break;
       case types.RECEIVED_ALL_CATEGORIES:
         draft.allCategories = action.payload;
+        break;
+      case types.CHANGE_SIGN_UP_LOADING_CUSTOMER:
+        draft.isLoadingSignUpCustomer = action.payload;
+        break;
+      case types.MESSAGE_SIGN_UP_CUSTOMER:
+        draft.messageSignUpCustomer = action.payload;
         break;
       default:
         break;
