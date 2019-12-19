@@ -58,6 +58,7 @@ const initialState = {
   detailOutlet: {},
   orderHistory: [],
   isOpenFindCustomer: false,
+  isOpenSignInCustomer: false,
   isLoadingSearchCustomer: false,
   isLoadingOrderHistory: false,
   customerSearchResult: [],
@@ -189,6 +190,9 @@ const mainRd = (state = initialState, action) =>
       }
       case types.TOGGLE_MODAL_CUSTOMER:
         draft.isOpenFindCustomer = action.payload;
+        break;
+      case types.TOGGLE_MODAL_SIGNIN_CUSTOMER:
+        draft.isOpenSignInCustomer = action.payload;
         break;
       case types.UPDATE_IS_LOADING_SEARCH_CUSTOMER:
         draft.isLoadingSearchCustomer = action.payload;

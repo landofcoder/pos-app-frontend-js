@@ -18,6 +18,7 @@ import Configuration from './product-types/Configuration';
 import Bundle from './product-types/Bundle';
 import Grouped from './product-types/Grouped';
 import CartCustomer from './customer/CartCustomer';
+import SignInCustomer from './customer/SignInCustomer/SignInCustomer';
 import CashPanel from './payment/Cash/Cash';
 import Receipt from './payment/Receipt/Receipt';
 import { formatCurrencyCode } from '../common/product';
@@ -477,6 +478,7 @@ export default class Pos extends Component<Props> {
             </div>
             <div className="col-md-2 pr-1 pl-0">
               <CartCustomer />
+              <SignInCustomer />
             </div>
             <div className="col-md-3 pl-0 pr-0">
               <button

@@ -164,6 +164,13 @@ export function toggleModalCustomer(payload) {
   };
 }
 
+export function toggleModalSignInCustomer(payload) {
+  return {
+    type: types.TOGGLE_MODAL_SIGNIN_CUSTOMER,
+    payload
+  };
+}
+
 export function searchCustomer(payload) {
   return {
     type: types.SEARCH_CUSTOMER,
