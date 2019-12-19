@@ -1,5 +1,6 @@
 {
-  "HOME": "/",
+  "POS": "/pos",
+  "CHECK_LOGIN": "/",
   "ACCOUNT": "/account",
   "LOGIN": "/login"
 }
