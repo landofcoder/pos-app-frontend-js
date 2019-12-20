@@ -33,7 +33,7 @@ export default class Account extends Component<Props> {
             <div className="row">
               <div className="col-3">
                 <div className="flex-column col-md-1 pl-0 pr-1 mt-2 mb-2">
-                  <Link to={routes.HOME}>
+                  <Link to={routes.POS}>
                     <i
                       className={`fas fa-arrow-left fa-1x pl-3 ${Styles.greyColor}`}
                     ></i>

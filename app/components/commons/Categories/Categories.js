@@ -24,11 +24,9 @@ class Categories extends Component<Props> {
    * @returns {*}
    */
   renderSubMenu = (item, index) => {
-    console.log('', item);
     return item.children_data && item.children_data.length > 0 ? (
       <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
         {item.children_data.map((childItem, indexChild) => {
-          console.log('category name:', childItem.name);
           return (
             <li key={`${index}${indexChild}`}>
               <a href="#" onClick={() => this.getProductByCategory(childItem)}>
@@ -53,7 +51,6 @@ class Categories extends Component<Props> {
     /* eslint-disable */
     const { children_data } = allCategories;
     /* eslint-enable */
-    console.log('all categories:', children_data);
     return (
       <div>
         <nav className="navbar navbar-light navbar-expand-lg mainmenu">
@@ -110,60 +107,6 @@ class Categories extends Component<Props> {
                       </li>
                     );
                   })}
-                  <li className="dropdown">
-                    <a
-                      className="dropdown-toggle"
-                      href="#"
-                      id="navbarDropdown"
-                      role="button"
-                      data-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                    >
-                      Dropdown2
-                    </a>
-                    <ul
-                      className="dropdown-menu"
-                      aria-labelledby="navbarDropdown"
-                    >
-                      <li>
-                        <a href="#">Action</a>
-                      </li>
-                      <li>
-                        <a href="#">Another action</a>
-                      </li>
-                      <li>
-                        <a href="#">Something else here</a>
-                      </li>
-                      <li className="dropdown">
-                        <a
-                          className="dropdown-toggle"
-                          href="#"
-                          id="navbarDropdown"
-                          role="button"
-                          data-toggle="dropdown"
-                          aria-haspopup="true"
-                          aria-expanded="false"
-                        >
-                          Dropdown3
-                        </a>
-                        <ul
-                          className="dropdown-menu"
-                          aria-labelledby="navbarDropdown"
-                        >
-                          <li>
-                            <a href="#">Action</a>
-                          </li>
-                          <li>
-                            <a href="#">Another action</a>
-                          </li>
-                          <li>
-                            <a href="#">Something else here</a>
-                          </li>
-                        </ul>
-                      </li>
-                    </ul>
-                  </li>
                 </ul>
               </li>
             </ul>

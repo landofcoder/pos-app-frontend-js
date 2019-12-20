@@ -22,35 +22,37 @@
   display: block !important;
 }
 
-.mainmenu .active a, .mainmenu .active a:focus, .mainmenu .active a:hover, .mainmenu li a:hover, .mainmenu li a:focus, .navbar-default .navbar-nav > .show > a, .navbar-default .navbar-nav > .show > a:focus, .navbar-default .navbar-nav > .show > a:hover {
-  color: #fff;
-  background: #4CAF50;
+.mainmenu .active a, .mainmenu .active a:focus, .mainmenu
+.active a:hover, .mainmenu li a:hover,
+.mainmenu li a:focus, .navbar-default .navbar-nav > .show > a,
+.navbar-default .navbar-nav > .show > a:focus, .navbar-default .navbar-nav > .show > a:hover {
+  /*color: #fff;*/
+  /*background: #ffffff;*/
   outline: 0;
 }
 
-
 .mainmenu .collapse ul > li:hover > a {
-  background: #4CAF50;
+  /*background: #ffffff;*/
 }
 
 .mainmenu .collapse ul ul > li:hover > a, .navbar-default .navbar-nav .show .dropdown-menu > li > a:focus, .navbar-default .navbar-nav .show .dropdown-menu > li > a:hover {
-  background: #4CAF50;
+  /*background: #ffffff;*/
 }
 
 .mainmenu .collapse ul ul ul > li:hover > a {
-  background: #4CAF50;
+  /*background: #4CAF50;*/
 }
 
 .mainmenu .collapse ul ul, .mainmenu .collapse ul ul.dropdown-menu {
-  background: #1565C0;
+  /*background: #1565C0;*/
 }
 
 .mainmenu .collapse ul ul ul, .mainmenu .collapse ul ul ul.dropdown-menu {
-  background: #1E88E5
+  /*background: #1E88E5*/
 }
 
 .mainmenu .collapse ul ul ul ul, .mainmenu .collapse ul ul ul ul.dropdown-menu {
-  background: #64B5F6
+  /*background: #64B5F6*/
 }
 
 
@@ -73,7 +75,8 @@
     top: 100%;
     left: 0;
     min-width: 250px;
-    display: none
+    display: none;
+    border: 1px solid #dedede;
   }
 
   .mainmenu .collapse ul ul li {

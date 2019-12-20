@@ -51,7 +51,7 @@ class PageLogin extends Component {
     const { token, message, loading, setToken } = this.props;
     const { valueUser, valuePass } = this.state;
     if (token !== '') {
-      return <Redirect to={routes.HOME} />;
+      return <Redirect to={routes.POS} />;
     }
     if (localStorage.getItem(POS_LOGIN_STORAGE)) {
       // setToken(localStorage.getItem(POS_LOGIN_STORAGE));
