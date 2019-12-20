@@ -5,7 +5,6 @@ import App from './containers/App';
 import PosContainer from './containers/PosContainer';
 import PageLogin from './components/login/PageLogin';
 import Account from './containers/AccountContainer';
-import CheckloginContainer from './containers/CheckLoginContainer';
 
 function Routes() {
   return (
@@ -14,7 +13,6 @@ function Routes() {
         <Route path={routes.ACCOUNT} component={Account} />
         <Route path={routes.LOGIN} component={PageLogin} />
         <Route path={routes.POS} component={PosContainer} />
-        <Route path={routes.CHECK_LOGIN} component={CheckloginContainer} />
       </Switch>
     </App>
   );

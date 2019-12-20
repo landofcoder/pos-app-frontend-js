@@ -9,6 +9,7 @@
 .wrapProductPanel {
   overflow-y: scroll;
   max-height: 100%; // remove this for enabled all scroll
+  min-height: 100%;
 }
 
 #wrapSearchLoading {

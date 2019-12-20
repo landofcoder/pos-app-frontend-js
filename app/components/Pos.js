@@ -261,6 +261,17 @@ export default class Pos extends Component<Props> {
     } = this.props;
     const { redirectToAccount } = this.state;
 
+    // Check login
+    if (token === '') {
+      // Set auto login
+      if (localStorage.getItem(POS_LOGIN_STORAGE)) {
+        const loginInfo = localStorage.getItem(POS_LOGIN_STORAGE);
+        // Login again by username and password
+        setToken(localStorage.getItem(POS_LOGIN_STORAGE));
+      } else return <Redirect to={routes.LOGIN} />;
+    }
+
+
     // Check Redirect To Layout Account
     if (redirectToAccount) {
       return <Redirect to={routes.ACCOUNT} />;

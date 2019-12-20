@@ -6,8 +6,10 @@ const initialState = {
   authenticate: '',
   loading: false,
   message: '',
-  cashierInfo: {}
+  cashierInfo: {},
+  isReloadingToken: false
 };
+
 /*  eslint no-param-reassign: "error" */
 const authenRd = (state = initialState, action) =>
   produce(state, draft => {
