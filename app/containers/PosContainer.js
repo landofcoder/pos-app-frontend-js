@@ -17,7 +17,8 @@ function mapStateToProps(state) {
     cartHoldList: state.mainRd.cartHoldList,
     currencyCode: state.mainRd.shopInfoConfig[0],
     isLoadingSearchHandle: state.mainRd.isLoadingSearchHandle,
-    isShowHaveNoSearchResultFound: state.mainRd.isShowHaveNoSearchResultFound
+    isShowHaveNoSearchResultFound: state.mainRd.isShowHaveNoSearchResultFound,
+    internetConnected: state.mainRd.internetConnected
   };
 }
 

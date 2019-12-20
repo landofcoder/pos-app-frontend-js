@@ -229,3 +229,10 @@ export function getProductByCategory(payload) {
     payload
   };
 }
+
+export function updateIsInternetConnected(payload) {
+  return {
+    type: types.IS_INTERNET_CONNECTED,
+    payload
+  }
+}

@@ -8,6 +8,7 @@ import {
 } from './common';
 
 const initialState = {
+  internetConnected: false,
   isLoadingSystemConfig: true,
   isLoadingSearchHandle: false, // Main search loading
   isShowHaveNoSearchResultFound: false,
@@ -231,6 +232,7 @@ const mainRd = (state = initialState, action) =>
       case types.RECEIVED_POST_GENERAL_CONFIG:
         // eslint-disable-next-line prefer-destructuring
         draft.posSystemConfig = action.payload[0];
+        window.config = action.payload[0];
         break;
       case types.UPDATE_IS_LOADING_SYSTEM_CONFIG:
         draft.isLoadingSystemConfig = action.payload;
@@ -297,6 +299,9 @@ const mainRd = (state = initialState, action) =>
         break;
       case types.RECEIVED_ALL_CATEGORIES:
         draft.allCategories = action.payload;
+        break;
+      case types.IS_INTERNET_CONNECTED:
+        draft.internetConnected = action.payload;
         break;
       default:
         break;

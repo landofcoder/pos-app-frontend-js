@@ -40,6 +40,9 @@ import {
 } from './common/orderSaga';
 import { calcPrice } from '../common/productPrice';
 import { BUNDLE } from '../constants/product-types';
+import productSync from '../reducers/db/product_sync';
+import categoriesSync from '../reducers/db/category_sync';
+import customerSync from '../reducers/db/customers_sync';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
 const cartCurrentToken = state => state.mainRd.cartCurrent.customerToken;
@@ -175,6 +178,9 @@ function* getDefaultProduct() {
 
   // Stop loading
   yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: false });
+
+  // Sync product
+  yield call(productSync, productResult);
 }
 
 /**
@@ -262,6 +268,9 @@ function* searchProduct(payload) {
 
   // Stop loading
   yield put({ type: types.UPDATE_IS_LOADING_SEARCH_HANDLE, payload: false });
+
+  // Sync products
+  yield call(productSync, productResult);
 }
 
 /**
@@ -382,6 +391,9 @@ function* getSearchCustomer(payload) {
 
   // Stop search loading
   yield put({ type: types.UPDATE_IS_LOADING_SEARCH_CUSTOMER, payload: false });
+
+  // Sync customers
+  yield call(customerSync, searchResult.items);
 }
 
 /**
@@ -483,6 +495,9 @@ function* getPostConfigGeneralConfig() {
 
   // Stop loading
   yield put({ type: types.UPDATE_IS_LOADING_SYSTEM_CONFIG, payload: false });
+
+  // Sync categories product
+  yield call(categoriesSync, allCategories);
 }
 
 function* getCustomReceipt() {
@@ -491,6 +506,11 @@ function* getCustomReceipt() {
   yield put({ type: types.RECEIVED_CUSTOM_RECEIPT, payload: result.data });
 }
 
+/**
+ * Get product by category
+ * @param payload
+ * @returns void
+ */
 function* getProductByCategory(payload) {
   // Start loading
   yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: true });
@@ -502,14 +522,17 @@ function* getProductByCategory(payload) {
 
   // Stop loading
   yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: false });
+
+  // Sync product
+  yield call(productSync, productResult);
 }
 
 function* getOrderHistory() {
   yield put({ type: types.TURN_ON_LOADING_ORDER_HISTORY });
-  const dataOrderHisotry = yield call(getOrderHistoryService);
+  const dataOrderHistory = yield call(getOrderHistoryService);
   yield put({
     type: types.RECEIVED_ORDER_HISTORY_ACTION,
-    payload: dataOrderHisotry
+    payload: dataOrderHistory
   });
   yield put({ type: types.TURN_OFF_LOADING_ORDER_HISTORY });
 }
@@ -518,9 +541,9 @@ function* getOrderHistory() {
  * @returns {Generator<<"FORK", ForkEffectDescriptor<RT>>, *>}
  */
 function* rootSaga() {
+  yield takeEvery(types.GET_DEFAULT_PRODUCT, getDefaultProduct);
   yield takeEvery(types.CASH_CHECKOUT_ACTION, cashCheckout);
   yield takeEvery(types.SEARCH_ACTION, searchProduct);
-  yield takeEvery(types.GET_DEFAULT_PRODUCT, getDefaultProduct);
   yield takeEvery(
     types.CASH_CHECKOUT_PLACE_ORDER_ACTION,
     cashCheckoutPlaceOrder
