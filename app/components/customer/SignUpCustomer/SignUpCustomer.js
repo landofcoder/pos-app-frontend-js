@@ -26,7 +26,7 @@ const initialState = {
     addresses: []
   },
   password: ''
-}
+};
 class SignUpCustomer extends Component {
   props: Props;
 
@@ -34,16 +34,19 @@ class SignUpCustomer extends Component {
     super(props);
     this.state = initialState;
   }
+
   onChangeFirstName = event => {
     let customer = this.state.customer;
     customer.firstname = event.target.value;
     this.setState({ customer: customer });
   };
+
   onChangeLastName = event => {
     let customer = this.state.customer;
     customer.lastname = event.target.value;
     this.setState({ customer: customer });
   };
+
   onChangeEmail = event => {
     let customer = this.state.customer;
     customer.email = event.target.value;
@@ -54,14 +57,17 @@ class SignUpCustomer extends Component {
   //     this.setState({ password: event.target.value });
   //   }
   // };
-  onChangePassword = (event) => {
-    this.setState({ password: event.target.value});
-  }
-  handleSignUpAction = (event) => {
+
+  onChangePassword = event => {
+    this.setState({ password: event.target.value });
+  };
+
+  handleSignUpAction = event => {
     event.preventDefault();
     const { signUpCustomer } = this.props;
     signUpCustomer(this.state);
   };
+
   render() {
     const { firstname, lastname, email, password } = this.state;
     const {
@@ -180,7 +186,8 @@ function mapStateToProps(state) {
 }
 function mapDispatchToProps(dispatch) {
   return {
-    toggleModalSignUpCustomer: () => dispatch(toggleModalSignUpCustomer()),
+    toggleModalSignUpCustomer: payload =>
+      dispatch(toggleModalSignUpCustomer(payload)),
     changeSignUpLoadingCustomer: payload =>
       dispatch(changeSignUpLoadingCustomer(payload)),
     signUpCustomer: payload => dispatch(signUpCustomer(payload))

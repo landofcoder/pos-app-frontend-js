@@ -18,7 +18,8 @@ function mapStateToProps(state) {
     currencyCode: state.mainRd.shopInfoConfig[0],
     isLoadingSearchHandle: state.mainRd.isLoadingSearchHandle,
     isShowHaveNoSearchResultFound: state.mainRd.isShowHaveNoSearchResultFound,
-    isLoadingSignUpCustomer: state.mainRd.isLoadingSignUpCustomer
+    isLoadingSignUpCustomer: state.mainRd.isLoadingSignUpCustomer,
+    isOpenSignUpCustomer: state.mainRd.isOpenSignUpCustomer
   };
 }
 

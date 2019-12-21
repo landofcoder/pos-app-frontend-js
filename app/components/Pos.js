@@ -49,7 +49,8 @@ type Props = {
   currencyCode: string,
   setToken: (payload: string) => void,
   isLoadingSearchHandle: boolean,
-  isShowHaveNoSearchResultFound: boolean
+  isShowHaveNoSearchResultFound: boolean,
+  isOpenSignUpCustomer: boolean
 };
 
 export default class Pos extends Component<Props> {
@@ -136,25 +137,25 @@ export default class Pos extends Component<Props> {
 
     switch (item.type_id) {
       case CONFIGURABLE:
-      {
-        const { sku } = item;
-        getDetailProductConfigurable(sku);
-      }
+        {
+          const { sku } = item;
+          getDetailProductConfigurable(sku);
+        }
         break;
       case SIMPLE:
         addToCart(item);
         break;
       case BUNDLE:
-      {
-        const { sku } = item;
-        getDetailProductBundle(sku);
-      }
+        {
+          const { sku } = item;
+          getDetailProductBundle(sku);
+        }
         break;
       case GROUPED:
-      {
-        const { sku } = item;
-        getDetailProductGrouped(sku);
-      }
+        {
+          const { sku } = item;
+          getDetailProductGrouped(sku);
+        }
         break;
       default:
         addToCart(item);
@@ -273,9 +274,11 @@ export default class Pos extends Component<Props> {
       emptyCart,
       isLoadingSearchHandle,
       isShowHaveNoSearchResultFound,
+      isOpenSignUpCustomer,
       setToken
     } = this.props;
     const { redirectToAccount } = this.state;
+    console.log(isOpenSignUpCustomer);
     // Check login
     if (token === '') {
       if (localStorage.getItem(POS_LOGIN_STORAGE)) {
@@ -478,7 +481,7 @@ export default class Pos extends Component<Props> {
             </div>
             <div className="col-md-2 pr-1 pl-0">
               <CartCustomer />
-              <SignUpCustomer />
+              {isOpenSignUpCustomer ? <SignUpCustomer /> : null}
             </div>
             <div className="col-md-3 pl-0 pr-0">
               <button

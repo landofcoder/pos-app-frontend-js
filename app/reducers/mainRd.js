@@ -194,6 +194,8 @@ const mainRd = (state = initialState, action) =>
         draft.isOpenFindCustomer = action.payload;
         break;
       case types.TOGGLE_MODAL_SIGN_UP_CUSTOMER:
+        //console.log("action");
+        //console.log(action.payload);
         draft.isOpenSignUpCustomer = action.payload;
         break;
       case types.UPDATE_IS_LOADING_SEARCH_CUSTOMER:
