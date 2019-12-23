@@ -1,5 +1,5 @@
 import { adminToken, baseUrl } from '../../params';
-import { getDefaultProductLocal } from '../../reducers/db/products';
+import { getDefaultProductLocal, getProductsByCategoryLocal } from '../../reducers/db/products';
 
 const graphqlPath = `${baseUrl}graphql`;
 
@@ -8,12 +8,10 @@ const graphqlPath = `${baseUrl}graphql`;
  * @returns {any}
  */
 export async function searchProductService(payload) {
-  const defaultProducts = payload.defaultProducts;
+  const searchValue = payload.searchValue;
   const offlineMode = payload.offlineMode;
-
-  console.log('offline mode:', offlineMode);
-
-  if (parseInt(offlineMode) === 1) {
+  if (Number(offlineMode) === 1) {
+    console.log('offline get');
     return await getDefaultProductLocal();
   } else {
     const response = await fetch(graphqlPath, {
@@ -24,7 +22,7 @@ export async function searchProductService(payload) {
       },
       body: JSON.stringify({
         query: `{
-      products(filter: { sku: { like: "%${defaultProducts}%" } }) {
+      products(filter: { sku: { like: "%${searchValue}%" } }) {
         items {
           id
           attribute_set_id
@@ -365,21 +363,24 @@ export async function getDefaultProductsService() {
  * @returns {Promise<any>}
  * @returns {Promise<any>}
  */
-export async function getProductByCategoryService(categoryId) {
-  const response = await fetch(graphqlPath, {
-    method: 'POST', // *GET, POST, PUT, DELETE, etc.
-    mode: 'cors', // no-cors, *cors, same-origin
-    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-    credentials: 'same-origin', // include, *same-origin, omit
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${adminToken}`
-      // 'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    redirect: 'follow', // manual, *follow, error
-    referrer: 'no-referrer', // no-referrer, *client
-    body: JSON.stringify({
-      query: `{
+export async function getProductByCategoryService({ categoryId, offlineMode }) {
+  if(Number(offlineMode) === 1) {
+    return await getProductsByCategoryLocal(categoryId);
+  } else {
+    const response = await fetch(graphqlPath, {
+      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      mode: 'cors', // no-cors, *cors, same-origin
+      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: 'same-origin', // include, *same-origin, omit
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${adminToken}`
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      redirect: 'follow', // manual, *follow, error
+      referrer: 'no-referrer', // no-referrer, *client
+      body: JSON.stringify({
+        query: `{
       products(filter: {category_id: {eq: "${categoryId}"}}) {
         items {
           id
@@ -443,8 +444,9 @@ export async function getProductByCategoryService(categoryId) {
         }
       }
     }`
-    })
-  });
-  const data = await response.json();
-  return data;
+      })
+    });
+    const data = await response.json();
+    return data.data.products.items;
+  }
 }

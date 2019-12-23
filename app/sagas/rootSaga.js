@@ -41,7 +41,7 @@ import {
 } from './common/orderSaga';
 import { calcPrice } from '../common/productPrice';
 import { BUNDLE } from '../constants/product-types';
-import { productSync } from '../reducers/db/products';
+import { syncProduct } from '../reducers/db/products';
 import categoriesSync from '../reducers/db/category_sync';
 import customerSync from '../reducers/db/customers_sync';
 
@@ -177,14 +177,13 @@ function* getDefaultProduct() {
   yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: true });
 
   // Set empty if want get default response from magento2
-  const defaultProducts = '';
+  const searchValue = '';
 
-  // Check offlineMode
-  // const offlineMode = yield getOfflineMode();
-  const offlineMode = 1;
+  const offlineMode = yield getOfflineMode();
+  const response = yield call(searchProductService, { searchValue, offlineMode });
 
-  const response = yield call(searchProductService, { defaultProducts, offlineMode });
-  console.log('response:', response);
+  console.log('res from default product:', response);
+
   const productResult = response.length > 0 ? response : [];
   yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productResult });
 
@@ -192,7 +191,7 @@ function* getDefaultProduct() {
   yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: false });
 
   // Sync product
-  yield call(productSync, productResult);
+  yield call(syncProduct, productResult);
 }
 
 /**
@@ -255,10 +254,9 @@ function* searchProduct(payload) {
   // Start loading
   yield put({ type: types.UPDATE_IS_LOADING_SEARCH_HANDLE, payload: true });
 
-  const searchResult = yield call(searchProductService, payload);
-  const productResult = searchResult.data
-    ? searchResult.data.products.items
-    : [];
+  const offlineMode = yield getOfflineMode();
+  const searchResult = yield call(searchProductService, {searchValue: payload, offlineMode});
+  const productResult = searchResult.length > 0 ? searchResult : [];
 
   // If have no product result => update showSearchEmptyResult = 1
   if (productResult.length === 0) {
@@ -282,7 +280,7 @@ function* searchProduct(payload) {
   yield put({ type: types.UPDATE_IS_LOADING_SEARCH_HANDLE, payload: false });
 
   // Sync products
-  yield call(productSync, productResult);
+  yield call(syncProduct, productResult);
 }
 
 /**
@@ -528,15 +526,18 @@ function* getProductByCategory(payload) {
   yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: true });
 
   const categoryId = payload.payload;
-  const productByCategory = yield call(getProductByCategoryService, categoryId);
-  const productResult = productByCategory.data.products.items;
+
+  const offlineMode = yield getOfflineMode();
+
+  const productByCategory = yield call(getProductByCategoryService, { categoryId, offlineMode });
+  const productResult = productByCategory;
   yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productResult });
 
   // Stop loading
   yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: false });
 
   // Sync product
-  yield call(productSync, productResult);
+  yield call(syncProduct, productResult);
 }
 
 function* getOrderHistory() {
@@ -563,6 +564,7 @@ function* signUpAction(payload) {
   }
   yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: false });
 }
+
 /**
  * Default root saga
  * @returns {Generator<<"FORK", ForkEffectDescriptor<RT>>, *>}

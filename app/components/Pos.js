@@ -50,8 +50,7 @@ type Props = {
   setToken: (payload: string) => void,
   isLoadingSearchHandle: boolean,
   isShowHaveNoSearchResultFound: boolean,
-  isOpenSignUpCustomer: boolean
-  isShowHaveNoSearchResultFound: boolean,
+  isOpenSignUpCustomer: boolean,
   internetConnected: boolean
 };
 
