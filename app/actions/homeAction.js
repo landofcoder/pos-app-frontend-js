@@ -164,6 +164,15 @@ export function toggleModalCustomer(payload) {
   };
 }
 
+export function toggleModalSignUpCustomer(payload) {
+  //console.log("payload");
+  //console.log(payload);
+  return {
+    type: types.TOGGLE_MODAL_SIGN_UP_CUSTOMER,
+    payload
+  };
+}
+
 export function searchCustomer(payload) {
   return {
     type: types.SEARCH_CUSTOMER,
@@ -228,6 +237,20 @@ export function getProductByCategory(payload) {
     type: types.GET_PRODUCT_BY_CATEGORY,
     payload
   };
+}
+
+export function signUpCustomer(payload) {
+  return {
+    type: types.SIGN_UP_CUSTOMER,
+    payload
+  }
+}
+
+export function changeSignUpLoadingCustomer(payload){
+  return {
+    type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER,
+    payload
+  }
 }
 
 export function updateIsInternetConnected(payload) {

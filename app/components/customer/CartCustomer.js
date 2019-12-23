@@ -5,7 +5,8 @@ import {
   toggleModalCustomer,
   searchCustomer,
   selectCustomerForCurrentCart,
-  unSelectCustomerForCurrentCart
+  unSelectCustomerForCurrentCart,
+  toggleModalSignUpCustomer
 } from '../../actions/homeAction';
 import Styles from './cart-customer.scss';
 import ModalStyle from '../styles/modal.scss';
@@ -18,7 +19,8 @@ type Props = {
   isLoadingSearchCustomer: boolean,
   customerSearchResult: Array,
   selectCustomerForCurrentCart: (payload: Object) => void,
-  unSelectCustomerForCurrentCart: (payload: Object) => void
+  unSelectCustomerForCurrentCart: (payload: Object) => void,
+  toggleModalSignUpCustomer: (payload: boolean) => void
 };
 
 class CartCustomer extends Component<Props> {
@@ -48,6 +50,7 @@ class CartCustomer extends Component<Props> {
       customer,
       isOpenFindCustomer,
       toggleModalCustomer,
+      toggleModalSignUpCustomer,
       isLoadingSearchCustomer,
       customerSearchResult,
       selectCustomerForCurrentCart,
@@ -69,6 +72,15 @@ class CartCustomer extends Component<Props> {
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">Find customer</h5>
+                  <div className="col-md-3 p-0">
+                    <button
+                      type="button"
+                      className="btn btn-secondary btn-block"
+                      onClick={() => toggleModalSignUpCustomer(true)}
+                    >
+                      Add customer
+                    </button>
+                  </div>
                 </div>
                 <div className="modal-body">
                   <div>
@@ -180,11 +192,10 @@ const mapDispatchToProps = dispatch => {
     selectCustomerForCurrentCart: payload =>
       dispatch(selectCustomerForCurrentCart(payload)),
     unSelectCustomerForCurrentCart: payload =>
-      dispatch(unSelectCustomerForCurrentCart(payload))
+      dispatch(unSelectCustomerForCurrentCart(payload)),
+    toggleModalSignUpCustomer: payload =>
+      dispatch(toggleModalSignUpCustomer(payload))
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CartCustomer);
+export default connect(mapStateToProps, mapDispatchToProps)(CartCustomer);

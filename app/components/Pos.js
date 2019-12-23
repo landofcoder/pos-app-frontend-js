@@ -18,6 +18,7 @@ import Configuration from './product-types/Configuration';
 import Bundle from './product-types/Bundle';
 import Grouped from './product-types/Grouped';
 import CartCustomer from './customer/CartCustomer';
+import SignUpCustomer from './customer/SignUpCustomer/SignUpCustomer';
 import CashPanel from './payment/Cash/Cash';
 import Receipt from './payment/Receipt/Receipt';
 import { formatCurrencyCode } from '../common/product';
@@ -48,6 +49,8 @@ type Props = {
   currencyCode: string,
   setToken: (payload: string) => void,
   isLoadingSearchHandle: boolean,
+  isShowHaveNoSearchResultFound: boolean,
+  isOpenSignUpCustomer: boolean
   isShowHaveNoSearchResultFound: boolean,
   internetConnected: boolean
 };
@@ -121,7 +124,7 @@ export default class Pos extends Component<Props> {
 
     switch (item.type_id) {
       case CONFIGURABLE: {
-        const { sku } = item;
+          const { sku } = item;
         getDetailProductConfigurable(sku);
       }
         break;
@@ -129,12 +132,12 @@ export default class Pos extends Component<Props> {
         addToCart(item);
         break;
       case BUNDLE: {
-        const { sku } = item;
+          const { sku } = item;
         getDetailProductBundle(sku);
       }
         break;
       case GROUPED: {
-        const { sku } = item;
+          const { sku } = item;
         getDetailProductGrouped(sku);
       }
         break;
@@ -256,10 +259,10 @@ export default class Pos extends Component<Props> {
       isLoadingSearchHandle,
       isShowHaveNoSearchResultFound,
       setToken,
-      internetConnected
+      internetConnected,
+      isOpenSignUpCustomer,
     } = this.props;
     const { redirectToAccount } = this.state;
-
     // Check login
     if (token === '') {
       // Set auto login
@@ -269,7 +272,6 @@ export default class Pos extends Component<Props> {
         setToken(localStorage.getItem(POS_LOGIN_STORAGE));
       } else return <Redirect to={routes.LOGIN}/>;
     }
-
 
     // Check Redirect To Layout Account
     if (redirectToAccount) {
@@ -465,6 +467,7 @@ export default class Pos extends Component<Props> {
             </div>
             <div className="col-md-2 pr-1 pl-0">
               <CartCustomer/>
+              {isOpenSignUpCustomer ? <SignUpCustomer /> : null}
             </div>
             <div className="col-md-3 pl-0 pr-0">
               <button
