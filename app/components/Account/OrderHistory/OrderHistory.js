@@ -6,7 +6,7 @@ import { getOrderHistory } from '../../../actions/accountAction';
 type Props = {
   getOrderHistory: () => void,
   isLoading: boolean,
-  orderHistoryItems: []
+  orderHistory: []
 };
 class OrderHistory extends Component<Props> {
   props: Props;
@@ -17,7 +17,7 @@ class OrderHistory extends Component<Props> {
   }
 
   render() {
-    const { isLoading, orderHistoryItems } = this.props;
+    const { isLoading, orderHistory } = this.props;
     if (isLoading) {
       return (
         <div className="d-flex justify-content-center">
@@ -28,27 +28,38 @@ class OrderHistory extends Component<Props> {
       );
     }
     console.log('orderHistoryItems in layout');
-    console.log(orderHistoryItems);
+    console.log(orderHistory);
     return (
       <>
         <table className="table">
           <thead>
             <tr className={Styles.fixBorderTop}>
               <th scope="col">#</th>
+              <th scope="col">Id</th>
               <th scope="col">Product Name</th>
-              <th scope="col">Product Quality</th>
               <th scope="col">Total</th>
+              <th scope="col">Status</th>
             </tr>
           </thead>
           <tbody>
-            {orderHistoryItems.map((item, index) => {
+            {orderHistory.map((item, index) => {
               return (
                 <>
                   <tr>
                     <th scope="row">{index + 1}</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
+                    <td>{item.increment_id}</td>
+                    <td>
+                      {item.items.map(product => (
+                        <>
+                          <p className="mb-0">{product.name}</p>
+                          <p className={Styles.shapeText}>
+                            {product.row_total_incl_tax}
+                          </p>
+                        </>
+                      ))}
+                    </td>
+                    <td>{item.subtotal_incl_tax}</td>
+                    <td>{item.status}</td>
                   </tr>
                 </>
               );
@@ -62,7 +73,7 @@ class OrderHistory extends Component<Props> {
 function mapStateToProps(state) {
   return {
     isLoading: state.mainRd.isLoadingOrderHistory,
-    orderHistoryItems: state.mainRd.orderHistory
+    orderHistory: state.mainRd.orderHistory
   };
 }
 function mapDispatchToProps(dispatch) {
@@ -70,7 +81,4 @@ function mapDispatchToProps(dispatch) {
     getOrderHistory: () => dispatch(getOrderHistory())
   };
 }
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(OrderHistory);
+export default connect(mapStateToProps, mapDispatchToProps)(OrderHistory);

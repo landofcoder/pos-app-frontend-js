@@ -24,6 +24,7 @@ import {
 import { createCustomerCartService } from './services/CustomerCartService';
 import {
   getOrderHistoryService,
+  getOrderHistoryServiceDetails,
   getSystemConfigService,
   getShopInfoService,
   getCustomReceiptService,
@@ -508,9 +509,29 @@ function* getProductByCategory(payload) {
 function* getOrderHistory() {
   yield put({ type: types.TURN_ON_LOADING_ORDER_HISTORY });
   const dataOrderHisotry = yield call(getOrderHistoryService);
+  //  cause dataOrderHistory A object is not index
+  let listIndexOrder = [];
+  let listOrderHistoryDetails = [];
+  dataOrderHisotry.items.map(item => {
+    if (listIndexOrder.indexOf(item.sales_order_id) === -1) {
+      listIndexOrder.push(item.sales_order_id);
+    }
+    return item;
+  });
+
+  for (var i = 0; i < listIndexOrder.length; i++) {
+    let data = yield call(getOrderHistoryServiceDetails, listIndexOrder[i]);
+    listOrderHistoryDetails.push(data);
+  }
+
+  // listIndexOrder.map(index => {
+  //   const data = yield call(getOrderHistoryServiceDetails,index);
+  //   listIndexOrder.push(data);
+  //   return index;
+  // });
   yield put({
     type: types.RECEIVED_ORDER_HISTORY_ACTION,
-    payload: dataOrderHisotry
+    payload: listOrderHistoryDetails
   });
   yield put({ type: types.TURN_OFF_LOADING_ORDER_HISTORY });
 }

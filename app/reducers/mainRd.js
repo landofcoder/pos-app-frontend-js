@@ -295,7 +295,7 @@ const mainRd = (state = initialState, action) =>
         console.log("get order history action in reducer");
         break;
       case types.RECEIVED_ORDER_HISTORY_ACTION:
-        draft.orderHistory = action.payload.items;
+        draft.orderHistory = action.payload;
         break;
       case types.RECEIVED_CUSTOM_RECEIPT:
         draft.customReceipt = action.payload;
