@@ -13,6 +13,8 @@ function* loginAction(payload) {
   try {
     const data = yield call(AuthenService, payload);
     if (data.ok === true) {
+      // Set to local storage
+      localStorage.setItem(types.POS_LOGIN_STORAGE, JSON.stringify({info: payload.payload, token: payload.data}));
       yield put({ type: types.RECEIVED_TOKEN, payload: data.data });
       yield put({ type: types.SUCCESS_LOGIN });
     } else {
@@ -24,10 +26,6 @@ function* loginAction(payload) {
   yield put({ type: types.STOP_LOADING });
   // stop
 }
-
-// function* logoutAction(payload) {
-//   console.log('logout action saga');
-// }
 
 function* takeLatestToken() {
   const adminTokenResult = yield select(adminToken);

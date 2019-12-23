@@ -6,8 +6,10 @@ const initialState = {
   authenticate: '',
   loading: false,
   message: '',
-  cashierInfo: {}
+  cashierInfo: {},
+  isReloadingToken: false
 };
+
 /*  eslint no-param-reassign: "error" */
 const authenRd = (state = initialState, action) =>
   produce(state, draft => {
@@ -20,7 +22,6 @@ const authenRd = (state = initialState, action) =>
         break;
       case typesAuthen.RECEIVED_TOKEN:
         draft.token = action.payload;
-        localStorage.setItem(typesAuthen.POS_LOGIN_STORAGE, action.payload);
         break;
       case typesAuthen.ERROR_LOGIN:
         draft.message =

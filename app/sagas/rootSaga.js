@@ -508,7 +508,6 @@ function* getProductByCategory(payload) {
 function* getOrderHistory() {
   yield put({ type: types.TURN_ON_LOADING_ORDER_HISTORY });
   const dataOrderHisotry = yield call(getOrderHistoryService);
-  console.log(dataOrderHisotry);
   yield put({
     type: types.RECEIVED_ORDER_HISTORY_ACTION,
     payload: dataOrderHisotry

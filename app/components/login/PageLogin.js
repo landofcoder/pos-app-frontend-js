@@ -9,7 +9,6 @@ import commonStyles from '../styles/common.scss';
 import Loading from '../commons/Loading';
 import * as routes from '../../constants/routes';
 import { POS_LOGIN_STORAGE } from '../../constants/authen';
-
 type Props = {
   login: () => void,
   message: string,
@@ -51,12 +50,13 @@ class PageLogin extends Component {
     const { token, message, loading, setToken } = this.props;
     const { valueUser, valuePass } = this.state;
     if (token !== '') {
-      return <Redirect to={routes.HOME} />;
+      return <Redirect to={routes.POS} />;
     }
     if (localStorage.getItem(POS_LOGIN_STORAGE)) {
       // setToken(localStorage.getItem(POS_LOGIN_STORAGE));
       // return <Redirect to={routes.HOME} />;
     }
+
     return (
       <>
         <div

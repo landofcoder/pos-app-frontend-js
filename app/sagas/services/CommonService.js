@@ -70,7 +70,6 @@ export async function getCustomReceiptService(payload) {
 }
 
 export async function getDetailOutletService(payload) {
-  console.log('receipt payload:', payload);
   const outletId = payload;
   const response = await fetch(
     `${baseUrl}index.php/rest/V1/lof-outlet/get-detail-outlet?id=${outletId}`,

@@ -99,21 +99,6 @@ export default class Pos extends Component<Props> {
   handleRedirectToAccount = () => {
     this.setState({ redirectToAccount: true });
   };
-  /**
-   * Find option selected
-   * @param optionSelected
-   * @param options
-   */
-  findOptionSelected = (optionSelected, options) => {
-    const listProductSelected = [];
-    options.forEach(item => {
-      if (optionSelected.indexOf(item.id) !== -1) {
-        // Exists item
-        listProductSelected.push(item);
-      }
-    });
-    return listProductSelected;
-  };
 
   /**
    * Pre add to cart
@@ -278,15 +263,16 @@ export default class Pos extends Component<Props> {
       setToken
     } = this.props;
     const { redirectToAccount } = this.state;
-    console.log(isOpenSignUpCustomer);
     // Check login
     if (token === '') {
+      // Set auto login
       if (localStorage.getItem(POS_LOGIN_STORAGE)) {
+        const loginInfo = localStorage.getItem(POS_LOGIN_STORAGE);
+        // Login again by username and password
         setToken(localStorage.getItem(POS_LOGIN_STORAGE));
       } else return <Redirect to={routes.LOGIN} />;
-    } else {
-      // console.log(token);
     }
+
     // Check Redirect To Layout Account
     if (redirectToAccount) {
       return <Redirect to={routes.ACCOUNT} />;
