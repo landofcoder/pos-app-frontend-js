@@ -18,7 +18,8 @@ import {
 } from './services/ProductService';
 import {
   getCustomerCartTokenService,
-  searchCustomer
+  searchCustomer,
+  signUpCustomerService
 } from './services/CustomerService';
 import { createCustomerCartService } from './services/CustomerCartService';
 import {
@@ -513,6 +514,20 @@ function* getOrderHistory() {
   });
   yield put({ type: types.TURN_OFF_LOADING_ORDER_HISTORY });
 }
+
+function* signUpAction(payload) {
+  console.log(payload);
+  yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: true });
+  const res = yield call(signUpCustomerService, payload);
+  yield put({
+    type: types.MESSAGE_SIGN_UP_CUSTOMER,
+    payload: res.data.message
+  });
+  if (res.ok) {
+    yield put({ type: types.TOGGLE_MODAL_SIGN_UP_CUSTOMER, payload: false });
+  }
+  yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: false });
+}
 /**
  * Default root saga
  * @returns {Generator<<"FORK", ForkEffectDescriptor<RT>>, *>}
@@ -541,6 +556,7 @@ function* rootSaga() {
   yield takeEvery(types.GET_CUSTOM_RECEIPT, getCustomReceipt);
   yield takeEvery(types.GET_ORDER_HISTORY_ACTION, getOrderHistory);
   yield takeEvery(types.GET_PRODUCT_BY_CATEGORY, getProductByCategory);
+  yield takeEvery(types.SIGN_UP_CUSTOMER, signUpAction);
 }
 
 export default rootSaga;
