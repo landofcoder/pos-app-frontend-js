@@ -40,7 +40,7 @@ import {
 } from './common/orderSaga';
 import { calcPrice } from '../common/productPrice';
 import { BUNDLE } from '../constants/product-types';
-import productSync from '../reducers/db/product_sync';
+import { productSync } from '../reducers/db/products';
 import categoriesSync from '../reducers/db/category_sync';
 import customerSync from '../reducers/db/customers_sync';
 
@@ -159,6 +159,15 @@ function* updateIsGuestCustomer(isGuestCustomer) {
 }
 
 /**
+ * Get offline mode
+ * @returns {Generator<<"SELECT", SelectEffectDescriptor>, *, ?>}
+ */
+function* getOfflineMode() {
+  const posSystemConfigResult = yield select(posSystemConfig);
+  return posSystemConfigResult.general_configuration.enable_offline_mode;
+}
+
+/**
  * Get default product
  * @returns {Generator<*, *>}
  */
@@ -169,11 +178,13 @@ function* getDefaultProduct() {
   // Set empty if want get default response from magento2
   const defaultProducts = '';
 
-  // const response = yield call(getDefaultProductsService);
-  const response = yield call(searchProductService, {
-    payload: defaultProducts
-  });
-  const productResult = response.data ? response.data.products.items : [];
+  // Check offlineMode
+  // const offlineMode = yield getOfflineMode();
+  const offlineMode = 1;
+
+  const response = yield call(searchProductService, { defaultProducts, offlineMode });
+  console.log('response:', response);
+  const productResult = response.length > 0 ? response : [];
   yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productResult });
 
   // Stop loading
@@ -536,6 +547,7 @@ function* getOrderHistory() {
   });
   yield put({ type: types.TURN_OFF_LOADING_ORDER_HISTORY });
 }
+
 /**
  * Default root saga
  * @returns {Generator<<"FORK", ForkEffectDescriptor<RT>>, *>}

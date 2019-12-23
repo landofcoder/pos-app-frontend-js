@@ -1,4 +1,5 @@
 import { adminToken, baseUrl } from '../../params';
+import { getDefaultProductLocal } from '../../reducers/db/products';
 
 const graphqlPath = `${baseUrl}graphql`;
 
@@ -7,15 +8,23 @@ const graphqlPath = `${baseUrl}graphql`;
  * @returns {any}
  */
 export async function searchProductService(payload) {
-  const response = await fetch(graphqlPath, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${adminToken}`
-    },
-    body: JSON.stringify({
-      query: `{
-      products(filter: { sku: { like: "%${payload.payload}%" } }) {
+  const defaultProducts = payload.defaultProducts;
+  const offlineMode = payload.offlineMode;
+
+  console.log('offline mode:', offlineMode);
+
+  if (parseInt(offlineMode) === 1) {
+    return await getDefaultProductLocal();
+  } else {
+    const response = await fetch(graphqlPath, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${adminToken}`
+      },
+      body: JSON.stringify({
+        query: `{
+      products(filter: { sku: { like: "%${defaultProducts}%" } }) {
         items {
           id
           attribute_set_id
@@ -78,10 +87,11 @@ export async function searchProductService(payload) {
         }
       }
     }`
-    })
-  });
-  const data = await response.json();
-  return data;
+      })
+    });
+    const data = await response.json();
+    return data.data.products.items;
+  }
 }
 
 /**

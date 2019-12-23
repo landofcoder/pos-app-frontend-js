@@ -1,9 +1,12 @@
 import db from './db';
 
-export default function syncProduct(productList) {
+
+const productTable = 'products';
+
+export function syncProduct(productList) {
   if (productList.length > 0) {
     // Insert to database
-    const productTbl = db.table('products');
+    const productTbl = db.table(productTable);
 
     productList.forEach(async (item) => {
       const product = await productTbl.get(item.id);
@@ -17,4 +20,8 @@ export default function syncProduct(productList) {
       }
     });
   }
+}
+
+export async function getDefaultProductLocal() {
+  return await db.table(productTable).offset(50).toArray();
 }
