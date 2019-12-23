@@ -486,7 +486,18 @@ export default class Pos extends Component<Props> {
             </div>
           </div>
           <div className={Styles.wrapFooterLine}>
-            {internetConnected ? 'Online' : 'Offline'}
+            <div className={Styles.wrapLeft}>
+              &nbsp;
+            </div>
+            <div className={Styles.wrapRight}>
+              <div className={Styles.wrapStatusOnline}>
+
+              </div>
+              <div className={Styles.wrapClock}>
+                <span> {internetConnected ? <span className='text-success text-bold font-weight-bolder'>Online</span> :
+                  <span className='text-danger text-bold font-weight-bolder'>Offline</span>}</span>
+              </div>
+            </div>
           </div>
         </div>
       </>
