@@ -317,6 +317,11 @@ const mainRd = (state = initialState, action) =>
       case types.MESSAGE_SIGN_UP_CUSTOMER:
         draft.messageSignUpCustomer = action.payload;
         break;
+      case types.LOGOUT_POS_ACTION:
+        draft.cartCurrent.data = [];
+        draft.cartHoldList = [];
+        draft.orderHistory = [];
+        draft.customerSearchResult = [];
       default:
         break;
     }
