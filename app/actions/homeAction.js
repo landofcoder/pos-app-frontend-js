@@ -252,3 +252,10 @@ export function changeSignUpLoadingCustomer(payload){
     payload
   }
 }
+
+export function updateIsInternetConnected(payload) {
+  return {
+    type: types.IS_INTERNET_CONNECTED,
+    payload
+  }
+}

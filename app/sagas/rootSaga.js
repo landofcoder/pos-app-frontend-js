@@ -14,7 +14,8 @@ import {
   getDetailProductConfigurableService,
   getDetailProductGroupedService,
   searchProductService,
-  getProductByCategoryService
+  getProductByCategoryService,
+  syncAllProducts
 } from './services/ProductService';
 import {
   getCustomerCartTokenService,
@@ -41,6 +42,9 @@ import {
 } from './common/orderSaga';
 import { calcPrice } from '../common/productPrice';
 import { BUNDLE } from '../constants/product-types';
+import { syncProducts } from '../reducers/db/products';
+import categoriesSync from '../reducers/db/category_sync';
+import customerSync from '../reducers/db/customers_sync';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
 const cartCurrentToken = state => state.mainRd.cartCurrent.customerToken;
@@ -157,6 +161,15 @@ function* updateIsGuestCustomer(isGuestCustomer) {
 }
 
 /**
+ * Get offline mode
+ * @returns {Generator<<"SELECT", SelectEffectDescriptor>, *, ?>}
+ */
+function* getOfflineMode() {
+  const posSystemConfigResult = yield select(posSystemConfig);
+  return posSystemConfigResult.general_configuration.enable_offline_mode;
+}
+
+/**
  * Get default product
  * @returns {Generator<*, *>}
  */
@@ -165,13 +178,12 @@ function* getDefaultProduct() {
   yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: true });
 
   // Set empty if want get default response from magento2
-  const defaultProducts = '';
+  const searchValue = '';
 
-  // const response = yield call(getDefaultProductsService);
-  const response = yield call(searchProductService, {
-    payload: defaultProducts
-  });
-  const productResult = response.data ? response.data.products.items : [];
+  const offlineMode = yield getOfflineMode();
+  const response = yield call(searchProductService, { searchValue, offlineMode });
+
+  const productResult = response.length > 0 ? response : [];
   yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productResult });
 
   // Stop loading
@@ -238,10 +250,9 @@ function* searchProduct(payload) {
   // Start loading
   yield put({ type: types.UPDATE_IS_LOADING_SEARCH_HANDLE, payload: true });
 
-  const searchResult = yield call(searchProductService, payload);
-  const productResult = searchResult.data
-    ? searchResult.data.products.items
-    : [];
+  const offlineMode = yield getOfflineMode();
+  const searchResult = yield call(searchProductService, {searchValue: payload, offlineMode});
+  const productResult = searchResult.length > 0 ? searchResult : [];
 
   // If have no product result => update showSearchEmptyResult = 1
   if (productResult.length === 0) {
@@ -383,6 +394,9 @@ function* getSearchCustomer(payload) {
 
   // Stop search loading
   yield put({ type: types.UPDATE_IS_LOADING_SEARCH_CUSTOMER, payload: false });
+
+  // Sync customers
+  yield call(customerSync, searchResult.items);
 }
 
 /**
@@ -484,6 +498,16 @@ function* getPostConfigGeneralConfig() {
 
   // Stop loading
   yield put({ type: types.UPDATE_IS_LOADING_SYSTEM_CONFIG, payload: false });
+
+  // Get offline mode
+  const offlineMode = yield getOfflineMode();
+  if(Number(offlineMode) === 1) {
+    // Sync categories product
+    yield call(categoriesSync, allCategories);
+
+    // Sync all products
+    yield call(syncAllProducts, allCategories);
+  }
 }
 
 function* getCustomReceipt() {
@@ -492,13 +516,21 @@ function* getCustomReceipt() {
   yield put({ type: types.RECEIVED_CUSTOM_RECEIPT, payload: result.data });
 }
 
+/**
+ * Get product by category
+ * @param payload
+ * @returns void
+ */
 function* getProductByCategory(payload) {
   // Start loading
   yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: true });
 
   const categoryId = payload.payload;
-  const productByCategory = yield call(getProductByCategoryService, categoryId);
-  const productResult = productByCategory.data.products.items;
+
+  const offlineMode = yield getOfflineMode();
+
+  const productByCategory = yield call(getProductByCategoryService, { categoryId, offlineMode });
+  const productResult = productByCategory;
   yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productResult });
 
   // Stop loading
@@ -507,13 +539,14 @@ function* getProductByCategory(payload) {
 
 function* getOrderHistory() {
   yield put({ type: types.TURN_ON_LOADING_ORDER_HISTORY });
-  const dataOrderHisotry = yield call(getOrderHistoryService);
+  const dataOrderHistory = yield call(getOrderHistoryService);
   yield put({
     type: types.RECEIVED_ORDER_HISTORY_ACTION,
-    payload: dataOrderHisotry
+    payload: dataOrderHistory
   });
   yield put({ type: types.TURN_OFF_LOADING_ORDER_HISTORY });
 }
+
 
 function* signUpAction(payload) {
   console.log(payload);
@@ -528,14 +561,15 @@ function* signUpAction(payload) {
   }
   yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: false });
 }
+
 /**
  * Default root saga
  * @returns {Generator<<"FORK", ForkEffectDescriptor<RT>>, *>}
  */
 function* rootSaga() {
+  yield takeEvery(types.GET_DEFAULT_PRODUCT, getDefaultProduct);
   yield takeEvery(types.CASH_CHECKOUT_ACTION, cashCheckout);
   yield takeEvery(types.SEARCH_ACTION, searchProduct);
-  yield takeEvery(types.GET_DEFAULT_PRODUCT, getDefaultProduct);
   yield takeEvery(
     types.CASH_CHECKOUT_PLACE_ORDER_ACTION,
     cashCheckoutPlaceOrder

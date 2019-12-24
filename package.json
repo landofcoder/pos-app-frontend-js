@@ -276,7 +276,8 @@
     "redux-saga": "^1.1.1",
     "redux-thunk": "^2.3.0",
     "relay-runtime": "^7.1.0",
-    "source-map-support": "^0.5.11"
+    "source-map-support": "^0.5.11",
+    "dexie": "^2.0.4"
   },
   "devEngines": {
     "node": ">=7.x",
