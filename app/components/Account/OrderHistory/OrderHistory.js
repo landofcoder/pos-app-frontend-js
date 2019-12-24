@@ -17,16 +17,7 @@ class OrderHistory extends Component<Props> {
   }
 
   render() {
-    const { isLoading, orderHistory } = this.props;
-    if (isLoading) {
-      return (
-        <div className="d-flex justify-content-center">
-          <div className="spinner-border text-secondary" role="status">
-            <span className="sr-only">Loading...</span>
-          </div>
-        </div>
-      );
-    }
+    const { orderHistory, isLoading } = this.props;
     console.log('orderHistoryItems in layout');
     console.log(orderHistory);
     return (
@@ -66,6 +57,13 @@ class OrderHistory extends Component<Props> {
             })}
           </tbody>
         </table>
+        {isLoading ? (
+          <div className="d-flex justify-content-center mt-5 mb-5">
+            <div className="spinner-border text-secondary" role="status">
+              <span className="sr-only">Loading...</span>
+            </div>
+          </div>
+        ) : null}
       </>
     );
   }

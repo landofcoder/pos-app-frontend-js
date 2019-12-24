@@ -70,7 +70,7 @@ export default class Account extends Component<Props> {
                   </a>
                 </div>
               </div>
-              <div className="col-9 mt-4">
+              <div className={`col-9 mt-4 ${Styles.wrapFullHeightList}`}>
                 {orderHistorySelect ? <OrderHistory /> : null}
                 {cashierSelect ? <CashierInfo /> : null}
               </div>

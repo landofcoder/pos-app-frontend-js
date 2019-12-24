@@ -510,8 +510,7 @@ function* getOrderHistory() {
   yield put({ type: types.TURN_ON_LOADING_ORDER_HISTORY });
   const dataOrderHisotry = yield call(getOrderHistoryService);
   //  cause dataOrderHistory A object is not index
-  let listIndexOrder = [];
-  let listOrderHistoryDetails = [];
+  const listIndexOrder = [];
   dataOrderHisotry.items.map(item => {
     if (listIndexOrder.indexOf(item.sales_order_id) === -1) {
       listIndexOrder.push(item.sales_order_id);
@@ -519,9 +518,12 @@ function* getOrderHistory() {
     return item;
   });
 
-  for (var i = 0; i < listIndexOrder.length; i++) {
-    let data = yield call(getOrderHistoryServiceDetails, listIndexOrder[i]);
-    listOrderHistoryDetails.push(data);
+  console.log('length ' + listIndexOrder.length);
+  for (let i = 0; i < listIndexOrder.length; i++) {
+    const data = yield call(getOrderHistoryServiceDetails, listIndexOrder[i]);
+    console.log('data :');
+    console.log(data);
+    yield put({ type: types.PUSH_LIST_PRODUCT_ORDER_HISTORY, payload: data });
   }
 
   // listIndexOrder.map(index => {
@@ -529,10 +531,10 @@ function* getOrderHistory() {
   //   listIndexOrder.push(data);
   //   return index;
   // });
-  yield put({
-    type: types.RECEIVED_ORDER_HISTORY_ACTION,
-    payload: listOrderHistoryDetails
-  });
+  // yield put({
+  //   type: types.RECEIVED_ORDER_HISTORY_ACTION,
+  //   payload: listOrderHistoryDetails
+  // });
   yield put({ type: types.TURN_OFF_LOADING_ORDER_HISTORY });
 }
 

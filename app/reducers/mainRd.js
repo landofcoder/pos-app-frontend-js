@@ -292,7 +292,7 @@ const mainRd = (state = initialState, action) =>
         draft.isLoadingOrderHistory = false;
         break;
       case types.GET_ORDER_HISTORY_ACTION:
-        console.log("get order history action in reducer");
+        console.log('get order history action in reducer');
         break;
       case types.RECEIVED_ORDER_HISTORY_ACTION:
         draft.orderHistory = action.payload;
@@ -311,6 +311,11 @@ const mainRd = (state = initialState, action) =>
         break;
       case types.MESSAGE_SIGN_UP_CUSTOMER:
         draft.messageSignUpCustomer = action.payload;
+        break;
+      case types.PUSH_LIST_PRODUCT_ORDER_HISTORY:
+        console.log('reducer');
+        console.log(action.payload);
+        draft.orderHistory.push(action.payload);
         break;
       default:
         break;
