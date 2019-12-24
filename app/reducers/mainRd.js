@@ -294,7 +294,7 @@ const mainRd = (state = initialState, action) =>
         draft.isLoadingOrderHistory = false;
         break;
       case types.GET_ORDER_HISTORY_ACTION:
-        console.log('get order history action in reducer');
+        // console.log('get order history action in reducer');
         break;
       case types.RECEIVED_ORDER_HISTORY_ACTION:
         draft.orderHistory = action.payload;

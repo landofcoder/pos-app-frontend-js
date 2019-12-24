@@ -542,17 +542,17 @@ function* getOrderHistory() {
   yield put({ type: types.TURN_ON_LOADING_ORDER_HISTORY });
   const dataOrderHisotry = yield call(getOrderHistoryService);
   //  cause dataOrderHistory A object is not index
-  console.log("data order history");
-  console.log(dataOrderHisotry);
+  // console.log("data order history");
+  // console.log(dataOrderHisotry);
   const listIndexOrder = yield select(orderHistory);
-  console.log("list Index Order");
-  console.log(listIndexOrder);
+  // console.log("list Index Order");
+  // console.log(listIndexOrder);
   let listIndexOrderCheck = [];
   dataOrderHisotry.items.map(item => {
     // if (listIndexOrder.indexOf(item.sales_order_id) === -1  && listIndexOrderCheck.indexOf(item.sales_order_id) === -1) {
     //   listIndexOrderCheck.push(item.sales_order_id);
     // }
-    console.log(item);
+    // console.log(item);
     let checkExist = false;
     listIndexOrder.map(item2 => {
       if(item2.sales_order_id === item.sales_order_id){
@@ -560,7 +560,7 @@ function* getOrderHistory() {
       }
       return item2;
     });
-    console.log(checkExist);
+    // console.log(checkExist);
 
     if(!checkExist && !(listIndexOrderCheck.indexOf(item.sales_order_id) !== -1)){
       listIndexOrderCheck.push(item.sales_order_id);
@@ -568,11 +568,11 @@ function* getOrderHistory() {
     return item;
   });
 
-  console.log('length ' + listIndexOrderCheck.length);
+  // console.log('length ' + listIndexOrderCheck.length);
   for (let i = 0; i < listIndexOrderCheck.length; i++) {
     const data = yield call(getOrderHistoryServiceDetails, listIndexOrderCheck[i]);
-    console.log('data :');
-    console.log(data);
+    // console.log('data :');
+    // console.log(data);
     const dataId = {
       sales_order_id: listIndexOrderCheck[i],data
     }

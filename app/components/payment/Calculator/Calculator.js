@@ -28,11 +28,11 @@ class Calculator extends Component {
   calculate = () => {
     try {
       const { solveValue } = this.state;
-      console.log(solveValue);
+      // console.log(solveValue);
       const input = eval(solveValue);
       this.setState({ solveValue: input });
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       this.setState({ solveValue: 'Error' });
     }
   };
