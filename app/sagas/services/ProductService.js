@@ -5,6 +5,7 @@ import {
   syncProducts,
   counterProduct
 } from '../../reducers/db/products';
+import { getCategories } from '../../reducers/db/categories';
 
 const graphqlPath = `${baseUrl}graphql`;
 
@@ -478,18 +479,20 @@ async function getProductsByCategory(categoryId, currentPage = 1) {
  */
 export function syncAllProducts(listCategories) {
   const childCategories = listCategories.children_data;
+  let existsChildInList = false;
 
   if (childCategories.length > 0) {
     childCategories.forEach(async item => {
       // Show counter product
       const productQty = await counterProduct();
-      console.info('product qty:', productQty);
+      console.info('qty:', productQty);
 
       // Call api to get large products
-      await syncAllProductsByCategory(item.id);
+      await syncAllProductsByCategory(item.id, item);
 
       if (item.children_data.length > 0) {
-        syncAllProducts(item);
+        existsChildInList = true;
+        await syncAllProducts(item);
       }
     });
   }
@@ -498,8 +501,18 @@ export function syncAllProducts(listCategories) {
 /**
  * Get product with paging by category
  * @param categoryId
+ * @param category
  */
-async function syncAllProductsByCategory(categoryId) {
+async function syncAllProductsByCategory(categoryId, category = null) {
+  // Let all parents categories of this category
+  const defaultCategory = await getCategories();
+
+  console.log('dd0:', defaultCategory);
+
+  const allParentIds = await findAllParentCategories(defaultCategory[0].children_data, category);
+
+  console.log('item category:', category);
+
   const currentPage = 1;
   // Get products as first page
   const productsResult = await getProductsByCategory(categoryId, currentPage);
@@ -517,6 +530,33 @@ async function syncAllProductsByCategory(categoryId) {
       // Sync products
       const productsResult = await getProductsByCategory(categoryId, i);
       syncProducts(productsResult.items);
+    }
+  }
+}
+
+// Find parents
+async function findAllParentCategories(defaultCategory, category, parentIds = []) {
+  // Get first parent
+  const parentId = category.parent_id;
+  const childrenCategories = category.children_data;
+
+  console.log('prev parents:', parentIds);
+  console.log('default category:', defaultCategory);
+
+  if(defaultCategory.length > 0) {
+    let foundCategory = null;
+    defaultCategory.forEach(item => {
+      if (parentId === item.id) {
+        // Found
+        foundCategory = item;
+        parentIds.push(item.id);
+      }
+    });
+
+    // Next, find parent_id of found item
+    if(foundCategory) {
+      // Find all parent of found item
+      await findAllParentCategories(defaultCategory, foundCategory, parentIds);
     }
   }
 }
