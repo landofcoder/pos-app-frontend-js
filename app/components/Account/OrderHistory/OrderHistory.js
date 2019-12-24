@@ -1,16 +1,21 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Styles from './OrderHistory.scss';
-import { getOrderHistory } from '../../../actions/accountAction';
+import { getOrderHistory, getOrderHistoryDetail } from '../../../actions/accountAction';
 
 type Props = {
   getOrderHistory: () => void,
   isLoading: boolean,
-  orderHistory: []
+  orderHistory: [],
+  getOrderHistoryDetail: (sales_order_id) => void,
 };
 class OrderHistory extends Component<Props> {
   props: Props;
 
+  getOrderHistoryDetail = (sales_order_id) => {
+    const { getOrderHistoryDetail } = this.props;
+    getOrderHistoryDetail(sales_order_id);
+  }
   componentDidMount(): void {
     const { getOrderHistory } = this.props;
     getOrderHistory();
@@ -35,27 +40,27 @@ class OrderHistory extends Component<Props> {
           <tbody>
             {orderHistory.map((item, index) => {
               return (
-                <>
-                  <tr>
-                    <th scope="row">{index + 1}</th>
-                    <td>{item.data.increment_id}</td>
-                    <td>
-                      {item.data.items.map(product => (
-                        <>
-                          <p className="mb-0">{product.name}</p>
-                          <p className={`mb-0 ${Styles.shapeText}`}>
-                            1 Unit(s) at ${product.price_incl_tax}/Unit
-                          </p>
-                          <p className={Styles.shapeText}>
-                            ${product.row_total_incl_tax}
-                          </p>
-                        </>
-                      ))}
-                    </td>
-                    <td>${item.data.subtotal_incl_tax}</td>
-                    <td>{item.data.status}</td>
-                  </tr>
-                </>
+                <tr key={index} className={Styles.tableRowList} onClick={() => this.getOrderHistoryDetail(item.sales_order_id)}>
+                  <th scope="row">{index + 1}</th>
+                  <td>{item.increment_id}</td>
+                  <td>
+                    {item.items === undefined
+                      ? null
+                      : item.items.map(product => (
+                          <>
+                            <p className="mb-0">{product.name}</p>
+                            <p className={`mb-0 ${Styles.shapeText}`}>
+                              1 Unit(s) at ${product.price_incl_tax}/Unit
+                            </p>
+                            <p className={Styles.shapeText}>
+                              ${product.row_total_incl_tax}
+                            </p>
+                          </>
+                        ))}
+                  </td>
+                  <td>${item.subtotal_incl_tax}</td>
+                  <td>{item.status}</td>
+                </tr>
               );
             })}
           </tbody>
@@ -79,7 +84,8 @@ function mapStateToProps(state) {
 }
 function mapDispatchToProps(dispatch) {
   return {
-    getOrderHistory: () => dispatch(getOrderHistory())
+    getOrderHistory: () => dispatch(getOrderHistory()),
+    getOrderHistoryDetail: (index) => dispatch(getOrderHistoryDetail(index)),
   };
 }
 export default connect(mapStateToProps, mapDispatchToProps)(OrderHistory);

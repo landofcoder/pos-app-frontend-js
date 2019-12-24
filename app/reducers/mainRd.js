@@ -59,6 +59,7 @@ const initialState = {
   },
   detailOutlet: {},
   orderHistory: [],
+  orderHistoryDetail: {},
   isOpenFindCustomer: false,
   isOpenSignUpCustomer: false,
   isLoadingSearchCustomer: false,
@@ -299,6 +300,8 @@ const mainRd = (state = initialState, action) =>
       case types.RECEIVED_ORDER_HISTORY_ACTION:
         draft.orderHistory = action.payload;
         break;
+      case types.RECEIVED_ORDER_HISTORY_DETAIL_ACTION:
+        draft.orderHistoryDetail = action.payload;
       case types.RECEIVED_CUSTOM_RECEIPT:
         draft.customReceipt = action.payload;
         break;

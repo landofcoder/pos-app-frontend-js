@@ -182,7 +182,10 @@ function* getDefaultProduct() {
   const searchValue = '';
 
   const offlineMode = yield getOfflineMode();
-  const response = yield call(searchProductService, { searchValue, offlineMode });
+  const response = yield call(searchProductService, {
+    searchValue,
+    offlineMode
+  });
 
   const productResult = response.length > 0 ? response : [];
   yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productResult });
@@ -252,7 +255,10 @@ function* searchProduct(payload) {
   yield put({ type: types.UPDATE_IS_LOADING_SEARCH_HANDLE, payload: true });
 
   const offlineMode = yield getOfflineMode();
-  const searchResult = yield call(searchProductService, {searchValue: payload, offlineMode});
+  const searchResult = yield call(searchProductService, {
+    searchValue: payload,
+    offlineMode
+  });
   const productResult = searchResult.length > 0 ? searchResult : [];
 
   // If have no product result => update showSearchEmptyResult = 1
@@ -502,7 +508,7 @@ function* getPostConfigGeneralConfig() {
 
   // Get offline mode
   const offlineMode = yield getOfflineMode();
-  if(Number(offlineMode) === 1) {
+  if (Number(offlineMode) === 1) {
     // Sync categories product
     yield call(categoriesSync, allCategories);
 
@@ -530,67 +536,33 @@ function* getProductByCategory(payload) {
 
   const offlineMode = yield getOfflineMode();
 
-  const productByCategory = yield call(getProductByCategoryService, { categoryId, offlineMode });
+  const productByCategory = yield call(getProductByCategoryService, {
+    categoryId,
+    offlineMode
+  });
   const productResult = productByCategory;
   yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productResult });
 
   // Stop loading
   yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: false });
 }
-
+function* getOrderHistoryDetail(payload) {
+  console.log("saga");
+  console.log(payload);
+  yield put({ type: types.TURN_ON_LOADING_ORDER_HISTORY_DETAIL });
+  const data = yield call(getOrderHistoryServiceDetails, payload.payload);
+  yield put({ type: types.RECEIVED_ORDER_HISTORY_DETAIL_ACTION, payload: data });
+  yield put({ type: types.TURN_OFF_LOADING_ORDER_HISTORY_DETAIL });
+}
 function* getOrderHistory() {
   yield put({ type: types.TURN_ON_LOADING_ORDER_HISTORY });
-  const dataOrderHisotry = yield call(getOrderHistoryService);
-  //  cause dataOrderHistory A object is not index
-  // console.log("data order history");
-  // console.log(dataOrderHisotry);
-  const listIndexOrder = yield select(orderHistory);
-  // console.log("list Index Order");
-  // console.log(listIndexOrder);
-  let listIndexOrderCheck = [];
-  dataOrderHisotry.items.map(item => {
-    // if (listIndexOrder.indexOf(item.sales_order_id) === -1  && listIndexOrderCheck.indexOf(item.sales_order_id) === -1) {
-    //   listIndexOrderCheck.push(item.sales_order_id);
-    // }
-    // console.log(item);
-    let checkExist = false;
-    listIndexOrder.map(item2 => {
-      if(item2.sales_order_id === item.sales_order_id){
-        checkExist = true;
-      }
-      return item2;
-    });
-    // console.log(checkExist);
+  const data = yield call(getOrderHistoryService);
+  console.log("data :");
+  console.log(data);
 
-    if(!checkExist && !(listIndexOrderCheck.indexOf(item.sales_order_id) !== -1)){
-      listIndexOrderCheck.push(item.sales_order_id);
-    }
-    return item;
-  });
-
-  // console.log('length ' + listIndexOrderCheck.length);
-  for (let i = 0; i < listIndexOrderCheck.length; i++) {
-    const data = yield call(getOrderHistoryServiceDetails, listIndexOrderCheck[i]);
-    // console.log('data :');
-    // console.log(data);
-    const dataId = {
-      sales_order_id: listIndexOrderCheck[i],data
-    }
-    yield put({ type: types.PUSH_LIST_PRODUCT_ORDER_HISTORY, payload: dataId });
-  }
-
-  // listIndexOrder.map(index => {
-  //   const data = yield call(getOrderHistoryServiceDetails,index);
-  //   listIndexOrder.push(data);
-  //   return index;
-  // });
-  // yield put({
-  //   type: types.RECEIVED_ORDER_HISTORY_ACTION,
-  //   payload: listOrderHistoryDetails
-  // });
+  yield put({ type: types.RECEIVED_ORDER_HISTORY_ACTION, payload: data.items });
   yield put({ type: types.TURN_OFF_LOADING_ORDER_HISTORY });
 }
-
 
 function* signUpAction(payload) {
   console.log(payload);
@@ -635,6 +607,7 @@ function* rootSaga() {
   yield takeEvery(types.GET_ORDER_HISTORY_ACTION, getOrderHistory);
   yield takeEvery(types.GET_PRODUCT_BY_CATEGORY, getProductByCategory);
   yield takeEvery(types.SIGN_UP_CUSTOMER, signUpAction);
+  yield takeEvery(types.GET_ORDER_HISTORY_DETAIL_ACTION, getOrderHistoryDetail);
 }
 
 export default rootSaga;
