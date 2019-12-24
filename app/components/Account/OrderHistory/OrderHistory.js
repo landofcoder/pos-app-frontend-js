@@ -38,19 +38,22 @@ class OrderHistory extends Component<Props> {
                 <>
                   <tr>
                     <th scope="row">{index + 1}</th>
-                    <td>{item.increment_id}</td>
+                    <td>{item.data.increment_id}</td>
                     <td>
-                      {item.items.map(product => (
+                      {item.data.items.map(product => (
                         <>
                           <p className="mb-0">{product.name}</p>
+                          <p className={`mb-0 ${Styles.shapeText}`}>
+                            1 Unit(s) at ${product.price_incl_tax}/Unit
+                          </p>
                           <p className={Styles.shapeText}>
-                            {product.row_total_incl_tax}
+                            ${product.row_total_incl_tax}
                           </p>
                         </>
                       ))}
                     </td>
-                    <td>{item.subtotal_incl_tax}</td>
-                    <td>{item.status}</td>
+                    <td>${item.data.subtotal_incl_tax}</td>
+                    <td>{item.data.status}</td>
                   </tr>
                 </>
               );

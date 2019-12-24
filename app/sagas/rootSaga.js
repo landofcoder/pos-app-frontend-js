@@ -52,7 +52,7 @@ const customer = state => state.mainRd.cartCurrent.customer;
 const shopInfoConfig = state => state.mainRd.shopInfoConfig;
 const posSystemConfig = state => state.mainRd.posSystemConfig;
 const cashierInfo = state => state.authenRd.cashierInfo;
-
+const orderHistory = state => state.mainRd.orderHistory;
 /**
  * Create quote function
  */
@@ -510,20 +510,41 @@ function* getOrderHistory() {
   yield put({ type: types.TURN_ON_LOADING_ORDER_HISTORY });
   const dataOrderHisotry = yield call(getOrderHistoryService);
   //  cause dataOrderHistory A object is not index
-  const listIndexOrder = [];
+  console.log("data order history");
+  console.log(dataOrderHisotry);
+  const listIndexOrder = yield select(orderHistory);
+  console.log("list Index Order");
+  console.log(listIndexOrder);
+  let listIndexOrderCheck = [];
   dataOrderHisotry.items.map(item => {
-    if (listIndexOrder.indexOf(item.sales_order_id) === -1) {
-      listIndexOrder.push(item.sales_order_id);
+    // if (listIndexOrder.indexOf(item.sales_order_id) === -1  && listIndexOrderCheck.indexOf(item.sales_order_id) === -1) {
+    //   listIndexOrderCheck.push(item.sales_order_id);
+    // }
+    console.log(item);
+    let checkExist = false;
+    listIndexOrder.map(item2 => {
+      if(item2.sales_order_id === item.sales_order_id){
+        checkExist = true;
+      }
+      return item2;
+    });
+    console.log(checkExist);
+
+    if(!checkExist && !(listIndexOrderCheck.indexOf(item.sales_order_id) !== -1)){
+      listIndexOrderCheck.push(item.sales_order_id);
     }
     return item;
   });
 
-  console.log('length ' + listIndexOrder.length);
-  for (let i = 0; i < listIndexOrder.length; i++) {
-    const data = yield call(getOrderHistoryServiceDetails, listIndexOrder[i]);
+  console.log('length ' + listIndexOrderCheck.length);
+  for (let i = 0; i < listIndexOrderCheck.length; i++) {
+    const data = yield call(getOrderHistoryServiceDetails, listIndexOrderCheck[i]);
     console.log('data :');
     console.log(data);
-    yield put({ type: types.PUSH_LIST_PRODUCT_ORDER_HISTORY, payload: data });
+    const dataId = {
+      sales_order_id: listIndexOrderCheck[i],data
+    }
+    yield put({ type: types.PUSH_LIST_PRODUCT_ORDER_HISTORY, payload: dataId });
   }
 
   // listIndexOrder.map(index => {
