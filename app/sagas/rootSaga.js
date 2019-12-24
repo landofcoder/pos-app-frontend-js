@@ -14,7 +14,8 @@ import {
   getDetailProductConfigurableService,
   getDetailProductGroupedService,
   searchProductService,
-  getProductByCategoryService
+  getProductByCategoryService,
+  syncAllProducts
 } from './services/ProductService';
 import {
   getCustomerCartTokenService,
@@ -41,7 +42,7 @@ import {
 } from './common/orderSaga';
 import { calcPrice } from '../common/productPrice';
 import { BUNDLE } from '../constants/product-types';
-import { syncProduct } from '../reducers/db/products';
+import { syncProducts } from '../reducers/db/products';
 import categoriesSync from '../reducers/db/category_sync';
 import customerSync from '../reducers/db/customers_sync';
 
@@ -182,16 +183,11 @@ function* getDefaultProduct() {
   const offlineMode = yield getOfflineMode();
   const response = yield call(searchProductService, { searchValue, offlineMode });
 
-  console.log('res from default product:', response);
-
   const productResult = response.length > 0 ? response : [];
   yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productResult });
 
   // Stop loading
   yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: false });
-
-  // Sync product
-  yield call(syncProduct, productResult);
 }
 
 /**
@@ -278,9 +274,6 @@ function* searchProduct(payload) {
 
   // Stop loading
   yield put({ type: types.UPDATE_IS_LOADING_SEARCH_HANDLE, payload: false });
-
-  // Sync products
-  yield call(syncProduct, productResult);
 }
 
 /**
@@ -506,8 +499,15 @@ function* getPostConfigGeneralConfig() {
   // Stop loading
   yield put({ type: types.UPDATE_IS_LOADING_SYSTEM_CONFIG, payload: false });
 
-  // Sync categories product
-  yield call(categoriesSync, allCategories);
+  // Get offline mode
+  const offlineMode = yield getOfflineMode();
+  if(Number(offlineMode) === 1) {
+    // Sync categories product
+    yield call(categoriesSync, allCategories);
+
+    // Sync all products
+    yield call(syncAllProducts, allCategories);
+  }
 }
 
 function* getCustomReceipt() {
@@ -535,9 +535,6 @@ function* getProductByCategory(payload) {
 
   // Stop loading
   yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: false });
-
-  // Sync product
-  yield call(syncProduct, productResult);
 }
 
 function* getOrderHistory() {

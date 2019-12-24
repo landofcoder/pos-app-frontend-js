@@ -3,7 +3,8 @@ import db from './db';
 
 const productTable = 'products';
 
-export function syncProduct(productList) {
+export function syncProducts(productList) {
+  console.log('product list:', productList);
   if (productList.length > 0) {
     // Insert to database
     const productTbl = db.table(productTable);
@@ -22,6 +23,11 @@ export function syncProduct(productList) {
       }
     });
   }
+}
+
+export async function counterProduct() {
+  // Count products
+  return await db.table(productTable).count();
 }
 
 async function makeCategoriesArraySimple(product) {
