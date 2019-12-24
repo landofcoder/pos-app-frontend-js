@@ -322,6 +322,11 @@ const mainRd = (state = initialState, action) =>
         console.log(action.payload);
         draft.orderHistory.push(action.payload);
         break;
+      case types.LOGOUT_POS_ACTION:
+        draft.cartCurrent.data = [];
+        draft.cartHoldList = [];
+        draft.orderHistory = [];
+        draft.customerSearchResult = [];
       default:
         break;
     }

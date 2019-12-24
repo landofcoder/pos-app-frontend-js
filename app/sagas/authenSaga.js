@@ -1,6 +1,7 @@
 // @flow
 import { takeEvery, takeLatest, call, put, select } from 'redux-saga/effects';
 import * as types from '../constants/authen';
+import * as typeRoots from '../constants/root.json';
 import { AuthenService, getInfoCashierService } from './services/AuthenService';
 import { RECEIVED_DETAIL_OUTLET } from '../constants/root';
 import { getDetailOutletService } from './services/CommonService';
@@ -14,7 +15,10 @@ function* loginAction(payload) {
     const data = yield call(AuthenService, payload);
     if (data.ok === true) {
       // Set to local storage
-      localStorage.setItem(types.POS_LOGIN_STORAGE, JSON.stringify({info: payload.payload, token: payload.data}));
+      localStorage.setItem(
+        types.POS_LOGIN_STORAGE,
+        JSON.stringify({ info: payload.payload, token: payload.data })
+      );
       yield put({ type: types.RECEIVED_TOKEN, payload: data.data });
       yield put({ type: types.SUCCESS_LOGIN });
     } else {
@@ -27,6 +31,10 @@ function* loginAction(payload) {
   // stop
 }
 
+function* logoutAction() {
+  yield put({ type: types.LOGOUT_AUTHEN_ACTION });
+  yield put({ type: typeRoots.LOGOUT_POS_ACTION})
+}
 function* takeLatestToken() {
   const adminTokenResult = yield select(adminToken);
 
@@ -40,7 +48,7 @@ function* takeLatestToken() {
 }
 function* authenSaga() {
   yield takeEvery(types.LOGIN_ACTION, loginAction);
-  //yield takeEvery(types.LOGOUT_ACTION, logoutAction);
+  yield takeEvery(types.LOGOUT_ACTION, logoutAction);
   yield takeLatest(types.RECEIVED_TOKEN, takeLatestToken);
 }
 
