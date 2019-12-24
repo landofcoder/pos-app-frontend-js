@@ -50,7 +50,8 @@ type Props = {
   setToken: (payload: string) => void,
   isLoadingSearchHandle: boolean,
   isShowHaveNoSearchResultFound: boolean,
-  isOpenSignUpCustomer: boolean
+  isOpenSignUpCustomer: boolean,
+  internetConnected: boolean
 };
 
 export default class Pos extends Component<Props> {
@@ -121,26 +122,23 @@ export default class Pos extends Component<Props> {
     }
 
     switch (item.type_id) {
-      case CONFIGURABLE:
-        {
+      case CONFIGURABLE: {
           const { sku } = item;
-          getDetailProductConfigurable(sku);
-        }
+        getDetailProductConfigurable(sku);
+      }
         break;
       case SIMPLE:
         addToCart(item);
         break;
-      case BUNDLE:
-        {
+      case BUNDLE: {
           const { sku } = item;
-          getDetailProductBundle(sku);
-        }
+        getDetailProductBundle(sku);
+      }
         break;
-      case GROUPED:
-        {
+      case GROUPED: {
           const { sku } = item;
-          getDetailProductGrouped(sku);
-        }
+        getDetailProductGrouped(sku);
+      }
         break;
       default:
         addToCart(item);
@@ -156,11 +154,11 @@ export default class Pos extends Component<Props> {
     const { typeId } = this.state;
     switch (typeId) {
       case CONFIGURABLE:
-        return <Configuration />;
+        return <Configuration/>;
       case BUNDLE:
-        return <Bundle />;
+        return <Bundle/>;
       case GROUPED:
-        return <Grouped />;
+        return <Grouped/>;
       default:
         break;
     }
@@ -190,7 +188,7 @@ export default class Pos extends Component<Props> {
                 >
                   <div className={Styles.wrapProductImage}>
                     <div className={Styles.inside}>
-                      <img alt="name" src={this.getFirstMedia(item)} />
+                      <img alt="name" src={this.getFirstMedia(item)}/>
                     </div>
                   </div>
                   <div className={Styles.wrapProductInfo}>
@@ -259,8 +257,9 @@ export default class Pos extends Component<Props> {
       emptyCart,
       isLoadingSearchHandle,
       isShowHaveNoSearchResultFound,
+      setToken,
+      internetConnected,
       isOpenSignUpCustomer,
-      setToken
     } = this.props;
     const { redirectToAccount } = this.state;
     // Check login
@@ -270,12 +269,12 @@ export default class Pos extends Component<Props> {
         const loginInfo = localStorage.getItem(POS_LOGIN_STORAGE);
         // Login again by username and password
         setToken(localStorage.getItem(POS_LOGIN_STORAGE));
-      } else return <Redirect to={routes.LOGIN} />;
+      } else return <Redirect to={routes.LOGIN}/>;
     }
 
     // Check Redirect To Layout Account
     if (redirectToAccount) {
-      return <Redirect to={routes.ACCOUNT} />;
+      return <Redirect to={routes.ACCOUNT}/>;
     }
     const classWrapProductPanel = `pr-3 ${Styles.wrapProductPanel} row`;
     const {
@@ -313,7 +312,7 @@ export default class Pos extends Component<Props> {
             style={{ display: isShowCashPaymentModel ? 'block' : 'none' }}
           >
             <div className={ModalStyle.modalContent}>
-              {isShowCashPaymentModel ? <CashPanel /> : <></>}
+              {isShowCashPaymentModel ? <CashPanel/> : <></>}
             </div>
           </div>
           {/* RECEIPT MODAL */}
@@ -323,14 +322,14 @@ export default class Pos extends Component<Props> {
             style={{ display: isOpenReceiptModal ? 'block' : 'none' }}
           >
             <div className={ModalStyle.modalContent} style={{ width: '450px' }}>
-              <Receipt />
+              <Receipt/>
             </div>
           </div>
           <div className="row" id={Styles.wrapPostContainerId}>
             <div className="col-md-9">
               <div className={classWrapProductPanel}>
                 <div className="col-md-2">
-                  <Categories />
+                  <Categories/>
                 </div>
                 <div className="col-md-10 mb-0 pr-0">
                   <div className="input-group flex-nowrap">
@@ -393,7 +392,7 @@ export default class Pos extends Component<Props> {
             <div className="col-md-3">
               <div className={CommonStyle.wrapLevel1}>
                 <div className={CommonStyle.wrapCartPanelPosition}>
-                  <ListCart />
+                  <ListCart/>
                   <div className={CommonStyle.subTotalContainer}>
                     <div className={CommonStyle.wrapSubTotal}>
                       {this.renderDiscountAndTax()}
@@ -466,7 +465,7 @@ export default class Pos extends Component<Props> {
               </button>
             </div>
             <div className="col-md-2 pr-1 pl-0">
-              <CartCustomer />
+              <CartCustomer/>
               {isOpenSignUpCustomer ? <SignUpCustomer /> : null}
             </div>
             <div className="col-md-3 pl-0 pr-0">
@@ -486,6 +485,20 @@ export default class Pos extends Component<Props> {
               >
                 Card
               </button>
+            </div>
+          </div>
+          <div className={Styles.wrapFooterLine}>
+            <div className={Styles.wrapLeft}>
+              &nbsp;
+            </div>
+            <div className={Styles.wrapRight}>
+              <div className={Styles.wrapStatusOnline}>
+
+              </div>
+              <div className={Styles.wrapClock}>
+                <span> {internetConnected ? <span className='text-success text-bold font-weight-bolder'>Online</span> :
+                  <span className='text-danger text-bold font-weight-bolder'>Offline</span>}</span>
+              </div>
             </div>
           </div>
         </div>

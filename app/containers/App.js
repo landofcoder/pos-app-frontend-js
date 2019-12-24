@@ -1,23 +1,40 @@
 // @flow
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { getPostGeneralConfig, getCustomReceipt } from '../actions/homeAction';
+import { getPostGeneralConfig, getCustomReceipt, updateIsInternetConnected } from '../actions/homeAction';
 
 type Props = {
   children: React.Node,
   getPostGeneralConfig: () => void,
   getCustomReceipt: () => void,
-  isLoadingSystemConfig: boolean
+  isLoadingSystemConfig: boolean,
+  updateIsInternetConnected: () => void
 };
 
 class App extends React.Component<Props> {
   props: Props;
 
   componentDidMount() {
-    const { getPostGeneralConfig, getCustomReceipt } = this.props;
+    const { getPostGeneralConfig, getCustomReceipt, updateIsInternetConnected } = this.props;
     getPostGeneralConfig();
     getCustomReceipt();
+
+    // Listen online and offline mode
+    window.addEventListener('online', this.alertOnlineStatus);
+    window.addEventListener('offline', this.alertOnlineStatus);
+
+    // Get current online mode
+    updateIsInternetConnected(navigator.onLine);
   }
+
+  alertOnlineStatus = (event) => {
+    const { updateIsInternetConnected } = this.props;
+    let isConnected = false;
+    if (event.type === 'online') {
+      isConnected = true;
+    }
+    updateIsInternetConnected(isConnected);
+  };
 
   render() {
     const { children, isLoadingSystemConfig } = this.props;
@@ -50,7 +67,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     getPostGeneralConfig: () => dispatch(getPostGeneralConfig()),
-    getCustomReceipt: () => dispatch(getCustomReceipt())
+    getCustomReceipt: () => dispatch(getCustomReceipt()),
+    updateIsInternetConnected: payload => dispatch(updateIsInternetConnected(payload))
   };
 }
 
