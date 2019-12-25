@@ -1,8 +1,14 @@
 import db from './db';
+import _ from 'lodash';
 
 const table = 'products';
 
-export function syncProducts(productList) {
+/**
+ * Sync products to local database
+ * @param productList
+ * @param allParentIds
+ */
+export function syncProducts(productList, allParentIds = []) {
   if (productList.length > 0) {
     // Insert to database
     const productTbl = db.table(table);
@@ -10,6 +16,12 @@ export function syncProducts(productList) {
     productList.forEach(async item => {
       // Convert categories to categoryIds first
       const itemRemake = await makeCategoriesArraySimple(item);
+
+      // Merged all parentIds to item
+      const listDifference = _.difference(allParentIds, itemRemake.categoryIds);
+      // Push parentIds with regular categoryIds
+      itemRemake.categoryIds = _.concat(itemRemake.categoryIds, listDifference);
+
       const product = await productTbl.get(itemRemake.id);
       // Check exists
       if (product) {

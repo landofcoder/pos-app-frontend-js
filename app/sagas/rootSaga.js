@@ -42,7 +42,7 @@ import {
 } from './common/orderSaga';
 import { calcPrice } from '../common/productPrice';
 import { BUNDLE } from '../constants/product-types';
-import { syncCategories } from '../reducers/db/categories';
+import { getCategories, syncCategories } from '../reducers/db/categories';
 import customerSync from '../reducers/db/customers_sync';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;

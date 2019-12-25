@@ -504,23 +504,19 @@ export function syncAllProducts(listCategories) {
  * @param category
  */
 async function syncAllProductsByCategory(categoryId, category = null) {
-  // Let all parents categories of this category
-  const defaultCategory = await getCategories();
-
-  console.log('dd0:', defaultCategory);
-
-  const allParentIds = await findAllParentCategories(defaultCategory[0].children_data, category);
-
-  console.log('item category:', category);
-
   const currentPage = 1;
   // Get products as first page
   const productsResult = await getProductsByCategory(categoryId, currentPage);
 
+  // Let all parents categories of this category
+  const defaultCategory = await getCategories();
+  const allParentIds = await findAllParentCategories(defaultCategory[0].children_data, categoryId);
+
   // Sync products
   const totalCount = productsResult.totalCount;
-  syncProducts(productsResult.items);
+  syncProducts(productsResult.items, allParentIds);
   const page = totalCount / defaultPageSize;
+
   if (page > 1) {
     // Get by next page, rounding increases
     const numberPage = Math.ceil(page);
@@ -529,34 +525,33 @@ async function syncAllProductsByCategory(categoryId, category = null) {
     for (let i = 2; i <= numberPage; i++) {
       // Sync products
       const productsResult = await getProductsByCategory(categoryId, i);
-      syncProducts(productsResult.items);
+      syncProducts(productsResult.items, allParentIds);
     }
   }
 }
 
 // Find parents
-async function findAllParentCategories(defaultCategory, category, parentIds = []) {
-  // Get first parent
-  const parentId = category.parent_id;
-  const childrenCategories = category.children_data;
+export async function findAllParentCategories(defaultCategory, parentId, parentIds = []) {
+  let foundParent = false;
+  for (const item of defaultCategory) {
+    // Đã tìm thấy id cha
+    if(item.id === parentId) {
+      parentIds.push(item.id);
+      foundParent = true;
+      const newParentId = item.parent_id;
+      // Đã tìm thấy parent, sẽ tìm lại từ đầu dựa trên mảng danh mục từ đầu
+      const defaultCategory = await getCategories();
+      await findAllParentCategories(defaultCategory[0].children_data, newParentId, parentIds);
+    }
 
-  console.log('prev parents:', parentIds);
-  console.log('default category:', defaultCategory);
-
-  if(defaultCategory.length > 0) {
-    let foundCategory = null;
-    defaultCategory.forEach(item => {
-      if (parentId === item.id) {
-        // Found
-        foundCategory = item;
-        parentIds.push(item.id);
+    // Nếu không tìm thấy, tiếp tục tìm trong child_data
+    if(foundParent === false) {
+      // Next, find it in children_data
+      if(item.children_data.length > 0) {
+        await findAllParentCategories(item.children_data, parentId, parentIds);
       }
-    });
-
-    // Next, find parent_id of found item
-    if(foundCategory) {
-      // Find all parent of found item
-      await findAllParentCategories(defaultCategory, foundCategory, parentIds);
     }
   }
+
+  return parentIds;
 }
