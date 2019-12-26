@@ -25,6 +25,7 @@ import {
 import { createCustomerCartService } from './services/CustomerCartService';
 import {
   getOrderHistoryService,
+  getOrderHistoryServiceDetails,
   getSystemConfigService,
   getShopInfoService,
   getCustomReceiptService,
@@ -54,7 +55,7 @@ const customer = state => state.mainRd.cartCurrent.customer;
 const shopInfoConfig = state => state.mainRd.shopInfoConfig;
 const posSystemConfig = state => state.mainRd.posSystemConfig;
 const cashierInfo = state => state.authenRd.cashierInfo;
-
+const orderHistory = state => state.mainRd.orderHistory;
 /**
  * Create quote function
  */
@@ -180,7 +181,10 @@ function* getDefaultProduct() {
   const searchValue = '';
 
   const offlineMode = yield getOfflineMode();
-  const response = yield call(searchProductService, { searchValue, offlineMode });
+  const response = yield call(searchProductService, {
+    searchValue,
+    offlineMode
+  });
 
   const productResult = response.length > 0 ? response : [];
   yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productResult });
@@ -250,7 +254,10 @@ function* searchProduct(payload) {
   yield put({ type: types.UPDATE_IS_LOADING_SEARCH_HANDLE, payload: true });
 
   const offlineMode = yield getOfflineMode();
-  const searchResult = yield call(searchProductService, {searchValue: payload, offlineMode});
+  const searchResult = yield call(searchProductService, {
+    searchValue: payload,
+    offlineMode
+  });
   const productResult = searchResult.length > 0 ? searchResult : [];
 
   // If have no product result => update showSearchEmptyResult = 1
@@ -359,7 +366,6 @@ function* onConfigurableSelectOnChange(payload) {
     false
   );
   yield receivedProductOptionValue(productDetailReFormat);
-  // console.log('product detail reformat:', productDetailReFormat);
 }
 
 /**
@@ -500,7 +506,7 @@ function* getPostConfigGeneralConfig() {
 
   // Get offline mode
   const offlineMode = yield getOfflineMode();
-  if(Number(offlineMode) === 1) {
+  if (Number(offlineMode) === 1) {
     // Sync categories product
     yield call(syncCategories, allCategories);
 
@@ -534,17 +540,19 @@ function* getProductByCategory(payload) {
   // Stop loading
   yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: false });
 }
-
+function* getOrderHistoryDetail(payload) {
+  yield put({ type: types.TURN_ON_LOADING_ORDER_HISTORY_DETAIL });
+  const data = yield call(getOrderHistoryServiceDetails, payload.payload);
+  yield put({ type: types.RECEIVED_ORDER_HISTORY_DETAIL_ACTION, payload: data });
+  yield put({ type: types.TURN_OFF_LOADING_ORDER_HISTORY_DETAIL });
+}
 function* getOrderHistory() {
   yield put({ type: types.TURN_ON_LOADING_ORDER_HISTORY });
-  const dataOrderHistory = yield call(getOrderHistoryService);
-  yield put({
-    type: types.RECEIVED_ORDER_HISTORY_ACTION,
-    payload: dataOrderHistory
-  });
+  const data = yield call(getOrderHistoryService);
+
+  yield put({ type: types.RECEIVED_ORDER_HISTORY_ACTION, payload: data.items });
   yield put({ type: types.TURN_OFF_LOADING_ORDER_HISTORY });
 }
-
 
 function* signUpAction(payload) {
   console.log(payload);
@@ -589,6 +597,7 @@ function* rootSaga() {
   yield takeEvery(types.GET_ORDER_HISTORY_ACTION, getOrderHistory);
   yield takeEvery(types.GET_PRODUCT_BY_CATEGORY, getProductByCategory);
   yield takeEvery(types.SIGN_UP_CUSTOMER, signUpAction);
+  yield takeEvery(types.GET_ORDER_HISTORY_DETAIL_ACTION, getOrderHistoryDetail);
 }
 
 export default rootSaga;
