@@ -511,10 +511,6 @@ async function syncAllProductsByCategory(categoryId, category = null) {
   // Let all parents categories of this category
   const defaultCategory = await getCategories();
   const allParentIds = await findAllParentCategories(defaultCategory[0].children_data, categoryId);
-  console.log('category id', categoryId);
-  if(categoryId === 8) {
-    console.log('matched:', allParentIds);
-  }
 
   // Sync products
   const totalCount = productsResult.totalCount;

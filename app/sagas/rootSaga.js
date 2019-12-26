@@ -42,8 +42,8 @@ import {
 } from './common/orderSaga';
 import { calcPrice } from '../common/productPrice';
 import { BUNDLE } from '../constants/product-types';
-import { getCategories, syncCategories } from '../reducers/db/categories';
-import customerSync from '../reducers/db/customers_sync';
+import { syncCategories } from '../reducers/db/categories';
+import { syncCustomers } from '../reducers/db/customers';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
 const cartCurrentToken = state => state.mainRd.cartCurrent.customerToken;
@@ -395,7 +395,7 @@ function* getSearchCustomer(payload) {
   yield put({ type: types.UPDATE_IS_LOADING_SEARCH_CUSTOMER, payload: false });
 
   // Sync customers
-  yield call(customerSync, searchResult.items);
+  yield call(syncCustomers, searchResult.items);
 }
 
 /**
@@ -500,12 +500,16 @@ function* getPostConfigGeneralConfig() {
 
   // Get offline mode
   const offlineMode = yield getOfflineMode();
+
   if(Number(offlineMode) === 1) {
-    // Sync categories product
+    // Sync all categories product
     yield call(syncCategories, allCategories);
 
     // Sync all products
     yield call(syncAllProducts, allCategories);
+
+    // Sync all customers
+
   }
 }
 
