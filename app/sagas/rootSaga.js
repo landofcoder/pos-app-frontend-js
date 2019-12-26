@@ -1,5 +1,6 @@
 // @flow
 import { all, call, put, select, takeEvery } from 'redux-saga/effects';
+import { differenceInMinutes } from 'date-fns';
 import * as types from '../constants/root';
 import {
   addProductToQuote,
@@ -7,7 +8,8 @@ import {
   createGuestCartService,
   createInvoiceService,
   createShipmentService,
-  placeCashOrderService
+  placeCashOrderService,
+  getDiscountForQuoteService
 } from './services/CartService';
 import {
   getDetailProductBundleService,
@@ -30,6 +32,11 @@ import {
   getCustomReceiptService,
   getAllCategoriesService
 } from './services/CommonService';
+import {
+  haveToSyncAllData,
+  createSyncAllDataFlag,
+  updateSyncAllDataFlag
+} from './services/SettingsService';
 
 import {
   handleProductType,
@@ -56,46 +63,57 @@ const posSystemConfig = state => state.mainRd.posSystemConfig;
 const cashierInfo = state => state.authenRd.cashierInfo;
 
 /**
- * Create quote function
+ * Create quote
  */
 function* cashCheckout() {
   // Show cash modal
   yield put({ type: types.UPDATE_SHOW_CASH_MODAL, payload: true });
+
   // Show cash loading pre order
   yield put({ type: types.UPDATE_CASH_LOADING_PREPARING_ORDER, payload: true });
 
-  // Add product item to cart
+  const offlineMode = yield getOfflineMode();
   const cartCurrentResult = yield select(cartCurrent);
-  const posSystemConfigResult = yield select(posSystemConfig);
-  const posSystemConfigGuestCustomer = posSystemConfigResult[3];
-  const defaultShippingMethod = yield getDefaultShippingMethod();
 
-  const {
-    cartId,
-    isGuestCustomer,
-    customerToken
-  } = yield getCustomerCartToken();
+  if (offlineMode === 1) {
+    // Handles for offline mode
+    console.log('cart current result:', cartCurrentResult);
+    const result = yield call(getDiscountForQuoteService);
+    console.log('offline result:', result);
+  } else {
+    // Handles for online mode
+    const posSystemConfigResult = yield select(posSystemConfig);
+    const posSystemConfigGuestCustomer = posSystemConfigResult[3];
+    const defaultShippingMethod = yield getDefaultShippingMethod();
 
-  yield all(
-    cartCurrentResult.map(item =>
-      call(addProductToQuote, cartId, item, {
-        isGuestCustomer,
-        customerToken
-      })
-    )
-  );
+    const {
+      cartId,
+      isGuestCustomer,
+      customerToken
+    } = yield getCustomerCartToken();
 
-  // Add shipping and get detail order
-  const response = yield call(addShippingInformationService, cartId, {
-    isGuestCustomer,
-    customerToken,
-    defaultShippingMethod,
-    posSystemConfigGuestCustomer
-  });
-  yield put({
-    type: types.RECEIVED_ORDER_PREPARING_CHECKOUT,
-    payload: response
-  });
+    yield all(
+      cartCurrentResult.map(item =>
+        call(addProductToQuote, cartId, item, {
+          isGuestCustomer,
+          customerToken
+        })
+      )
+    );
+
+    // Add shipping and get detail order
+    const response = yield call(addShippingInformationService, cartId, {
+      isGuestCustomer,
+      customerToken,
+      defaultShippingMethod,
+      posSystemConfigGuestCustomer
+    });
+
+    yield put({
+      type: types.RECEIVED_ORDER_PREPARING_CHECKOUT,
+      payload: response
+    });
+  }
 
   // Hide cash loading pre order
   yield put({
@@ -150,7 +168,7 @@ function* getCustomerCartToken() {
 
 /**
  * Update isGuestCustomer to reducer
- * @returns {Generator<<"PUT", PutEffectDescriptor<{payload: *, type: *}>>, *>}
+ * @returns void
  */
 function* updateIsGuestCustomer(isGuestCustomer) {
   yield put({
@@ -161,16 +179,16 @@ function* updateIsGuestCustomer(isGuestCustomer) {
 
 /**
  * Get offline mode
- * @returns {Generator<<"SELECT", SelectEffectDescriptor>, *, ?>}
+ * @returns void
  */
 function* getOfflineMode() {
   const posSystemConfigResult = yield select(posSystemConfig);
-  return posSystemConfigResult.general_configuration.enable_offline_mode;
+  return Number(posSystemConfigResult.general_configuration.enable_offline_mode);
 }
 
 /**
  * Get default product
- * @returns {Generator<*, *>}
+ * @returns void
  */
 function* getDefaultProduct() {
   // Start loading
@@ -191,7 +209,7 @@ function* getDefaultProduct() {
 
 /**
  * Cash place order
- * @returns {Generator<<"CALL", CallEffectDescriptor<RT>>, *>}
+ * @returns void
  */
 function* cashCheckoutPlaceOrder() {
   // Start cash place order loading
@@ -242,7 +260,7 @@ function* cashCheckoutPlaceOrder() {
 
 /**
  * Search action
- * @returns {Generator<<"CALL", CallEffectDescriptor<RT>>, *>}
+ * @returns void
  * @param payload
  */
 function* searchProduct(payload) {
@@ -250,7 +268,7 @@ function* searchProduct(payload) {
   yield put({ type: types.UPDATE_IS_LOADING_SEARCH_HANDLE, payload: true });
 
   const offlineMode = yield getOfflineMode();
-  const searchResult = yield call(searchProductService, {searchValue: payload, offlineMode});
+  const searchResult = yield call(searchProductService, { searchValue: payload, offlineMode });
   const productResult = searchResult.length > 0 ? searchResult : [];
 
   // If have no product result => update showSearchEmptyResult = 1
@@ -278,7 +296,7 @@ function* searchProduct(payload) {
 /**
  * Get detail product configurable
  * @param payload
- * @returns {Generator<<"CALL", CallEffectDescriptor<RT>>, *>}
+ * @returns void
  */
 function* getDetailProductConfigurable(payload) {
   yield startLoadingProductOption();
@@ -297,7 +315,7 @@ function* getDetailProductConfigurable(payload) {
 
 /**
  * Get detail bundle product
- * @returns {Generator<<"CALL", CallEffectDescriptor<RT>>, *>}
+ * @returns void
  */
 function* getDetailBundleProduct(payload) {
   yield startLoadingProductOption();
@@ -326,7 +344,7 @@ function* getDetailGroupedProduct(payload) {
 
 /**
  *
- * @returns {Generator<<"PUT", PutEffectDescriptor<{payload: boolean, type: *}>>, *>}
+ * @returns void
  */
 function* startLoadingProductOption() {
   // Start loading for get product detail and option
@@ -335,7 +353,7 @@ function* startLoadingProductOption() {
 
 /**
  *
- * @returns {Generator<<"PUT", PutEffectDescriptor<{payload: boolean, type: *}>>, *>}
+ * @returns void
  */
 function* getDetailProductEndTask() {
   // Set showProductOption to true
@@ -365,7 +383,7 @@ function* onConfigurableSelectOnChange(payload) {
 /**
  * Received product option value
  * @param productDetailReFormat
- * @returns {Generator<<"PUT", PutEffectDescriptor<{payload: *, type: *}>>, *>}
+ * @returns void
  */
 function* receivedProductOptionValue(productDetailReFormat) {
   // Set product detail to productOption->optionValue
@@ -378,7 +396,7 @@ function* receivedProductOptionValue(productDetailReFormat) {
 /**
  * Search customer action
  * @param payload
- * @returns {Generator<<"CALL", CallEffectDescriptor>|<"PUT", PutEffectDescriptor<{payload: boolean, type: *}>>, *>}
+ * @returns void
  */
 function* getSearchCustomer(payload) {
   // Start search loading
@@ -401,7 +419,7 @@ function* getSearchCustomer(payload) {
 /**
  * Add to cart function
  * @param payload
- * @returns {Generator<<"PUT", PutEffectDescriptor<{payload: *, type: *}>>|<"SELECT", SelectEffectDescriptor>, *>}
+ * @returns void
  */
 function* addToCart(payload) {
   // Find sky if exits sku, then increment qty
@@ -469,7 +487,7 @@ function updateQtyProduct(product) {
 
 /**
  * Get pos general config
- * @returns {Generator<<"CALL", CallEffectDescriptor>, void, ?>}
+ * @returns void
  */
 function* getPostConfigGeneralConfig() {
   // Start loading
@@ -498,18 +516,49 @@ function* getPostConfigGeneralConfig() {
   // Stop loading
   yield put({ type: types.UPDATE_IS_LOADING_SYSTEM_CONFIG, payload: false });
 
-  // Get offline mode
-  const offlineMode = yield getOfflineMode();
+  // Sync data
+  yield syncData(allCategories);
+}
 
-  if(Number(offlineMode) === 1) {
-    // Sync all categories product
-    yield call(syncCategories, allCategories);
+/**
+ * Sync all data
+ * @param allCategories
+ * @returns void
+ */
+function* syncData(allCategories) {
+  const haveToSync = yield haveToSyncAllData();
+  let letSync = false;
 
-    // Sync all products
-    yield call(syncAllProducts, allCategories);
+  if(haveToSync.length === 0) {
+    yield createSyncAllDataFlag();
+    letSync = true;
+  } else {
+    const timePeriod = 15;
+    const obj = haveToSync[0];
+    const time = obj.value.time;
+    const distanceMinute = differenceInMinutes(new Date(), new Date(time));
+    if(distanceMinute > timePeriod) {
+      letSync = true;
+      // Update flag to get current time as flag
+      yield updateSyncAllDataFlag(obj.id);
+    }
+  }
 
-    // Sync all customers
+  // Let sync
+  if(letSync) {
+    console.info('let sync!');
+    // Get offline mode
+    const offlineMode = yield getOfflineMode();
 
+    if(offlineMode === 1) {
+      // Sync all categories product
+      yield call(syncCategories, allCategories);
+
+      // Sync all products
+      yield call(syncAllProducts, allCategories);
+    }
+  } else {
+    console.info('not sync yet!');
   }
 }
 
@@ -566,7 +615,7 @@ function* signUpAction(payload) {
 
 /**
  * Default root saga
- * @returns {Generator<<"FORK", ForkEffectDescriptor<RT>>, *>}
+ * @returns void
  */
 function* rootSaga() {
   yield takeEvery(types.GET_DEFAULT_PRODUCT, getDefaultProduct);

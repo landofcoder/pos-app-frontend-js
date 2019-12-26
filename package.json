@@ -252,8 +252,7 @@
     "webpack-cli": "^3.3.0",
     "webpack-dev-server": "^3.2.1",
     "webpack-merge": "^4.2.1",
-    "yarn": "^1.15.2",
-    "locale-currency": "^0.0.2"
+    "yarn": "^1.15.2"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.8.1",
@@ -278,7 +277,9 @@
     "relay-runtime": "^7.1.0",
     "source-map-support": "^0.5.11",
     "dexie": "^2.0.4",
-    "lodash": "^4.17.15"
+    "lodash": "^4.17.15",
+    "locale-currency": "^0.0.2",
+    "date-fns": "^2.8.1"
   },
   "devEngines": {
     "node": ">=7.x",
