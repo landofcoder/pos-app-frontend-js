@@ -25,7 +25,6 @@ export default class Account extends Component<Props> {
 
   render() {
     const { cashierSelect, orderHistorySelect } = this.state;
-    //console.log(`cashier select : ${cashierSelect}`);
     return (
       <>
         <div data-tid="container" className="pr-0 pl-0 pt-2">

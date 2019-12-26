@@ -23,8 +23,7 @@ class OrderHistory extends Component<Props> {
 
   render() {
     const { orderHistory, isLoading } = this.props;
-    // console.log('orderHistoryItems in layout');
-    // console.log(orderHistory);
+
     return (
       <>
         <table className="table">

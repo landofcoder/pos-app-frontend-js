@@ -366,7 +366,6 @@ function* onConfigurableSelectOnChange(payload) {
     false
   );
   yield receivedProductOptionValue(productDetailReFormat);
-  // console.log('product detail reformat:', productDetailReFormat);
 }
 
 /**
@@ -542,8 +541,6 @@ function* getProductByCategory(payload) {
   yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: false });
 }
 function* getOrderHistoryDetail(payload) {
-  console.log("saga");
-  console.log(payload);
   yield put({ type: types.TURN_ON_LOADING_ORDER_HISTORY_DETAIL });
   const data = yield call(getOrderHistoryServiceDetails, payload.payload);
   yield put({ type: types.RECEIVED_ORDER_HISTORY_DETAIL_ACTION, payload: data });
@@ -552,8 +549,6 @@ function* getOrderHistoryDetail(payload) {
 function* getOrderHistory() {
   yield put({ type: types.TURN_ON_LOADING_ORDER_HISTORY });
   const data = yield call(getOrderHistoryService);
-  console.log("data :");
-  console.log(data);
 
   yield put({ type: types.RECEIVED_ORDER_HISTORY_ACTION, payload: data.items });
   yield put({ type: types.TURN_OFF_LOADING_ORDER_HISTORY });
