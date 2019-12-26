@@ -62,7 +62,7 @@ export async function signUpCustomerService(payload) {
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
     redirect: 'follow', // manual, *follow, error
-    referrer: 'no-referrer', // no-referrer, *clien
+    referrer: 'no-referrer', // no-referrer, *client
     body: JSON.stringify({
       customer: payload.payload.customer,
       password: payload.payload.password

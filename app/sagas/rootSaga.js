@@ -1,5 +1,6 @@
 // @flow
 import { all, call, put, select, takeEvery } from 'redux-saga/effects';
+import { differenceInMinutes } from 'date-fns';
 import * as types from '../constants/root';
 import {
   addProductToQuote,
@@ -7,7 +8,8 @@ import {
   createGuestCartService,
   createInvoiceService,
   createShipmentService,
-  placeCashOrderService
+  placeCashOrderService,
+  getDiscountForQuoteService
 } from './services/CartService';
 import {
   getDetailProductBundleService,
@@ -31,6 +33,11 @@ import {
   getCustomReceiptService,
   getAllCategoriesService
 } from './services/CommonService';
+import {
+  haveToSyncAllData,
+  createSyncAllDataFlag,
+  updateSyncAllDataFlag
+} from './services/SettingsService';
 
 import {
   handleProductType,
@@ -43,8 +50,8 @@ import {
 } from './common/orderSaga';
 import { calcPrice } from '../common/productPrice';
 import { BUNDLE } from '../constants/product-types';
-import { getCategories, syncCategories } from '../reducers/db/categories';
-import customerSync from '../reducers/db/customers_sync';
+import { syncCategories } from '../reducers/db/categories';
+import { syncCustomers } from '../reducers/db/customers';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
 const cartCurrentToken = state => state.mainRd.cartCurrent.customerToken;
@@ -56,47 +63,58 @@ const shopInfoConfig = state => state.mainRd.shopInfoConfig;
 const posSystemConfig = state => state.mainRd.posSystemConfig;
 const cashierInfo = state => state.authenRd.cashierInfo;
 const orderHistory = state => state.mainRd.orderHistory;
+
 /**
- * Create quote function
+ * Create quote
  */
 function* cashCheckout() {
   // Show cash modal
   yield put({ type: types.UPDATE_SHOW_CASH_MODAL, payload: true });
+
   // Show cash loading pre order
   yield put({ type: types.UPDATE_CASH_LOADING_PREPARING_ORDER, payload: true });
 
-  // Add product item to cart
+  const offlineMode = yield getOfflineMode();
   const cartCurrentResult = yield select(cartCurrent);
-  const posSystemConfigResult = yield select(posSystemConfig);
-  const posSystemConfigGuestCustomer = posSystemConfigResult[3];
-  const defaultShippingMethod = yield getDefaultShippingMethod();
 
-  const {
-    cartId,
-    isGuestCustomer,
-    customerToken
-  } = yield getCustomerCartToken();
+  if (offlineMode === 1) {
+    // Handles for offline mode
+    const result = yield call(getDiscountForQuoteService, cartCurrentResult);
+    console.log('quote info:', result);
+  } else {
+    // Handles for online mode
+    const posSystemConfigResult = yield select(posSystemConfig);
+    const posSystemConfigGuestCustomer = posSystemConfigResult[3];
+    const defaultShippingMethod = yield getDefaultShippingMethod();
 
-  yield all(
-    cartCurrentResult.map(item =>
-      call(addProductToQuote, cartId, item, {
-        isGuestCustomer,
-        customerToken
-      })
-    )
-  );
+    const {
+      cartId,
+      isGuestCustomer,
+      customerToken
+    } = yield getCustomerCartToken();
 
-  // Add shipping and get detail order
-  const response = yield call(addShippingInformationService, cartId, {
-    isGuestCustomer,
-    customerToken,
-    defaultShippingMethod,
-    posSystemConfigGuestCustomer
-  });
-  yield put({
-    type: types.RECEIVED_ORDER_PREPARING_CHECKOUT,
-    payload: response
-  });
+    yield all(
+      cartCurrentResult.map(item =>
+        call(addProductToQuote, cartId, item, {
+          isGuestCustomer,
+          customerToken
+        })
+      )
+    );
+
+    // Add shipping and get detail order
+    const response = yield call(addShippingInformationService, cartId, {
+      isGuestCustomer,
+      customerToken,
+      defaultShippingMethod,
+      posSystemConfigGuestCustomer
+    });
+
+    yield put({
+      type: types.RECEIVED_ORDER_PREPARING_CHECKOUT,
+      payload: response
+    });
+  }
 
   // Hide cash loading pre order
   yield put({
@@ -151,7 +169,7 @@ function* getCustomerCartToken() {
 
 /**
  * Update isGuestCustomer to reducer
- * @returns {Generator<<"PUT", PutEffectDescriptor<{payload: *, type: *}>>, *>}
+ * @returns void
  */
 function* updateIsGuestCustomer(isGuestCustomer) {
   yield put({
@@ -162,16 +180,16 @@ function* updateIsGuestCustomer(isGuestCustomer) {
 
 /**
  * Get offline mode
- * @returns {Generator<<"SELECT", SelectEffectDescriptor>, *, ?>}
+ * @returns void
  */
 function* getOfflineMode() {
   const posSystemConfigResult = yield select(posSystemConfig);
-  return posSystemConfigResult.general_configuration.enable_offline_mode;
+  return Number(posSystemConfigResult.general_configuration.enable_offline_mode);
 }
 
 /**
  * Get default product
- * @returns {Generator<*, *>}
+ * @returns void
  */
 function* getDefaultProduct() {
   // Start loading
@@ -195,7 +213,7 @@ function* getDefaultProduct() {
 
 /**
  * Cash place order
- * @returns {Generator<<"CALL", CallEffectDescriptor<RT>>, *>}
+ * @returns void
  */
 function* cashCheckoutPlaceOrder() {
   // Start cash place order loading
@@ -246,7 +264,7 @@ function* cashCheckoutPlaceOrder() {
 
 /**
  * Search action
- * @returns {Generator<<"CALL", CallEffectDescriptor<RT>>, *>}
+ * @returns void
  * @param payload
  */
 function* searchProduct(payload) {
@@ -285,7 +303,7 @@ function* searchProduct(payload) {
 /**
  * Get detail product configurable
  * @param payload
- * @returns {Generator<<"CALL", CallEffectDescriptor<RT>>, *>}
+ * @returns void
  */
 function* getDetailProductConfigurable(payload) {
   yield startLoadingProductOption();
@@ -304,7 +322,7 @@ function* getDetailProductConfigurable(payload) {
 
 /**
  * Get detail bundle product
- * @returns {Generator<<"CALL", CallEffectDescriptor<RT>>, *>}
+ * @returns void
  */
 function* getDetailBundleProduct(payload) {
   yield startLoadingProductOption();
@@ -333,7 +351,7 @@ function* getDetailGroupedProduct(payload) {
 
 /**
  *
- * @returns {Generator<<"PUT", PutEffectDescriptor<{payload: boolean, type: *}>>, *>}
+ * @returns void
  */
 function* startLoadingProductOption() {
   // Start loading for get product detail and option
@@ -342,7 +360,7 @@ function* startLoadingProductOption() {
 
 /**
  *
- * @returns {Generator<<"PUT", PutEffectDescriptor<{payload: boolean, type: *}>>, *>}
+ * @returns void
  */
 function* getDetailProductEndTask() {
   // Set showProductOption to true
@@ -371,7 +389,7 @@ function* onConfigurableSelectOnChange(payload) {
 /**
  * Received product option value
  * @param productDetailReFormat
- * @returns {Generator<<"PUT", PutEffectDescriptor<{payload: *, type: *}>>, *>}
+ * @returns void
  */
 function* receivedProductOptionValue(productDetailReFormat) {
   // Set product detail to productOption->optionValue
@@ -384,7 +402,7 @@ function* receivedProductOptionValue(productDetailReFormat) {
 /**
  * Search customer action
  * @param payload
- * @returns {Generator<<"CALL", CallEffectDescriptor>|<"PUT", PutEffectDescriptor<{payload: boolean, type: *}>>, *>}
+ * @returns void
  */
 function* getSearchCustomer(payload) {
   // Start search loading
@@ -401,13 +419,13 @@ function* getSearchCustomer(payload) {
   yield put({ type: types.UPDATE_IS_LOADING_SEARCH_CUSTOMER, payload: false });
 
   // Sync customers
-  yield call(customerSync, searchResult.items);
+  yield call(syncCustomers, searchResult.items);
 }
 
 /**
  * Add to cart function
  * @param payload
- * @returns {Generator<<"PUT", PutEffectDescriptor<{payload: *, type: *}>>|<"SELECT", SelectEffectDescriptor>, *>}
+ * @returns void
  */
 function* addToCart(payload) {
   // Find sky if exits sku, then increment qty
@@ -475,7 +493,7 @@ function updateQtyProduct(product) {
 
 /**
  * Get pos general config
- * @returns {Generator<<"CALL", CallEffectDescriptor>, void, ?>}
+ * @returns void
  */
 function* getPostConfigGeneralConfig() {
   // Start loading
@@ -504,100 +522,143 @@ function* getPostConfigGeneralConfig() {
   // Stop loading
   yield put({ type: types.UPDATE_IS_LOADING_SYSTEM_CONFIG, payload: false });
 
-  // Get offline mode
-  const offlineMode = yield getOfflineMode();
-  if (Number(offlineMode) === 1) {
-    // Sync categories product
-    yield call(syncCategories, allCategories);
-
-    // Sync all products
-    yield call(syncAllProducts, allCategories);
-  }
-}
-
-function* getCustomReceipt() {
-  const customReceiptResult = yield call(getCustomReceiptService);
-  const result = customReceiptResult[0];
-  yield put({ type: types.RECEIVED_CUSTOM_RECEIPT, payload: result.data });
+  // Sync data
+  yield syncData(allCategories);
 }
 
 /**
- * Get product by category
- * @param payload
+ * Sync all data
+ * @param allCategories
  * @returns void
  */
-function* getProductByCategory(payload) {
-  // Start loading
-  yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: true });
+function* syncData(allCategories) {
+  const haveToSync = yield haveToSyncAllData();
+  let letSync = false;
 
-  const categoryId = payload.payload;
-
-  const offlineMode = yield getOfflineMode();
-
-  const productByCategory = yield call(getProductByCategoryService, { categoryId, offlineMode });
-  yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productByCategory });
-
-  // Stop loading
-  yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: false });
-}
-function* getOrderHistoryDetail(payload) {
-  yield put({ type: types.TURN_ON_LOADING_ORDER_HISTORY_DETAIL });
-  const data = yield call(getOrderHistoryServiceDetails, payload.payload);
-  yield put({ type: types.RECEIVED_ORDER_HISTORY_DETAIL_ACTION, payload: data });
-  yield put({ type: types.TURN_OFF_LOADING_ORDER_HISTORY_DETAIL });
-}
-function* getOrderHistory() {
-  yield put({ type: types.TURN_ON_LOADING_ORDER_HISTORY });
-  const data = yield call(getOrderHistoryService);
-
-  yield put({ type: types.RECEIVED_ORDER_HISTORY_ACTION, payload: data.items });
-  yield put({ type: types.TURN_OFF_LOADING_ORDER_HISTORY });
-}
-
-function* signUpAction(payload) {
-  console.log(payload);
-  yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: true });
-  const res = yield call(signUpCustomerService, payload);
-  yield put({
-    type: types.MESSAGE_SIGN_UP_CUSTOMER,
-    payload: res.data.message
-  });
-  if (res.ok) {
-    yield put({ type: types.TOGGLE_MODAL_SIGN_UP_CUSTOMER, payload: false });
+  if (haveToSync.length === 0) {
+    yield createSyncAllDataFlag();
+    letSync = true;
+  } else {
+    const timePeriod = 15;
+    const obj = haveToSync[0];
+    const time = obj.value.time;
+    const distanceMinute = differenceInMinutes(new Date(), new Date(time));
+    if (distanceMinute > timePeriod) {
+      letSync = true;
+      // Update flag to get current time as flag
+      yield updateSyncAllDataFlag(obj.id);
+    }
   }
-  yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: false });
-}
 
-/**
- * Default root saga
- * @returns {Generator<<"FORK", ForkEffectDescriptor<RT>>, *>}
- */
-function* rootSaga() {
-  yield takeEvery(types.GET_DEFAULT_PRODUCT, getDefaultProduct);
-  yield takeEvery(types.CASH_CHECKOUT_ACTION, cashCheckout);
-  yield takeEvery(types.SEARCH_ACTION, searchProduct);
-  yield takeEvery(
-    types.CASH_CHECKOUT_PLACE_ORDER_ACTION,
-    cashCheckoutPlaceOrder
-  );
-  yield takeEvery(
-    types.GET_DETAIL_PRODUCT_CONFIGURABLE,
-    getDetailProductConfigurable
-  );
-  yield takeEvery(
-    types.ON_CONFIGURABLE_SELECT_ONCHANGE,
-    onConfigurableSelectOnChange
-  );
-  yield takeEvery(types.GET_DETAIL_PRODUCT_BUNDLE, getDetailBundleProduct);
-  yield takeEvery(types.GET_DETAIL_PRODUCT_GROUPED, getDetailGroupedProduct);
-  yield takeEvery(types.SEARCH_CUSTOMER, getSearchCustomer);
-  yield takeEvery(types.ADD_TO_CART, addToCart);
-  yield takeEvery(types.GET_POS_GENERAL_CONFIG, getPostConfigGeneralConfig);
-  yield takeEvery(types.GET_CUSTOM_RECEIPT, getCustomReceipt);
-  yield takeEvery(types.GET_ORDER_HISTORY_ACTION, getOrderHistory);
-  yield takeEvery(types.GET_PRODUCT_BY_CATEGORY, getProductByCategory);
-  yield takeEvery(types.SIGN_UP_CUSTOMER, signUpAction);
-  yield takeEvery(types.GET_ORDER_HISTORY_DETAIL_ACTION, getOrderHistoryDetail);
+  // Let sync
+  if (letSync) {
+    console.info('let sync!');
+    // Get offline mode
+    const offlineMode = yield getOfflineMode();
+
+    if (offlineMode === 1) {
+      // Sync all categories product
+      yield call(syncCategories, allCategories);
+      // Get offline mode
+      const offlineMode = yield getOfflineMode();
+      if (Number(offlineMode) === 1) {
+        // Sync categories product
+        yield call(syncCategories, allCategories);
+
+        // Sync all products
+        yield call(syncAllProducts, allCategories);
+      }
+    } else {
+      console.info('not sync yet!');
+    }
+  }
+
+  function* getCustomReceipt() {
+    const customReceiptResult = yield call(getCustomReceiptService);
+    const result = customReceiptResult[0];
+    yield put({ type: types.RECEIVED_CUSTOM_RECEIPT, payload: result.data });
+  }
+
+  /**
+   * Get product by category
+   * @param payload
+   * @returns void
+   */
+  function* getProductByCategory(payload) {
+    // Start loading
+    yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: true });
+
+    const categoryId = payload.payload;
+
+    const offlineMode = yield getOfflineMode();
+
+    const productByCategory = yield call(getProductByCategoryService, { categoryId, offlineMode });
+    yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productByCategory });
+
+    // Stop loading
+    yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: false });
+  }
+
+  function* getOrderHistoryDetail(payload) {
+    yield put({ type: types.TURN_ON_LOADING_ORDER_HISTORY_DETAIL });
+    const data = yield call(getOrderHistoryServiceDetails, payload.payload);
+    yield put({ type: types.RECEIVED_ORDER_HISTORY_DETAIL_ACTION, payload: data });
+    yield put({ type: types.TURN_OFF_LOADING_ORDER_HISTORY_DETAIL });
+  }
+
+  function* getOrderHistory() {
+    yield put({ type: types.TURN_ON_LOADING_ORDER_HISTORY });
+    const data = yield call(getOrderHistoryService);
+
+    yield put({ type: types.RECEIVED_ORDER_HISTORY_ACTION, payload: data.items });
+    yield put({ type: types.TURN_OFF_LOADING_ORDER_HISTORY });
+  }
+
+  function* signUpAction(payload) {
+    console.log(payload);
+    yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: true });
+    const res = yield call(signUpCustomerService, payload);
+    yield put({
+      type: types.MESSAGE_SIGN_UP_CUSTOMER,
+      payload: res.data.message
+    });
+    if (res.ok) {
+      yield put({ type: types.TOGGLE_MODAL_SIGN_UP_CUSTOMER, payload: false });
+    }
+    yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: false });
+  }
+
+  /**
+   * Default root saga
+   * @returns void
+   */
+  function* rootSaga() {
+    yield takeEvery(types.GET_DEFAULT_PRODUCT, getDefaultProduct);
+    yield takeEvery(types.CASH_CHECKOUT_ACTION, cashCheckout);
+    yield takeEvery(types.SEARCH_ACTION, searchProduct);
+    yield takeEvery(
+      types.CASH_CHECKOUT_PLACE_ORDER_ACTION,
+      cashCheckoutPlaceOrder
+    );
+    yield takeEvery(
+      types.GET_DETAIL_PRODUCT_CONFIGURABLE,
+      getDetailProductConfigurable
+    );
+    yield takeEvery(
+      types.ON_CONFIGURABLE_SELECT_ONCHANGE,
+      onConfigurableSelectOnChange
+    );
+    yield takeEvery(types.GET_DETAIL_PRODUCT_BUNDLE, getDetailBundleProduct);
+    yield takeEvery(types.GET_DETAIL_PRODUCT_GROUPED, getDetailGroupedProduct);
+    yield takeEvery(types.SEARCH_CUSTOMER, getSearchCustomer);
+    yield takeEvery(types.ADD_TO_CART, addToCart);
+    yield takeEvery(types.GET_POS_GENERAL_CONFIG, getPostConfigGeneralConfig);
+    yield takeEvery(types.GET_CUSTOM_RECEIPT, getCustomReceipt);
+    yield takeEvery(types.GET_ORDER_HISTORY_ACTION, getOrderHistory);
+    yield takeEvery(types.GET_PRODUCT_BY_CATEGORY, getProductByCategory);
+    yield takeEvery(types.SIGN_UP_CUSTOMER, signUpAction);
+    yield takeEvery(types.GET_ORDER_HISTORY_DETAIL_ACTION, getOrderHistoryDetail);
+  }
 }
 
 export default rootSaga;

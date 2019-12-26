@@ -13,10 +13,10 @@ export async function syncCategories(mainCategory) {
   const category = await categoryTbl.get(mainCategory.id);
   if (category) {
     // Update
-    categoryTbl.update(mainCategory.id, mainCategory);
+    await categoryTbl.update(mainCategory.id, mainCategory);
   } else {
     // Add new
-    categoryTbl.add(mainCategory);
+    await categoryTbl.add(mainCategory);
   }
 }
 

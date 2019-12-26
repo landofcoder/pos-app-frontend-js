@@ -10,7 +10,6 @@ const table = 'products';
  */
 export function syncProducts(productList, allParentIds = []) {
   if (productList.length > 0) {
-    // Insert to database
     const productTbl = db.table(table);
 
     productList.forEach(async item => {
