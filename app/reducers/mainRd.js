@@ -60,10 +60,13 @@ const initialState = {
   detailOutlet: {},
   orderHistory: [],
   orderHistoryDetail: {},
+  order_id_history: null,
   isOpenFindCustomer: false,
   isOpenSignUpCustomer: false,
+  isOpenDetailOrder: false,
   isLoadingSearchCustomer: false,
   isLoadingOrderHistory: false,
+  isLoadingOrderHistoryDetail: false,
   isLoadingSignUpCustomer: false,
   customerSearchResult: [],
   cartHoldList: [],
@@ -289,16 +292,25 @@ const mainRd = (state = initialState, action) =>
       case types.TURN_ON_LOADING_ORDER_HISTORY:
         draft.isLoadingOrderHistory = true;
         break;
+      case types.TURN_OFF_LOADING_ORDER_HISTORY_DETAIL:
+        draft.isLoadingOrderHistoryDetail = false;
+        break;
+      case types.TURN_ON_LOADING_ORDER_HISTORY_DETAIL:
+        draft.isLoadingOrderHistoryDetail = true;
+        break;
+      case types.TOGGLE_MODAL_ORDER_DETAIL:
+        draft.isOpenDetailOrder = action.payload.isShow;
+        draft.order_id_history = action.payload.order_id;
+        break;
       case types.TURN_OFF_LOADING_ORDER_HISTORY:
         draft.isLoadingOrderHistory = false;
-        break;
-      case types.GET_ORDER_HISTORY_ACTION:
         break;
       case types.RECEIVED_ORDER_HISTORY_ACTION:
         draft.orderHistory = action.payload;
         break;
       case types.RECEIVED_ORDER_HISTORY_DETAIL_ACTION:
         draft.orderHistoryDetail = action.payload;
+        break;
       case types.RECEIVED_CUSTOM_RECEIPT:
         draft.customReceipt = action.payload;
         break;
@@ -322,6 +334,7 @@ const mainRd = (state = initialState, action) =>
         draft.cartHoldList = [];
         draft.orderHistory = [];
         draft.customerSearchResult = [];
+        break;
       default:
         break;
     }

@@ -12,3 +12,10 @@ export function getOrderHistoryDetail(payload) {
     payload
   }
 }
+
+export function toggleModalOrderDetail(payload) {
+  return {
+    type: type.TOGGLE_MODAL_ORDER_DETAIL,
+    payload
+  }
+}
