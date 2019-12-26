@@ -77,9 +77,8 @@ function* cashCheckout() {
 
   if (offlineMode === 1) {
     // Handles for offline mode
-    console.log('cart current result:', cartCurrentResult);
-    const result = yield call(getDiscountForQuoteService);
-    console.log('offline result:', result);
+    const result = yield call(getDiscountForQuoteService, cartCurrentResult);
+    console.log('quote info:', result);
   } else {
     // Handles for online mode
     const posSystemConfigResult = yield select(posSystemConfig);

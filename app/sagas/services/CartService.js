@@ -50,8 +50,7 @@ export async function addProductToQuote(cartId, item, payloadCart) {
     referrer: 'no-referrer', // no-referrer, *client
     body: JSON.stringify(cartItem) // body data type must match "Content-Type" header
   });
-  const data = await response.json(); // parses JSON response into native JavaScript objects
-  return data;
+  return await response.json(); // parses JSON response into native JavaScript objects
 }
 
 /**
@@ -96,8 +95,7 @@ export async function placeCashOrderService(cartToken, payloadCart) {
       cashier_phone: cashierInfo.phone
     })
   });
-  const data = await response.json();
-  return data;
+  return await response.json();
 }
 
 /**
@@ -119,8 +117,7 @@ export async function createGuestCartService() {
     referrer: 'no-referrer', // no-referrer, *client
     body: JSON.stringify({}) // body data type must match "Content-Type" header
   });
-  const data = await response.json(); // parses JSON response into native JavaScript objects
-  return data;
+  return await response.json(); // parses JSON response into native JavaScript objects
 }
 
 /**
@@ -162,8 +159,7 @@ export async function addShippingInformationService(cartToken, payloadCart) {
       }
     })
   });
-  const data = await response.json();
-  return data;
+  return await response.json();
 }
 
 /**
@@ -221,8 +217,7 @@ export async function createInvoiceService(adminToken, orderId) {
       }) // body data type must match "Content-Type" header
     }
   );
-  const data = await response.json(); // parses JSON response into native JavaScript objects
-  return data;
+  return await response.json();
 }
 
 export async function createShipmentService(adminToken, orderId) {
@@ -243,11 +238,15 @@ export async function createShipmentService(adminToken, orderId) {
       body: JSON.stringify({}) // body data type must match "Content-Type" header
     }
   );
-  const data = await response.json(); // parses JSON response into native JavaScript objects
-  return data;
+  return await response.json();
 }
 
-export async function getDiscountForQuoteService() {
+/**
+ * Get discount and info for new quote
+ * @param payload list products to add to cart
+ * @returns {Promise<any>}
+ */
+export async function getDiscountForQuoteService(payload) {
   const formDataCart = new FormData();
   // push row default as cvs
   formDataCart.append('param', JSON.stringify([]));
@@ -265,9 +264,8 @@ export async function getDiscountForQuoteService() {
       },
       redirect: 'follow', // manual, *follow, error
       referrer: 'no-referrer', // no-referrer, *client
-      body: JSON.stringify({param: JSON.stringify([])}) // body data type must match "Content-Type" header
+      body: JSON.stringify({param: JSON.stringify(payload)}) // body data type must match "Content-Type" header
     }
   );
-  const data = await response.json(); // parses JSON response into native JavaScript objects
-  return data;
+  return await response.json();
 }
