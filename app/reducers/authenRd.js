@@ -33,7 +33,7 @@ const authenRd = (state = initialState, action) =>
       case typesAuthen.RECEIVED_CASHIER_INFO:
         draft.cashierInfo = action.payload;
         break;
-      case typesAuthen.LOGOUT_ACTION:
+      case typesAuthen.LOGOUT_AUTHEN_ACTION:
         draft.token = '';
         draft.message = '';
         draft.cashierInfo = {};

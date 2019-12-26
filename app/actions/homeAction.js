@@ -165,8 +165,6 @@ export function toggleModalCustomer(payload) {
 }
 
 export function toggleModalSignUpCustomer(payload) {
-  //console.log("payload");
-  //console.log(payload);
   return {
     type: types.TOGGLE_MODAL_SIGN_UP_CUSTOMER,
     payload
