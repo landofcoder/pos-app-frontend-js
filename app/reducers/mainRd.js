@@ -317,11 +317,6 @@ const mainRd = (state = initialState, action) =>
       case types.MESSAGE_SIGN_UP_CUSTOMER:
         draft.messageSignUpCustomer = action.payload;
         break;
-      case types.PUSH_LIST_PRODUCT_ORDER_HISTORY:
-        console.log('reducer');
-        console.log(action.payload);
-        draft.orderHistory.push(action.payload);
-        break;
       case types.LOGOUT_POS_ACTION:
         draft.cartCurrent.data = [];
         draft.cartHoldList = [];
