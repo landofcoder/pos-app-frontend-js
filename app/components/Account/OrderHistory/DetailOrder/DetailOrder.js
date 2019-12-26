@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ModalStyle from '../../../styles/modal.scss';
 import Styles from './detail-order.scss';
-import { getOrderHistoryDetail,toggleModalOrderDetail } from '../../../../actions/accountAction';
+import {
+  getOrderHistoryDetail,
+  toggleModalOrderDetail
+} from '../../../../actions/accountAction';
 type Props = {
   orderHistoryDetail: {},
   order_id_history: number,
@@ -37,8 +40,8 @@ class DetailOrder extends Component {
             className={ModalStyle.modal}
             style={{ display: isOpenDetailOrder ? 'block' : 'none' }}
           >
-            <div className={ModalStyle.modalContent}>
-              <div className="modal-content">
+            <div className={Styles.contentSize}>
+              <div className={`${Styles.colorBg} modal-content`}>
                 {isLoadingOrderHistoryDetail ? (
                   <div className="d-flex justify-content-center mt-5 mb-5">
                     <div
@@ -50,22 +53,64 @@ class DetailOrder extends Component {
                   </div>
                 ) : (
                   <>
-                    <div className="modal-header">
+                    {/* {<div className="modal-header">
                       <h5 className="modal-title"></h5>
                       <div className="col-md-3 p-0"></div>
-                    </div>
+                    </div>} */}
                     <div className="modal-body">
-                      <div>
-                        <div className="form-group"></div>
-                        <div className="input-group mb-3"></div>
+                      <div className="form-group">
+                        <span className="font-weight-bold">$132.6</span>
+                      </div>
+                      <div className="form-group">
+                        <div className="row form-group">
+                          <div className="col-md-6 pl-0">
+                            <div className={Styles.wrapContent}>
+                              <span>Order Date: 12/23/2019 4:13 PM</span>
+                              <span>Location: Primary Location</span>
+                              <span>Customer: Guest</span>
+                            </div>
+                          </div>
+                          <div className="col-md-6 pr-0">
+                            <div className={Styles.wrapContent}>
+                              <span>Subtotal</span>
+                              <span>Discount</span>
+                              <span>Shipping</span>
+                              <span>Grand Total</span>
+                              <span>Total Paid</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className={`form-group`}>
+                        <div className="row">
+                          <div
+                            className={`border-bottom col ${Styles.wrapContent}`}
+                          >
+                            <span className="font-weight-bold">
+                              Item Ordered
+                            </span>
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div
+                            className={`col ${Styles.wrapContent}`}
+                          >
+                            <span>
+                              Product
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </div>
+
                     <div className="modal-footer">
                       <div className="col-md-2 p-0">
                         <button
                           type="button"
                           className="btn btn-secondary btn-block"
-                          onClick={() => toggleModalOrderDetail({isShow: false})}
+                          onClick={() =>
+                            toggleModalOrderDetail({ isShow: false })
+                          }
                         >
                           CLOSE
                         </button>

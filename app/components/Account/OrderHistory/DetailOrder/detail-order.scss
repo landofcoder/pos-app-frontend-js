@@ -1,0 +1,21 @@
+.contentSize{
+  margin:auto;
+  width: 700px;
+}
+.colorBg{
+  background-color: #EFEFEF !important;
+}
+.colorWhite{
+  background-color: white;
+}
+.row{
+  display: flex;
+  flex-direction: row;
+}
+.wrapContent{
+   display: flex;
+   flex-direction: column;
+   background-color: white;
+   margin-right: 0;
+   padding: 16px;
+}
