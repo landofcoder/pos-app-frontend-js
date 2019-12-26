@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Styles from './OrderHistory.scss';
+import Styles from './order-history.scss';
 import { getOrderHistory, getOrderHistoryDetail } from '../../../actions/accountAction';
 
 type Props = {
