@@ -2,22 +2,34 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ModalStyle from '../../../styles/modal.scss';
 import Styles from './detail-order.scss';
-import { getOrderHistoryDetail } from '../../../../actions/accountAction';
+import { getOrderHistoryDetail,toggleModalOrderDetail } from '../../../../actions/accountAction';
 type Props = {
   orderHistoryDetail: {},
   order_id_history: number,
   isOpenDetailOrder: boolean,
   isLoadingOrderHistoryDetail: boolean,
-  getOrderHistoryDetail: id => void
+  getOrderHistoryDetail: id => void,
+  orderHistoryDetail: {},
+  toggleModalOrderDetail: payload => void
 };
 class DetailOrder extends Component {
   props: Props;
   componentDidMount() {
-    const { getOrderHistoryDetail, order_id_history } = this.props;
+    const {
+      getOrderHistoryDetail,
+      order_id_history,
+      toggleModalOrderDetail
+    } = this.props;
     getOrderHistoryDetail(order_id_history);
   }
   render() {
-    const { isOpenDetailOrder, isLoadingOrderHistoryDetail } = this.props;
+    const {
+      isOpenDetailOrder,
+      isLoadingOrderHistoryDetail,
+      orderHistoryDetail,
+      toggleModalOrderDetail
+    } = this.props;
+    console.log(orderHistoryDetail);
     return (
       <>
         <div className={Styles.wrapDetailOrder}>
@@ -49,7 +61,15 @@ class DetailOrder extends Component {
                       </div>
                     </div>
                     <div className="modal-footer">
-                      <div className="col-md-2 p-0"></div>
+                      <div className="col-md-2 p-0">
+                        <button
+                          type="button"
+                          className="btn btn-secondary btn-block"
+                          onClick={() => toggleModalOrderDetail({isShow: false})}
+                        >
+                          CLOSE
+                        </button>
+                      </div>
                     </div>
                   </>
                 )}
@@ -66,12 +86,14 @@ function mapStateToProps(state) {
     orderHistoryDetail: state.mainRd.orderHistoryDetail,
     order_id_history: state.mainRd.order_id_history,
     isOpenDetailOrder: state.mainRd.isOpenDetailOrder,
-    isLoadingOrderHistoryDetail: state.mainRd.isLoadingOrderHistoryDetail
+    isLoadingOrderHistoryDetail: state.mainRd.isLoadingOrderHistoryDetail,
+    orderHistoryDetail: state.mainRd.orderHistoryDetail
   };
 }
 function mapDispatchToProps(dispatch) {
   return {
-    getOrderHistoryDetail: id => dispatch(getOrderHistoryDetail(id))
+    getOrderHistoryDetail: id => dispatch(getOrderHistoryDetail(id)),
+    toggleModalOrderDetail: payload => dispatch(toggleModalOrderDetail(payload))
   };
 }
 export default connect(
