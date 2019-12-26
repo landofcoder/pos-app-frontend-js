@@ -5,6 +5,7 @@ import {
   syncProducts,
   counterProduct
 } from '../../reducers/db/products';
+import { getCategories } from '../../reducers/db/categories';
 
 const graphqlPath = `${baseUrl}graphql`;
 
@@ -478,18 +479,20 @@ async function getProductsByCategory(categoryId, currentPage = 1) {
  */
 export function syncAllProducts(listCategories) {
   const childCategories = listCategories.children_data;
+  let existsChildInList = false;
 
   if (childCategories.length > 0) {
     childCategories.forEach(async item => {
       // Show counter product
       const productQty = await counterProduct();
-      console.info('product qty:', productQty);
+      console.info('qty:', productQty);
 
       // Call api to get large products
-      await syncAllProductsByCategory(item.id);
+      await syncAllProductsByCategory(item.id, item);
 
       if (item.children_data.length > 0) {
-        syncAllProducts(item);
+        existsChildInList = true;
+        await syncAllProducts(item);
       }
     });
   }
@@ -498,16 +501,22 @@ export function syncAllProducts(listCategories) {
 /**
  * Get product with paging by category
  * @param categoryId
+ * @param category
  */
-async function syncAllProductsByCategory(categoryId) {
+async function syncAllProductsByCategory(categoryId, category = null) {
   const currentPage = 1;
   // Get products as first page
   const productsResult = await getProductsByCategory(categoryId, currentPage);
 
+  // Let all parents categories of this category
+  const defaultCategory = await getCategories();
+  const allParentIds = await findAllParentCategories(defaultCategory[0].children_data, categoryId);
+
   // Sync products
   const totalCount = productsResult.totalCount;
-  syncProducts(productsResult.items);
+  syncProducts(productsResult.items, allParentIds);
   const page = totalCount / defaultPageSize;
+
   if (page > 1) {
     // Get by next page, rounding increases
     const numberPage = Math.ceil(page);
@@ -516,7 +525,33 @@ async function syncAllProductsByCategory(categoryId) {
     for (let i = 2; i <= numberPage; i++) {
       // Sync products
       const productsResult = await getProductsByCategory(categoryId, i);
-      syncProducts(productsResult.items);
+      syncProducts(productsResult.items, allParentIds);
     }
   }
+}
+
+// Find parents
+export async function findAllParentCategories(defaultCategory, parentId, parentIds = []) {
+  let foundParent = false;
+  for (const item of defaultCategory) {
+    // Đã tìm thấy id cha
+    if(item.id === parentId) {
+      parentIds.push(item.id);
+      foundParent = true;
+      const newParentId = item.parent_id;
+      // Đã tìm thấy parent, sẽ tìm lại từ đầu dựa trên mảng danh mục từ đầu
+      const defaultCategory = await getCategories();
+      await findAllParentCategories(defaultCategory[0].children_data, newParentId, parentIds);
+    }
+
+    // Nếu không tìm thấy, tiếp tục tìm trong child_data
+    if(foundParent === false) {
+      // Next, find it in children_data
+      if(item.children_data.length > 0) {
+        await findAllParentCategories(item.children_data, parentId, parentIds);
+      }
+    }
+  }
+
+  return parentIds;
 }

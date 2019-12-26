@@ -43,8 +43,7 @@ import {
 } from './common/orderSaga';
 import { calcPrice } from '../common/productPrice';
 import { BUNDLE } from '../constants/product-types';
-import { syncProducts } from '../reducers/db/products';
-import categoriesSync from '../reducers/db/category_sync';
+import { getCategories, syncCategories } from '../reducers/db/categories';
 import customerSync from '../reducers/db/customers_sync';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
@@ -510,7 +509,7 @@ function* getPostConfigGeneralConfig() {
   const offlineMode = yield getOfflineMode();
   if (Number(offlineMode) === 1) {
     // Sync categories product
-    yield call(categoriesSync, allCategories);
+    yield call(syncCategories, allCategories);
 
     // Sync all products
     yield call(syncAllProducts, allCategories);
@@ -536,12 +535,8 @@ function* getProductByCategory(payload) {
 
   const offlineMode = yield getOfflineMode();
 
-  const productByCategory = yield call(getProductByCategoryService, {
-    categoryId,
-    offlineMode
-  });
-  const productResult = productByCategory;
-  yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productResult });
+  const productByCategory = yield call(getProductByCategoryService, { categoryId, offlineMode });
+  yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productByCategory });
 
   // Stop loading
   yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: false });
