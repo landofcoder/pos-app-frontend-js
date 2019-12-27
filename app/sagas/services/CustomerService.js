@@ -22,8 +22,7 @@ export async function searchCustomer(payload) {
       referrer: 'no-referrer' // no-referrer, *client
     }
   );
-  const data = await response.json(); // parses JSON response into native JavaScript objects
-  return data;
+  return await response.json(); // parses JSON response into native JavaScript objects
 }
 
 /**
@@ -47,10 +46,14 @@ export async function getCustomerCartTokenService(customerId) {
       referrer: 'no-referrer' // no-referrer, *clien
     }
   );
-  const data = await response.json(); // parses JSON response into native JavaScript objects
-  return data;
+  return await response.json(); // parses JSON response into native JavaScript objects
 }
 
+/**
+ * Sign up customer
+ * @param payload
+ * @returns void
+ */
 export async function signUpCustomerService(payload) {
   const response = await fetch(`${baseUrl}rest/V1/customers/?`, {
     method: 'POST', // *GET, POST, PUT, DELETE, etc.

@@ -248,8 +248,11 @@ export async function createShipmentService(adminToken, orderId) {
  */
 export async function getDiscountForQuoteService(payload) {
   const formDataCart = new FormData();
-  // push row default as cvs
   formDataCart.append('param', JSON.stringify([]));
+
+  const cart = payload.cart;
+  const config = payload.config;
+
   const response = await fetch(
     `${baseUrl}index.php/rest/V1/pos/get-discount-quote`,
     {
@@ -264,7 +267,7 @@ export async function getDiscountForQuoteService(payload) {
       },
       redirect: 'follow', // manual, *follow, error
       referrer: 'no-referrer', // no-referrer, *client
-      body: JSON.stringify({param: JSON.stringify(payload)}) // body data type must match "Content-Type" header
+      body: JSON.stringify({ param: JSON.stringify({ cart, config }) }) // body data type must match "Content-Type" header
     }
   );
   return await response.json();

@@ -369,7 +369,7 @@ export async function getDefaultProductsService() {
  * @returns {Promise<any>}
  */
 export async function getProductByCategoryService({ categoryId, offlineMode }) {
-  if (Number(offlineMode) === 1) {
+  if (offlineMode === 1) {
     return await getProductsByCategoryLocal(categoryId);
   } else {
     return await getProductsByCategory(categoryId).items;
@@ -477,24 +477,25 @@ async function getProductsByCategory(categoryId, currentPage = 1) {
  * Sync all products
  * @param listCategories
  */
-export function syncAllProducts(listCategories) {
+export async function syncAllProducts(listCategories) {
   const childCategories = listCategories.children_data;
   let existsChildInList = false;
 
   if (childCategories.length > 0) {
-    childCategories.forEach(async item => {
+    for (const cate of childCategories) {
       // Show counter product
       const productQty = await counterProduct();
       console.info('qty:', productQty);
 
       // Call api to get large products
-      await syncAllProductsByCategory(item.id, item);
+      await syncAllProductsByCategory(cate.id, cate);
 
-      if (item.children_data.length > 0) {
+      // Check children and recall this syncAllProducts
+      if (cate.children_data.length > 0) {
         existsChildInList = true;
-        await syncAllProducts(item);
+        await syncAllProducts(cate);
       }
-    });
+    }
   }
 }
 
@@ -514,7 +515,7 @@ async function syncAllProductsByCategory(categoryId, category = null) {
 
   // Sync products
   const totalCount = productsResult.totalCount;
-  syncProducts(productsResult.items, allParentIds);
+  await syncProducts(productsResult.items, allParentIds);
   const page = totalCount / defaultPageSize;
 
   if (page > 1) {
@@ -525,7 +526,7 @@ async function syncAllProductsByCategory(categoryId, category = null) {
     for (let i = 2; i <= numberPage; i++) {
       // Sync products
       const productsResult = await getProductsByCategory(categoryId, i);
-      syncProducts(productsResult.items, allParentIds);
+      await syncProducts(productsResult.items, allParentIds);
     }
   }
 }

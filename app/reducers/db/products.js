@@ -24,10 +24,12 @@ export function syncProducts(productList, allParentIds = []) {
       const product = await productTbl.get(itemRemake.id);
       // Check exists
       if (product) {
-        // Update
+        // Update with pos_sync_updated_at
+        itemRemake.pos_sync_updated_at = new Date();
         await productTbl.update(itemRemake.id, itemRemake);
       } else {
         // Add new
+        itemRemake.pos_sync_create_at = new Date();
         await productTbl.add(itemRemake);
       }
     });

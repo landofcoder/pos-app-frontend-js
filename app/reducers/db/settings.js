@@ -9,10 +9,10 @@ export async function getByKey(key) {
 
 export async function createKey(key, value) {
   const tbl = db.table(table);
-  await tbl.add({ key, value });
+  await tbl.add({ key, value, created_at: new Date() });
 }
 
 export async function updateById(id, value) {
   const tbl = db.table(table);
-  await tbl.update(id, {value});
+  await tbl.update(id, {value, update_at: new Date()});
 }

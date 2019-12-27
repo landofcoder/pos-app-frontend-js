@@ -79,8 +79,14 @@ function* cashCheckout() {
 
   if (offlineMode === 1) {
     // Handles for offline mode
-    const result = yield call(getDiscountForQuoteService, cartCurrentResult);
-    console.log('quote info:', result);
+    const posSystemConfigResult = yield select(posSystemConfig);
+    const result = yield call(getDiscountForQuoteService, { cart: cartCurrentResult, config: posSystemConfigResult });
+    const typeOfResult = typeof result;
+
+    // If json type returned, that mean get discount success
+    if(typeOfResult !== 'string') {
+      console.log('result:', result);
+    }
   } else {
     // Handles for online mode
     const posSystemConfigResult = yield select(posSystemConfig);
@@ -110,6 +116,7 @@ function* cashCheckout() {
       posSystemConfigGuestCustomer
     });
 
+    console.log('online mode response:', response);
     yield put({
       type: types.RECEIVED_ORDER_PREPARING_CHECKOUT,
       payload: response
@@ -536,7 +543,6 @@ function* syncData(allCategories) {
   let letSync = false;
 
   if (haveToSync.length === 0) {
-    yield createSyncAllDataFlag();
     letSync = true;
   } else {
     const timePeriod = 15;
@@ -557,108 +563,104 @@ function* syncData(allCategories) {
     const offlineMode = yield getOfflineMode();
 
     if (offlineMode === 1) {
-      // Sync all categories product
+      // Create last time sync for each period sync execution
+      yield createSyncAllDataFlag();
+      // Sync all
       yield call(syncCategories, allCategories);
-      // Get offline mode
-      const offlineMode = yield getOfflineMode();
-      if (Number(offlineMode) === 1) {
-        // Sync categories product
-        yield call(syncCategories, allCategories);
-
-        // Sync all products
-        yield call(syncAllProducts, allCategories);
-      }
+      yield call(syncAllProducts, allCategories);
     } else {
-      console.info('not sync yet!');
+      console.warn('offline mode not on, pls enable offline mode and connect internet');
     }
+  } else {
+    console.info('not sync yet!');
   }
+}
 
-  function* getCustomReceipt() {
-    const customReceiptResult = yield call(getCustomReceiptService);
-    const result = customReceiptResult[0];
-    yield put({ type: types.RECEIVED_CUSTOM_RECEIPT, payload: result.data });
+function* getCustomReceipt() {
+  const customReceiptResult = yield call(getCustomReceiptService);
+  const result = customReceiptResult[0];
+  yield put({ type: types.RECEIVED_CUSTOM_RECEIPT, payload: result.data });
+}
+
+/**
+ * Get product by category
+ * @param payload
+ * @returns void
+ */
+function* getProductByCategory(payload) {
+  // Start loading
+  yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: true });
+
+  const categoryId = payload.payload;
+
+  const offlineMode = yield getOfflineMode();
+
+  const productByCategory = yield call(getProductByCategoryService, { categoryId, offlineMode });
+  yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productByCategory });
+
+  // Stop loading
+  yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: false });
+}
+
+function* getOrderHistoryDetail(payload) {
+  yield put({ type: types.TURN_ON_LOADING_ORDER_HISTORY_DETAIL });
+  const data = yield call(getOrderHistoryServiceDetails, payload.payload);
+  yield put({ type: types.RECEIVED_ORDER_HISTORY_DETAIL_ACTION, payload: data });
+  yield put({ type: types.TURN_OFF_LOADING_ORDER_HISTORY_DETAIL });
+}
+
+function* getOrderHistory() {
+  yield put({ type: types.TURN_ON_LOADING_ORDER_HISTORY });
+  const data = yield call(getOrderHistoryService);
+
+  yield put({ type: types.RECEIVED_ORDER_HISTORY_ACTION, payload: data.items });
+  yield put({ type: types.TURN_OFF_LOADING_ORDER_HISTORY });
+}
+
+function* signUpAction(payload) {
+  console.log(payload);
+  yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: true });
+  const res = yield call(signUpCustomerService, payload);
+  yield put({
+    type: types.MESSAGE_SIGN_UP_CUSTOMER,
+    payload: res.data.message
+  });
+  if (res.ok) {
+    yield put({ type: types.TOGGLE_MODAL_SIGN_UP_CUSTOMER, payload: false });
   }
+  yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: false });
+}
 
-  /**
-   * Get product by category
-   * @param payload
-   * @returns void
-   */
-  function* getProductByCategory(payload) {
-    // Start loading
-    yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: true });
-
-    const categoryId = payload.payload;
-
-    const offlineMode = yield getOfflineMode();
-
-    const productByCategory = yield call(getProductByCategoryService, { categoryId, offlineMode });
-    yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productByCategory });
-
-    // Stop loading
-    yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: false });
-  }
-
-  function* getOrderHistoryDetail(payload) {
-    yield put({ type: types.TURN_ON_LOADING_ORDER_HISTORY_DETAIL });
-    const data = yield call(getOrderHistoryServiceDetails, payload.payload);
-    yield put({ type: types.RECEIVED_ORDER_HISTORY_DETAIL_ACTION, payload: data });
-    yield put({ type: types.TURN_OFF_LOADING_ORDER_HISTORY_DETAIL });
-  }
-
-  function* getOrderHistory() {
-    yield put({ type: types.TURN_ON_LOADING_ORDER_HISTORY });
-    const data = yield call(getOrderHistoryService);
-
-    yield put({ type: types.RECEIVED_ORDER_HISTORY_ACTION, payload: data.items });
-    yield put({ type: types.TURN_OFF_LOADING_ORDER_HISTORY });
-  }
-
-  function* signUpAction(payload) {
-    console.log(payload);
-    yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: true });
-    const res = yield call(signUpCustomerService, payload);
-    yield put({
-      type: types.MESSAGE_SIGN_UP_CUSTOMER,
-      payload: res.data.message
-    });
-    if (res.ok) {
-      yield put({ type: types.TOGGLE_MODAL_SIGN_UP_CUSTOMER, payload: false });
-    }
-    yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: false });
-  }
-
-  /**
-   * Default root saga
-   * @returns void
-   */
-  function* rootSaga() {
-    yield takeEvery(types.GET_DEFAULT_PRODUCT, getDefaultProduct);
-    yield takeEvery(types.CASH_CHECKOUT_ACTION, cashCheckout);
-    yield takeEvery(types.SEARCH_ACTION, searchProduct);
-    yield takeEvery(
-      types.CASH_CHECKOUT_PLACE_ORDER_ACTION,
-      cashCheckoutPlaceOrder
-    );
-    yield takeEvery(
-      types.GET_DETAIL_PRODUCT_CONFIGURABLE,
-      getDetailProductConfigurable
-    );
-    yield takeEvery(
-      types.ON_CONFIGURABLE_SELECT_ONCHANGE,
-      onConfigurableSelectOnChange
-    );
-    yield takeEvery(types.GET_DETAIL_PRODUCT_BUNDLE, getDetailBundleProduct);
-    yield takeEvery(types.GET_DETAIL_PRODUCT_GROUPED, getDetailGroupedProduct);
-    yield takeEvery(types.SEARCH_CUSTOMER, getSearchCustomer);
-    yield takeEvery(types.ADD_TO_CART, addToCart);
-    yield takeEvery(types.GET_POS_GENERAL_CONFIG, getPostConfigGeneralConfig);
-    yield takeEvery(types.GET_CUSTOM_RECEIPT, getCustomReceipt);
-    yield takeEvery(types.GET_ORDER_HISTORY_ACTION, getOrderHistory);
-    yield takeEvery(types.GET_PRODUCT_BY_CATEGORY, getProductByCategory);
-    yield takeEvery(types.SIGN_UP_CUSTOMER, signUpAction);
-    yield takeEvery(types.GET_ORDER_HISTORY_DETAIL_ACTION, getOrderHistoryDetail);
-  }
+/**
+ * Default root saga
+ * @returns void
+ */
+function* rootSaga() {
+  yield takeEvery(types.GET_DEFAULT_PRODUCT, getDefaultProduct);
+  yield takeEvery(types.CASH_CHECKOUT_ACTION, cashCheckout);
+  yield takeEvery(types.SEARCH_ACTION, searchProduct);
+  yield takeEvery(
+    types.CASH_CHECKOUT_PLACE_ORDER_ACTION,
+    cashCheckoutPlaceOrder
+  );
+  yield takeEvery(
+    types.GET_DETAIL_PRODUCT_CONFIGURABLE,
+    getDetailProductConfigurable
+  );
+  yield takeEvery(
+    types.ON_CONFIGURABLE_SELECT_ONCHANGE,
+    onConfigurableSelectOnChange
+  );
+  yield takeEvery(types.GET_DETAIL_PRODUCT_BUNDLE, getDetailBundleProduct);
+  yield takeEvery(types.GET_DETAIL_PRODUCT_GROUPED, getDetailGroupedProduct);
+  yield takeEvery(types.SEARCH_CUSTOMER, getSearchCustomer);
+  yield takeEvery(types.ADD_TO_CART, addToCart);
+  yield takeEvery(types.GET_POS_GENERAL_CONFIG, getPostConfigGeneralConfig);
+  yield takeEvery(types.GET_CUSTOM_RECEIPT, getCustomReceipt);
+  yield takeEvery(types.GET_ORDER_HISTORY_ACTION, getOrderHistory);
+  yield takeEvery(types.GET_PRODUCT_BY_CATEGORY, getProductByCategory);
+  yield takeEvery(types.SIGN_UP_CUSTOMER, signUpAction);
+  yield takeEvery(types.GET_ORDER_HISTORY_DETAIL_ACTION, getOrderHistoryDetail);
 }
 
 export default rootSaga;
