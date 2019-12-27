@@ -82,6 +82,8 @@ function* cashCheckout() {
     const posSystemConfigResult = yield select(posSystemConfig);
     const result = yield call(getDiscountForQuoteService, { cart: cartCurrentResult, config: posSystemConfigResult });
     const typeOfResult = typeof result;
+
+    // If json type returned, that mean get discount success
     if(typeOfResult !== 'string') {
       console.log('result:', result);
     }
@@ -113,6 +115,8 @@ function* cashCheckout() {
       defaultShippingMethod,
       posSystemConfigGuestCustomer
     });
+
+    console.log('online mode response:', response);
 
     yield put({
       type: types.RECEIVED_ORDER_PREPARING_CHECKOUT,
@@ -506,6 +510,8 @@ function* getPostConfigGeneralConfig() {
   // Get system config settings
   const configGeneralResponse = yield call(getSystemConfigService);
 
+  console.log('res dd1:', configGeneralResponse);
+
   // Get shop info
   const shopInfoResponse = yield call(getShopInfoService);
 
@@ -554,6 +560,8 @@ function* syncData(allCategories) {
     }
   }
 
+  console.log('let sync:', letSync);
+
   // Let sync
   if (letSync) {
     console.info('let sync!');
@@ -572,8 +580,10 @@ function* syncData(allCategories) {
         yield call(syncAllProducts, allCategories);
       }
     } else {
-      console.info('not sync yet!');
+      console.info('offline mode not on');
     }
+  } else {
+    console.info('not sync yet!');
   }
 }
 
