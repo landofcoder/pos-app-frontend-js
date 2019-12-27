@@ -26,7 +26,7 @@ export async function getSystemConfigService() {
         referrer: 'no-referrer' // no-referrer, *client
       }
     );
-    data = await response.json(); // parses JSON response into native JavaScript objects
+    data = await response.json();
   } catch (e) {
     getError = true;
   }
@@ -44,7 +44,7 @@ export async function getSystemConfigService() {
 }
 
 /**
- * Get ship infod
+ * Get ship info
  * @returns {Promise<any>}
  */
 export async function getShopInfoService() {
@@ -61,8 +61,7 @@ export async function getShopInfoService() {
     redirect: 'follow', // manual, *follow, error
     referrer: 'no-referrer' // no-referrer, *client
   });
-  const data = await response.json(); // parses JSON response into native JavaScript objects
-  return data;
+  return await response.json();
 }
 
 /**
@@ -87,8 +86,7 @@ export async function getCustomReceiptService(payload) {
       referrer: 'no-referrer' // no-referrer, *client
     }
   );
-  const data = await response.json(); // parses JSON response into native JavaScript objects
-  return data;
+  return await response.json();
 }
 
 export async function getDetailOutletService(payload) {
@@ -109,8 +107,7 @@ export async function getDetailOutletService(payload) {
       referrer: 'no-referrer' // no-referrer, *client
     }
   );
-  const data = await response.json(); // parses JSON response into native JavaScript objects
-  return data;
+  return await response.json();
 }
 
 /**
@@ -131,8 +128,7 @@ export async function getAllCategoriesService() {
     redirect: 'follow', // manual, *follow, error
     referrer: 'no-referrer' // no-referrer, *client
   });
-  const data = await response.json(); // parses JSON response into native JavaScript objects
-  return data;
+  return await response.json();
 }
 
 export async function getOrderHistoryService() {
@@ -152,8 +148,7 @@ export async function getOrderHistoryService() {
       referrer: 'no-referrer' // no-referrer, *client
     }
   );
-  const data = await response.json(); // parses JSON response into native JavaScript objects
-  return data;
+  return await response.json();
 }
 
 export async function getOrderHistoryServiceDetails(index) {
@@ -170,6 +165,5 @@ export async function getOrderHistoryServiceDetails(index) {
     redirect: 'follow', // manual, *follow, error
     referrer: 'no-referrer' // no-referrer, *client
   });
-  const data = await response.json(); // parses JSON response into native JavaScript objects
-  return data;
+  return await response.json();
 }
