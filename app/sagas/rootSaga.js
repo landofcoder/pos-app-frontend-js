@@ -79,8 +79,12 @@ function* cashCheckout() {
 
   if (offlineMode === 1) {
     // Handles for offline mode
-    const result = yield call(getDiscountForQuoteService, cartCurrentResult);
-    console.log('quote info:', result);
+    const posSystemConfigResult = yield select(posSystemConfig);
+    const result = yield call(getDiscountForQuoteService, { cart: cartCurrentResult, config: posSystemConfigResult });
+    const typeOfResult = typeof result;
+    if(typeOfResult !== 'string') {
+      console.log('result:', result);
+    }
   } else {
     // Handles for online mode
     const posSystemConfigResult = yield select(posSystemConfig);
@@ -564,7 +568,6 @@ function* syncData(allCategories) {
       if (Number(offlineMode) === 1) {
         // Sync categories product
         yield call(syncCategories, allCategories);
-
         // Sync all products
         yield call(syncAllProducts, allCategories);
       }
