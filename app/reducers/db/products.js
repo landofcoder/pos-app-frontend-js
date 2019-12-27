@@ -29,6 +29,7 @@ export function syncProducts(productList, allParentIds = []) {
         await productTbl.update(itemRemake.id, itemRemake);
       } else {
         // Add new
+        itemRemake.pos_sync_create_at = new Date();
         await productTbl.add(itemRemake);
       }
     });
