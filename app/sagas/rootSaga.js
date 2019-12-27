@@ -510,8 +510,6 @@ function* getPostConfigGeneralConfig() {
   // Get system config settings
   const configGeneralResponse = yield call(getSystemConfigService);
 
-  console.log('res dd1:', configGeneralResponse);
-
   // Get shop info
   const shopInfoResponse = yield call(getShopInfoService);
 
@@ -546,7 +544,6 @@ function* syncData(allCategories) {
   let letSync = false;
 
   if (haveToSync.length === 0) {
-    yield createSyncAllDataFlag();
     letSync = true;
   } else {
     const timePeriod = 15;
@@ -560,8 +557,6 @@ function* syncData(allCategories) {
     }
   }
 
-  console.log('let sync:', letSync);
-
   // Let sync
   if (letSync) {
     console.info('let sync!');
@@ -569,18 +564,13 @@ function* syncData(allCategories) {
     const offlineMode = yield getOfflineMode();
 
     if (offlineMode === 1) {
-      // Sync all categories product
+      // Create last time sync for each period sync execution
+      yield createSyncAllDataFlag();
+      // Sync all
       yield call(syncCategories, allCategories);
-      // Get offline mode
-      const offlineMode = yield getOfflineMode();
-      if (Number(offlineMode) === 1) {
-        // Sync categories product
-        yield call(syncCategories, allCategories);
-        // Sync all products
-        yield call(syncAllProducts, allCategories);
-      }
+      yield call(syncAllProducts, allCategories);
     } else {
-      console.info('offline mode not on');
+      console.warn('offline mode not on, pls enable offline mode and connect internet');
     }
   } else {
     console.info('not sync yet!');

@@ -22,8 +22,7 @@ export async function systemConfigSync(systemConfig) {
   } else {
     // Update
     const id = systemConfigInDb[0].id;
-    const value = systemConfigInDb[0].value;
-    await updateById(id, value);
+    await updateById(id, systemConfig);
   }
 }
 

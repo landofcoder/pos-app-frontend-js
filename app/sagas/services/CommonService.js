@@ -1,6 +1,11 @@
 import { adminToken, baseUrl } from '../../params';
 import { systemConfigSync, getSystemConfigLocal } from '../services/SettingsService';
 
+/**
+ * Data from systemConfig will always get latest settings from api,
+ * if have no internet connect, data from local db will be returned
+ * @returns array
+ */
 export async function getSystemConfigService() {
   let data = null;
   let getError = false;

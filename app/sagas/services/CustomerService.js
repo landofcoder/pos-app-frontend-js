@@ -49,6 +49,11 @@ export async function getCustomerCartTokenService(customerId) {
   return await response.json(); // parses JSON response into native JavaScript objects
 }
 
+/**
+ * Sign up customer
+ * @param payload
+ * @returns void
+ */
 export async function signUpCustomerService(payload) {
   const response = await fetch(`${baseUrl}rest/V1/customers/?`, {
     method: 'POST', // *GET, POST, PUT, DELETE, etc.
