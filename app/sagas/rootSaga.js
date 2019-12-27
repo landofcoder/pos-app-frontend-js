@@ -117,7 +117,6 @@ function* cashCheckout() {
     });
 
     console.log('online mode response:', response);
-
     yield put({
       type: types.RECEIVED_ORDER_PREPARING_CHECKOUT,
       payload: response
