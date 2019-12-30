@@ -89,7 +89,12 @@ const initialState = {
     // All checkout variables
     offline: {
       isLoadingDiscount: false,
-      cartInfo: {} // Includes subtotal, discount value, grand total received from API
+      cartInfo: {
+        base_discount_amount: 0,
+        base_grand_total: 0,
+        base_sub_total: 0,
+        quote_id: 0
+      }
     }
   }
 };

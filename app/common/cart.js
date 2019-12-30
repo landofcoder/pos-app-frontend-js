@@ -1,15 +1,22 @@
 // @flow
 import LocaleCurrency from 'locale-currency';
 
-export function sumCartTotalPrice(cartCurrent, currencyCode) {
+export function sumCartTotalPrice(
+  cartCurrent: Object,
+  currencyCode: string,
+  withCurrency: boolean = true
+): any {
   let totalPrice = 0;
   cartCurrent.data.forEach(item => {
     totalPrice += item.pos_totalPrice;
   });
-  return formatCurrencyCode(totalPrice, currencyCode);
+  if (withCurrency) {
+    return formatCurrencyCode(totalPrice, currencyCode);
+  }
+  return totalPrice;
 }
 
-function formatCurrencyCode(value, currencyCode) {
+export function formatCurrencyCode(value: number, currencyCode: string) {
   const locale = LocaleCurrency.getLocales(currencyCode)[0];
   const formatter = new Intl.NumberFormat(locale, {
     style: 'currency',

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Styles from './cash.scss';
 import { getDiscountForOfflineCheckout } from '../../../actions/homeAction';
-import { sumCartTotalPrice } from '../../../common/cart';
+import { sumCartTotalPrice, formatCurrencyCode } from '../../../common/cart';
 
 type Props = {
   getDiscountForOfflineCheckout: () => void,
@@ -30,9 +30,24 @@ class CashOffline extends Component<Props> {
     return sumCartTotalPrice(cartCurrent, currencyCode);
   };
 
+  sumOrderTotal = () => {
+    const { cartCurrent, currencyCode, offlineCartInfo } = this.props;
+    const subTotal = sumCartTotalPrice(cartCurrent, currencyCode, false);
+
+    const grandTotal = subTotal + offlineCartInfo.base_discount_amount;
+    return formatCurrencyCode(grandTotal, currencyCode);
+  };
+
   render() {
-    const { isLoadingDiscountCheckoutOffline, offlineCartInfo } = this.props;
-    console.log('offline cart info:', offlineCartInfo);
+    const {
+      isLoadingDiscountCheckoutOffline,
+      offlineCartInfo,
+      currencyCode
+    } = this.props;
+    const discountAmount = formatCurrencyCode(
+      offlineCartInfo.base_discount_amount,
+      currencyCode
+    );
     return (
       <div>
         <div className="form-group row">
@@ -57,7 +72,7 @@ class CashOffline extends Component<Props> {
               </div>
             ) : (
               <p className="font-weight-bold" id="lblDiscountAmount">
-                500
+                {discountAmount}
               </p>
             )}
           </div>
@@ -75,7 +90,7 @@ class CashOffline extends Component<Props> {
           </label>
           <div className="col-sm-8 pt-1">
             <div className="font-weight-bold">
-              <p className="font-weight-bold">500</p>
+              <p className="font-weight-bold">{this.sumOrderTotal()}</p>
             </div>
           </div>
         </div>
