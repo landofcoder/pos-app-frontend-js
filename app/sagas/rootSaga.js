@@ -1,5 +1,6 @@
 // @flow
 import { all, call, put, select, takeEvery } from 'redux-saga/effects';
+import type { Saga } from 'redux-saga';
 import { differenceInMinutes } from 'date-fns';
 import * as types from '../constants/root';
 import {
@@ -62,7 +63,6 @@ const customer = state => state.mainRd.cartCurrent.customer;
 const shopInfoConfig = state => state.mainRd.shopInfoConfig;
 const posSystemConfig = state => state.mainRd.posSystemConfig;
 const cashierInfo = state => state.authenRd.cashierInfo;
-const orderHistory = state => state.mainRd.orderHistory;
 
 /**
  * Create quote
@@ -78,7 +78,7 @@ function* cashCheckout() {
   const cartCurrentResult = yield select(cartCurrent);
 
   if (offlineMode === 1) {
-
+    console.log('offline mode');
   } else {
     // Handles for online mode
     const posSystemConfigResult = yield select(posSystemConfig);
@@ -183,7 +183,9 @@ function* updateIsGuestCustomer(isGuestCustomer) {
  */
 function* getOfflineMode() {
   const posSystemConfigResult = yield select(posSystemConfig);
-  return Number(posSystemConfigResult.general_configuration.enable_offline_mode);
+  return Number(
+    posSystemConfigResult.general_configuration.enable_offline_mode
+  );
 }
 
 /**
@@ -539,7 +541,7 @@ function* syncData(allCategories) {
   } else {
     const timePeriod = 15;
     const obj = haveToSync[0];
-    const time = obj.value.time;
+    const { time } = obj.value;
     const distanceMinute = differenceInMinutes(new Date(), new Date(time));
     if (distanceMinute > timePeriod) {
       letSync = true;
@@ -561,7 +563,9 @@ function* syncData(allCategories) {
       yield call(syncCategories, allCategories);
       yield call(syncAllProducts, allCategories);
     } else {
-      console.warn('offline mode not on, pls enable offline mode and connect internet');
+      console.warn(
+        'offline mode not on, pls enable offline mode and connect internet'
+      );
     }
   } else {
     console.info('not sync yet!');
@@ -587,8 +591,14 @@ function* getProductByCategory(payload) {
 
   const offlineMode = yield getOfflineMode();
 
-  const productByCategory = yield call(getProductByCategoryService, { categoryId, offlineMode });
-  yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productByCategory });
+  const productByCategory = yield call(getProductByCategoryService, {
+    categoryId,
+    offlineMode
+  });
+  yield put({
+    type: types.RECEIVED_PRODUCT_RESULT,
+    payload: productByCategory
+  });
 
   // Stop loading
   yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: false });
@@ -597,7 +607,10 @@ function* getProductByCategory(payload) {
 function* getOrderHistoryDetail(payload) {
   yield put({ type: types.TURN_ON_LOADING_ORDER_HISTORY_DETAIL });
   const data = yield call(getOrderHistoryServiceDetails, payload.payload);
-  yield put({ type: types.RECEIVED_ORDER_HISTORY_DETAIL_ACTION, payload: data });
+  yield put({
+    type: types.RECEIVED_ORDER_HISTORY_DETAIL_ACTION,
+    payload: data
+  });
   yield put({ type: types.TURN_OFF_LOADING_ORDER_HISTORY_DETAIL });
 }
 
@@ -629,28 +642,40 @@ function* signUpAction(payload) {
  */
 function* getDiscountForOfflineCheckoutSaga() {
   // Start loading
-  yield put({ type: types.UPDATE_IS_LOADING_GET_CHECKOUT_OFFLINE, payload: true });
+  yield put({
+    type: types.UPDATE_IS_LOADING_GET_CHECKOUT_OFFLINE,
+    payload: true
+  });
 
   const cartCurrentResult = yield select(cartCurrent);
   // Handles for offline mode
   const posSystemConfigResult = yield select(posSystemConfig);
-  const result = yield call(getDiscountForQuoteService, { cart: cartCurrentResult, config: posSystemConfigResult });
+  const result = yield call(getDiscountForQuoteService, {
+    cart: cartCurrentResult,
+    config: posSystemConfigResult
+  });
   const typeOfResult = typeof result;
 
   // If json type returned, that mean get discount success
-  if(typeOfResult !== 'string') {
-    yield put({ type: types.RECEIVED_CHECKOUT_OFFLINE_CART_INFO, payload: result });
+  if (typeOfResult !== 'string') {
+    yield put({
+      type: types.RECEIVED_CHECKOUT_OFFLINE_CART_INFO,
+      payload: result
+    });
   }
 
   // Stop loading
-  yield put({ type: types.UPDATE_IS_LOADING_GET_CHECKOUT_OFFLINE, payload: false });
+  yield put({
+    type: types.UPDATE_IS_LOADING_GET_CHECKOUT_OFFLINE,
+    payload: false
+  });
 }
 
 /**
  * Default root saga
  * @returns void
  */
-function* rootSaga() {
+function* rootSaga(): Saga<void> {
   yield takeEvery(types.GET_DEFAULT_PRODUCT, getDefaultProduct);
   yield takeEvery(types.CASH_CHECKOUT_ACTION, cashCheckout);
   yield takeEvery(types.SEARCH_ACTION, searchProduct);
@@ -676,7 +701,10 @@ function* rootSaga() {
   yield takeEvery(types.GET_PRODUCT_BY_CATEGORY, getProductByCategory);
   yield takeEvery(types.SIGN_UP_CUSTOMER, signUpAction);
   yield takeEvery(types.GET_ORDER_HISTORY_DETAIL_ACTION, getOrderHistoryDetail);
-  yield takeEvery(types.GET_DISCOUNT_FOR_OFFLINE_CHECKOUT, getDiscountForOfflineCheckoutSaga)
+  yield takeEvery(
+    types.GET_DISCOUNT_FOR_OFFLINE_CHECKOUT,
+    getDiscountForOfflineCheckoutSaga
+  );
 }
 
 export default rootSaga;
