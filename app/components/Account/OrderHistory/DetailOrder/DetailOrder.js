@@ -55,11 +55,6 @@ class DetailOrder extends Component {
                   <>
                     <div className="modal-body">
                       <div className="form-group">
-                        <span className="font-weight-bold">
-                          ${orderHistoryDetail.base_subtotal_incl_tax}
-                        </span>
-                      </div>
-                      <div className="form-group">
                         <div className="form-group">
                           <div className="pl-0">
                             <div className={Styles.wrapContent}>
@@ -76,41 +71,6 @@ class DetailOrder extends Component {
                                   {orderHistoryDetail.customer_firstname}{' '}
                                   {orderHistoryDetail.customer_lastname}
                                 </span>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="pl-0">
-                            <div className={Styles.wrapContent}>
-                              <div className="d-flex justify-content-between pr-1">
-                                <span>Subtotal: </span>
-                                <span>
-                                  ${orderHistoryDetail.base_subtotal_incl_tax}
-                                </span>
-                              </div>
-                              <div className="d-flex justify-content-between pr-1">
-                                <span>Discount</span>
-                                <span>
-                                  -${orderHistoryDetail.base_discount_amount}
-                                </span>
-                              </div>
-                              <div className="d-flex justify-content-between pr-1">
-                                <span>Shipping</span>
-                                <span>
-                                  ${orderHistoryDetail.base_shipping_amount}
-                                </span>
-                              </div>
-                              <div className="d-flex justify-content-between pr-1">
-                                <span>Grand Total</span>
-                                <span>${orderHistoryDetail.grand_total}</span>
-                              </div>
-                              <div className="d-flex justify-content-between pr-1">
-                                <span>Total Paid</span>
-                                <span>${orderHistoryDetail.total_paid}</span>
-                              </div>
-                              <div className="d-flex justify-content-between pr-1">
-                                <span>Status</span>
-                                <span>{orderHistoryDetail.status}</span>
-                                {}
                               </div>
                             </div>
                           </div>
@@ -156,6 +116,49 @@ class DetailOrder extends Component {
                               </div>
                             </>
                           ))}
+                        </div>
+                      </div>
+
+                      <div className={`form-group`}>
+                        <div>
+                          <div
+                            className={`border-bottom col ${Styles.wrapContent}`}
+                          >
+                            <span className="font-weight-bold">Payment</span>
+                          </div>
+                        </div>
+                        <div className={`col ${Styles.wrapContent}`}>
+                          <div className="d-flex justify-content-between pr-1">
+                            <span>Subtotal: </span>
+                            <span>
+                              ${orderHistoryDetail.base_subtotal_incl_tax}
+                            </span>
+                          </div>
+                          <div className="d-flex justify-content-between pr-1">
+                            <span>Discount</span>
+                            <span>
+                              -${orderHistoryDetail.base_discount_amount}
+                            </span>
+                          </div>
+                          <div className="d-flex justify-content-between pr-1">
+                            <span>Shipping</span>
+                            <span>
+                              ${orderHistoryDetail.base_shipping_amount}
+                            </span>
+                          </div>
+                          <div className="d-flex justify-content-between pr-1">
+                            <span>Grand Total</span>
+                            <span>${orderHistoryDetail.grand_total}</span>
+                          </div>
+                          <div className="d-flex justify-content-between pr-1">
+                            <span>Total Paid</span>
+                            <span>${orderHistoryDetail.total_paid}</span>
+                          </div>
+                          <div className="d-flex justify-content-between pr-1">
+                            <span>Status</span>
+                            <span>{orderHistoryDetail.status}</span>
+                            {}
+                          </div>
                         </div>
                       </div>
 
