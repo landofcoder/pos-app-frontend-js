@@ -84,6 +84,12 @@ const initialState = {
     isLoadingProductOption: false, // Show a loading in screen for product option loading
     isShowingProductOption: false, // Show model for choose product type option
     optionValue: null // Keep detail product clicked
+  },
+  checkout: { // All checkout variables
+    offline: {
+      isLoadingDiscount: false,
+      cartInfo: {} // Includes subtotal, discount value, grand total received from API
+    }
   }
 };
 
@@ -299,6 +305,7 @@ const mainRd = (state = initialState, action) =>
         break;
       case types.RECEIVED_ORDER_HISTORY_DETAIL_ACTION:
         draft.orderHistoryDetail = action.payload;
+        break;
       case types.RECEIVED_CUSTOM_RECEIPT:
         draft.customReceipt = action.payload;
         break;
@@ -322,6 +329,13 @@ const mainRd = (state = initialState, action) =>
         draft.cartHoldList = [];
         draft.orderHistory = [];
         draft.customerSearchResult = [];
+        break;
+      case types.UPDATE_IS_LOADING_GET_CHECKOUT_OFFLINE:
+        draft.checkout.offline.isLoadingDiscount = action.payload;
+        break;
+      case types.RECEIVED_CHECKOUT_OFFLINE_CART_INFO:
+        draft.checkout.offline.cartInfo = action.payload[0];
+        break;
       default:
         break;
     }

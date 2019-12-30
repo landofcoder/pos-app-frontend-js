@@ -241,19 +241,25 @@ export function signUpCustomer(payload) {
   return {
     type: types.SIGN_UP_CUSTOMER,
     payload
-  }
+  };
 }
 
-export function changeSignUpLoadingCustomer(payload){
+export function changeSignUpLoadingCustomer(payload) {
   return {
     type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER,
     payload
-  }
+  };
 }
 
 export function updateIsInternetConnected(payload) {
   return {
     type: types.IS_INTERNET_CONNECTED,
     payload
+  };
+}
+
+export function getDiscountForOfflineCheckout() {
+  return {
+    type: types.GET_DISCOUNT_FOR_OFFLINE_CHECKOUT
   }
 }

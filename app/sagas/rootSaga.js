@@ -78,15 +78,7 @@ function* cashCheckout() {
   const cartCurrentResult = yield select(cartCurrent);
 
   if (offlineMode === 1) {
-    // Handles for offline mode
-    const posSystemConfigResult = yield select(posSystemConfig);
-    const result = yield call(getDiscountForQuoteService, { cart: cartCurrentResult, config: posSystemConfigResult });
-    const typeOfResult = typeof result;
 
-    // If json type returned, that mean get discount success
-    if(typeOfResult !== 'string') {
-      console.log('result:', result);
-    }
   } else {
     // Handles for online mode
     const posSystemConfigResult = yield select(posSystemConfig);
@@ -632,6 +624,29 @@ function* signUpAction(payload) {
 }
 
 /**
+ * Get discount when show cash checkout for offline mode
+ * @returns void
+ */
+function* getDiscountForOfflineCheckoutSaga() {
+  // Start loading
+  yield put({ type: types.UPDATE_IS_LOADING_GET_CHECKOUT_OFFLINE, payload: true });
+
+  const cartCurrentResult = yield select(cartCurrent);
+  // Handles for offline mode
+  const posSystemConfigResult = yield select(posSystemConfig);
+  const result = yield call(getDiscountForQuoteService, { cart: cartCurrentResult, config: posSystemConfigResult });
+  const typeOfResult = typeof result;
+
+  // If json type returned, that mean get discount success
+  if(typeOfResult !== 'string') {
+    yield put({ type: types.RECEIVED_CHECKOUT_OFFLINE_CART_INFO, payload: result });
+  }
+
+  // Stop loading
+  yield put({ type: types.UPDATE_IS_LOADING_GET_CHECKOUT_OFFLINE, payload: false });
+}
+
+/**
  * Default root saga
  * @returns void
  */
@@ -661,6 +676,7 @@ function* rootSaga() {
   yield takeEvery(types.GET_PRODUCT_BY_CATEGORY, getProductByCategory);
   yield takeEvery(types.SIGN_UP_CUSTOMER, signUpAction);
   yield takeEvery(types.GET_ORDER_HISTORY_DETAIL_ACTION, getOrderHistoryDetail);
+  yield takeEvery(types.GET_DISCOUNT_FOR_OFFLINE_CHECKOUT, getDiscountForOfflineCheckoutSaga)
 }
 
 export default rootSaga;

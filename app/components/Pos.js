@@ -21,7 +21,7 @@ import CartCustomer from './customer/CartCustomer';
 import SignUpCustomer from './customer/SignUpCustomer/SignUpCustomer';
 import CashPanel from './payment/Cash/Cash';
 import Receipt from './payment/Receipt/Receipt';
-import { formatCurrencyCode } from '../common/product';
+import { sumCartTotalPrice } from '../common/cart';
 import Categories from './commons/Categories/Categories';
 import { POS_LOGIN_STORAGE } from '../constants/authen';
 
@@ -89,14 +89,12 @@ export default class Pos extends Component<Props> {
    */
   sumTotalPrice = () => {
     const { cartCurrent, currencyCode } = this.props;
-    let totalPrice = 0;
-    cartCurrent.data.forEach(item => {
-      totalPrice += item.pos_totalPrice;
-    });
-
-    return formatCurrencyCode(totalPrice, currencyCode);
+    return sumCartTotalPrice(cartCurrent, currencyCode);
   };
 
+  /**
+   * Redirect to account view
+   */
   handleRedirectToAccount = () => {
     this.setState({ redirectToAccount: true });
   };
@@ -123,7 +121,7 @@ export default class Pos extends Component<Props> {
 
     switch (item.type_id) {
       case CONFIGURABLE: {
-          const { sku } = item;
+        const { sku } = item;
         getDetailProductConfigurable(sku);
       }
         break;
@@ -131,12 +129,12 @@ export default class Pos extends Component<Props> {
         addToCart(item);
         break;
       case BUNDLE: {
-          const { sku } = item;
+        const { sku } = item;
         getDetailProductBundle(sku);
       }
         break;
       case GROUPED: {
-          const { sku } = item;
+        const { sku } = item;
         getDetailProductGrouped(sku);
       }
         break;
@@ -259,7 +257,7 @@ export default class Pos extends Component<Props> {
       isShowHaveNoSearchResultFound,
       setToken,
       internetConnected,
-      isOpenSignUpCustomer,
+      isOpenSignUpCustomer
     } = this.props;
     const { redirectToAccount } = this.state;
     // Check login
@@ -466,7 +464,7 @@ export default class Pos extends Component<Props> {
             </div>
             <div className="col-md-2 pr-1 pl-0">
               <CartCustomer/>
-              {isOpenSignUpCustomer ? <SignUpCustomer /> : null}
+              {isOpenSignUpCustomer ? <SignUpCustomer/> : null}
             </div>
             <div className="col-md-3 pl-0 pr-0">
               <button
