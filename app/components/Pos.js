@@ -26,7 +26,7 @@ import Categories from './commons/Categories/Categories';
 import { POS_LOGIN_STORAGE } from '../constants/authen';
 
 type Props = {
-  productList: Array,
+  productList: Array<Object>,
   addToCart: (payload: Object) => void,
   holdAction: () => void,
   searchProductAction: (payload: string) => void,
@@ -40,27 +40,37 @@ type Props = {
   productOption: Object,
   isShowCashPaymentModel: boolean,
   token: string,
-  updateIsShowingProductOption: () => void,
+  updateIsShowingProductOption: (payload: boolean) => void,
   mainProductListLoading: boolean,
   isOpenReceiptModal: Object,
-  cartHoldList: Array,
-  switchToHoldItemCart: () => void,
+  cartHoldList: Array<Object>,
+  switchToHoldItemCart: (payload: number) => void,
   emptyCart: () => void,
   currencyCode: string,
-  setToken: (payload: string) => void,
+  setToken: (payload: ?string) => void,
   isLoadingSearchHandle: boolean,
   isShowHaveNoSearchResultFound: boolean,
   isOpenSignUpCustomer: boolean,
   internetConnected: boolean
 };
 
-export default class Pos extends Component<Props> {
-  props: Props;
+type State = {
+  delayTimer: Object,
+  typeId: string,
+  redirectToAccount: boolean
+};
 
-  constructor(props) {
+type product = {
+  id: number,
+  name: string,
+  sku: string
+};
+
+export default class Pos extends Component<Props, State> {
+  constructor(props: any) {
     super(props);
     this.state = {
-      delayTimer: null,
+      delayTimer: {},
       typeId: '',
       redirectToAccount: false
     };
@@ -71,7 +81,7 @@ export default class Pos extends Component<Props> {
     getDefaultProductAction();
   }
 
-  getFirstMedia = item => {
+  getFirstMedia = (item: Object) => {
     const gallery = item.media_gallery_entries
       ? item.media_gallery_entries
       : [];
@@ -103,7 +113,7 @@ export default class Pos extends Component<Props> {
    * Pre add to cart
    * @param item
    */
-  preAddToCart = item => {
+  preAddToCart = (item: Object) => {
     const {
       addToCart,
       getDetailProductConfigurable,
@@ -170,40 +180,39 @@ export default class Pos extends Component<Props> {
    * @param productList
    * @returns {*}
    */
-  renderSwitchPanel = productList => {
+  renderSwitchPanel = (productList: Array<product>): any => {
     const { mainPanelType } = this.props;
 
-    switch (mainPanelType) {
-      case HOME_DEFAULT_PRODUCT_LIST:
-        return productList.map(item => (
-          <div
-            className={`col-md-3 mb-3 pr-0 ${Styles.wrapProductItem} ${Styles.itemSameHeight}`}
-            key={item.id}
-          >
-            <div className={`card ${Styles.itemCart}`}>
-              <div className="card-body">
-                <a
-                  role="presentation"
-                  className={CommonStyle.pointer}
-                  onClick={() => this.preAddToCart(item)}
-                >
-                  <div className={Styles.wrapProductImage}>
-                    <div className={Styles.inside}>
-                      <img alt="name" src={this.getFirstMedia(item)} />
-                    </div>
+    if (mainPanelType === HOME_DEFAULT_PRODUCT_LIST) {
+      return productList.map(item => (
+        <div
+          className={`col-md-3 mb-3 pr-0 ${Styles.wrapProductItem} ${Styles.itemSameHeight}`}
+          key={item.id}
+        >
+          <div className={`card ${Styles.itemCart}`}>
+            <div className="card-body">
+              <a
+                role="presentation"
+                className={CommonStyle.pointer}
+                onClick={() => this.preAddToCart(item)}
+              >
+                <div className={Styles.wrapProductImage}>
+                  <div className={Styles.inside}>
+                    <img alt="name" src={this.getFirstMedia(item)} />
                   </div>
-                  <div className={Styles.wrapProductInfo}>
-                    <span className={Styles.wrapProductName}>{item.name}</span>
-                    <span className={Styles.wrapSku}>{item.sku}</span>
-                  </div>
-                </a>
-              </div>
+                </div>
+                <div className={Styles.wrapProductInfo}>
+                  <span className={Styles.wrapProductName}>{item.name}</span>
+                  <span className={Styles.wrapSku}>{item.sku}</span>
+                </div>
+              </a>
             </div>
           </div>
-        ));
-      default:
-        return <></>;
+        </div>
+      ));
     }
+
+    return <></>;
   };
 
   /**
@@ -237,7 +246,7 @@ export default class Pos extends Component<Props> {
    * When cashier input search
    * @param e
    */
-  searchTyping = e => {
+  searchTyping = (e: Object) => {
     const { value } = e.target;
     const { delayTimer } = this.state;
     const { searchProductAction } = this.props;
@@ -247,10 +256,6 @@ export default class Pos extends Component<Props> {
       searchProductAction(value);
     }, 300); // Will do the ajax stuff after 1000 ms, or 1 s
     this.setState({ delayTimer: delayTimerRes });
-  };
-
-  handleTestClick = () => {
-    console.log('handle test click');
   };
 
   render() {
@@ -494,7 +499,7 @@ export default class Pos extends Component<Props> {
           <div className={Styles.wrapFooterLine}>
             <div className={Styles.wrapLeft}>&nbsp;</div>
             <div className={Styles.wrapRight}>
-              <div className={Styles.wrapStatusOnline}></div>
+              <div className={Styles.wrapStatusOnline} />
               <div className={Styles.wrapClock}>
                 <span>
                   {' '}
