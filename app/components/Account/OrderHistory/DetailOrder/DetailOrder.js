@@ -53,36 +53,71 @@ class DetailOrder extends Component {
                   </div>
                 ) : (
                   <>
-                    {/* {<div className="modal-header">
-                      <h5 className="modal-title"></h5>
-                      <div className="col-md-3 p-0"></div>
-                    </div>} */}
                     <div className="modal-body">
                       <div className="form-group">
-                        <span className="font-weight-bold">$132.6</span>
+                        <span className="font-weight-bold">
+                          ${orderHistoryDetail.base_subtotal_incl_tax}
+                        </span>
                       </div>
                       <div className="form-group">
-                        <div className="row form-group">
-                          <div className="col-md-6 pl-0">
+                        <div className="form-group">
+                          <div className="pl-0">
                             <div className={Styles.wrapContent}>
-                              <span>Order Date: 12/23/2019 4:13 PM</span>
-                              <span>Location: Primary Location</span>
-                              <span>Customer: Guest</span>
+                              <div className="d-flex justify-content-between pr-1">
+                                <span>Order Date: </span>
+                                <span>{orderHistoryDetail.created_at}</span>
+                              </div>
+                              <div className="d-flex justify-content-between pr-1">
+                                <span>Location: </span>
+                              </div>
+                              <div className="d-flex justify-content-between pr-1">
+                                <span>Customer: </span>
+                                <span>
+                                  {orderHistoryDetail.customer_firstname}{' '}
+                                  {orderHistoryDetail.customer_lastname}
+                                </span>
+                              </div>
                             </div>
                           </div>
-                          <div className="col-md-6 pr-0">
+                          <div className="pl-0">
                             <div className={Styles.wrapContent}>
-                              <span>Subtotal</span>
-                              <span>Discount</span>
-                              <span>Shipping</span>
-                              <span>Grand Total</span>
-                              <span>Total Paid</span>
+                              <div className="d-flex justify-content-between pr-1">
+                                <span>Subtotal: </span>
+                                <span>
+                                  ${orderHistoryDetail.base_subtotal_incl_tax}
+                                </span>
+                              </div>
+                              <div className="d-flex justify-content-between pr-1">
+                                <span>Discount</span>
+                                <span>
+                                  -${orderHistoryDetail.base_discount_amount}
+                                </span>
+                              </div>
+                              <div className="d-flex justify-content-between pr-1">
+                                <span>Shipping</span>
+                                <span>
+                                  ${orderHistoryDetail.base_shipping_amount}
+                                </span>
+                              </div>
+                              <div className="d-flex justify-content-between pr-1">
+                                <span>Grand Total</span>
+                                <span>${orderHistoryDetail.grand_total}</span>
+                              </div>
+                              <div className="d-flex justify-content-between pr-1">
+                                <span>Total Paid</span>
+                                <span>${orderHistoryDetail.total_paid}</span>
+                              </div>
+                              <div className="d-flex justify-content-between pr-1">
+                                <span>Status</span>
+                                <span>{orderHistoryDetail.status}</span>
+                                {}
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
                       <div className={`form-group`}>
-                        <div className="row">
+                        <div>
                           <div
                             className={`border-bottom col ${Styles.wrapContent}`}
                           >
@@ -91,29 +126,150 @@ class DetailOrder extends Component {
                             </span>
                           </div>
                         </div>
-                        <div className="row">
+                        <div>
+                          {orderHistoryDetail.items.map(item => (
+                            <>
+                              <div
+                                className={`border-bottom col ${Styles.wrapContent}`}
+                              >
+                                <div className="d-flex justify-content-between pr-1">
+                                  <div>
+                                    <div className="d-flex justify-content-between pr-1">
+                                      <span>{item.name}</span>
+                                    </div>
+                                    <div className="d-flex justify-content-between pr-1">
+                                      <div>
+                                        <span>
+                                          Ordered: {item.qty_ordered}{' '}
+                                        </span>
+                                        <span>
+                                          Invoiced: {item.qty_invoiced}{' '}
+                                        </span>
+                                        <span>
+                                          Shipped: {item.qty_shipped}{' '}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <span>${item.price_incl_tax}</span>
+                                </div>
+                              </div>
+                            </>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* {paymentMethod} */}
+                      <div className={`form-group`}>
+                        <div>
                           <div
-                            className={`col ${Styles.wrapContent}`}
+                            className={`border-bottom col ${Styles.wrapContent}`}
                           >
+                            <span className="font-weight-bold">
+                              Payment Method
+                            </span>
+                          </div>
+                        </div>
+                        <div className={`col ${Styles.wrapContent}`}>
+                          <div className="d-flex justify-content-between pr-1">
+                            <span>Method</span>
+                            <span>{orderHistoryDetail.payment.method}</span>
+                          </div>
+                          <div className="d-flex justify-content-between pr-1">
+                            <span>Amount</span>
                             <span>
-                              Product
+                              ${orderHistoryDetail.payment.amount_ordered}
                             </span>
                           </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="modal-footer">
-                      <div className="col-md-2 p-0">
-                        <button
-                          type="button"
-                          className="btn btn-secondary btn-block"
-                          onClick={() =>
-                            toggleModalOrderDetail({ isShow: false })
-                          }
-                        >
-                          CLOSE
-                        </button>
+                      {/* Shipping method */}
+                      <div className={`form-group`}>
+                        <div>
+                          <div
+                            className={`border-bottom col ${Styles.wrapContent}`}
+                          >
+                            <div className="d-flex justify-content-between pr-1"></div>
+                            <span className="font-weight-bold">
+                              Shipping Method
+                            </span>
+                          </div>
+                        </div>
+                        <div className={`col ${Styles.wrapContent}`}>
+                          <div className="d-flex justify-content-between pr-1">
+                            <span>
+                              {orderHistoryDetail.shipping_description}
+                            </span>
+                            <span>${orderHistoryDetail.shipping_incl_tax}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Billing Address */}
+
+                      <div className={`form-group`}>
+                        <div>
+                          <div
+                            className={`border-bottom col ${Styles.wrapContent}`}
+                          >
+                            <span className="font-weight-bold">
+                              Billing Address
+                            </span>
+                          </div>
+                        </div>
+                        <div className={`col ${Styles.wrapContent}`}>
+                          <div className="d-flex justify-content-between pr-1">
+                            <span>Full name</span>
+                            <span>
+                              {orderHistoryDetail.billing_address.firstname}{' '}
+                              {orderHistoryDetail.billing_address.lastname}
+                            </span>
+                          </div>
+                          <div className="d-flex justify-content-between pr-1">
+                            <span>Email</span>
+                            <span>
+                              {orderHistoryDetail.billing_address.email}
+                            </span>
+                          </div>
+                          <div className="d-flex justify-content-between pr-1">
+                            <span>Telephone</span>
+                            <span>
+                              {orderHistoryDetail.billing_address.telephone}
+                            </span>
+                          </div>
+                          <div className="d-flex justify-content-between pr-1">
+                            <span>Address</span>
+                            <span>
+                              {orderHistoryDetail.billing_address.street}
+                            </span>
+                          </div>
+                          <div className="d-flex justify-content-between pr-1">
+                            <span>City</span>
+                            <span>
+                              {orderHistoryDetail.billing_address.city}
+                            </span>
+                          </div>
+                          <div className="d-flex justify-content-between pr-1">
+                            <span>Country</span>
+                            <span>
+                              {orderHistoryDetail.billing_address.country_id}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="modal-footer">
+                        <div className="col-md-2 p-0">
+                          <button
+                            type="button"
+                            className="btn btn-secondary btn-block"
+                            onClick={() =>
+                              toggleModalOrderDetail({ isShow: false })
+                            }
+                          >
+                            CLOSE
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </>
