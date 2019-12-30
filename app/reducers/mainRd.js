@@ -66,7 +66,7 @@ const initialState = {
   isOpenDetailOrder: false,
   isLoadingSearchCustomer: false,
   isLoadingOrderHistory: false,
-  isLoadingOrderHistoryDetail: false,
+  isLoadingOrderHistoryDetail: true,
   isLoadingSignUpCustomer: false,
   customerSearchResult: [],
   cartHoldList: [],
