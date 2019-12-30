@@ -9,11 +9,17 @@ type Props = {
   getDiscountForOfflineCheckout: () => void,
   isLoadingDiscountCheckoutOffline: boolean,
   currencyCode: string,
-  cartCurrent: Object
-}
+  cartCurrent: Object,
+  offlineCartInfo: Object
+};
 
 class CashOffline extends Component<Props> {
   props: Props;
+
+  componentDidMount() {
+    const { getDiscountForOfflineCheckout } = this.props;
+    getDiscountForOfflineCheckout();
+  }
 
   /**
    * Handle total price
@@ -24,13 +30,9 @@ class CashOffline extends Component<Props> {
     return sumCartTotalPrice(cartCurrent, currencyCode);
   };
 
-  componentDidMount() {
-    const { getDiscountForOfflineCheckout } = this.props;
-    getDiscountForOfflineCheckout();
-  }
-
   render() {
-    const { isLoadingDiscountCheckoutOffline } = this.props;
+    const { isLoadingDiscountCheckoutOffline, offlineCartInfo } = this.props;
+    console.log('offline cart info:', offlineCartInfo);
     return (
       <div>
         <div className="form-group row">
@@ -49,15 +51,15 @@ class CashOffline extends Component<Props> {
             Discount
           </label>
           <div className="col-sm-8 pt-1">
-            {
-              isLoadingDiscountCheckoutOffline ?
-                <div className="spinner-border spinner-border-sm" role="status">
-                  <span className="sr-only">Loading...</span>
-                </div> :
-                <p className="font-weight-bold" id="lblDiscountAmount">
-                  500
-                </p>
-            }
+            {isLoadingDiscountCheckoutOffline ? (
+              <div className="spinner-border spinner-border-sm" role="status">
+                <span className="sr-only">Loading...</span>
+              </div>
+            ) : (
+              <p className="font-weight-bold" id="lblDiscountAmount">
+                500
+              </p>
+            )}
           </div>
           <label htmlFor="lblTaxAmount" className="col-sm-4 col-form-label">
             Shipping & Handling
@@ -67,7 +69,7 @@ class CashOffline extends Component<Props> {
               0
             </p>
           </div>
-          <div className={Styles.lineSubTotal}/>
+          <div className={Styles.lineSubTotal} />
           <label htmlFor="staticEmail" className="col-sm-4 col-form-label">
             Order total
           </label>
@@ -82,10 +84,11 @@ class CashOffline extends Component<Props> {
   }
 }
 
-
 function mapStateToProps(state) {
   return {
-    isLoadingDiscountCheckoutOffline: state.mainRd.checkout.offline.isLoadingDiscount,
+    isLoadingDiscountCheckoutOffline:
+      state.mainRd.checkout.offline.isLoadingDiscount,
+    offlineCartInfo: state.mainRd.checkout.offline.cartInfo,
     cartCurrent: state.mainRd.cartCurrent,
     currencyCode: state.mainRd.shopInfoConfig[0]
   };
@@ -93,7 +96,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    getDiscountForOfflineCheckout: () => dispatch(getDiscountForOfflineCheckout())
+    getDiscountForOfflineCheckout: () =>
+      dispatch(getDiscountForOfflineCheckout())
   };
 }
 
