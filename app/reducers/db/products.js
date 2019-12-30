@@ -10,7 +10,6 @@ const table = 'products';
  */
 export function syncProducts(productList, allParentIds = []) {
   if (productList.length > 0) {
-    // Insert to database
     const productTbl = db.table(table);
 
     productList.forEach(async item => {
@@ -25,10 +24,12 @@ export function syncProducts(productList, allParentIds = []) {
       const product = await productTbl.get(itemRemake.id);
       // Check exists
       if (product) {
-        // Update
+        // Update with pos_sync_updated_at
+        itemRemake.pos_sync_updated_at = new Date();
         await productTbl.update(itemRemake.id, itemRemake);
       } else {
         // Add new
+        itemRemake.pos_sync_create_at = new Date();
         await productTbl.add(itemRemake);
       }
     });
