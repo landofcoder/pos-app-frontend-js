@@ -93,7 +93,8 @@ const initialState = {
         base_discount_amount: 0,
         base_grand_total: 0,
         base_sub_total: 0,
-        quote_id: 0
+        quote_id: 0,
+        shipping_and_tax_amount: 0
       }
     }
   }

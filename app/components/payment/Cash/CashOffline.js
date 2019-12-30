@@ -34,7 +34,10 @@ class CashOffline extends Component<Props> {
     const { cartCurrent, currencyCode, offlineCartInfo } = this.props;
     const subTotal = sumCartTotalPrice(cartCurrent, currencyCode, false);
 
-    const grandTotal = subTotal + offlineCartInfo.base_discount_amount;
+    const grandTotal =
+      subTotal +
+      offlineCartInfo.base_discount_amount -
+      offlineCartInfo.shipping_and_tax_amount;
     return formatCurrencyCode(grandTotal, currencyCode);
   };
 
@@ -46,6 +49,10 @@ class CashOffline extends Component<Props> {
     } = this.props;
     const discountAmount = formatCurrencyCode(
       offlineCartInfo.base_discount_amount,
+      currencyCode
+    );
+    const shippingTaxAndAmount = formatCurrencyCode(
+      offlineCartInfo.shipping_and_tax_amount,
       currencyCode
     );
     return (
@@ -81,7 +88,7 @@ class CashOffline extends Component<Props> {
           </label>
           <div className="col-sm-8 pt-1">
             <p className="font-weight-bold" id="lblTaxAmount">
-              0
+              {shippingTaxAndAmount}
             </p>
           </div>
           <div className={Styles.lineSubTotal} />
