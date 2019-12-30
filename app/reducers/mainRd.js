@@ -95,6 +95,10 @@ const initialState = {
 };
 
 /*eslint-disable*/
+// https://immerjs.github.io/immer/docs/typescript
+// Note: Immer v1.9+ supports TypeScript v3.1+ only.
+// Note: Immer v3.0+ supports TypeScript v3.4+ only.
+// Note: Flow support might be removed in future versions and we recommend TypeScript
 /*flow-disable*/
 const mainRd = (state: Object = initialState, action: Object) =>
   produce(state, draft => {
