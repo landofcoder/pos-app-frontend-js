@@ -52,7 +52,7 @@ import { calcPrice } from '../common/productPrice';
 import { BUNDLE } from '../constants/product-types';
 import { syncCategories } from '../reducers/db/categories';
 import { syncCustomers } from '../reducers/db/customers';
-
+import { signUpCustomer } from '../reducers/db/signUpCustomers';
 const cartCurrent = state => state.mainRd.cartCurrent.data;
 const cartCurrentToken = state => state.mainRd.cartCurrent.customerToken;
 const cartId = state => state.mainRd.cartCurrent.cartId;
@@ -620,6 +620,12 @@ function* getOrderHistory() {
 function* signUpAction(payload) {
   console.log(payload);
   yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: true });
+  const offlineMode = yield getOfflineMode();
+  // testing so !offilieMode is true
+  if(!offlineMode){
+    console.log(payload);
+    yield call(signUpCustomer,payload);
+  }
   const res = yield call(signUpCustomerService, payload);
   yield put({
     type: types.MESSAGE_SIGN_UP_CUSTOMER,
