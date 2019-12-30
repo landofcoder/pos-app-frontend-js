@@ -299,6 +299,7 @@ const mainRd = (state = initialState, action) =>
         break;
       case types.RECEIVED_ORDER_HISTORY_DETAIL_ACTION:
         draft.orderHistoryDetail = action.payload;
+        break;
       case types.RECEIVED_CUSTOM_RECEIPT:
         draft.customReceipt = action.payload;
         break;
@@ -322,6 +323,7 @@ const mainRd = (state = initialState, action) =>
         draft.cartHoldList = [];
         draft.orderHistory = [];
         draft.customerSearchResult = [];
+        break;
       default:
         break;
     }
