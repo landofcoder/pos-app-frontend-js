@@ -7,7 +7,7 @@ import { getBundleOption } from '../../common/product';
  * @param cartId
  * @param item
  * @param payloadCart
- * @returns {Promise<void>}
+ * @returns void
  */
 export async function addProductToQuote(cartId, item, payloadCart) {
   let url = '';
@@ -100,7 +100,7 @@ export async function placeCashOrderService(cartToken, payloadCart) {
 
 /**
  * Create guest cart service
- * @returns {Promise<any>}
+ * @returns void
  */
 export async function createGuestCartService() {
   const response = await fetch(`${baseUrl}index.php/rest/V1/guest-carts/`, {
@@ -124,7 +124,7 @@ export async function createGuestCartService() {
  * Add shipping information service
  * @param cartToken
  * @param payloadCart
- * @returns {Promise<any>}
+ * @returns void
  */
 export async function addShippingInformationService(cartToken, payloadCart) {
   let url = '';
@@ -165,7 +165,7 @@ export async function addShippingInformationService(cartToken, payloadCart) {
 /**
  * Render shipping address
  * @param customerConfig
- * @returns {{firstname: *, regionId: string, city: *, street: *, postcode: string, company: string, telephone: string, sameAsBilling: number, country_id: (*|string), email: *, lastname: *}}
+ * @returns void
  */
 function renderShippingAddress(customerConfig) {
   const city = customerConfig ? customerConfig.city : 'California';
@@ -194,7 +194,7 @@ function renderShippingAddress(customerConfig) {
  * Create Receipt service
  * @param adminToken
  * @param orderId
- * @returns {Promise<any>}
+ * @returns void
  */
 export async function createInvoiceService(adminToken, orderId) {
   const response = await fetch(
@@ -244,7 +244,7 @@ export async function createShipmentService(adminToken, orderId) {
 /**
  * Get discount and info for new quote
  * @param payload list products to add to cart
- * @returns {Promise<any>}
+ * @returns void
  */
 export async function getDiscountForQuoteService(payload) {
   const formDataCart = new FormData();

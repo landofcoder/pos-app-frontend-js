@@ -1,5 +1,5 @@
-import db from './db';
 import _ from 'lodash';
+import db from './db';
 
 const table = 'products';
 
