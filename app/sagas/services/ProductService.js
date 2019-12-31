@@ -493,7 +493,7 @@ export async function syncAllProducts(listCategories) {
       // Show counter product
       // eslint-disable-next-line no-await-in-loop
       const productQty = await counterProduct();
-      console.info('qty:', productQty);
+      console.log('qty:', productQty);
 
       // Call api to get large products
       // eslint-disable-next-line no-await-in-loop
