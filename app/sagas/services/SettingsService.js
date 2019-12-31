@@ -12,7 +12,6 @@ export async function haveToSyncAllData() {
 export async function createSyncAllDataFlag() {
   // Check exists for create new or update
   const data = await getByKey(syncAllDataLabel);
-  console.log('data by key:', data);
   if (data.length > 0) {
     const config = data[0];
     await updateById(config, syncAllDataLabel);
@@ -48,5 +47,10 @@ export async function shopInfoSync(shopInfo) {
     await createKey(shopInfoKey, shopInfo);
   } else {
     // Update shopInfo
+    await updateById(shopInfoDb[0].id, shopInfo);
   }
+}
+
+export async function getShopInfoLocal() {
+  return await getByKey(shopInfoKey);
 }

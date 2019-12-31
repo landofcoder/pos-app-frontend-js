@@ -1,6 +1,4 @@
-// @flow
 import { all, call, put, select, takeEvery } from 'redux-saga/effects';
-import type { Saga } from 'redux-saga';
 import { differenceInMinutes } from 'date-fns';
 import * as types from '../constants/root';
 import {
@@ -9,15 +7,15 @@ import {
   createGuestCartService,
   createInvoiceService,
   createShipmentService,
-  placeCashOrderService,
-  getDiscountForQuoteService
+  getDiscountForQuoteService,
+  placeCashOrderService
 } from './services/CartService';
 import {
   getDetailProductBundleService,
   getDetailProductConfigurableService,
   getDetailProductGroupedService,
-  searchProductService,
   getProductByCategoryService,
+  searchProductService,
   syncAllProducts
 } from './services/ProductService';
 import {
@@ -27,16 +25,16 @@ import {
 } from './services/CustomerService';
 import { createCustomerCartService } from './services/CustomerCartService';
 import {
+  getAllCategoriesService,
+  getCustomReceiptService,
   getOrderHistoryService,
   getOrderHistoryServiceDetails,
-  getSystemConfigService,
   getShopInfoService,
-  getCustomReceiptService,
-  getAllCategoriesService
+  getSystemConfigService
 } from './services/CommonService';
 import {
-  haveToSyncAllData,
   createSyncAllDataFlag,
+  haveToSyncAllData,
   updateSyncAllDataFlag
 } from './services/SettingsService';
 
@@ -46,13 +44,14 @@ import {
 } from '../common/product';
 import { adminToken } from '../params';
 import {
-  getDefaultShippingMethod,
-  getDefaultPaymentMethod
+  getDefaultPaymentMethod,
+  getDefaultShippingMethod
 } from './common/orderSaga';
 import { calcPrice } from '../common/productPrice';
 import { BUNDLE } from '../constants/product-types';
 import { syncCategories } from '../reducers/db/categories';
 import { syncCustomers } from '../reducers/db/customers';
+import { getOfflineMode } from '../common/settings';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
 const cartCurrentToken = state => state.mainRd.cartCurrent.customerToken;
@@ -175,17 +174,6 @@ function* updateIsGuestCustomer(isGuestCustomer) {
     type: types.UPDATE_IS_GUEST_CUSTOMER_CURRENT_CART,
     payload: isGuestCustomer
   });
-}
-
-/**
- * Get offline mode
- * @returns void
- */
-function* getOfflineMode() {
-  const posSystemConfigResult = yield select(posSystemConfig);
-  return Number(
-    posSystemConfigResult.general_configuration.enable_offline_mode
-  );
 }
 
 /**
@@ -548,7 +536,7 @@ function* syncData(allCategories) {
   } else {
     const timePeriod = 15;
     const obj = haveToSync[0];
-    const { time } = obj.value;
+    const time = obj.updated_at ? obj.updated_at : obj.created_at;
     const distanceMinute = differenceInMinutes(new Date(), new Date(time));
     if (distanceMinute > timePeriod) {
       letSync = true;
@@ -684,7 +672,7 @@ function* getDiscountForOfflineCheckoutSaga() {
  * Default root saga
  * @returns void
  */
-function* rootSaga(): Saga<void> {
+function* rootSaga() {
   yield takeEvery(types.GET_DEFAULT_PRODUCT, getDefaultProduct);
   yield takeEvery(types.CASH_CHECKOUT_ACTION, cashCheckout);
   yield takeEvery(types.SEARCH_ACTION, searchProduct);

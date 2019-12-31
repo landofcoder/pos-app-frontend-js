@@ -2,8 +2,10 @@ import { adminToken, baseUrl } from '../../params';
 import {
   systemConfigSync,
   getSystemConfigLocal,
-  shopInfoSync
+  shopInfoSync,
+  getShopInfoLocal
 } from './SettingsService';
+import { getCategories } from '../../reducers/db/categories';
 
 /**
  * Data from systemConfig will always get latest settings from api,
@@ -80,7 +82,9 @@ export async function getShopInfoService() {
 
   if (error) {
     // Query to local
-    console.log('Query to local');
+    data = await getShopInfoLocal();
+    data = data[0].value;
+    console.log('final data:', data);
   } else {
     // Sync now
     await shopInfoSync(data);
@@ -146,6 +150,7 @@ export async function getDetailOutletService(payload) {
  */
 export async function getAllCategoriesService() {
   let data;
+  let error = false;
   try {
     const response = await fetch(`${baseUrl}index.php/rest/V1/categories`, {
       method: 'GET', // *GET, POST, PUT, DELETE, etc.
@@ -163,6 +168,13 @@ export async function getAllCategoriesService() {
     data = await response.json();
   } catch (e) {
     data = [];
+    error = true;
+  }
+  if (error) {
+    // Get from local
+    data = await getCategories();
+    // eslint-disable-next-line prefer-destructuring
+    data = data[0];
   }
   return data;
 }

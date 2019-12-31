@@ -4,7 +4,7 @@ const posSystemConfigRd = state => state.mainRd.posSystemConfig;
 
 /**
  * Get default shipping method
- * @returns {Generator<<"SELECT", SelectEffectDescriptor>, *, ?>}
+ * @returns string
  */
 export function* getDefaultShippingMethod() {
   const posSystemConfig = yield select(posSystemConfigRd);
@@ -14,7 +14,7 @@ export function* getDefaultShippingMethod() {
 
 /**
  * Get default payment method
- * @returns {Generator<<"SELECT", SelectEffectDescriptor>, *, ?>}
+ * @returns string
  */
 export function* getDefaultPaymentMethod() {
   const posSystemConfig = yield select(posSystemConfigRd);
