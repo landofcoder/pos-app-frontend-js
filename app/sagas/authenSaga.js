@@ -37,14 +37,15 @@ function* logoutAction() {
 }
 function* takeLatestToken() {
   const adminTokenResult = yield select(adminToken);
+  console.log('run to take latest');
 
-  const cashierInfo = yield call(getInfoCashierService, adminTokenResult);
-  yield put({ type: types.RECEIVED_CASHIER_INFO, payload: cashierInfo });
-
-  const outletId = cashierInfo.outlet_id;
-
-  const detailOutlet = yield call(getDetailOutletService, outletId);
-  yield put({ type: RECEIVED_DETAIL_OUTLET, payload: detailOutlet });
+  // const cashierInfo = yield call(getInfoCashierService, adminTokenResult);
+  // yield put({ type: types.RECEIVED_CASHIER_INFO, payload: cashierInfo });
+  //
+  // const outletId = cashierInfo.outlet_id;
+  //
+  // const detailOutlet = yield call(getDetailOutletService, outletId);
+  // yield put({ type: RECEIVED_DETAIL_OUTLET, payload: detailOutlet });
 }
 function* authenSaga() {
   yield takeEvery(types.LOGIN_ACTION, loginAction);

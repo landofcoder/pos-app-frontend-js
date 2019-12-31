@@ -84,11 +84,29 @@ const initialState = {
     isLoadingProductOption: false, // Show a loading in screen for product option loading
     isShowingProductOption: false, // Show model for choose product type option
     optionValue: null // Keep detail product clicked
+  },
+  checkout: {
+    // All checkout variables
+    offline: {
+      isLoadingDiscount: false,
+      cartInfo: {
+        base_discount_amount: 0,
+        base_grand_total: 0,
+        base_sub_total: 0,
+        quote_id: 0,
+        shipping_and_tax_amount: 0
+      }
+    }
   }
 };
 
-/* eslint-disable default-case, no-param-reassign */
-const mainRd = (state = initialState, action) =>
+/*eslint-disable*/
+// https://immerjs.github.io/immer/docs/typescript
+// Note: Immer v1.9+ supports TypeScript v3.1+ only.
+// Note: Immer v3.0+ supports TypeScript v3.4+ only.
+// Note: Flow support might be removed in future versions and we recommend TypeScript
+/*flow-disable*/
+const mainRd = (state: Object = initialState, action: Object) =>
   produce(state, draft => {
     switch (action.type) {
       case types.RECEIVED_ORDER_PREPARING_CHECKOUT:
@@ -299,6 +317,7 @@ const mainRd = (state = initialState, action) =>
         break;
       case types.RECEIVED_ORDER_HISTORY_DETAIL_ACTION:
         draft.orderHistoryDetail = action.payload;
+        break;
       case types.RECEIVED_CUSTOM_RECEIPT:
         draft.customReceipt = action.payload;
         break;
@@ -322,9 +341,16 @@ const mainRd = (state = initialState, action) =>
         draft.cartHoldList = [];
         draft.orderHistory = [];
         draft.customerSearchResult = [];
-      default:
         break;
+      case types.UPDATE_IS_LOADING_GET_CHECKOUT_OFFLINE:
+        draft.checkout.offline.isLoadingDiscount = action.payload;
+        break;
+      case types.RECEIVED_CHECKOUT_OFFLINE_CART_INFO:
+        draft.checkout.offline.cartInfo = action.payload[0];
+        break;
+      default:
+        return draft;
     }
   });
-
+/*flow-enable*/
 export default mainRd;
