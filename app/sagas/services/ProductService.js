@@ -485,7 +485,6 @@ async function getProductsByCategory(categoryId, currentPage = 1) {
  */
 export async function syncAllProducts(listCategories) {
   const childCategories = listCategories.children_data;
-  let existsChildInList = false;
 
   if (childCategories.length > 0) {
     // eslint-disable-next-line no-restricted-syntax
@@ -497,11 +496,10 @@ export async function syncAllProducts(listCategories) {
 
       // Call api to get large products
       // eslint-disable-next-line no-await-in-loop
-      await syncAllProductsByCategory(cate.id, cate);
+      await syncAllProductsByCategory(cate.id);
 
       // Check children and recall this syncAllProducts
       if (cate.children_data.length > 0) {
-        existsChildInList = true;
         // eslint-disable-next-line no-await-in-loop
         await syncAllProducts(cate);
       }
@@ -512,9 +510,9 @@ export async function syncAllProducts(listCategories) {
 /**
  * Get product with paging by category
  * @param categoryId
- * @param category
  */
-async function syncAllProductsByCategory(categoryId, category = null) {
+async function syncAllProductsByCategory(categoryId) {
+  console.log('run sync all product by category');
   const currentPage = 1;
   // Get products as first page
   const productsResult = await getProductsByCategory(categoryId, currentPage);

@@ -9,6 +9,7 @@ const table = 'products';
  * @param allParentIds
  */
 export function syncProducts(productList, allParentIds = []) {
+  console.log('run sync product here');
   if (productList.length > 0) {
     const productTbl = db.table(table);
 
@@ -18,8 +19,12 @@ export function syncProducts(productList, allParentIds = []) {
 
       // Merged all parentIds to item
       const listDifference = _.difference(allParentIds, itemRemake.categoryIds);
+
       // Push parentIds with regular categoryIds
       itemRemake.categoryIds = _.concat(itemRemake.categoryIds, listDifference);
+
+      // Get detail product by type_id
+      console.log('detail product:', item);
 
       const product = await productTbl.get(itemRemake.id);
       // Check exists
