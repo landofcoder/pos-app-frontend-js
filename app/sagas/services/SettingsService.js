@@ -2,13 +2,23 @@ import { getByKey, createKey, updateById } from '../../reducers/db/settings';
 
 const syncAllDataLabel = 'sync_all_data';
 const systemConfigLabel = 'system_config';
+const shopInfoKey = 'shop_info_config';
 
 export async function haveToSyncAllData() {
-  return await getByKey(syncAllDataLabel);
+  const data = await getByKey(syncAllDataLabel);
+  return data;
 }
 
 export async function createSyncAllDataFlag() {
-  await createKey(syncAllDataLabel, { time: Date.now(), timeFormat: new Date() });
+  // Check exists for create new or update
+  const data = await getByKey(syncAllDataLabel);
+  console.log('data by key:', data);
+  if (data.length > 0) {
+    const config = data[0];
+    await updateById(config, syncAllDataLabel);
+  } else {
+    await createKey(syncAllDataLabel);
+  }
 }
 
 export async function updateSyncAllDataFlag(id) {
@@ -17,15 +27,26 @@ export async function updateSyncAllDataFlag(id) {
 
 export async function systemConfigSync(systemConfig) {
   const systemConfigInDb = await getByKey(systemConfigLabel);
-  if(systemConfigInDb.length === 0) {
+  if (systemConfigInDb.length === 0) {
     await createKey(systemConfigLabel, systemConfig);
   } else {
     // Update
-    const id = systemConfigInDb[0].id;
+    const { id } = systemConfigInDb[0];
     await updateById(id, systemConfig);
   }
 }
 
 export async function getSystemConfigLocal() {
-  return await getByKey(systemConfigLabel);
+  const data = await getByKey(systemConfigLabel);
+  return data;
+}
+
+export async function shopInfoSync(shopInfo) {
+  const shopInfoDb = await getByKey(shopInfoKey);
+  if (shopInfoDb.length === 0) {
+    // Create key
+    await createKey(shopInfoKey, shopInfo);
+  } else {
+    // Update shopInfo
+  }
 }

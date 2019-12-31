@@ -220,38 +220,45 @@ function* cashCheckoutPlaceOrder() {
   // Start cash place order loading
   yield put({ type: types.UPDATE_CASH_PLACE_ORDER_LOADING, payload: true });
 
-  const cartCurrentTokenResult = yield select(cartCurrentToken);
-  const isGuestCustomer = yield select(cartIsGuestCustomer);
-  const cartIdResult = yield select(cartId);
-  const posSystemConfigResult = yield select(posSystemConfig);
-  const posSystemConfigCustomer = posSystemConfigResult[3];
+  // Get offline mode
+  const offlineMode = yield getOfflineMode();
 
-  const defaultShippingMethod = yield getDefaultShippingMethod();
+  if (offlineMode === 1) {
+    console.log('offline mode');
+  } else {
+    const cartCurrentTokenResult = yield select(cartCurrentToken);
+    const isGuestCustomer = yield select(cartIsGuestCustomer);
+    const cartIdResult = yield select(cartId);
+    const posSystemConfigResult = yield select(posSystemConfig);
+    const posSystemConfigCustomer = posSystemConfigResult[3];
 
-  // Default payment
-  const defaultPaymentMethod = yield getDefaultPaymentMethod();
+    const defaultShippingMethod = yield getDefaultShippingMethod();
 
-  const cashierInfoResult = yield select(cashierInfo);
+    // Default payment
+    const defaultPaymentMethod = yield getDefaultPaymentMethod();
 
-  // Step 1: Create order
-  const orderId = yield call(placeCashOrderService, cartCurrentTokenResult, {
-    cartIdResult,
-    isGuestCustomer,
-    customerToken: cartCurrentTokenResult,
-    defaultShippingMethod,
-    defaultPaymentMethod,
-    posSystemConfigCustomer,
-    cashierInfo: cashierInfoResult
-  });
+    const cashierInfoResult = yield select(cashierInfo);
 
-  // Step 2: Create invoice
-  yield call(createInvoiceService, adminToken, orderId);
+    // Step 1: Create order
+    const orderId = yield call(placeCashOrderService, cartCurrentTokenResult, {
+      cartIdResult,
+      isGuestCustomer,
+      customerToken: cartCurrentTokenResult,
+      defaultShippingMethod,
+      defaultPaymentMethod,
+      posSystemConfigCustomer,
+      cashierInfo: cashierInfoResult
+    });
 
-  // Step 3: Create shipment
-  yield call(createShipmentService, adminToken, orderId);
+    // Step 2: Create invoice
+    yield call(createInvoiceService, adminToken, orderId);
 
-  // Place order success, let show receipt and copy current cart to cartForReceipt
-  yield put({ type: types.PLACE_ORDER_SUCCESS, orderId });
+    // Step 3: Create shipment
+    yield call(createShipmentService, adminToken, orderId);
+
+    // Place order success, let show receipt and copy current cart to cartForReceipt
+    yield put({ type: types.PLACE_ORDER_SUCCESS, orderId });
+  }
 
   // Stop cash loading order loading
   yield put({ type: types.UPDATE_CASH_PLACE_ORDER_LOADING, payload: false });
@@ -564,7 +571,7 @@ function* syncData(allCategories) {
       yield call(syncAllProducts, allCategories);
     } else {
       console.warn(
-        'offline mode not on, pls enable offline mode and connect internet'
+        'offline mode not on, pls enable offline mode and connect to the internet'
       );
     }
   } else {
@@ -574,8 +581,10 @@ function* syncData(allCategories) {
 
 function* getCustomReceipt() {
   const customReceiptResult = yield call(getCustomReceiptService);
-  const result = customReceiptResult[0];
-  yield put({ type: types.RECEIVED_CUSTOM_RECEIPT, payload: result.data });
+  if (customReceiptResult.length > 0) {
+    const result = customReceiptResult[0];
+    yield put({ type: types.RECEIVED_CUSTOM_RECEIPT, payload: result.data });
+  }
 }
 
 /**

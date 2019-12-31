@@ -2,7 +2,7 @@
 import * as types from '../constants/root';
 import * as typesAuthen from '../constants/authen.json';
 
-export function addToCart(payload) {
+export function addToCart(payload: any) {
   return {
     type: types.ADD_TO_CART,
     payload

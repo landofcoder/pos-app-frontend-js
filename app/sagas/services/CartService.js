@@ -249,26 +249,30 @@ export async function createShipmentService(adminToken, orderId) {
 export async function getDiscountForQuoteService(payload) {
   const formDataCart = new FormData();
   formDataCart.append('param', JSON.stringify([]));
-
-  const cart = payload.cart;
-  const config = payload.config;
-
-  const response = await fetch(
-    `${baseUrl}index.php/rest/V1/pos/get-discount-quote`,
-    {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
-      mode: 'cors', // no-cors, *cors, same-origin
-      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: 'same-origin', // include, *same-origin, omit
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${adminToken}`
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      redirect: 'follow', // manual, *follow, error
-      referrer: 'no-referrer', // no-referrer, *client
-      body: JSON.stringify({ param: JSON.stringify({ cart, config }) }) // body data type must match "Content-Type" header
-    }
-  );
-  return await response.json();
+  let data;
+  const { cart } = payload;
+  const { config } = payload;
+  try {
+    const response = await fetch(
+      `${baseUrl}index.php/rest/V1/pos/get-discount-quote`,
+      {
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors', // no-cors, *cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omit
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${adminToken}`
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: 'follow', // manual, *follow, error
+        referrer: 'no-referrer', // no-referrer, *client
+        body: JSON.stringify({ param: JSON.stringify({ cart, config }) }) // body data type must match "Content-Type" header
+      }
+    );
+    data = await response.json();
+  } catch (e) {
+    return 'error';
+  }
+  return data;
 }
