@@ -9,7 +9,6 @@ const table = 'products';
  * @param allParentIds
  */
 export function syncProducts(productList, allParentIds = []) {
-  console.log('run sync product here');
   if (productList.length > 0) {
     const productTbl = db.table(table);
 
