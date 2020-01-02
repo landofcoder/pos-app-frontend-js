@@ -407,7 +407,7 @@ async function getProductsByCategory(categoryId, currentPage = 1) {
     body: JSON.stringify({
       query: `{
       products(filter: {category_id: {eq: "${categoryId}"}}, pageSize: ${defaultPageSize}, currentPage: ${currentPage}) {
-      total_count,
+        total_count
         items {
           id
           attribute_set_id
@@ -415,7 +415,7 @@ async function getProductsByCategory(categoryId, currentPage = 1) {
           sku
           type_id
           media_gallery_entries {
-             file
+            file
           }
           price {
             regularPrice {
@@ -464,6 +464,74 @@ async function getProductsByCategory(categoryId, currentPage = 1) {
                 label
                 code
                 value_index
+              }
+            }
+          }
+          ... on BundleProduct {
+            dynamic_sku
+            dynamic_price
+            dynamic_weight
+            price_view
+            media_gallery_entries {
+              file
+            }
+            ship_bundle_items
+            items {
+              option_id
+              title
+              required
+              type
+              position
+              sku
+              options {
+                id
+                qty
+                position
+                is_default
+                price
+                price_type
+                can_change_quantity
+                label
+                product {
+                  id
+                  name
+                  sku
+                  type_id
+                  media_gallery_entries {
+                    file
+                  }
+                  price {
+                    regularPrice {
+                      amount {
+                        value
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          ... on GroupedProduct {
+            items {
+              qty
+              position
+              product {
+                id
+                media_gallery_entries {
+                  file
+                }
+                sku
+                name
+                price {
+                  regularPrice {
+                    amount {
+                      value
+                      currency
+                    }
+                  }
+                }
+                type_id
+                url_key
               }
             }
           }
@@ -516,6 +584,8 @@ async function syncAllProductsByCategory(categoryId) {
   const currentPage = 1;
   // Get products as first page
   const productsResult = await getProductsByCategory(categoryId, currentPage);
+
+  console.log('product result here:', productsResult);
 
   // Let all parents categories of this category
   const defaultCategory = await getCategories();
