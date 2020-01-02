@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { cashPlaceOrderAction } from '../../../actions/checkoutActions';
 import { updateShowCashModal } from '../../../actions/homeAction';
-import Styles from './cash.scss';
-import { formatCurrencyCode } from '../../../common/product';
+import CashOffline from './CashOffline';
+import CashOnline from './CashOnline';
 
 type Props = {
   cashLoadingPreparingOrder: boolean,
@@ -21,28 +21,12 @@ class CashPayment extends Component<Props> {
   render() {
     const {
       cashLoadingPreparingOrder,
-      orderPreparingCheckout,
       cashPlaceOrderAction,
       updateShowCashModal,
       isLoadingCashPlaceOrder,
-      currencyCode
+      posSystemConfig
     } = this.props;
-    const subTotal = formatCurrencyCode(
-      orderPreparingCheckout.totals.base_subtotal,
-      currencyCode
-    );
-    const discountAmount = formatCurrencyCode(
-      orderPreparingCheckout.totals.discount_amount,
-      currencyCode
-    );
-    const shippingAmount = formatCurrencyCode(
-      orderPreparingCheckout.totals.base_shipping_amount,
-      currencyCode
-    );
-    const grandTotal = formatCurrencyCode(
-      orderPreparingCheckout.totals.grand_total,
-      currencyCode
-    );
+    const enableOfflineMode = Number(posSystemConfig.general_configuration.enable_offline_mode);
     return (
       <div>
         <div className="modal-content">
@@ -58,62 +42,9 @@ class CashPayment extends Component<Props> {
             />
           </div>
           <div className="modal-body">
-            <div className="form-group row">
-              <label htmlFor="staticEmail" className="col-sm-4 col-form-label">
-                Subtotal
-              </label>
-              <div className="col-sm-8 pt-1">
-                {cashLoadingPreparingOrder ? (
-                  <div
-                    className="spinner-border spinner-border-sm"
-                    role="status"
-                  >
-                    <span className="sr-only">Loading...</span>
-                  </div>
-                ) : (
-                  <div className="font-weight-bold">
-                    <p className="font-weight-bold">{subTotal}</p>
-                  </div>
-                )}
-              </div>
-              <label
-                htmlFor="lblDiscountAmount"
-                className="col-sm-4 col-form-label"
-              >
-                Discount
-              </label>
-              <div className="col-sm-8 pt-1">
-                <p className="font-weight-bold" id="lblDiscountAmount">
-                  {discountAmount}
-                </p>
-              </div>
-              <label htmlFor="lblTaxAmount" className="col-sm-4 col-form-label">
-                Shipping & Handling
-              </label>
-              <div className="col-sm-8 pt-1">
-                <p className="font-weight-bold" id="lblTaxAmount">
-                  {shippingAmount}
-                </p>
-              </div>
-              <div className={Styles.lineSubTotal} />
-              <label htmlFor="staticEmail" className="col-sm-4 col-form-label">
-                Order total
-              </label>
-              <div className="col-sm-8 pt-1">
-                {cashLoadingPreparingOrder ? (
-                  <div
-                    className="spinner-border spinner-border-sm"
-                    role="status"
-                  >
-                    <span className="sr-only">Loading...</span>
-                  </div>
-                ) : (
-                  <div className="font-weight-bold">
-                    <p className="font-weight-bold">{grandTotal}</p>
-                  </div>
-                )}
-              </div>
-            </div>
+            {
+              enableOfflineMode === 1 ? <CashOffline/> : <CashOnline/>
+            }
           </div>
           <div className="modal-footer">
             <div className="col-md-6 p-0">
@@ -156,7 +87,8 @@ function mapStateToProps(state) {
     cashLoadingPreparingOrder: state.mainRd.cashLoadingPreparingOrder,
     orderPreparingCheckout: state.mainRd.orderPreparingCheckout,
     isLoadingCashPlaceOrder: state.mainRd.isLoadingCashPlaceOrder,
-    currencyCode: state.mainRd.shopInfoConfig[0]
+    currencyCode: state.mainRd.shopInfoConfig[0],
+    posSystemConfig: state.mainRd.posSystemConfig
   };
 }
 

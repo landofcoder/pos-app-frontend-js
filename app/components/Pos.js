@@ -21,12 +21,12 @@ import CartCustomer from './customer/CartCustomer';
 import SignUpCustomer from './customer/SignUpCustomer/SignUpCustomer';
 import CashPanel from './payment/Cash/Cash';
 import Receipt from './payment/Receipt/Receipt';
-import { formatCurrencyCode } from '../common/product';
+import { sumCartTotalPrice } from '../common/cart';
 import Categories from './commons/Categories/Categories';
 import { POS_LOGIN_STORAGE } from '../constants/authen';
 
 type Props = {
-  productList: Array,
+  productList: Array<Object>,
   addToCart: (payload: Object) => void,
   holdAction: () => void,
   searchProductAction: (payload: string) => void,
@@ -40,27 +40,37 @@ type Props = {
   productOption: Object,
   isShowCashPaymentModel: boolean,
   token: string,
-  updateIsShowingProductOption: () => void,
+  updateIsShowingProductOption: (payload: boolean) => void,
   mainProductListLoading: boolean,
   isOpenReceiptModal: Object,
-  cartHoldList: Array,
-  switchToHoldItemCart: () => void,
+  cartHoldList: Array<Object>,
+  switchToHoldItemCart: (payload: number) => void,
   emptyCart: () => void,
   currencyCode: string,
-  setToken: (payload: string) => void,
+  setToken: (payload: ?string) => void,
   isLoadingSearchHandle: boolean,
   isShowHaveNoSearchResultFound: boolean,
   isOpenSignUpCustomer: boolean,
   internetConnected: boolean
 };
 
-export default class Pos extends Component<Props> {
-  props: Props;
+type State = {
+  delayTimer: Object,
+  typeId: string,
+  redirectToAccount: boolean
+};
 
-  constructor(props) {
+type product = {
+  id: number,
+  name: string,
+  sku: string
+};
+
+export default class Pos extends Component<Props, State> {
+  constructor(props: any) {
     super(props);
     this.state = {
-      delayTimer: null,
+      delayTimer: {},
       typeId: '',
       redirectToAccount: false
     };
@@ -71,7 +81,7 @@ export default class Pos extends Component<Props> {
     getDefaultProductAction();
   }
 
-  getFirstMedia = item => {
+  getFirstMedia = (item: Object) => {
     const gallery = item.media_gallery_entries
       ? item.media_gallery_entries
       : [];
@@ -89,14 +99,12 @@ export default class Pos extends Component<Props> {
    */
   sumTotalPrice = () => {
     const { cartCurrent, currencyCode } = this.props;
-    let totalPrice = 0;
-    cartCurrent.data.forEach(item => {
-      totalPrice += item.pos_totalPrice;
-    });
-
-    return formatCurrencyCode(totalPrice, currencyCode);
+    return sumCartTotalPrice(cartCurrent, currencyCode);
   };
 
+  /**
+   * Redirect to account view
+   */
   handleRedirectToAccount = () => {
     this.setState({ redirectToAccount: true });
   };
@@ -105,7 +113,7 @@ export default class Pos extends Component<Props> {
    * Pre add to cart
    * @param item
    */
-  preAddToCart = item => {
+  preAddToCart = (item: Object) => {
     const {
       addToCart,
       getDetailProductConfigurable,
@@ -122,23 +130,26 @@ export default class Pos extends Component<Props> {
     }
 
     switch (item.type_id) {
-      case CONFIGURABLE: {
+      case CONFIGURABLE:
+        {
           const { sku } = item;
-        getDetailProductConfigurable(sku);
-      }
+          getDetailProductConfigurable(sku);
+        }
         break;
       case SIMPLE:
         addToCart(item);
         break;
-      case BUNDLE: {
+      case BUNDLE:
+        {
           const { sku } = item;
-        getDetailProductBundle(sku);
-      }
+          getDetailProductBundle(sku);
+        }
         break;
-      case GROUPED: {
+      case GROUPED:
+        {
           const { sku } = item;
-        getDetailProductGrouped(sku);
-      }
+          getDetailProductGrouped(sku);
+        }
         break;
       default:
         addToCart(item);
@@ -154,11 +165,11 @@ export default class Pos extends Component<Props> {
     const { typeId } = this.state;
     switch (typeId) {
       case CONFIGURABLE:
-        return <Configuration/>;
+        return <Configuration />;
       case BUNDLE:
-        return <Bundle/>;
+        return <Bundle />;
       case GROUPED:
-        return <Grouped/>;
+        return <Grouped />;
       default:
         break;
     }
@@ -169,40 +180,39 @@ export default class Pos extends Component<Props> {
    * @param productList
    * @returns {*}
    */
-  renderSwitchPanel = productList => {
+  renderSwitchPanel = (productList: Array<product>): any => {
     const { mainPanelType } = this.props;
 
-    switch (mainPanelType) {
-      case HOME_DEFAULT_PRODUCT_LIST:
-        return productList.map(item => (
-          <div
-            className={`col-md-3 mb-3 pr-0 ${Styles.wrapProductItem} ${Styles.itemSameHeight}`}
-            key={item.id}
-          >
-            <div className={`card ${Styles.itemCart}`}>
-              <div className="card-body">
-                <a
-                  role="presentation"
-                  className={CommonStyle.pointer}
-                  onClick={() => this.preAddToCart(item)}
-                >
-                  <div className={Styles.wrapProductImage}>
-                    <div className={Styles.inside}>
-                      <img alt="name" src={this.getFirstMedia(item)}/>
-                    </div>
+    if (mainPanelType === HOME_DEFAULT_PRODUCT_LIST) {
+      return productList.map(item => (
+        <div
+          className={`col-md-3 mb-3 pr-0 ${Styles.wrapProductItem} ${Styles.itemSameHeight}`}
+          key={item.id}
+        >
+          <div className={`card ${Styles.itemCart}`}>
+            <div className="card-body">
+              <a
+                role="presentation"
+                className={CommonStyle.pointer}
+                onClick={() => this.preAddToCart(item)}
+              >
+                <div className={Styles.wrapProductImage}>
+                  <div className={Styles.inside}>
+                    <img alt="name" src={this.getFirstMedia(item)} />
                   </div>
-                  <div className={Styles.wrapProductInfo}>
-                    <span className={Styles.wrapProductName}>{item.name}</span>
-                    <span className={Styles.wrapSku}>{item.sku}</span>
-                  </div>
-                </a>
-              </div>
+                </div>
+                <div className={Styles.wrapProductInfo}>
+                  <span className={Styles.wrapProductName}>{item.name}</span>
+                  <span className={Styles.wrapSku}>{item.sku}</span>
+                </div>
+              </a>
             </div>
           </div>
-        ));
-      default:
-        return <></>;
+        </div>
+      ));
     }
+
+    return <></>;
   };
 
   /**
@@ -236,7 +246,7 @@ export default class Pos extends Component<Props> {
    * When cashier input search
    * @param e
    */
-  searchTyping = e => {
+  searchTyping = (e: Object) => {
     const { value } = e.target;
     const { delayTimer } = this.state;
     const { searchProductAction } = this.props;
@@ -259,22 +269,21 @@ export default class Pos extends Component<Props> {
       isShowHaveNoSearchResultFound,
       setToken,
       internetConnected,
-      isOpenSignUpCustomer,
+      isOpenSignUpCustomer
     } = this.props;
     const { redirectToAccount } = this.state;
     // Check login
     if (token === '') {
       // Set auto login
       if (localStorage.getItem(POS_LOGIN_STORAGE)) {
-        const loginInfo = localStorage.getItem(POS_LOGIN_STORAGE);
         // Login again by username and password
         setToken(localStorage.getItem(POS_LOGIN_STORAGE));
-      } else return <Redirect to={routes.LOGIN}/>;
+      } else return <Redirect to={routes.LOGIN} />;
     }
 
     // Check Redirect To Layout Account
     if (redirectToAccount) {
-      return <Redirect to={routes.ACCOUNT}/>;
+      return <Redirect to={routes.ACCOUNT} />;
     }
     const classWrapProductPanel = `pr-3 ${Styles.wrapProductPanel} row`;
     const {
@@ -312,7 +321,7 @@ export default class Pos extends Component<Props> {
             style={{ display: isShowCashPaymentModel ? 'block' : 'none' }}
           >
             <div className={ModalStyle.modalContent}>
-              {isShowCashPaymentModel ? <CashPanel/> : <></>}
+              {isShowCashPaymentModel ? <CashPanel /> : <></>}
             </div>
           </div>
           {/* RECEIPT MODAL */}
@@ -322,14 +331,14 @@ export default class Pos extends Component<Props> {
             style={{ display: isOpenReceiptModal ? 'block' : 'none' }}
           >
             <div className={ModalStyle.modalContent} style={{ width: '450px' }}>
-              <Receipt/>
+              <Receipt />
             </div>
           </div>
           <div className="row" id={Styles.wrapPostContainerId}>
             <div className="col-md-9">
               <div className={classWrapProductPanel}>
                 <div className="col-md-2">
-                  <Categories/>
+                  <Categories />
                 </div>
                 <div className="col-md-10 mb-0 pr-0">
                   <div className="input-group flex-nowrap">
@@ -392,7 +401,7 @@ export default class Pos extends Component<Props> {
             <div className="col-md-3">
               <div className={CommonStyle.wrapLevel1}>
                 <div className={CommonStyle.wrapCartPanelPosition}>
-                  <ListCart/>
+                  <ListCart />
                   <div className={CommonStyle.subTotalContainer}>
                     <div className={CommonStyle.wrapSubTotal}>
                       {this.renderDiscountAndTax()}
@@ -465,7 +474,7 @@ export default class Pos extends Component<Props> {
               </button>
             </div>
             <div className="col-md-2 pr-1 pl-0">
-              <CartCustomer/>
+              <CartCustomer />
               {isOpenSignUpCustomer ? <SignUpCustomer /> : null}
             </div>
             <div className="col-md-3 pl-0 pr-0">
@@ -488,16 +497,22 @@ export default class Pos extends Component<Props> {
             </div>
           </div>
           <div className={Styles.wrapFooterLine}>
-            <div className={Styles.wrapLeft}>
-              &nbsp;
-            </div>
+            <div className={Styles.wrapLeft}>&nbsp;</div>
             <div className={Styles.wrapRight}>
-              <div className={Styles.wrapStatusOnline}>
-
-              </div>
+              <div className={Styles.wrapStatusOnline} />
               <div className={Styles.wrapClock}>
-                <span> {internetConnected ? <span className='text-success text-bold font-weight-bolder'>Online</span> :
-                  <span className='text-danger text-bold font-weight-bolder'>Offline</span>}</span>
+                <span>
+                  {' '}
+                  {internetConnected ? (
+                    <span className="text-success text-bold font-weight-bolder">
+                      Online
+                    </span>
+                  ) : (
+                    <span className="text-danger text-bold font-weight-bolder">
+                      Offline
+                    </span>
+                  )}
+                </span>
               </div>
             </div>
           </div>
