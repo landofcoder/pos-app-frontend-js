@@ -11,23 +11,25 @@ import * as routes from '../../constants/routes';
 import { POS_LOGIN_STORAGE } from '../../constants/authen';
 
 type Props = {
-  login: () => void,
+  login: (payload: Object) => void,
   message: string,
   token: string,
   loading: boolean,
   setToken: () => void
 };
 
-class PageLogin extends Component {
+type State = {
+  valueUser: string,
+  valuePass: string
+};
+
+class PageLogin extends Component<Props, State> {
   props: Props;
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      valueUser: '',
-      valuePass: ''
-    };
-  }
+  state = {
+    valueUser: '',
+    valuePass: ''
+  };
 
   componentDidMount(): * {
     console.log('login page did mount');
@@ -56,7 +58,8 @@ class PageLogin extends Component {
     const { token, message, loading, setToken } = this.props;
     const { valueUser, valuePass } = this.state;
     if (token !== '') {
-      return <Redirect to={routes.POS} />;
+      console.log('redirect to pos now');
+      return <Redirect push to={'/test'} />;
     }
     if (localStorage.getItem(POS_LOGIN_STORAGE)) {
       // setToken(localStorage.getItem(POS_LOGIN_STORAGE));

@@ -84,6 +84,7 @@ export default class Pos extends Component<Props, State> {
       getPostGeneralConfig,
       getCustomReceipt
     } = this.props;
+    console.log('hello pos now');
     getDefaultProductAction();
     getPostGeneralConfig();
     getCustomReceipt();
@@ -267,31 +268,31 @@ export default class Pos extends Component<Props, State> {
   };
 
   render() {
+    console.log('run to pos layout');
     const {
-      token,
       mainProductListLoading,
       cartHoldList,
       switchToHoldItemCart,
       emptyCart,
       isLoadingSearchHandle,
       isShowHaveNoSearchResultFound,
-      setToken,
       internetConnected,
       isOpenSignUpCustomer
     } = this.props;
     const { redirectToAccount } = this.state;
-    // Check login
-    if (token === '') {
-      // Set auto login
-      if (localStorage.getItem(POS_LOGIN_STORAGE)) {
-        // Login again by username and password
-        setToken(localStorage.getItem(POS_LOGIN_STORAGE));
-      } else return <Redirect to={routes.LOGIN} />;
-    }
+
+    // // Check login
+    // if (token === '') {
+    //   // Set auto login
+    //   if (localStorage.getItem(POS_LOGIN_STORAGE)) {
+    //     // Login again by username and password
+    //     setToken(localStorage.getItem(POS_LOGIN_STORAGE));
+    //   } else return <Redirect to={routes.LOGIN} />;
+    // }
 
     // Check Redirect To Layout Account
     if (redirectToAccount) {
-      return <Redirect to={routes.ACCOUNT} />;
+      // return <Redirect to={routes.ACCOUNT} />;
     }
     const classWrapProductPanel = `pr-3 ${Styles.wrapProductPanel} row`;
     const {
