@@ -10,8 +10,8 @@ function Routes() {
   return (
     <App>
       <Switch>
-        <Route path={routes.ACCOUNT} component={Account} />
         <Route path={routes.LOGIN} component={PageLogin} />
+        <Route path={routes.ACCOUNT} component={Account} />
         <Route path={routes.POS} component={PosContainer} />
       </Switch>
     </App>

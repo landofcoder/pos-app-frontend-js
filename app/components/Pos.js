@@ -51,7 +51,9 @@ type Props = {
   isLoadingSearchHandle: boolean,
   isShowHaveNoSearchResultFound: boolean,
   isOpenSignUpCustomer: boolean,
-  internetConnected: boolean
+  internetConnected: boolean,
+  getPostGeneralConfig: () => void,
+  getCustomReceipt: () => void
 };
 
 type State = {
@@ -77,8 +79,14 @@ export default class Pos extends Component<Props, State> {
   }
 
   componentDidMount(): * {
-    const { getDefaultProductAction } = this.props;
+    const {
+      getDefaultProductAction,
+      getPostGeneralConfig,
+      getCustomReceipt
+    } = this.props;
     getDefaultProductAction();
+    getPostGeneralConfig();
+    getCustomReceipt();
   }
 
   getFirstMedia = (item: Object) => {

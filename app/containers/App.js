@@ -1,23 +1,18 @@
 // @flow
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { getPostGeneralConfig, getCustomReceipt, updateIsInternetConnected } from '../actions/homeAction';
+import { updateIsInternetConnected } from '../actions/homeAction';
 
 type Props = {
   children: React.Node,
-  getPostGeneralConfig: () => void,
-  getCustomReceipt: () => void,
-  isLoadingSystemConfig: boolean,
-  updateIsInternetConnected: () => void
+  updateIsInternetConnected: (payload: any) => void
 };
 
 class App extends React.Component<Props> {
   props: Props;
 
   componentDidMount() {
-    const { getPostGeneralConfig, getCustomReceipt, updateIsInternetConnected } = this.props;
-    getPostGeneralConfig();
-    getCustomReceipt();
+    const { updateIsInternetConnected } = this.props;
 
     // Listen online and offline mode
     window.addEventListener('online', this.alertOnlineStatus);
@@ -27,7 +22,7 @@ class App extends React.Component<Props> {
     updateIsInternetConnected(navigator.onLine);
   }
 
-  alertOnlineStatus = (event) => {
+  alertOnlineStatus = event => {
     const { updateIsInternetConnected } = this.props;
     let isConnected = false;
     if (event.type === 'online') {
@@ -37,22 +32,10 @@ class App extends React.Component<Props> {
   };
 
   render() {
-    const { children, isLoadingSystemConfig } = this.props;
+    const { children } = this.props;
     return (
       <React.Fragment>
-        {isLoadingSystemConfig ? (
-          <>
-            <div className="mt-5">
-              <div className="d-flex justify-content-center">
-                <div className="spinner-border text-secondary" role="status">
-                  <span className="sr-only">Loading...</span>
-                </div>
-              </div>
-            </div>
-          </>
-        ) : (
-          <div className="container-fluid">{children}</div>
-        )}
+        <div className="container-fluid">{children}</div>
       </React.Fragment>
     );
   }
@@ -60,15 +43,15 @@ class App extends React.Component<Props> {
 
 function mapStateToProps(state) {
   return {
-    isLoadingSystemConfig: state.mainRd.isLoadingSystemConfig
+    isLoadingSystemConfig: state.mainRd.isLoadingSystemConfig,
+    token: state.authenRd.token
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    getPostGeneralConfig: () => dispatch(getPostGeneralConfig()),
-    getCustomReceipt: () => dispatch(getCustomReceipt()),
-    updateIsInternetConnected: payload => dispatch(updateIsInternetConnected(payload))
+    updateIsInternetConnected: payload =>
+      dispatch(updateIsInternetConnected(payload))
   };
 }
 
