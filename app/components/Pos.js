@@ -286,9 +286,9 @@ export default class Pos extends Component<Props, State> {
     const { isShowingProductOption } = productOption;
 
     if (token === '') {
-      if (localStorage.getItem(POS_LOGIN_STORAGE)) {
-        // Set token
-      } else return <Redirect to={routers.LOGIN} />;
+      // if (localStorage.getItem(POS_LOGIN_STORAGE)) {
+      //   // Set token
+      // } else return <Redirect to={routers.LOGIN} />;
     }
 
     return (

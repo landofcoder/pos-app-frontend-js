@@ -48,17 +48,18 @@ class App extends React.Component<Props> {
       updateSwitchingMode,
       bootstrapApplication
     } = this.props;
-    const loginPos = localStorage.getItem(POS_LOGIN_STORAGE);
-    if (!token) {
-      if (loginPos && switchingMode !== 'Children') {
-        // Logged and get all config
-        bootstrapApplication();
-      }
 
-      if (!loginPos) {
-        updateSwitchingMode('LoginForm');
-      }
-    }
+    // const loginPos = localStorage.getItem(POS_LOGIN_STORAGE);
+    // if (!token) {
+    //   if (loginPos && switchingMode !== 'Children') {
+    //     // Logged and get all config
+    //     bootstrapApplication();
+    //   }
+    //
+    //   if (!loginPos) {
+    //     updateSwitchingMode('LoginForm');
+    //   }
+    // }
 
     return (
       <React.Fragment>

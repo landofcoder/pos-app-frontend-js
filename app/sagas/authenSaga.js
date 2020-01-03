@@ -7,7 +7,11 @@ import {
   UPDATE_SWITCHING_MODE,
   BOOTSTRAP_APPLICATION
 } from '../constants/root.json';
-import { AuthenService, getInfoCashierService } from './services/AuthenService';
+import {
+  loginService,
+  getInfoCashierService,
+  createLoggedDb
+} from './services/LoginService';
 import { getDetailOutletService } from './services/CommonService';
 
 const adminToken = state => state.authenRd.token;
@@ -16,13 +20,9 @@ function* loginAction(payload) {
   // Start loading
   yield put({ type: types.START_LOADING });
   try {
-    const data = yield call(AuthenService, payload);
-    if (data.ok === true) {
-      // Set to local storage
-      localStorage.setItem(
-        types.POS_LOGIN_STORAGE,
-        JSON.stringify({ info: payload.payload, token: data.data })
-      );
+    const data = yield call(loginService, payload);
+    if (data !== '') {
+      yield createLoggedDb({ info: payload.payload, token: data });
 
       // Call bootstrap application after login
       yield put({ type: BOOTSTRAP_APPLICATION });

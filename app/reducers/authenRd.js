@@ -34,7 +34,6 @@ const authenRd = (state = initialState, action) =>
         draft.token = '';
         draft.message = '';
         draft.cashierInfo = {};
-        localStorage.removeItem(typesAuthen.POS_LOGIN_STORAGE);
         break;
       default:
     }
