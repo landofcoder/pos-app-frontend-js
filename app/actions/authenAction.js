@@ -19,3 +19,9 @@ export function updateSwitchingMode(payload) {
     payload
   };
 }
+
+export function checkLoginBackground() {
+  return {
+    type: types.CHECK_LOGIN_BACKGROUND
+  };
+}

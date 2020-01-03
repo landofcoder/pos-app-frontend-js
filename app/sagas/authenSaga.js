@@ -24,7 +24,7 @@ function* loginAction(payload) {
     if (data !== '') {
       yield createLoggedDb({ info: payload.payload, token: data });
 
-      // Call bootstrap application after login
+      // Call bootstrap application after login, this function will update switchingMode to auto redirect to main POS
       yield put({ type: BOOTSTRAP_APPLICATION });
     } else {
       yield put({ type: types.ERROR_LOGIN });

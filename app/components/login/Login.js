@@ -20,7 +20,7 @@ type State = {
   valuePass: string
 };
 
-class PageLogin extends Component<Props, State> {
+class Login extends Component<Props, State> {
   props: Props;
 
   state = {
@@ -123,4 +123,4 @@ function mapStateToProps(state) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(PageLogin);
+)(Login);

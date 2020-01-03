@@ -22,7 +22,6 @@ import Receipt from './payment/Receipt/Receipt';
 import { sumCartTotalPrice } from '../common/cart';
 import Categories from './commons/Categories/Categories';
 import routers from '../constants/routes';
-import { POS_LOGIN_STORAGE } from '../constants/authen';
 
 type Props = {
   productList: Array<Object>,

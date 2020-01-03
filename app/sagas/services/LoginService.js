@@ -1,11 +1,16 @@
 import { baseUrl } from '../../params';
-import { createKey } from '../../reducers/db/settings';
+import { createKey, getByKey } from '../../reducers/db/settings';
 
 const loggedInfoKey = 'logged_info';
 
 export async function createLoggedDb(payload) {
   // Create key
   await createKey(loggedInfoKey, payload);
+}
+
+export async function getLoggedDb() {
+  const data = await getByKey(loggedInfoKey);
+  return data;
 }
 
 export async function loginService(payload) {

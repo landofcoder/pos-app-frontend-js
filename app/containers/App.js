@@ -4,14 +4,17 @@ import {
   updateIsInternetConnected,
   bootstrapApplication
 } from '../actions/homeAction';
-import { updateSwitchingMode } from '../actions/authenAction';
-import { POS_LOGIN_STORAGE } from '../constants/authen';
-import Login from '../components/login/PageLogin';
+import {
+  updateSwitchingMode,
+  checkLoginBackground
+} from '../actions/authenAction';
+import Login from '../components/login/Login';
 
 type Props = {
   children: React.Node,
   updateIsInternetConnected: (payload: any) => void,
   updateSwitchingMode: (payload: any) => void,
+  checkLoginBackground: () => void,
   bootstrapApplication: () => void,
   token: string,
   switchingMode: string
@@ -21,7 +24,9 @@ class App extends React.Component<Props> {
   props: Props;
 
   componentDidMount() {
-    const { updateIsInternetConnected } = this.props;
+    const { updateIsInternetConnected, checkLoginBackground } = this.props;
+
+    checkLoginBackground();
 
     // Listen online and offline mode
     window.addEventListener('online', this.alertOnlineStatus);
@@ -46,8 +51,11 @@ class App extends React.Component<Props> {
       token,
       switchingMode,
       updateSwitchingMode,
-      bootstrapApplication
+      checkLoginBackground
     } = this.props;
+
+    // Always check login as background
+    checkLoginBackground();
 
     // const loginPos = localStorage.getItem(POS_LOGIN_STORAGE);
     // if (!token) {
@@ -99,7 +107,8 @@ function mapDispatchToProps(dispatch) {
     updateIsInternetConnected: payload =>
       dispatch(updateIsInternetConnected(payload)),
     updateSwitchingMode: payload => dispatch(updateSwitchingMode(payload)),
-    bootstrapApplication: () => dispatch(bootstrapApplication())
+    bootstrapApplication: () => dispatch(bootstrapApplication()),
+    checkLoginBackground: () => dispatch(checkLoginBackground())
   };
 }
 
