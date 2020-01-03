@@ -1,19 +1,20 @@
 import db from './db';
 
 export async function signUpCustomer(customers) {
-  let checkExist = false;
+  const { payload } = customers;
+  const data = {
+    username: payload.customer.email,
+    payload
+  };
   const signUpCustomerTbl = db.table('signUpCustomers');
-  console.log('adding');
-  await signUpCustomerTbl.add(customers);
-  await customers.forEach(async item => {
-    const customer = await signUpCustomerTbl.get(item.username);
-    // Check exists
-    if (customers.username === customer) {
-      checkExist = true;
-    }
+  console.log(payload.customer.email);
+  const customer = await signUpCustomerTbl.get({
+    username: payload.customer.email
   });
-  if (!checkExist) {
-    console.log('adding');
-    await signUpCustomerTbl.add(customers);
+  if (customer) {
+    await signUpCustomerTbl.update(customer.id, data);
+  }
+  else {
+    await signUpCustomerTbl.add(data);
   }
 }

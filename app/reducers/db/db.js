@@ -6,7 +6,7 @@ db.version(version).stores({
   products: '++id, *categoryIds',
   categories: '++id',
   customers: '++id',
-  signUpCustomers: '++id',
+  signUpCustomers: '++id,*username',
   settings: '++id, *key, created_at, updated_at'
 });
 
