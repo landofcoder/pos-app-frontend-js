@@ -1,5 +1,4 @@
 {
-  "POS": "/",
   "ACCOUNT": "/account",
-  "LOGIN": "/login"
+  "POS": "/"
 }

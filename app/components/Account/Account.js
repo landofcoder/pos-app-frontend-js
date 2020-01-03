@@ -3,11 +3,9 @@ import { Link } from 'react-router-dom';
 import * as routes from '../../constants/routes.json';
 import OrderHistory from './OrderHistory/OrderHistory';
 import CashierInfo from './CashierInfo/CashierInfo';
-import Styles from './account.scss';
+import Styles from './Account.scss';
 
-export default class Account extends Component<Props> {
-  props: Props;
-
+export default class Account extends Component {
   constructor(props) {
     super(props);
     this.state = { cashierSelect: '', orderHistorySelect: 'active' };

@@ -49,6 +49,7 @@ import {
 } from './common/orderSaga';
 import { calcPrice } from '../common/productPrice';
 import { BUNDLE } from '../constants/product-types';
+import { CHECK_LOGIN_BACKGROUND } from '../constants/authen';
 import { syncCategories } from '../reducers/db/categories';
 import { syncCustomers } from '../reducers/db/customers';
 import { getOfflineMode } from '../common/settings';
@@ -668,6 +669,16 @@ function* getDiscountForOfflineCheckoutSaga() {
   });
 }
 
+function* bootstrapApplicationSaga() {
+  yield getPostConfigGeneralConfig();
+  // Update switching mode
+  yield put({ type: types.UPDATE_SWITCHING_MODE, payload: 'Children' });
+}
+
+function* checkLoginBackgroundSaga() {
+  console.log('check login background');
+}
+
 /**
  * Default root saga
  * @returns void
@@ -702,6 +713,8 @@ function* rootSaga() {
     types.GET_DISCOUNT_FOR_OFFLINE_CHECKOUT,
     getDiscountForOfflineCheckoutSaga
   );
+  yield takeEvery(CHECK_LOGIN_BACKGROUND, checkLoginBackgroundSaga);
+  yield takeEvery(types.BOOTSTRAP_APPLICATION, bootstrapApplicationSaga);
 }
 
 export default rootSaga;

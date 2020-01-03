@@ -261,5 +261,11 @@ export function updateIsInternetConnected(payload) {
 export function getDiscountForOfflineCheckout() {
   return {
     type: types.GET_DISCOUNT_FOR_OFFLINE_CHECKOUT
-  }
+  };
+}
+
+export function bootstrapApplication() {
+  return {
+    type: types.BOOTSTRAP_APPLICATION
+  };
 }
