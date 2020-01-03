@@ -668,6 +668,12 @@ function* getDiscountForOfflineCheckoutSaga() {
   });
 }
 
+function* bootstrapApplicationSaga() {
+  yield getPostConfigGeneralConfig();
+  // Update switching mode
+  yield put({ type: types.UPDATE_SWITCHING_MODE, payload: 'Children' });
+}
+
 /**
  * Default root saga
  * @returns void
@@ -702,6 +708,7 @@ function* rootSaga() {
     types.GET_DISCOUNT_FOR_OFFLINE_CHECKOUT,
     getDiscountForOfflineCheckoutSaga
   );
+  yield takeEvery(types.BOOTSTRAP_APPLICATION, bootstrapApplicationSaga);
 }
 
 export default rootSaga;

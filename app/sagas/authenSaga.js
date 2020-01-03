@@ -1,9 +1,13 @@
 // @flow
 import { takeEvery, takeLatest, call, put, select } from 'redux-saga/effects';
 import * as types from '../constants/authen';
-import * as typeRoots from '../constants/root.json';
+import {
+  LOGOUT_POS_ACTION,
+  RECEIVED_DETAIL_OUTLET,
+  UPDATE_SWITCHING_MODE,
+  BOOTSTRAP_APPLICATION
+} from '../constants/root.json';
 import { AuthenService, getInfoCashierService } from './services/AuthenService';
-import { RECEIVED_DETAIL_OUTLET } from '../constants/root';
 import { getDetailOutletService } from './services/CommonService';
 
 const adminToken = state => state.authenRd.token;
@@ -17,10 +21,11 @@ function* loginAction(payload) {
       // Set to local storage
       localStorage.setItem(
         types.POS_LOGIN_STORAGE,
-        JSON.stringify({ info: payload.payload, token: payload.data })
+        JSON.stringify({ info: payload.payload, token: data.data })
       );
-      yield put({ type: types.RECEIVED_TOKEN, payload: data.data });
-      yield put({ type: types.SUCCESS_LOGIN });
+
+      // Call bootstrap application after login
+      yield put({ type: BOOTSTRAP_APPLICATION });
     } else {
       yield put({ type: types.ERROR_LOGIN });
     }
@@ -32,21 +37,23 @@ function* loginAction(payload) {
 }
 
 function* logoutAction() {
+  yield put({ type: UPDATE_SWITCHING_MODE, payload: 'LoginForm' });
   yield put({ type: types.LOGOUT_AUTHEN_ACTION });
-  yield put({ type: typeRoots.LOGOUT_POS_ACTION})
+  yield put({ type: LOGOUT_POS_ACTION });
 }
+
 function* takeLatestToken() {
   const adminTokenResult = yield select(adminToken);
-  console.log('run to take latest');
 
-  // const cashierInfo = yield call(getInfoCashierService, adminTokenResult);
-  // yield put({ type: types.RECEIVED_CASHIER_INFO, payload: cashierInfo });
-  //
-  // const outletId = cashierInfo.outlet_id;
-  //
-  // const detailOutlet = yield call(getDetailOutletService, outletId);
-  // yield put({ type: RECEIVED_DETAIL_OUTLET, payload: detailOutlet });
+  const cashierInfo = yield call(getInfoCashierService, adminTokenResult);
+  yield put({ type: types.RECEIVED_CASHIER_INFO, payload: cashierInfo });
+
+  const outletId = cashierInfo.outlet_id;
+
+  const detailOutlet = yield call(getDetailOutletService, outletId);
+  yield put({ type: RECEIVED_DETAIL_OUTLET, payload: detailOutlet });
 }
+
 function* authenSaga() {
   yield takeEvery(types.LOGIN_ACTION, loginAction);
   yield takeEvery(types.LOGOUT_ACTION, logoutAction);

@@ -1,21 +1,18 @@
 // @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router';
 import { login } from '../../actions/authenAction';
-import { setToken } from '../../actions/homeAction';
+import { setToken, bootstrapApplication } from '../../actions/homeAction';
 import styles from './pagelogin.scss';
 import commonStyles from '../styles/common.scss';
 import Loading from '../commons/Loading';
-import * as routes from '../../constants/routes';
-import { POS_LOGIN_STORAGE } from '../../constants/authen';
 
 type Props = {
   login: (payload: Object) => void,
+  bootstrapApplication: () => void,
   message: string,
   token: string,
-  loading: boolean,
-  setToken: () => void
+  loading: boolean
 };
 
 type State = {
@@ -30,10 +27,6 @@ class PageLogin extends Component<Props, State> {
     valueUser: '',
     valuePass: ''
   };
-
-  componentDidMount(): * {
-    console.log('login page did mount');
-  }
 
   handleChangeUser = event => {
     this.setState({ valueUser: event.target.value });
@@ -55,24 +48,18 @@ class PageLogin extends Component<Props, State> {
   };
 
   render() {
-    const { token, message, loading, setToken } = this.props;
+    const { message, loading } = this.props;
     const { valueUser, valuePass } = this.state;
-    if (token !== '') {
-      console.log('redirect to pos now');
-      return <Redirect push to={'/test'} />;
-    }
-    if (localStorage.getItem(POS_LOGIN_STORAGE)) {
-      // setToken(localStorage.getItem(POS_LOGIN_STORAGE));
-      // return <Redirect to={routes.HOME} />;
-    }
-
     return (
       <>
         <div
           className={`${commonStyles.contentColumn} ${styles.wrapLoginPage}`}
         >
           <div className="col-sm-12 col-md-4 col-lg-3 ">
-            <form onSubmit={this.loginFormSubmit} className={`${styles.contentColumn}`}>
+            <form
+              onSubmit={this.loginFormSubmit}
+              className={`${styles.contentColumn}`}
+            >
               <h1 className="h3 mb-3 font-weight-normal">Sign in</h1>
               <div className="form-group">
                 <input
@@ -122,7 +109,8 @@ class PageLogin extends Component<Props, State> {
 function mapDispatchToProps(dispatch) {
   return {
     login: payload => dispatch(login(payload)),
-    setToken: payload => dispatch(setToken(payload))
+    setToken: payload => dispatch(setToken(payload)),
+    bootstrapApplication: () => dispatch(bootstrapApplication())
   };
 }
 function mapStateToProps(state) {

@@ -1,11 +1,20 @@
-// @flow
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { updateIsInternetConnected } from '../actions/homeAction';
+import {
+  updateIsInternetConnected,
+  bootstrapApplication
+} from '../actions/homeAction';
+import { updateSwitchingMode } from '../actions/authenAction';
+import { POS_LOGIN_STORAGE } from '../constants/authen';
+import Login from '../components/login/PageLogin';
 
 type Props = {
   children: React.Node,
-  updateIsInternetConnected: (payload: any) => void
+  updateIsInternetConnected: (payload: any) => void,
+  updateSwitchingMode: (payload: any) => void,
+  bootstrapApplication: () => void,
+  token: string,
+  switchingMode: string
 };
 
 class App extends React.Component<Props> {
@@ -32,10 +41,45 @@ class App extends React.Component<Props> {
   };
 
   render() {
-    const { children } = this.props;
+    const {
+      children,
+      token,
+      switchingMode,
+      updateSwitchingMode,
+      bootstrapApplication
+    } = this.props;
+    const loginPos = localStorage.getItem(POS_LOGIN_STORAGE);
+    if (!token) {
+      if (loginPos && switchingMode !== 'Children') {
+        // Logged and get all config
+        bootstrapApplication();
+      }
+
+      if (!loginPos) {
+        updateSwitchingMode('LoginForm');
+      }
+    }
+
     return (
       <React.Fragment>
-        <div className="container-fluid">{children}</div>
+        {(() => {
+          switch (switchingMode) {
+            case 'Loading':
+              return (
+                <div className="d-flex justify-content-center mt-5">
+                  <div className="spinner-border text-secondary" role="status">
+                    <span className="sr-only">Loading...</span>
+                  </div>
+                </div>
+              );
+            case 'LoginForm':
+              return <Login />;
+            case 'Children':
+              return <div className="container-fluid">{children}</div>;
+            default:
+              return <></>;
+          }
+        })()}
       </React.Fragment>
     );
   }
@@ -44,14 +88,17 @@ class App extends React.Component<Props> {
 function mapStateToProps(state) {
   return {
     isLoadingSystemConfig: state.mainRd.isLoadingSystemConfig,
-    token: state.authenRd.token
+    token: state.authenRd.token,
+    switchingMode: state.mainRd.switchingMode
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     updateIsInternetConnected: payload =>
-      dispatch(updateIsInternetConnected(payload))
+      dispatch(updateIsInternetConnected(payload)),
+    updateSwitchingMode: payload => dispatch(updateSwitchingMode(payload)),
+    bootstrapApplication: () => dispatch(bootstrapApplication())
   };
 }
 
