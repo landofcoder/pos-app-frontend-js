@@ -625,7 +625,6 @@ function* signUpAction(payload) {
   console.log(payload);
   yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: true });
   const offlineMode = yield getOfflineMode();
-  // testing so !offilieMode is true
   if (offlineMode === 1) {
     yield call(signUpCustomer, payload);
   }
