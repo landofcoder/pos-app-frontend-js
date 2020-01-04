@@ -54,6 +54,7 @@ import { BUNDLE } from '../constants/product-types';
 import { CHECK_LOGIN_BACKGROUND, RECEIVED_TOKEN } from '../constants/authen';
 import { syncCategories } from '../reducers/db/categories';
 import { syncCustomers } from '../reducers/db/customers';
+import { signUpCustomer } from '../reducers/db/signUpCustomers';
 import { getOfflineMode } from '../common/settings';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
@@ -638,6 +639,10 @@ function* getOrderHistory() {
 function* signUpAction(payload) {
   console.log(payload);
   yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: true });
+  const offlineMode = yield getOfflineMode();
+  if (offlineMode === 1) {
+    yield call(signUpCustomer, payload);
+  }
   const res = yield call(signUpCustomerService, payload);
   yield put({
     type: types.MESSAGE_SIGN_UP_CUSTOMER,
