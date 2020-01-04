@@ -7,7 +7,8 @@ const initialState = {
   loading: false,
   message: '',
   cashierInfo: {},
-  isReloadingToken: false
+  isReloadingToken: false,
+  loadingWorkPlace: false,
 };
 
 /*  eslint no-param-reassign: "error" */
@@ -39,6 +40,8 @@ const authenRd = (state = initialState, action) =>
         draft.cashierInfo = {};
         localStorage.clear();
         break;
+      case typesAuthen.SIGN_IN_WORKPLACE_ACTION:
+        draft.loadingWorkPlace = action.payload;
       default:
     }
   });

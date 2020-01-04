@@ -9,6 +9,11 @@ import commonStyles from '../styles/common.scss';
 import Loading from '../commons/Loading';
 import * as routes from '../../constants/routes';
 import { POS_LOGIN_STORAGE } from '../../constants/authen';
+
+
+
+// testing workPlace config
+import WorkPlace from './WorkPlace/WorPlace';
 type Props = {
   login: () => void,
   message: string,
@@ -57,6 +62,7 @@ class PageLogin extends Component {
       // return <Redirect to={routes.HOME} />;
     }
 
+    return (<WorkPlace />)
     return (
       <>
         <div
