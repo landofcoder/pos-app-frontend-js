@@ -37,6 +37,7 @@ import {
   haveToSyncAllData,
   updateSyncAllDataFlag
 } from './services/SettingsService';
+import { getLoggedDb } from './services/LoginService';
 
 import {
   handleProductType,
@@ -493,6 +494,7 @@ function updateQtyProduct(product) {
  * @returns void
  */
 function* getPostConfigGeneralConfig() {
+  console.log('who call me?');
   // Start loading
   yield put({ type: types.UPDATE_IS_LOADING_SYSTEM_CONFIG, payload: true });
 
@@ -675,8 +677,20 @@ function* bootstrapApplicationSaga() {
   yield put({ type: types.UPDATE_SWITCHING_MODE, payload: 'Children' });
 }
 
+/**
+ * Check login background
+ * @returns void
+ */
 function* checkLoginBackgroundSaga() {
-  console.log('check login background');
+  const loggedDb = yield getLoggedDb();
+  if (loggedDb !== false) {
+    console.log('run 1');
+    console.log('loggedDb', loggedDb);
+  } else {
+    console.log('run 2');
+    // Update switch mode to login
+    yield put({ type: types.UPDATE_SWITCHING_MODE, payload: 'LoginForm' });
+  }
 }
 
 /**

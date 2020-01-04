@@ -351,5 +351,4 @@ const mainRd = (state: Object = initialState, action: Object) =>
         return draft;
     }
   });
-/*eslint-enable*/
 export default mainRd;

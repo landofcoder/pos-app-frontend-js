@@ -2,16 +2,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { login } from '../../actions/authenAction';
-import { setToken, bootstrapApplication } from '../../actions/homeAction';
+import { setToken } from '../../actions/homeAction';
 import styles from './pagelogin.scss';
 import commonStyles from '../styles/common.scss';
 import Loading from '../commons/Loading';
 
 type Props = {
   login: (payload: Object) => void,
-  bootstrapApplication: () => void,
   message: string,
-  token: string,
   loading: boolean
 };
 
@@ -109,14 +107,12 @@ class Login extends Component<Props, State> {
 function mapDispatchToProps(dispatch) {
   return {
     login: payload => dispatch(login(payload)),
-    setToken: payload => dispatch(setToken(payload)),
-    bootstrapApplication: () => dispatch(bootstrapApplication())
+    setToken: payload => dispatch(setToken(payload))
   };
 }
 function mapStateToProps(state) {
   return {
     message: state.authenRd.message,
-    token: state.authenRd.token,
     loading: state.authenRd.loading
   };
 }

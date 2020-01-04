@@ -10,7 +10,10 @@ export async function createLoggedDb(payload) {
 
 export async function getLoggedDb() {
   const data = await getByKey(loggedInfoKey);
-  return data;
+  if (data.length > 0) {
+    return data[0];
+  }
+  return false;
 }
 
 export async function loginService(payload) {

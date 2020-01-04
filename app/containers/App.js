@@ -1,9 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import {
-  updateIsInternetConnected,
-  bootstrapApplication
-} from '../actions/homeAction';
+import { updateIsInternetConnected } from '../actions/homeAction';
 import {
   updateSwitchingMode,
   checkLoginBackground
@@ -15,7 +12,6 @@ type Props = {
   updateIsInternetConnected: (payload: any) => void,
   updateSwitchingMode: (payload: any) => void,
   checkLoginBackground: () => void,
-  bootstrapApplication: () => void,
   token: string,
   switchingMode: string
 };
@@ -107,7 +103,6 @@ function mapDispatchToProps(dispatch) {
     updateIsInternetConnected: payload =>
       dispatch(updateIsInternetConnected(payload)),
     updateSwitchingMode: payload => dispatch(updateSwitchingMode(payload)),
-    bootstrapApplication: () => dispatch(bootstrapApplication()),
     checkLoginBackground: () => dispatch(checkLoginBackground())
   };
 }
