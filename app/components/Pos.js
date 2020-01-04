@@ -1,8 +1,6 @@
-// @flow
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router';
 import ListCart from './cart/ListCart';
-import routes from '../constants/routes';
 import Styles from './pos.scss';
 import CommonStyle from './styles/common.scss';
 import ModalStyle from './styles/modal.scss';
@@ -23,14 +21,13 @@ import CashPanel from './payment/Cash/Cash';
 import Receipt from './payment/Receipt/Receipt';
 import { sumCartTotalPrice } from '../common/cart';
 import Categories from './commons/Categories/Categories';
-import { POS_LOGIN_STORAGE } from '../constants/authen';
+import routers from '../constants/routes';
 
 type Props = {
   productList: Array<Object>,
   addToCart: (payload: Object) => void,
   holdAction: () => void,
   searchProductAction: (payload: string) => void,
-  getDefaultProductAction: () => void,
   cartCurrent: Object,
   mainPanelType: string,
   cashCheckoutAction: () => void,
@@ -39,7 +36,6 @@ type Props = {
   getDetailProductGrouped: (sku: string) => void,
   productOption: Object,
   isShowCashPaymentModel: boolean,
-  token: string,
   updateIsShowingProductOption: (payload: boolean) => void,
   mainProductListLoading: boolean,
   isOpenReceiptModal: Object,
@@ -47,11 +43,11 @@ type Props = {
   switchToHoldItemCart: (payload: number) => void,
   emptyCart: () => void,
   currencyCode: string,
-  setToken: (payload: ?string) => void,
   isLoadingSearchHandle: boolean,
   isShowHaveNoSearchResultFound: boolean,
   isOpenSignUpCustomer: boolean,
-  internetConnected: boolean
+  internetConnected: boolean,
+  token: string
 };
 
 type State = {
@@ -74,11 +70,6 @@ export default class Pos extends Component<Props, State> {
       typeId: '',
       redirectToAccount: false
     };
-  }
-
-  componentDidMount(): * {
-    const { getDefaultProductAction } = this.props;
-    getDefaultProductAction();
   }
 
   getFirstMedia = (item: Object) => {
@@ -260,31 +251,23 @@ export default class Pos extends Component<Props, State> {
 
   render() {
     const {
-      token,
       mainProductListLoading,
       cartHoldList,
       switchToHoldItemCart,
       emptyCart,
       isLoadingSearchHandle,
       isShowHaveNoSearchResultFound,
-      setToken,
       internetConnected,
-      isOpenSignUpCustomer
+      isOpenSignUpCustomer,
+      token
     } = this.props;
     const { redirectToAccount } = this.state;
-    // Check login
-    if (token === '') {
-      // Set auto login
-      if (localStorage.getItem(POS_LOGIN_STORAGE)) {
-        // Login again by username and password
-        setToken(localStorage.getItem(POS_LOGIN_STORAGE));
-      } else return <Redirect to={routes.LOGIN} />;
-    }
 
     // Check Redirect To Layout Account
     if (redirectToAccount) {
-      return <Redirect to={routes.ACCOUNT} />;
+      return <Redirect to={routers.ACCOUNT} />;
     }
+
     const classWrapProductPanel = `pr-3 ${Styles.wrapProductPanel} row`;
     const {
       productList,
@@ -300,6 +283,12 @@ export default class Pos extends Component<Props, State> {
       isOpenReceiptModal
     } = this.props;
     const { isShowingProductOption } = productOption;
+
+    if (token === '') {
+      // if (localStorage.getItem(POS_LOGIN_STORAGE)) {
+      //   // Set token
+      // } else return <Redirect to={routers.LOGIN} />;
+    }
 
     return (
       <>

@@ -279,7 +279,8 @@
     "dexie": "^2.0.4",
     "lodash": "^4.17.15",
     "locale-currency": "^0.0.2",
-    "date-fns": "^2.8.1"
+    "date-fns": "^2.8.1",
+    "prop-types": "^15.7.2"
   },
   "devEngines": {
     "node": ">=7.x",
