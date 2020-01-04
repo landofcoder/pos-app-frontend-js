@@ -9,6 +9,7 @@ import {
 
 const initialState = {
   switchingMode: 'Loading', // Loading, LoginForm, Children
+  flagSwitchModeCounter: 1, // When this flag counter up, render in App.js will re-render and backgroundLogin will re-check
   internetConnected: false,
   isLoadingSystemConfig: true,
   isLoadingSearchHandle: false, // Main search loading
@@ -346,6 +347,12 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.UPDATE_SWITCHING_MODE:
         draft.switchingMode = action.payload;
+        break;
+      case types.UPDATE_FLAG_SWITCHING_MODE:
+        draft.flagSwitchModeCounter = draft.flagSwitchModeCounter + 1;
+        break;
+      case types.RECEIVED_CASHIER_INFO:
+        draft.cashierInfo = action.payload;
         break;
       default:
         return draft;

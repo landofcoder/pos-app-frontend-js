@@ -53,7 +53,7 @@ class Login extends Component<Props, State> {
         <div
           className={`${commonStyles.contentColumn} ${styles.wrapLoginPage}`}
         >
-          <div className="col-sm-12 col-md-4 col-lg-3 ">
+          <div className="col-sm-12 col-md-4 col-lg-4">
             <form
               onSubmit={this.loginFormSubmit}
               className={`${styles.contentColumn}`}
@@ -83,14 +83,16 @@ class Login extends Component<Props, State> {
               </div>
               <div className="form-group">
                 {message !== '' ? (
-                  <div className="alert alert-danger" role="alert">
+                  <div className="text-danger">
                     {message}
                   </div>
                 ) : (
                   <></>
                 )}
+              </div>
+              <div className="form-group">
                 <button
-                  className="btn btn-lg btn-primary btn-block"
+                  className="btn btn-lg btn-primary btn-block mt-1"
                   type="submit"
                 >
                   {loading ? <Loading /> : <>Sign In</>}

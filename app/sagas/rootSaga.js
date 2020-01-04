@@ -27,6 +27,7 @@ import { createCustomerCartService } from './services/CustomerCartService';
 import {
   getAllCategoriesService,
   getCustomReceiptService,
+  getDetailOutletService,
   getOrderHistoryService,
   getOrderHistoryServiceDetails,
   getShopInfoService,
@@ -37,7 +38,7 @@ import {
   haveToSyncAllData,
   updateSyncAllDataFlag
 } from './services/SettingsService';
-import { getLoggedDb } from './services/LoginService';
+import { getInfoCashierService, getLoggedDb } from './services/LoginService';
 
 import {
   handleProductType,
@@ -50,7 +51,7 @@ import {
 } from './common/orderSaga';
 import { calcPrice } from '../common/productPrice';
 import { BUNDLE } from '../constants/product-types';
-import { CHECK_LOGIN_BACKGROUND } from '../constants/authen';
+import { CHECK_LOGIN_BACKGROUND, RECEIVED_TOKEN } from '../constants/authen';
 import { syncCategories } from '../reducers/db/categories';
 import { syncCustomers } from '../reducers/db/customers';
 import { getOfflineMode } from '../common/settings';
@@ -109,7 +110,6 @@ function* cashCheckout() {
       posSystemConfigGuestCustomer
     });
 
-    console.log('online mode response:', response);
     yield put({
       type: types.RECEIVED_ORDER_PREPARING_CHECKOUT,
       payload: response
@@ -190,6 +190,7 @@ function* getDefaultProduct() {
   const searchValue = '';
 
   const offlineMode = yield getOfflineMode();
+
   const response = yield call(searchProductService, {
     searchValue,
     offlineMode
@@ -494,15 +495,22 @@ function updateQtyProduct(product) {
  * @returns void
  */
 function* getPostConfigGeneralConfig() {
-  console.log('who call me?');
   // Start loading
-  yield put({ type: types.UPDATE_IS_LOADING_SYSTEM_CONFIG, payload: true });
+  // yield put({ type: types.UPDATE_IS_LOADING_SYSTEM_CONFIG, payload: true });
 
   // Get system config settings
   const configGeneralResponse = yield call(getSystemConfigService);
 
   // Get shop info
   const shopInfoResponse = yield call(getShopInfoService);
+
+  // Get all cashier info
+  const cashierInfo = yield call(getInfoCashierService, window.liveToken);
+  yield put({ type: types.RECEIVED_CASHIER_INFO, payload: cashierInfo });
+
+  const outletId = cashierInfo.outlet_id;
+  const detailOutlet = yield call(getDetailOutletService, outletId);
+  yield put({ type: types.RECEIVED_DETAIL_OUTLET, payload: detailOutlet });
 
   yield put({
     type: types.RECEIVED_POST_GENERAL_CONFIG,
@@ -518,19 +526,20 @@ function* getPostConfigGeneralConfig() {
   const allCategories = yield call(getAllCategoriesService);
   yield put({ type: types.RECEIVED_ALL_CATEGORIES, payload: allCategories });
 
-  // Stop loading
-  yield put({ type: types.UPDATE_IS_LOADING_SYSTEM_CONFIG, payload: false });
+  // Get default products
+  yield getDefaultProduct();
 
-  // Sync data
-  yield syncData(allCategories);
+  // Stop loading
+  // yield put({ type: types.UPDATE_IS_LOADING_SYSTEM_CONFIG, payload: false });
 }
 
 /**
  * Sync all data
- * @param allCategories
  * @returns void
  */
-function* syncData(allCategories) {
+function* syncData() {
+  // Get all categories
+  const allCategories = yield call(getAllCategoriesService);
   const haveToSync = yield haveToSyncAllData();
   let letSync = false;
 
@@ -555,10 +564,14 @@ function* syncData(allCategories) {
     const offlineMode = yield getOfflineMode();
 
     if (offlineMode === 1) {
+      console.log('offline mode?');
       // Create last time sync for each period sync execution
       yield createSyncAllDataFlag();
-      // Sync all
+
+      // Sync categories to local db
       yield call(syncCategories, allCategories);
+
+      // Sync products by categories
       yield call(syncAllProducts, allCategories);
     } else {
       console.warn(
@@ -671,10 +684,29 @@ function* getDiscountForOfflineCheckoutSaga() {
   });
 }
 
-function* bootstrapApplicationSaga() {
+/**
+ * Bootstrap application and load all config
+ * @param loggedDb
+ * @returns void
+ */
+function* bootstrapApplicationSaga(loggedDb) {
+  // Set token first
+  const { token } = loggedDb.value;
+
+  // Assign to global variables
+  window.liveToken = token;
+
+  // Set token
+  yield put({ type: RECEIVED_TOKEN, payload: token });
+
+  // Get all config
   yield getPostConfigGeneralConfig();
+
   // Update switching mode
   yield put({ type: types.UPDATE_SWITCHING_MODE, payload: 'Children' });
+
+  // Sync
+  yield syncData();
 }
 
 /**
@@ -684,10 +716,9 @@ function* bootstrapApplicationSaga() {
 function* checkLoginBackgroundSaga() {
   const loggedDb = yield getLoggedDb();
   if (loggedDb !== false) {
-    console.log('run 1');
-    console.log('loggedDb', loggedDb);
+    // After login succeed => call bootstrapApplication
+    yield bootstrapApplicationSaga(loggedDb);
   } else {
-    console.log('run 2');
     // Update switch mode to login
     yield put({ type: types.UPDATE_SWITCHING_MODE, payload: 'LoginForm' });
   }
@@ -698,7 +729,6 @@ function* checkLoginBackgroundSaga() {
  * @returns void
  */
 function* rootSaga() {
-  yield takeEvery(types.GET_DEFAULT_PRODUCT, getDefaultProduct);
   yield takeEvery(types.CASH_CHECKOUT_ACTION, cashCheckout);
   yield takeEvery(types.SEARCH_ACTION, searchProduct);
   yield takeEvery(
@@ -717,7 +747,6 @@ function* rootSaga() {
   yield takeEvery(types.GET_DETAIL_PRODUCT_GROUPED, getDetailGroupedProduct);
   yield takeEvery(types.SEARCH_CUSTOMER, getSearchCustomer);
   yield takeEvery(types.ADD_TO_CART, addToCart);
-  yield takeEvery(types.GET_POS_GENERAL_CONFIG, getPostConfigGeneralConfig);
   yield takeEvery(types.GET_CUSTOM_RECEIPT, getCustomReceipt);
   yield takeEvery(types.GET_ORDER_HISTORY_ACTION, getOrderHistory);
   yield takeEvery(types.GET_PRODUCT_BY_CATEGORY, getProductByCategory);
@@ -728,7 +757,6 @@ function* rootSaga() {
     getDiscountForOfflineCheckoutSaga
   );
   yield takeEvery(CHECK_LOGIN_BACKGROUND, checkLoginBackgroundSaga);
-  yield takeEvery(types.BOOTSTRAP_APPLICATION, bootstrapApplicationSaga);
 }
 
 export default rootSaga;

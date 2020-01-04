@@ -22,9 +22,6 @@ export function syncProducts(productList, allParentIds = []) {
       // Push parentIds with regular categoryIds
       itemRemake.categoryIds = _.concat(itemRemake.categoryIds, listDifference);
 
-      // Get detail product by type_id
-      console.log('detail product:', item);
-
       const product = await productTbl.get(itemRemake.id);
       // Check exists
       if (product) {
@@ -42,7 +39,8 @@ export function syncProducts(productList, allParentIds = []) {
 
 export async function counterProduct() {
   // Count products
-  return await db.table(table).count();
+  const data = await db.table(table).count();
+  return data;
 }
 
 async function makeCategoriesArraySimple(product) {
@@ -64,9 +62,18 @@ async function makeCategoriesArraySimple(product) {
  */
 export async function getDefaultProductLocal() {
   // If use offset(), eg: offer(50) make sure we have more than 50 records or equal
-  return await db.table(table).limit(50).toArray();
+  const data = await db
+    .table(table)
+    .limit(50)
+    .toArray();
+  return data;
 }
 
 export async function getProductsByCategoryLocal(categoryId) {
-  return await db.table(table).where('categoryIds').anyOf(categoryId).toArray();
+  const data = await db
+    .table(table)
+    .where('categoryIds')
+    .anyOf(categoryId)
+    .toArray();
+  return data;
 }
