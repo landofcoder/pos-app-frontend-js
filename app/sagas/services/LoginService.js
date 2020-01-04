@@ -4,13 +4,15 @@ import { createKey, getByKey } from '../../reducers/db/settings';
 const loggedInfoKey = 'logged_info';
 
 export async function createLoggedDb(payload) {
-  // Create key
   await createKey(loggedInfoKey, payload);
 }
 
 export async function getLoggedDb() {
   const data = await getByKey(loggedInfoKey);
-  return data;
+  if (data.length > 0) {
+    return data[0];
+  }
+  return false;
 }
 
 export async function loginService(payload) {

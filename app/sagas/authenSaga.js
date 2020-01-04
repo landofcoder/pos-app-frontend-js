@@ -1,20 +1,12 @@
 // @flow
-import { takeEvery, takeLatest, call, put, select } from 'redux-saga/effects';
+import { takeEvery, call, put } from 'redux-saga/effects';
 import * as types from '../constants/authen';
 import {
   LOGOUT_POS_ACTION,
-  RECEIVED_DETAIL_OUTLET,
   UPDATE_SWITCHING_MODE,
-  BOOTSTRAP_APPLICATION
+  UPDATE_FLAG_SWITCHING_MODE
 } from '../constants/root.json';
-import {
-  loginService,
-  getInfoCashierService,
-  createLoggedDb
-} from './services/LoginService';
-import { getDetailOutletService } from './services/CommonService';
-
-const adminToken = state => state.authenRd.token;
+import { loginService, createLoggedDb } from './services/LoginService';
 
 function* loginAction(payload) {
   // Start loading
@@ -23,9 +15,8 @@ function* loginAction(payload) {
     const data = yield call(loginService, payload);
     if (data !== '') {
       yield createLoggedDb({ info: payload.payload, token: data });
-
-      // Call bootstrap application after login, this function will update switchingMode to auto redirect to main POS
-      yield put({ type: BOOTSTRAP_APPLICATION });
+      // Update flag login to make App reload and background check
+      yield put({ type: UPDATE_FLAG_SWITCHING_MODE });
     } else {
       yield put({ type: types.ERROR_LOGIN });
     }
@@ -42,22 +33,9 @@ function* logoutAction() {
   yield put({ type: LOGOUT_POS_ACTION });
 }
 
-function* takeLatestToken() {
-  const adminTokenResult = yield select(adminToken);
-
-  const cashierInfo = yield call(getInfoCashierService, adminTokenResult);
-  yield put({ type: types.RECEIVED_CASHIER_INFO, payload: cashierInfo });
-
-  const outletId = cashierInfo.outlet_id;
-
-  const detailOutlet = yield call(getDetailOutletService, outletId);
-  yield put({ type: RECEIVED_DETAIL_OUTLET, payload: detailOutlet });
-}
-
 function* authenSaga() {
   yield takeEvery(types.LOGIN_ACTION, loginAction);
   yield takeEvery(types.LOGOUT_ACTION, logoutAction);
-  yield takeLatest(types.RECEIVED_TOKEN, takeLatestToken);
 }
 
 export default authenSaga;
