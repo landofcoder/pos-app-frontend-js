@@ -7,7 +7,6 @@ import './app.global.css';
 import db from './reducers/db/db';
 
 // Open database
-console.log("open db");
 db.open();
 
 const store = configureStore();
