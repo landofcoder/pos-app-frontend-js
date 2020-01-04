@@ -21,5 +21,6 @@ export async function syncCategories(mainCategory) {
 }
 
 export async function getCategories() {
-  return await db.table(table).toArray();
+  const data = await db.table(table).toArray();
+  return data;
 }

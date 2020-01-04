@@ -27,9 +27,6 @@ const authenRd = (state = initialState, action) =>
         draft.message =
           'The email or password did not match our records. Please try again.';
         break;
-      case typesAuthen.SUCCESS_LOGIN:
-        draft.message = 'SUCCESS';
-        break;
       case typesAuthen.RECEIVED_CASHIER_INFO:
         draft.cashierInfo = action.payload;
         break;
@@ -37,7 +34,6 @@ const authenRd = (state = initialState, action) =>
         draft.token = '';
         draft.message = '';
         draft.cashierInfo = {};
-        localStorage.clear();
         break;
       default:
     }

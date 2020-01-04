@@ -264,7 +264,7 @@
     "electron-log": "^3.0.4",
     "electron-updater": "^4.0.6",
     "history": "^4.9.0",
-    "immer": "^4.0.2",
+    "immer": "^5.1.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-hot-loader": "^4.8.2",
@@ -279,7 +279,8 @@
     "dexie": "^2.0.4",
     "lodash": "^4.17.15",
     "locale-currency": "^0.0.2",
-    "date-fns": "^2.8.1"
+    "date-fns": "^2.8.1",
+    "prop-types": "^15.7.2"
   },
   "devEngines": {
     "node": ">=7.x",

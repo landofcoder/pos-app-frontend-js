@@ -8,6 +8,7 @@ import {
 } from './common';
 
 const initialState = {
+  switchingMode: 'Loading', // Loading, LoginForm, Children
   internetConnected: false,
   isLoadingSystemConfig: true,
   isLoadingSearchHandle: false, // Main search loading
@@ -84,11 +85,24 @@ const initialState = {
     isLoadingProductOption: false, // Show a loading in screen for product option loading
     isShowingProductOption: false, // Show model for choose product type option
     optionValue: null // Keep detail product clicked
+  },
+  checkout: {
+    // All checkout variables
+    offline: {
+      isLoadingDiscount: false,
+      cartInfo: {
+        base_discount_amount: 0,
+        base_grand_total: 0,
+        base_sub_total: 0,
+        quote_id: 0,
+        shipping_and_tax_amount: 0
+      }
+    }
   }
 };
 
-/* eslint-disable default-case, no-param-reassign */
-const mainRd = (state = initialState, action) =>
+/*eslint-disable*/
+const mainRd = (state: Object = initialState, action: Object) =>
   produce(state, draft => {
     switch (action.type) {
       case types.RECEIVED_ORDER_PREPARING_CHECKOUT:
@@ -324,9 +338,18 @@ const mainRd = (state = initialState, action) =>
         draft.orderHistory = [];
         draft.customerSearchResult = [];
         break;
-      default:
+      case types.UPDATE_IS_LOADING_GET_CHECKOUT_OFFLINE:
+        draft.checkout.offline.isLoadingDiscount = action.payload;
         break;
+      case types.RECEIVED_CHECKOUT_OFFLINE_CART_INFO:
+        draft.checkout.offline.cartInfo = action.payload[0];
+        break;
+      case types.UPDATE_SWITCHING_MODE:
+        draft.switchingMode = action.payload;
+        break;
+      default:
+        return draft;
     }
   });
-
+/*eslint-enable*/
 export default mainRd;

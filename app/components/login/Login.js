@@ -1,31 +1,32 @@
 // @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router';
 import { login } from '../../actions/authenAction';
-import { setToken } from '../../actions/homeAction';
+import { setToken, bootstrapApplication } from '../../actions/homeAction';
 import styles from './pagelogin.scss';
 import commonStyles from '../styles/common.scss';
 import Loading from '../commons/Loading';
-import * as routes from '../../constants/routes';
-import { POS_LOGIN_STORAGE } from '../../constants/authen';
+
 type Props = {
-  login: () => void,
+  login: (payload: Object) => void,
+  bootstrapApplication: () => void,
   message: string,
   token: string,
-  loading: boolean,
-  setToken: () => void
+  loading: boolean
 };
-class PageLogin extends Component {
+
+type State = {
+  valueUser: string,
+  valuePass: string
+};
+
+class Login extends Component<Props, State> {
   props: Props;
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      valueUser: '',
-      valuePass: ''
-    };
-  }
+  state = {
+    valueUser: '',
+    valuePass: ''
+  };
 
   handleChangeUser = event => {
     this.setState({ valueUser: event.target.value });
@@ -47,23 +48,18 @@ class PageLogin extends Component {
   };
 
   render() {
-    const { token, message, loading, setToken } = this.props;
+    const { message, loading } = this.props;
     const { valueUser, valuePass } = this.state;
-    if (token !== '') {
-      return <Redirect to={routes.POS} />;
-    }
-    if (localStorage.getItem(POS_LOGIN_STORAGE)) {
-      // setToken(localStorage.getItem(POS_LOGIN_STORAGE));
-      // return <Redirect to={routes.HOME} />;
-    }
-
     return (
       <>
         <div
           className={`${commonStyles.contentColumn} ${styles.wrapLoginPage}`}
         >
           <div className="col-sm-12 col-md-4 col-lg-3 ">
-            <form onSubmit={this.loginFormSubmit} className={`${styles.contentColumn}`}>
+            <form
+              onSubmit={this.loginFormSubmit}
+              className={`${styles.contentColumn}`}
+            >
               <h1 className="h3 mb-3 font-weight-normal">Sign in</h1>
               <div className="form-group">
                 <input
@@ -113,7 +109,8 @@ class PageLogin extends Component {
 function mapDispatchToProps(dispatch) {
   return {
     login: payload => dispatch(login(payload)),
-    setToken: payload => dispatch(setToken(payload))
+    setToken: payload => dispatch(setToken(payload)),
+    bootstrapApplication: () => dispatch(bootstrapApplication())
   };
 }
 function mapStateToProps(state) {
@@ -126,4 +123,4 @@ function mapStateToProps(state) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(PageLogin);
+)(Login);

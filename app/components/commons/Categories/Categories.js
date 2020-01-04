@@ -49,7 +49,7 @@ class Categories extends Component<Props> {
   render() {
     const { allCategories } = this.props;
     /* eslint-disable */
-    const { children_data } = allCategories;
+    const children_data = allCategories.children_data ? allCategories.children_data : [];
     /* eslint-enable */
     return (
       <div>

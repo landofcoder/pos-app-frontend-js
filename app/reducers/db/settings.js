@@ -14,5 +14,5 @@ export async function createKey(key, value) {
 
 export async function updateById(id, value) {
   const tbl = db.table(table);
-  await tbl.update(id, {value, update_at: new Date()});
+  await tbl.update(id, { value, update_at: new Date() });
 }
