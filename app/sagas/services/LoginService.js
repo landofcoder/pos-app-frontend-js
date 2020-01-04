@@ -27,8 +27,6 @@ export async function loginService(payload) {
         credentials: 'same-origin', // include, *same-origin, omit
         headers: {
           'Content-Type': 'application/json'
-          // Authorization: `Bearer ${adminToken}`
-          // 'Content-Type': 'application/x-www-form-urlencoded',
         },
         redirect: 'follow', // manual, *follow, error
         referrer: 'no-referrer', // no-referrer, *client
@@ -48,7 +46,7 @@ export async function loginService(payload) {
   return '';
 }
 
-export async function getInfoCashierService(adminToken) {
+export async function getInfoCashierService() {
   const response = await fetch(`${baseUrl}index.php/rest/V1/lof-cashier`, {
     method: 'GET', // *GET, POST, PUT, DELETE, etc.
     mode: 'cors', // no-cors, *cors, same-origin
@@ -56,7 +54,7 @@ export async function getInfoCashierService(adminToken) {
     credentials: 'same-origin', // include, *same-origin, omit
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${adminToken}`
+      Authorization: `Bearer ${window.liveToken}`
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
     redirect: 'follow', // manual, *follow, error

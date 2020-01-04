@@ -44,7 +44,6 @@ import {
   handleProductType,
   reformatConfigurableProduct
 } from '../common/product';
-import { adminToken } from '../params';
 import {
   getDefaultPaymentMethod,
   getDefaultShippingMethod
@@ -243,10 +242,10 @@ function* cashCheckoutPlaceOrder() {
     });
 
     // Step 2: Create invoice
-    yield call(createInvoiceService, adminToken, orderId);
+    yield call(createInvoiceService, orderId);
 
     // Step 3: Create shipment
-    yield call(createShipmentService, adminToken, orderId);
+    yield call(createShipmentService, orderId);
 
     // Place order success, let show receipt and copy current cart to cartForReceipt
     yield put({ type: types.PLACE_ORDER_SUCCESS, orderId });
@@ -506,7 +505,7 @@ function* getPostConfigGeneralConfig() {
   const shopInfoResponse = yield call(getShopInfoService);
 
   // Get all cashier info
-  const cashierInfo = yield call(getInfoCashierService, window.liveToken);
+  const cashierInfo = yield call(getInfoCashierService);
   yield put({ type: types.RECEIVED_CASHIER_INFO, payload: cashierInfo });
 
   const outletId = cashierInfo.outlet_id;

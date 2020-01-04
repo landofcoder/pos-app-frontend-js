@@ -1,4 +1,4 @@
-import { adminToken, baseUrl } from '../../params';
+import { baseUrl } from '../../params';
 
 /**
  * Create guest cart service
@@ -15,7 +15,7 @@ export async function searchCustomer(payload) {
       credentials: 'same-origin', // include, *same-origin, omit
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${adminToken}`
+        Authorization: `Bearer ${window.liveToken}`
         // 'Content-Type': 'application/x-www-form-urlencoded',
       },
       redirect: 'follow', // manual, *follow, error
@@ -39,7 +39,7 @@ export async function getCustomerCartTokenService(customerId) {
       credentials: 'same-origin', // include, *same-origin, omit
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${adminToken}`
+        Authorization: `Bearer ${window.liveToken}`
         // 'Content-Type': 'application/x-www-form-urlencoded',
       },
       redirect: 'follow', // manual, *follow, error
