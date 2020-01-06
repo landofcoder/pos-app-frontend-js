@@ -53,12 +53,6 @@ export function searchProductAction(payload) {
   };
 }
 
-export function getDefaultProductAction() {
-  return {
-    type: types.GET_DEFAULT_PRODUCT
-  };
-}
-
 export function updateMainPanelType(payload) {
   return {
     type: types.UPDATE_MAIN_PANEL_TYPE,
@@ -199,12 +193,6 @@ export function updateShowCashModal(payload) {
   };
 }
 
-export function getPostGeneralConfig() {
-  return {
-    type: types.GET_POS_GENERAL_CONFIG
-  };
-}
-
 export function emptyCart() {
   return {
     type: types.EMPTY_CART
@@ -261,5 +249,5 @@ export function updateIsInternetConnected(payload) {
 export function getDiscountForOfflineCheckout() {
   return {
     type: types.GET_DISCOUNT_FOR_OFFLINE_CHECKOUT
-  }
+  };
 }

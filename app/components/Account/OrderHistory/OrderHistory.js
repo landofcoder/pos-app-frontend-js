@@ -1,29 +1,33 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Styles from './OrderHistory.scss';
-import { getOrderHistory, getOrderHistoryDetail } from '../../../actions/accountAction';
-
+import {
+  getOrderHistory,
+  toggleModalOrderDetail
+} from '../../../actions/accountAction';
+import DetailOrder from './DetailOrder/DetailOrder';
+import Styles from './order-history.scss';
 type Props = {
   getOrderHistory: () => void,
   isLoading: boolean,
   orderHistory: [],
-  getOrderHistoryDetail: (sales_order_id) => void,
+  getOrderHistoryDetail: sales_order_id => void,
+  isOpenDetailOrder: boolean
 };
 class OrderHistory extends Component<Props> {
   props: Props;
 
-  getOrderHistoryDetail = (sales_order_id) => {
-    const { getOrderHistoryDetail } = this.props;
-    getOrderHistoryDetail(sales_order_id);
-  }
+  getOrderHistoryDetail = sales_order_id => {
+    const { toggleModalOrderDetail } = this.props;
+    toggleModalOrderDetail({ isShow: true, order_id: sales_order_id });
+  };
   componentDidMount(): void {
     const { getOrderHistory } = this.props;
     getOrderHistory();
   }
 
   render() {
-    const { orderHistory, isLoading } = this.props;
-
+    const { orderHistory, isLoading, isOpenDetailOrder } = this.props;
+    console.log(isOpenDetailOrder);
     return (
       <>
         <table className="table">
@@ -39,7 +43,13 @@ class OrderHistory extends Component<Props> {
           <tbody>
             {orderHistory.map((item, index) => {
               return (
-                <tr key={index} className={Styles.tableRowList} onClick={() => this.getOrderHistoryDetail(item.sales_order_id)}>
+                <tr
+                  key={index}
+                  className={Styles.tableRowList}
+                  onClick={() =>
+                    this.getOrderHistoryDetail(item.sales_order_id)
+                  }
+                >
                   <th scope="row">{index + 1}</th>
                   <td>{item.increment_id}</td>
                   <td>
@@ -71,12 +81,14 @@ class OrderHistory extends Component<Props> {
             </div>
           </div>
         ) : null}
+        {isOpenDetailOrder ? <DetailOrder /> : null}
       </>
     );
   }
 }
 function mapStateToProps(state) {
   return {
+    isOpenDetailOrder: state.mainRd.isOpenDetailOrder,
     isLoading: state.mainRd.isLoadingOrderHistory,
     orderHistory: state.mainRd.orderHistory
   };
@@ -84,7 +96,10 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     getOrderHistory: () => dispatch(getOrderHistory()),
-    getOrderHistoryDetail: (index) => dispatch(getOrderHistoryDetail(index)),
+    toggleModalOrderDetail: payload => dispatch(toggleModalOrderDetail(payload))
   };
 }
-export default connect(mapStateToProps, mapDispatchToProps)(OrderHistory);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(OrderHistory);

@@ -1,4 +1,4 @@
-import { adminToken, baseUrl } from '../../params';
+import { baseUrl } from '../../params';
 import { BUNDLE } from '../../constants/product-types';
 import { getBundleOption } from '../../common/product';
 
@@ -11,7 +11,7 @@ import { getBundleOption } from '../../common/product';
  */
 export async function addProductToQuote(cartId, item, payloadCart) {
   let url = '';
-  let token = adminToken;
+  let token = window.liveToken;
   const { sku } = item;
   const posQty = item.pos_qty;
   if (payloadCart.isGuestCustomer) {
@@ -61,7 +61,7 @@ export async function addProductToQuote(cartId, item, payloadCart) {
  */
 export async function placeCashOrderService(cartToken, payloadCart) {
   let url = '';
-  let token = adminToken;
+  let token = window.liveToken;
   const cartId = payloadCart.cartIdResult;
   const { defaultPaymentMethod, cashierInfo } = payloadCart;
   let method = 'PUT';
@@ -110,7 +110,7 @@ export async function createGuestCartService() {
     credentials: 'same-origin', // include, *same-origin, omit
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${adminToken}`
+      Authorization: `Bearer ${window.liveToken}`
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
     redirect: 'follow', // manual, *follow, error
@@ -128,7 +128,7 @@ export async function createGuestCartService() {
  */
 export async function addShippingInformationService(cartToken, payloadCart) {
   let url = '';
-  let token = adminToken;
+  let token = window.liveToken;
   const { defaultShippingMethod, posSystemConfigCustomer } = payloadCart;
   if (payloadCart.isGuestCustomer) {
     url = `${baseUrl}index.php/rest/V1/guest-carts/${cartToken}/shipping-information`;
@@ -192,11 +192,10 @@ function renderShippingAddress(customerConfig) {
 
 /**
  * Create Receipt service
- * @param adminToken
  * @param orderId
  * @returns void
  */
-export async function createInvoiceService(adminToken, orderId) {
+export async function createInvoiceService(orderId) {
   const response = await fetch(
     `${baseUrl}index.php/rest/V1/order/${orderId}/invoice`,
     {
@@ -206,7 +205,7 @@ export async function createInvoiceService(adminToken, orderId) {
       credentials: 'same-origin', // include, *same-origin, omit
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${adminToken}`
+        Authorization: `Bearer ${window.liveToken}`
         // 'Content-Type': 'application/x-www-form-urlencoded',
       },
       redirect: 'follow', // manual, *follow, error
@@ -220,7 +219,7 @@ export async function createInvoiceService(adminToken, orderId) {
   return await response.json();
 }
 
-export async function createShipmentService(adminToken, orderId) {
+export async function createShipmentService(orderId) {
   const response = await fetch(
     `${baseUrl}index.php/rest/V1/order/${orderId}/ship`,
     {
@@ -230,7 +229,7 @@ export async function createShipmentService(adminToken, orderId) {
       credentials: 'same-origin', // include, *same-origin, omit
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${adminToken}`
+        Authorization: `Bearer ${window.liveToken}`
         // 'Content-Type': 'application/x-www-form-urlencoded',
       },
       redirect: 'follow', // manual, *follow, error
@@ -262,7 +261,7 @@ export async function getDiscountForQuoteService(payload) {
         credentials: 'same-origin', // include, *same-origin, omit
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${window.liveToken}`
           // 'Content-Type': 'application/x-www-form-urlencoded',
         },
         redirect: 'follow', // manual, *follow, error

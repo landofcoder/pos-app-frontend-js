@@ -1,4 +1,4 @@
-import { adminToken, baseUrl } from '../../params';
+import { baseUrl } from '../../params';
 
 /**
  * Create guest cart service
@@ -15,14 +15,15 @@ export async function searchCustomer(payload) {
       credentials: 'same-origin', // include, *same-origin, omit
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${adminToken}`
+        Authorization: `Bearer ${window.liveToken}`
         // 'Content-Type': 'application/x-www-form-urlencoded',
       },
       redirect: 'follow', // manual, *follow, error
       referrer: 'no-referrer' // no-referrer, *client
     }
   );
-  return await response.json(); // parses JSON response into native JavaScript objects
+  const data = await response.json();
+  return data;
 }
 
 /**
@@ -39,14 +40,15 @@ export async function getCustomerCartTokenService(customerId) {
       credentials: 'same-origin', // include, *same-origin, omit
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${adminToken}`
+        Authorization: `Bearer ${window.liveToken}`
         // 'Content-Type': 'application/x-www-form-urlencoded',
       },
       redirect: 'follow', // manual, *follow, error
       referrer: 'no-referrer' // no-referrer, *clien
     }
   );
-  return await response.json(); // parses JSON response into native JavaScript objects
+  const data = await response.json(); // parses JSON response into native JavaScript objects
+  return data;
 }
 
 /**

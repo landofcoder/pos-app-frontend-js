@@ -2,5 +2,6 @@
   "SIMPLE": "simple",
   "CONFIGURABLE": "configurable",
   "BUNDLE": "bundle",
-  "GROUPED": "grouped"
+  "GROUPED": "grouped",
+  "DOWNLOADABLE": "downloadable"
 }

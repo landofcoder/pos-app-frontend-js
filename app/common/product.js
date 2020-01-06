@@ -128,6 +128,7 @@ export function reformatConfigurableProduct(item, firstInit = true) {
       }
     }
 
+    // Add usedProduct attribute
     reAssignItem.usedProduct = foundProduct;
   }
   // Before return

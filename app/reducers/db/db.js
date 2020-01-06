@@ -1,9 +1,9 @@
 import Dexie from 'dexie';
 
 const db = new Dexie('Lof_Pos');
-const version = 9;
+const version = 11;
 db.version(version).stores({
-  products: '++id, *categoryIds',
+  products: '++id, *categoryIds, *sku, *name',
   categories: '++id',
   customers: '++id',
   sign_up_customers: '++id,*email',

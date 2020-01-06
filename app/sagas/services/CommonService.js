@@ -1,4 +1,4 @@
-import { adminToken, baseUrl } from '../../params';
+import { baseUrl } from '../../params';
 import {
   systemConfigSync,
   getSystemConfigLocal,
@@ -25,7 +25,7 @@ export async function getSystemConfigService() {
         credentials: 'same-origin', // include, *same-origin, omit
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${window.liveToken}`
           // 'Content-Type': 'application/x-www-form-urlencoded',
         },
         redirect: 'follow', // manual, *follow, error
@@ -67,7 +67,7 @@ export async function getShopInfoService() {
         credentials: 'same-origin', // include, *same-origin, omit
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${window.liveToken}`
           // 'Content-Type': 'application/x-www-form-urlencoded',
         },
         redirect: 'follow', // manual, *follow, error
@@ -94,10 +94,9 @@ export async function getShopInfoService() {
 
 /**
  * Get custom receipt
- * @param payload
  * @returns void
  */
-export async function getCustomReceiptService(payload: any) {
+export async function getCustomReceiptService() {
   let data;
   try {
     const response = await fetch(
@@ -109,7 +108,7 @@ export async function getCustomReceiptService(payload: any) {
         credentials: 'same-origin', // include, *same-origin, omit
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${window.liveToken}`
           // 'Content-Type': 'application/x-www-form-urlencoded',
         },
         redirect: 'follow', // manual, *follow, error
@@ -134,14 +133,15 @@ export async function getDetailOutletService(payload) {
       credentials: 'same-origin', // include, *same-origin, omit
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${adminToken}`
+        Authorization: `Bearer ${window.liveToken}`
         // 'Content-Type': 'application/x-www-form-urlencoded',
       },
       redirect: 'follow', // manual, *follow, error
       referrer: 'no-referrer' // no-referrer, *client
     }
   );
-  return await response.json();
+  const data = await response.json();
+  return data;
 }
 
 /**
@@ -151,15 +151,16 @@ export async function getDetailOutletService(payload) {
 export async function getAllCategoriesService() {
   let data;
   let error = false;
+  let response = {};
   try {
-    const response = await fetch(`${baseUrl}index.php/rest/V1/categories`, {
+    response = await fetch(`${baseUrl}index.php/rest/V1/categories`, {
       method: 'GET', // *GET, POST, PUT, DELETE, etc.
       mode: 'cors', // no-cors, *cors, same-origin
       cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
       credentials: 'same-origin', // include, *same-origin, omit
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${adminToken}`
+        Authorization: `Bearer ${window.liveToken}`
         // 'Content-Type': 'application/x-www-form-urlencoded',
       },
       redirect: 'follow', // manual, *follow, error
@@ -170,7 +171,7 @@ export async function getAllCategoriesService() {
     data = [];
     error = true;
   }
-  if (error) {
+  if (error || response.status === 401) {
     // Get from local
     data = await getCategories();
     // eslint-disable-next-line prefer-destructuring
@@ -189,14 +190,15 @@ export async function getOrderHistoryService() {
       credentials: 'same-origin', // include, *same-origin, omit
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${adminToken}`
+        Authorization: `Bearer ${window.liveToken}`
         // 'Content-Type': 'application/x-www-form-urlencoded',
       },
       redirect: 'follow', // manual, *follow, error
       referrer: 'no-referrer' // no-referrer, *client
     }
   );
-  return await response.json();
+  const data = await response.json();
+  return data;
 }
 
 export async function getOrderHistoryServiceDetails(index) {
@@ -207,11 +209,12 @@ export async function getOrderHistoryServiceDetails(index) {
     credentials: 'same-origin', // include, *same-origin, omit
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${adminToken}`
+      Authorization: `Bearer ${window.liveToken}`
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
     redirect: 'follow', // manual, *follow, error
     referrer: 'no-referrer' // no-referrer, *client
   });
-  return await response.json();
+  const data = await response.json();
+  return data;
 }

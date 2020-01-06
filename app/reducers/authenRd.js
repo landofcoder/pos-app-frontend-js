@@ -1,6 +1,5 @@
 import produce from 'immer';
 import * as typesAuthen from '../constants/authen';
-import { setMainUrl } from './db/settings';
 const initialState = {
   token: '',
   authenticate: '',
@@ -33,8 +32,7 @@ const authenRd = (state = initialState, action) =>
         draft.token = action.payload;
         break;
       case typesAuthen.ERROR_LOGIN:
-        draft.message =
-          'The email or password did not match our records. Please try again.';
+        draft.message = 'The email or password not found';
         break;
       case typesAuthen.SUCCESS_LOGIN:
         draft.message = 'SUCCESS';
