@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router';
-import ListCart from './cart/ListCart';
+import ListCart from './ListCart/ListCart';
 import Styles from './pos.scss';
 import CommonStyle from './styles/common.scss';
 import ModalStyle from './styles/modal.scss';
@@ -113,6 +113,7 @@ export default class Pos extends Component<Props, State> {
     } = this.props;
     // Set type_id to state for switchingProductSettings render settings form
     this.setState({ typeId: item.type_id });
+    console.log('detail item:', item);
 
     if (item.type_id !== 'simple') {
       // Show product option
@@ -124,7 +125,7 @@ export default class Pos extends Component<Props, State> {
       case CONFIGURABLE:
         {
           const { sku } = item;
-          getDetailProductConfigurable(sku);
+          getDetailProductConfigurable({ item, sku });
         }
         break;
       case SIMPLE:

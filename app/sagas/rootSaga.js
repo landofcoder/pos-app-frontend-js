@@ -307,12 +307,22 @@ function* searchProduct(payload) {
 function* getDetailProductConfigurable(payload) {
   yield startLoadingProductOption();
 
-  const productDetail = yield call(
-    getDetailProductConfigurableService,
-    payload
-  );
+  console.log('payload detail:', payload);
 
-  const productDetailSingle = productDetail.data.products.items[0];
+  // Check offline mode
+  const offlineMode = yield getOfflineMode();
+  let productDetailSingle = {};
+
+  if (offlineMode === 1) {
+    productDetailSingle = payload.payload.item;
+  } else {
+    const productDetail = yield call(
+      getDetailProductConfigurableService,
+      payload
+    );
+    productDetailSingle = productDetail.data.products.items[0];
+  }
+
   const productDetailReFormat = yield handleProductType(productDetailSingle);
   yield receivedProductOptionValue(productDetailReFormat);
 
@@ -327,6 +337,7 @@ function* getDetailBundleProduct(payload) {
   yield startLoadingProductOption();
 
   const productDetail = yield call(getDetailProductBundleService, payload);
+  console.log('product details:', productDetail);
   const productDetailSingle = productDetail.data.products.items[0];
   const productDetailReFormat = yield handleProductType(productDetailSingle);
   yield receivedProductOptionValue(productDetailReFormat);
@@ -564,7 +575,6 @@ function* syncData() {
     const offlineMode = yield getOfflineMode();
 
     if (offlineMode === 1) {
-      console.log('offline mode?');
       // Create last time sync for each period sync execution
       yield createSyncAllDataFlag();
 
