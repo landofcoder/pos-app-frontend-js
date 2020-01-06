@@ -2,7 +2,7 @@
 import * as types from '../constants/root';
 import * as typesAuthen from '../constants/authen.json';
 
-export function addToCart(payload) {
+export function addToCart(payload: any) {
   return {
     type: types.ADD_TO_CART,
     payload
@@ -50,12 +50,6 @@ export function searchProductAction(payload) {
   return {
     type: types.SEARCH_ACTION,
     payload
-  };
-}
-
-export function getDefaultProductAction() {
-  return {
-    type: types.GET_DEFAULT_PRODUCT
   };
 }
 
@@ -199,11 +193,6 @@ export function updateShowCashModal(payload) {
   };
 }
 
-export function getPostGeneralConfig() {
-  return {
-    type: types.GET_POS_GENERAL_CONFIG
-  };
-}
 
 export function emptyCart() {
   return {
@@ -241,19 +230,25 @@ export function signUpCustomer(payload) {
   return {
     type: types.SIGN_UP_CUSTOMER,
     payload
-  }
+  };
 }
 
-export function changeSignUpLoadingCustomer(payload){
+export function changeSignUpLoadingCustomer(payload) {
   return {
     type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER,
     payload
-  }
+  };
 }
 
 export function updateIsInternetConnected(payload) {
   return {
     type: types.IS_INTERNET_CONNECTED,
     payload
-  }
+  };
+}
+
+export function getDiscountForOfflineCheckout() {
+  return {
+    type: types.GET_DISCOUNT_FOR_OFFLINE_CHECKOUT
+  };
 }

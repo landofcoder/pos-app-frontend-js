@@ -1,5 +1,11 @@
-import { adminToken, baseUrl } from '../../params';
-import { systemConfigSync, getSystemConfigLocal } from '../services/SettingsService';
+import { baseUrl } from '../../params';
+import {
+  systemConfigSync,
+  getSystemConfigLocal,
+  shopInfoSync,
+  getShopInfoLocal
+} from './SettingsService';
+import { getCategories } from '../../reducers/db/categories';
 
 /**
  * Data from systemConfig will always get latest settings from api,
@@ -19,7 +25,7 @@ export async function getSystemConfigService() {
         credentials: 'same-origin', // include, *same-origin, omit
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${window.liveToken}`
           // 'Content-Type': 'application/x-www-form-urlencoded',
         },
         redirect: 'follow', // manual, *follow, error
@@ -35,6 +41,7 @@ export async function getSystemConfigService() {
   if (getError) {
     // Query to local
     data = await getSystemConfigLocal();
+    data = data[0].value;
   } else {
     // Sync it now
     await systemConfigSync(data);
@@ -48,45 +55,71 @@ export async function getSystemConfigService() {
  * @returns {Promise<any>}
  */
 export async function getShopInfoService() {
-  const response = await fetch(`${baseUrl}index.php/rest/V1/pos/getShopInfo`, {
-    method: 'GET', // *GET, POST, PUT, DELETE, etc.
-    mode: 'cors', // no-cors, *cors, same-origin
-    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-    credentials: 'same-origin', // include, *same-origin, omit
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${adminToken}`
-      // 'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    redirect: 'follow', // manual, *follow, error
-    referrer: 'no-referrer' // no-referrer, *client
-  });
-  return await response.json();
+  let data;
+  let error = false;
+  try {
+    const response = await fetch(
+      `${baseUrl}index.php/rest/V1/pos/getShopInfo`,
+      {
+        method: 'GET', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors', // no-cors, *cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omit
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${window.liveToken}`
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: 'follow', // manual, *follow, error
+        referrer: 'no-referrer' // no-referrer, *client
+      }
+    );
+    data = await response.json();
+  } catch (e) {
+    data = [];
+    error = true;
+  }
+
+  if (error) {
+    // Query to local
+    data = await getShopInfoLocal();
+    data = data[0].value;
+    console.log('final data:', data);
+  } else {
+    // Sync now
+    await shopInfoSync(data);
+  }
+  return data;
 }
 
 /**
  * Get custom receipt
- * @param payload
- * @returns {Promise<any>}
+ * @returns void
  */
-export async function getCustomReceiptService(payload) {
-  const response = await fetch(
-    `${baseUrl}index.php/rest/V1/lof-posreceipt/pos/${1}`,
-    {
-      method: 'GET', // *GET, POST, PUT, DELETE, etc.
-      mode: 'cors', // no-cors, *cors, same-origin
-      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: 'same-origin', // include, *same-origin, omit
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${adminToken}`
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      redirect: 'follow', // manual, *follow, error
-      referrer: 'no-referrer' // no-referrer, *client
-    }
-  );
-  return await response.json();
+export async function getCustomReceiptService() {
+  let data;
+  try {
+    const response = await fetch(
+      `${baseUrl}index.php/rest/V1/lof-posreceipt/pos/${1}`,
+      {
+        method: 'GET', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors', // no-cors, *cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omit
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${window.liveToken}`
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: 'follow', // manual, *follow, error
+        referrer: 'no-referrer' // no-referrer, *client
+      }
+    );
+    data = await response.json();
+  } catch (e) {
+    data = [];
+  }
+  return data;
 }
 
 export async function getDetailOutletService(payload) {
@@ -100,14 +133,15 @@ export async function getDetailOutletService(payload) {
       credentials: 'same-origin', // include, *same-origin, omit
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${adminToken}`
+        Authorization: `Bearer ${window.liveToken}`
         // 'Content-Type': 'application/x-www-form-urlencoded',
       },
       redirect: 'follow', // manual, *follow, error
       referrer: 'no-referrer' // no-referrer, *client
     }
   );
-  return await response.json();
+  const data = await response.json();
+  return data;
 }
 
 /**
@@ -115,20 +149,35 @@ export async function getDetailOutletService(payload) {
  * @returns {Promise<any>}
  */
 export async function getAllCategoriesService() {
-  const response = await fetch(`${baseUrl}index.php/rest/V1/categories`, {
-    method: 'GET', // *GET, POST, PUT, DELETE, etc.
-    mode: 'cors', // no-cors, *cors, same-origin
-    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-    credentials: 'same-origin', // include, *same-origin, omit
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${adminToken}`
-      // 'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    redirect: 'follow', // manual, *follow, error
-    referrer: 'no-referrer' // no-referrer, *client
-  });
-  return await response.json();
+  let data;
+  let error = false;
+  let response = {};
+  try {
+    response = await fetch(`${baseUrl}index.php/rest/V1/categories`, {
+      method: 'GET', // *GET, POST, PUT, DELETE, etc.
+      mode: 'cors', // no-cors, *cors, same-origin
+      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: 'same-origin', // include, *same-origin, omit
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${window.liveToken}`
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      redirect: 'follow', // manual, *follow, error
+      referrer: 'no-referrer' // no-referrer, *client
+    });
+    data = await response.json();
+  } catch (e) {
+    data = [];
+    error = true;
+  }
+  if (error || response.status === 401) {
+    // Get from local
+    data = await getCategories();
+    // eslint-disable-next-line prefer-destructuring
+    data = data[0];
+  }
+  return data;
 }
 
 export async function getOrderHistoryService() {
@@ -141,14 +190,15 @@ export async function getOrderHistoryService() {
       credentials: 'same-origin', // include, *same-origin, omit
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${adminToken}`
+        Authorization: `Bearer ${window.liveToken}`
         // 'Content-Type': 'application/x-www-form-urlencoded',
       },
       redirect: 'follow', // manual, *follow, error
       referrer: 'no-referrer' // no-referrer, *client
     }
   );
-  return await response.json();
+  const data = await response.json();
+  return data;
 }
 
 export async function getOrderHistoryServiceDetails(index) {
@@ -159,11 +209,12 @@ export async function getOrderHistoryServiceDetails(index) {
     credentials: 'same-origin', // include, *same-origin, omit
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${adminToken}`
+      Authorization: `Bearer ${window.liveToken}`
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
     redirect: 'follow', // manual, *follow, error
     referrer: 'no-referrer' // no-referrer, *client
   });
-  return await response.json();
+  const data = await response.json();
+  return data;
 }

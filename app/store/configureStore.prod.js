@@ -14,12 +14,13 @@ const router = routerMiddleware(history);
 const enhancer = applyMiddleware(sagaMiddleware, router);
 
 function configureStore(initialState?: counterStateType) {
-  sagaMiddleware.run(rootSaga);
-  return createStore<*, counterStateType, *>(
+  const Store = createStore<*, counterStateType, *>(
     rootReducer,
     initialState,
     enhancer
   );
+  sagaMiddleware.run(rootSaga);
+  return Store;
 }
 
 export default { configureStore, history };

@@ -1,4 +1,4 @@
-import { adminToken, baseUrl } from '../../params';
+import { baseUrl } from '../../params';
 import { BUNDLE } from '../../constants/product-types';
 import { getBundleOption } from '../../common/product';
 
@@ -7,11 +7,11 @@ import { getBundleOption } from '../../common/product';
  * @param cartId
  * @param item
  * @param payloadCart
- * @returns {Promise<void>}
+ * @returns void
  */
 export async function addProductToQuote(cartId, item, payloadCart) {
   let url = '';
-  let token = adminToken;
+  let token = window.liveToken;
   const { sku } = item;
   const posQty = item.pos_qty;
   if (payloadCart.isGuestCustomer) {
@@ -61,7 +61,7 @@ export async function addProductToQuote(cartId, item, payloadCart) {
  */
 export async function placeCashOrderService(cartToken, payloadCart) {
   let url = '';
-  let token = adminToken;
+  let token = window.liveToken;
   const cartId = payloadCart.cartIdResult;
   const { defaultPaymentMethod, cashierInfo } = payloadCart;
   let method = 'PUT';
@@ -100,7 +100,7 @@ export async function placeCashOrderService(cartToken, payloadCart) {
 
 /**
  * Create guest cart service
- * @returns {Promise<any>}
+ * @returns void
  */
 export async function createGuestCartService() {
   const response = await fetch(`${baseUrl}index.php/rest/V1/guest-carts/`, {
@@ -110,7 +110,7 @@ export async function createGuestCartService() {
     credentials: 'same-origin', // include, *same-origin, omit
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${adminToken}`
+      Authorization: `Bearer ${window.liveToken}`
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
     redirect: 'follow', // manual, *follow, error
@@ -124,11 +124,11 @@ export async function createGuestCartService() {
  * Add shipping information service
  * @param cartToken
  * @param payloadCart
- * @returns {Promise<any>}
+ * @returns void
  */
 export async function addShippingInformationService(cartToken, payloadCart) {
   let url = '';
-  let token = adminToken;
+  let token = window.liveToken;
   const { defaultShippingMethod, posSystemConfigCustomer } = payloadCart;
   if (payloadCart.isGuestCustomer) {
     url = `${baseUrl}index.php/rest/V1/guest-carts/${cartToken}/shipping-information`;
@@ -165,7 +165,7 @@ export async function addShippingInformationService(cartToken, payloadCart) {
 /**
  * Render shipping address
  * @param customerConfig
- * @returns {{firstname: *, regionId: string, city: *, street: *, postcode: string, company: string, telephone: string, sameAsBilling: number, country_id: (*|string), email: *, lastname: *}}
+ * @returns void
  */
 function renderShippingAddress(customerConfig) {
   const city = customerConfig ? customerConfig.city : 'California';
@@ -192,11 +192,10 @@ function renderShippingAddress(customerConfig) {
 
 /**
  * Create Receipt service
- * @param adminToken
  * @param orderId
- * @returns {Promise<any>}
+ * @returns void
  */
-export async function createInvoiceService(adminToken, orderId) {
+export async function createInvoiceService(orderId) {
   const response = await fetch(
     `${baseUrl}index.php/rest/V1/order/${orderId}/invoice`,
     {
@@ -206,7 +205,7 @@ export async function createInvoiceService(adminToken, orderId) {
       credentials: 'same-origin', // include, *same-origin, omit
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${adminToken}`
+        Authorization: `Bearer ${window.liveToken}`
         // 'Content-Type': 'application/x-www-form-urlencoded',
       },
       redirect: 'follow', // manual, *follow, error
@@ -220,7 +219,7 @@ export async function createInvoiceService(adminToken, orderId) {
   return await response.json();
 }
 
-export async function createShipmentService(adminToken, orderId) {
+export async function createShipmentService(orderId) {
   const response = await fetch(
     `${baseUrl}index.php/rest/V1/order/${orderId}/ship`,
     {
@@ -230,7 +229,7 @@ export async function createShipmentService(adminToken, orderId) {
       credentials: 'same-origin', // include, *same-origin, omit
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${adminToken}`
+        Authorization: `Bearer ${window.liveToken}`
         // 'Content-Type': 'application/x-www-form-urlencoded',
       },
       redirect: 'follow', // manual, *follow, error
@@ -244,31 +243,35 @@ export async function createShipmentService(adminToken, orderId) {
 /**
  * Get discount and info for new quote
  * @param payload list products to add to cart
- * @returns {Promise<any>}
+ * @returns void
  */
 export async function getDiscountForQuoteService(payload) {
   const formDataCart = new FormData();
   formDataCart.append('param', JSON.stringify([]));
-
-  const cart = payload.cart;
-  const config = payload.config;
-
-  const response = await fetch(
-    `${baseUrl}index.php/rest/V1/pos/get-discount-quote`,
-    {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
-      mode: 'cors', // no-cors, *cors, same-origin
-      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: 'same-origin', // include, *same-origin, omit
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${adminToken}`
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      redirect: 'follow', // manual, *follow, error
-      referrer: 'no-referrer', // no-referrer, *client
-      body: JSON.stringify({ param: JSON.stringify({ cart, config }) }) // body data type must match "Content-Type" header
-    }
-  );
-  return await response.json();
+  let data;
+  const { cart } = payload;
+  const { config } = payload;
+  try {
+    const response = await fetch(
+      `${baseUrl}index.php/rest/V1/pos/get-discount-quote`,
+      {
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors', // no-cors, *cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omit
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${window.liveToken}`
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: 'follow', // manual, *follow, error
+        referrer: 'no-referrer', // no-referrer, *client
+        body: JSON.stringify({ param: JSON.stringify({ cart, config }) }) // body data type must match "Content-Type" header
+      }
+    );
+    data = await response.json();
+  } catch (e) {
+    return 'error';
+  }
+  return data;
 }
