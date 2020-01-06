@@ -114,7 +114,7 @@ export default class Pos extends Component<Props, State> {
     // Set type_id to state for switchingProductSettings render settings form
     this.setState({ typeId: item.type_id });
 
-    if (item.type_id !== 'simple') {
+    if (item.type_id !== 'simple' && item.type_id !== 'downloadable') {
       // Show product option
       const { updateIsShowingProductOption } = this.props;
       updateIsShowingProductOption(true);

@@ -21,6 +21,7 @@ class ListCart extends Component<Props> {
   };
 
   getFirstMedia = item => {
+    console.log('item:', item);
     const gallery = item.media_gallery_entries
       ? item.media_gallery_entries
       : [];

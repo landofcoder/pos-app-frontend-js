@@ -443,6 +443,9 @@ async function getProductsByCategory(categoryId, currentPage = 1) {
                 id
                 name
                 sku
+                media_gallery_entries {
+                  file
+                }
                 attribute_set_id
                 ... on PhysicalProductInterface {
                   weight
