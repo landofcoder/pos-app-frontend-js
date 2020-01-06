@@ -49,7 +49,7 @@ import {
   getDefaultShippingMethod
 } from './common/orderSaga';
 import { calcPrice } from '../common/productPrice';
-import { BUNDLE } from '../constants/product-types';
+import { BUNDLE, CONFIGURABLE } from '../constants/product-types';
 import { CHECK_LOGIN_BACKGROUND, RECEIVED_TOKEN } from '../constants/authen';
 import { syncCategories } from '../reducers/db/categories';
 import { syncCustomers } from '../reducers/db/customers';
@@ -307,21 +307,10 @@ function* searchProduct(payload) {
 function* getDetailProductConfigurable(payload) {
   yield startLoadingProductOption();
 
-  console.log('payload detail:', payload);
-
-  // Check offline mode
-  const offlineMode = yield getOfflineMode();
-  let productDetailSingle = {};
-
-  if (offlineMode === 1) {
-    productDetailSingle = payload.payload.item;
-  } else {
-    const productDetail = yield call(
-      getDetailProductConfigurableService,
-      payload
-    );
-    productDetailSingle = productDetail.data.products.items[0];
-  }
+  const productDetailSingle = yield getDetailProductOfflineMode(
+    payload.payload.item,
+    CONFIGURABLE
+  );
 
   const productDetailReFormat = yield handleProductType(productDetailSingle);
   yield receivedProductOptionValue(productDetailReFormat);
@@ -336,13 +325,56 @@ function* getDetailProductConfigurable(payload) {
 function* getDetailBundleProduct(payload) {
   yield startLoadingProductOption();
 
-  const productDetail = yield call(getDetailProductBundleService, payload);
-  console.log('product details:', productDetail);
-  const productDetailSingle = productDetail.data.products.items[0];
+  const productDetailSingle = yield getDetailProductOfflineMode(
+    payload.payload.item,
+    BUNDLE
+  );
+
   const productDetailReFormat = yield handleProductType(productDetailSingle);
   yield receivedProductOptionValue(productDetailReFormat);
 
   yield getDetailProductEndTask();
+}
+
+/**
+ * Clone object without prototype, to avoid object is not extensible error
+ * @param detailProduct
+ * @returns array
+ */
+function cloneDetailProduct(detailProduct) {
+  return JSON.parse(JSON.stringify(detailProduct));
+}
+
+/**
+ * Get detail product
+ * @param detailProduct
+ * @param type
+ * @returns product
+ */
+function* getDetailProductOfflineMode(detailProduct, type) {
+  // Check offline mode
+  const offlineMode = getOfflineMode();
+  if (offlineMode === 1) {
+    return cloneDetailProduct(detailProduct);
+  }
+
+  let productDetail;
+  switch (type) {
+    case BUNDLE:
+      productDetail = yield call(
+        getDetailProductBundleService,
+        detailProduct.sku
+      );
+      return productDetail.data.products.items[0];
+    case CONFIGURABLE:
+      productDetail = yield call(
+        getDetailProductConfigurableService,
+        detailProduct.sku
+      );
+      return productDetail.data.products.items[0];
+    default:
+      break;
+  }
 }
 
 /**
@@ -559,7 +591,7 @@ function* syncData() {
   } else {
     const timePeriod = 15;
     const obj = haveToSync[0];
-    const time = obj.updated_at ? obj.updated_at : obj.created_at;
+    const time = obj.update_at ? obj.update_at : obj.created_at;
     const distanceMinute = differenceInMinutes(new Date(), new Date(time));
     if (distanceMinute > timePeriod) {
       letSync = true;

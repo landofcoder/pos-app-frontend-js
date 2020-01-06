@@ -31,7 +31,7 @@ type Props = {
   cartCurrent: Object,
   mainPanelType: string,
   cashCheckoutAction: () => void,
-  getDetailProductConfigurable: (sku: string) => void,
+  getDetailProductConfigurable: (payload: Object) => void,
   getDetailProductBundle: (sku: string) => void,
   getDetailProductGrouped: (sku: string) => void,
   productOption: Object,
@@ -134,7 +134,7 @@ export default class Pos extends Component<Props, State> {
       case BUNDLE:
         {
           const { sku } = item;
-          getDetailProductBundle(sku);
+          getDetailProductBundle({ item, sku });
         }
         break;
       case GROUPED:

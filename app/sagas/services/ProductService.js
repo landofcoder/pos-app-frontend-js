@@ -110,7 +110,7 @@ export async function getDetailProductConfigurableService(payload) {
     },
     body: JSON.stringify({
       query: `{
-      products(filter: { sku: { eq: "${payload.payload}" } }) {
+      products(filter: { sku: { eq: "${payload}" } }) {
         items {
           id
           attribute_set_id
@@ -193,7 +193,7 @@ export async function getDetailProductBundleService(payload) {
     body: JSON.stringify({
       query: `{
         products(filter: {sku:
-          {eq: "${payload.payload}"}
+          {eq: "${payload}"}
         })
          {
             items{

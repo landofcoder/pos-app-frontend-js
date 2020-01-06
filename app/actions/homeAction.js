@@ -193,7 +193,6 @@ export function updateShowCashModal(payload) {
   };
 }
 
-
 export function emptyCart() {
   return {
     type: types.EMPTY_CART
