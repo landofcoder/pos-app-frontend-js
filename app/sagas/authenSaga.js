@@ -5,7 +5,7 @@ import * as typeRoots from '../constants/root.json';
 import { AuthenService, getInfoCashierService } from './services/AuthenService';
 import { RECEIVED_DETAIL_OUTLET } from '../constants/root';
 import { getDetailOutletService } from './services/CommonService';
-import { setMainUrlKey } from '../reducers/db/settings';
+import { setMainUrlKey, getMainUrlKey } from '../reducers/db/settings';
 import { checkValidateUrlLink } from '../common/settings';
 
 const adminToken = state => state.authenRd.token;
@@ -68,7 +68,10 @@ function* setMainUrl(payload) {
 }
 
 function* getMainUrl() {
-  console.log('get url in saga');
+  const data = yield call(getMainUrlKey);
+  if (data.status) {
+    yield put({ type: types.RECEIVED_MAIN_URL, payload: data.payload.url });
+  }
 }
 function* authenSaga() {
   yield takeEvery(types.LOGIN_ACTION, loginAction);

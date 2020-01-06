@@ -3,7 +3,10 @@ import { connect } from 'react-redux';
 import commonStyles from '../../styles/common.scss';
 import styles from './workplace.scss';
 import Loading from '../../commons/Loading';
-import { setMainUrlWorkPlace } from '../../../actions/authenAction';
+import {
+  setMainUrlWorkPlace,
+  getMainUrlWorkPlace
+} from '../../../actions/authenAction';
 type Props = {
   loading: boolean,
   setMainUrlKey: payload => void,
@@ -18,7 +21,10 @@ class WorkPlace extends Component {
       defaultProtocol: 'http://'
     };
   }
-
+  componentDidMount() {
+    const { getMainUrlWorkPlace } = this.props;
+    getMainUrlWorkPlace();
+  }
   handleChangeUrl = event => {
     this.setState({ mainUrl: event.target.value });
   };
@@ -97,7 +103,8 @@ function mapStateToProps(state) {
 }
 function mapDispatchToProps(dispatch) {
   return {
-    setMainUrlKey: payload => dispatch(setMainUrlWorkPlace(payload))
+    setMainUrlWorkPlace: payload => dispatch(setMainUrlWorkPlace(payload)),
+    getMainUrlWorkPlace: () => dispatch(getMainUrlWorkPlace())
   };
 }
 export default connect(

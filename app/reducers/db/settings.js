@@ -32,9 +32,9 @@ export async function setMainUrlKey(payload) {
 
 export async function getMainUrlKey() {
   const settingsTbl = db.table(table);
-  const url = await settingsTbl.get({ key: 'main_url' });
-  if (url) {
-    return { status: true, url };
+  const payload = await settingsTbl.get({ key: 'main_url' });
+  if (payload) {
+    return { status: true, payload };
   }
   return { status: false };
 }
