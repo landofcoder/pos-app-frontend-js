@@ -58,22 +58,46 @@ async function makeCategoriesArraySimple(product) {
 
 /**
  * Get default product without any condition
- * @returns {Promise<Array<any>>}
+ * @returns array
  */
 export async function getDefaultProductLocal() {
   // If use offset(), eg: offer(50) make sure we have more than 50 records or equal
-  const data = await db
-    .table(table)
-    .limit(50)
-    .toArray();
+  let data;
+  try {
+    data = await db
+      .table(table)
+      .limit(50)
+      .toArray();
+  } catch (e) {
+    data = [];
+  }
   return data;
 }
 
+export async function searchProductsLocal(payload) {
+  const searchValue = payload.payload;
+  try {
+    const data = await db
+      .table(table)
+      .filter(x => new RegExp(searchValue).test(x.sku))
+      .limit(20)
+      .toArray();
+    return data;
+  } catch (e) {
+    return [];
+  }
+}
+
 export async function getProductsByCategoryLocal(categoryId) {
-  const data = await db
-    .table(table)
-    .where('categoryIds')
-    .anyOf(categoryId)
-    .toArray();
+  let data;
+  try {
+    data = await db
+      .table(table)
+      .where('categoryIds')
+      .anyOf(categoryId)
+      .toArray();
+  } catch (e) {
+    data = [];
+  }
   return data;
 }

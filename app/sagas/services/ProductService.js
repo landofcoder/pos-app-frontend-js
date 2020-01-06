@@ -1,6 +1,6 @@
 import { baseUrl } from '../../params';
 import {
-  getDefaultProductLocal,
+  searchProductsLocal,
   getProductsByCategoryLocal,
   syncProducts,
   counterProduct
@@ -11,13 +11,13 @@ const graphqlPath = `${baseUrl}graphql`;
 
 /**
  * Search product service
- * @returns {any}
+ * @returns array
  */
 export async function searchProductService(payload) {
-  const { searchValue } = payload;
-  const { offlineMode } = payload;
+  const { searchValue, offlineMode } = payload;
   if (offlineMode === 1) {
-    const data = await getDefaultProductLocal();
+    const data = await searchProductsLocal(searchValue);
+    console.log('search local result:', data);
     return data;
   }
   const response = await fetch(graphqlPath, {

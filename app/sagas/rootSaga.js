@@ -190,7 +190,6 @@ function* getDefaultProduct() {
   const searchValue = '';
 
   const offlineMode = yield getOfflineMode();
-
   const response = yield call(searchProductService, {
     searchValue,
     offlineMode
@@ -292,6 +291,8 @@ function* searchProduct(payload) {
       payload: false
     });
   }
+
+  console.log('product result:', productResult);
 
   yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productResult });
 
