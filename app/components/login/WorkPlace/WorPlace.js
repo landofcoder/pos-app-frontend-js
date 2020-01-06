@@ -3,8 +3,11 @@ import { connect } from 'react-redux';
 import commonStyles from '../../styles/common.scss';
 import styles from './workplace.scss';
 import Loading from '../../commons/Loading';
+import { setMainUrlWorkPlace } from '../../../actions/authenAction';
 type Props = {
-  loading: boolean
+  loading: boolean,
+  setMainUrlKey: payload => void,
+  message: string
 };
 class WorkPlace extends Component {
   props: Props;
@@ -15,17 +18,21 @@ class WorkPlace extends Component {
       defaultProtocol: 'http://'
     };
   }
+
   handleChangeUrl = event => {
     this.setState({ mainUrl: event.target.value });
   };
 
   loginFormSubmit = e => {
     e.preventDefault();
+    const { setMainUrlKey } = this.props;
+    const { mainUrl, defaultProtocol } = this.state;
+    setMainUrlKey(defaultProtocol + mainUrl);
   };
 
   render() {
     const { mainUrl } = this.state;
-    const { loading } = this.props;
+    const { loading, message } = this.props;
     return (
       <>
         <div
@@ -41,7 +48,7 @@ class WorkPlace extends Component {
               </h1>
               <div className="form-group">
                 <span className="text-center">
-                  Enter your workspace’s Slack URL.
+                  Enter your workspace’s POS URL.
                 </span>
               </div>
               <div className="form-group">
@@ -55,13 +62,13 @@ class WorkPlace extends Component {
                 />
               </div>
               <div className="form-group">
-                {/* {message !== '' ? (
+                {message !== '' ? (
                   <div className="alert alert-danger" role="alert">
                     {message}
                   </div>
                 ) : (
                   <></>
-                )} */}
+                )}
                 <button
                   className="btn btn-lg btn-primary btn-block"
                   type="submit"
@@ -84,12 +91,13 @@ class WorkPlace extends Component {
 }
 function mapStateToProps(state) {
   return {
-    loading: state.authenRd.loadingWorkPlace
+    loading: state.authenRd.loadingWorkPlace,
+    message: state.authenRd.messageErrorWorkPlace
   };
 }
 function mapDispatchToProps(dispatch) {
   return {
-
+    setMainUrlKey: payload => dispatch(setMainUrlWorkPlace(payload))
   };
 }
 export default connect(
