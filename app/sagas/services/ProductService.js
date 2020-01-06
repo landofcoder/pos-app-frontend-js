@@ -269,7 +269,7 @@ export async function getDetailProductGroupedService(payload) {
     body: JSON.stringify({
       query: `
            {
-        products(filter: {sku: {eq: "${payload.payload}"}}) {
+        products(filter: {sku: {eq: "${payload}"}}) {
           items {
             id
             name

@@ -32,8 +32,8 @@ type Props = {
   mainPanelType: string,
   cashCheckoutAction: () => void,
   getDetailProductConfigurable: (payload: Object) => void,
-  getDetailProductBundle: (sku: string) => void,
-  getDetailProductGrouped: (sku: string) => void,
+  getDetailProductBundle: (payload: Object) => void,
+  getDetailProductGrouped: (payload: Object) => void,
   productOption: Object,
   isShowCashPaymentModel: boolean,
   updateIsShowingProductOption: (payload: boolean) => void,
@@ -113,7 +113,6 @@ export default class Pos extends Component<Props, State> {
     } = this.props;
     // Set type_id to state for switchingProductSettings render settings form
     this.setState({ typeId: item.type_id });
-    console.log('detail item:', item);
 
     if (item.type_id !== 'simple') {
       // Show product option
@@ -140,7 +139,7 @@ export default class Pos extends Component<Props, State> {
       case GROUPED:
         {
           const { sku } = item;
-          getDetailProductGrouped(sku);
+          getDetailProductGrouped({ item, sku });
         }
         break;
       default:

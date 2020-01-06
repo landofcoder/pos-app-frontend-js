@@ -49,7 +49,7 @@ import {
   getDefaultShippingMethod
 } from './common/orderSaga';
 import { calcPrice } from '../common/productPrice';
-import { BUNDLE, CONFIGURABLE } from '../constants/product-types';
+import { BUNDLE, CONFIGURABLE, GROUPED } from '../constants/product-types';
 import { CHECK_LOGIN_BACKGROUND, RECEIVED_TOKEN } from '../constants/authen';
 import { syncCategories } from '../reducers/db/categories';
 import { syncCustomers } from '../reducers/db/customers';
@@ -337,6 +337,23 @@ function* getDetailBundleProduct(payload) {
 }
 
 /**
+ * Get detail grouped product
+ * @returns void
+ */
+function* getDetailGroupedProduct(payload) {
+  yield startLoadingProductOption();
+
+  const products = yield getDetailProductOfflineMode(
+    payload.payload.item,
+    GROUPED
+  );
+
+  yield receivedProductOptionValue(products);
+
+  yield getDetailProductEndTask();
+}
+
+/**
  * Clone object without prototype, to avoid object is not extensible error
  * @param detailProduct
  * @returns array
@@ -372,23 +389,15 @@ function* getDetailProductOfflineMode(detailProduct, type) {
         detailProduct.sku
       );
       return productDetail.data.products.items[0];
+    case GROUPED:
+      productDetail = yield call(
+        getDetailProductGroupedService,
+        detailProduct.sku
+      );
+      return productDetail.data.products.items[0];
     default:
       break;
   }
-}
-
-/**
- *
- * @returns {Generator<*, *>}
- */
-function* getDetailGroupedProduct(payload) {
-  yield startLoadingProductOption();
-
-  const productDetail = yield call(getDetailProductGroupedService, payload);
-  const products = productDetail.data.products.items[0];
-  yield receivedProductOptionValue(products);
-
-  yield getDetailProductEndTask();
 }
 
 /**
