@@ -10,8 +10,6 @@ import Loading from '../commons/Loading';
 import * as routes from '../../constants/routes';
 import { POS_LOGIN_STORAGE } from '../../constants/authen';
 
-
-
 // testing workPlace config
 import WorkPlace from './WorkPlace/WorPlace';
 type Props = {
@@ -19,7 +17,8 @@ type Props = {
   message: string,
   token: string,
   loading: boolean,
-  setToken: () => void
+  setToken: () => void,
+  mainUrl: string
 };
 class PageLogin extends Component {
   props: Props;
@@ -52,7 +51,7 @@ class PageLogin extends Component {
   };
 
   render() {
-    const { token, message, loading, setToken } = this.props;
+    const { token, message, loading, setToken, mainUrl } = this.props;
     const { valueUser, valuePass } = this.state;
     if (token !== '') {
       return <Redirect to={routes.POS} />;
@@ -61,15 +60,19 @@ class PageLogin extends Component {
       // setToken(localStorage.getItem(POS_LOGIN_STORAGE));
       // return <Redirect to={routes.HOME} />;
     }
-
-    return (<WorkPlace />)
+    if (!mainUrl) {
+      return <WorkPlace />;
+    }
     return (
       <>
         <div
           className={`${commonStyles.contentColumn} ${styles.wrapLoginPage}`}
         >
           <div className="col-sm-12 col-md-4 col-lg-3 ">
-            <form onSubmit={this.loginFormSubmit} className={`${styles.contentColumn}`}>
+            <form
+              onSubmit={this.loginFormSubmit}
+              className={`${styles.contentColumn}`}
+            >
               <h1 className="h3 mb-3 font-weight-normal">Sign in</h1>
               <div className="form-group">
                 <input
@@ -125,6 +128,7 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state) {
   return {
     message: state.authenRd.message,
+    mainUrl: state.authenRd.mainUrl,
     token: state.authenRd.token,
     loading: state.authenRd.loading
   };
