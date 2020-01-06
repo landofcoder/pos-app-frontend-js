@@ -80,7 +80,7 @@ export async function getDefaultProductLocal() {
  * @returns array
  */
 export async function searchProductsLocal(payload) {
-  const searchValue = payload.payload;
+  const searchValue = payload;
   try {
     const data = await db
       .table(table)

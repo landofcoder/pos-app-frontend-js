@@ -266,12 +266,13 @@ function* cashCheckoutPlaceOrder() {
  * @param payload
  */
 function* searchProduct(payload) {
+  console.log('search action:', payload);
   // Start loading
   yield put({ type: types.UPDATE_IS_LOADING_SEARCH_HANDLE, payload: true });
 
   const offlineMode = yield getOfflineMode();
   const searchResult = yield call(searchProductService, {
-    searchValue: payload,
+    searchValue: payload.payload,
     offlineMode
   });
   const productResult = searchResult.length > 0 ? searchResult : [];

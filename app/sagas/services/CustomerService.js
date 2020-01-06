@@ -22,7 +22,8 @@ export async function searchCustomer(payload) {
       referrer: 'no-referrer' // no-referrer, *client
     }
   );
-  return await response.json(); // parses JSON response into native JavaScript objects
+  const data = await response.json();
+  return data;
 }
 
 /**
@@ -46,7 +47,8 @@ export async function getCustomerCartTokenService(customerId) {
       referrer: 'no-referrer' // no-referrer, *clien
     }
   );
-  return await response.json(); // parses JSON response into native JavaScript objects
+  const data = await response.json(); // parses JSON response into native JavaScript objects
+  return data;
 }
 
 /**

@@ -15,9 +15,9 @@ const graphqlPath = `${baseUrl}graphql`;
  */
 export async function searchProductService(payload) {
   const { searchValue, offlineMode } = payload;
+
   if (offlineMode === 1) {
     const data = await searchProductsLocal(searchValue);
-    console.log('search local result:', data);
     return data;
   }
   const response = await fetch(graphqlPath, {
