@@ -74,12 +74,23 @@ export async function getDefaultProductLocal() {
   return data;
 }
 
+/**
+ * Search product by sku or by name
+ * @param payload
+ * @returns array
+ */
 export async function searchProductsLocal(payload) {
   const searchValue = payload.payload;
   try {
     const data = await db
       .table(table)
-      .filter(x => new RegExp(searchValue).test(x.sku))
+      .filter(x => {
+        const isMatchSku = new RegExp(searchValue).test(x.sku);
+        if (!isMatchSku) {
+          return new RegExp(searchValue).test(x.name);
+        }
+        return isMatchSku;
+      })
       .limit(20)
       .toArray();
     return data;
