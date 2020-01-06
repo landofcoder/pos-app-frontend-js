@@ -85,9 +85,11 @@ export async function searchProductsLocal(payload) {
     const data = await db
       .table(table)
       .filter(x => {
-        const isMatchSku = new RegExp(searchValue).test(x.sku);
+        const isMatchSku = new RegExp(searchValue.toLowerCase()).test(
+          x.sku.toLowerCase()
+        );
         if (!isMatchSku) {
-          return new RegExp(searchValue).test(x.name);
+          return new RegExp(searchValue).test(x.name.toLowerCase());
         }
         return isMatchSku;
       })
