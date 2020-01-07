@@ -1,7 +1,10 @@
 // @flow
 import produce from 'immer';
 import * as types from '../constants/root';
-import { HOME_DEFAULT_PRODUCT_LIST, LOADING } from '../constants/main-panel-types';
+import {
+  HOME_DEFAULT_PRODUCT_LIST,
+  LOADING
+} from '../constants/main-panel-types';
 import {
   cartCurrentDefaultData,
   testCartCurrentForDefaultReceipt

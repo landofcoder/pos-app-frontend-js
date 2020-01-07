@@ -782,11 +782,12 @@ function* bootstrapApplicationSaga(loggedDb) {
 function* checkLoginBackgroundSaga() {
   const loggedDb = yield getLoggedDb();
 
+  // Logged
   if (loggedDb !== false) {
-    // After login succeed => call bootstrapApplication
+    // If logged before => call bootstrapApplication
     yield bootstrapApplicationSaga(loggedDb);
   } else {
-    // Update switch mode to login
+    // Not login yet =
     yield put({ type: types.UPDATE_SWITCHING_MODE, payload: LOGIN_FORM });
   }
 }
