@@ -56,6 +56,7 @@ import { syncCategories } from '../reducers/db/categories';
 import { syncCustomers } from '../reducers/db/customers';
 import { signUpCustomer } from '../reducers/db/sync_customers';
 import { getOfflineMode } from '../common/settings';
+import { CHILDREN, LOGIN_FORM } from '../constants/main-panel-types';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
 const cartCurrentToken = state => state.mainRd.cartCurrent.customerToken;
@@ -768,7 +769,7 @@ function* bootstrapApplicationSaga(loggedDb) {
   yield getPostConfigGeneralConfig();
 
   // Update switching mode
-  yield put({ type: types.UPDATE_SWITCHING_MODE, payload: 'Children' });
+  yield put({ type: types.UPDATE_SWITCHING_MODE, payload: CHILDREN });
 
   // Sync
   yield syncData();
@@ -786,7 +787,7 @@ function* checkLoginBackgroundSaga() {
     yield bootstrapApplicationSaga(loggedDb);
   } else {
     // Update switch mode to login
-    yield put({ type: types.UPDATE_SWITCHING_MODE, payload: 'LoginForm' });
+    yield put({ type: types.UPDATE_SWITCHING_MODE, payload: LOGIN_FORM });
   }
 }
 

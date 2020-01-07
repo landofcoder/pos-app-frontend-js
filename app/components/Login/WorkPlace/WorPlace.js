@@ -2,18 +2,21 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import commonStyles from '../../styles/common.scss';
 import styles from './workplace.scss';
-import Loading from '../../commons/Loading';
 import {
   setMainUrlWorkPlace,
   getMainUrlWorkPlace
 } from '../../../actions/authenAction';
+
 type Props = {
   loading: boolean,
   setMainUrlKey: payload => void,
-  message: string
+  message: string,
+  getMainUrlWorkPlace: () => void
 };
+
 class WorkPlace extends Component {
   props: Props;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -21,10 +24,12 @@ class WorkPlace extends Component {
       defaultProtocol: 'http://'
     };
   }
+
   componentDidMount() {
     const { getMainUrlWorkPlace } = this.props;
     getMainUrlWorkPlace();
   }
+
   handleChangeUrl = event => {
     this.setState({ mainUrl: event.target.value });
   };
