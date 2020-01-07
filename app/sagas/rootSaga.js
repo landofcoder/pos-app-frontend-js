@@ -618,14 +618,14 @@ function* syncData() {
     const offlineMode = yield getOfflineMode();
 
     if (offlineMode === 1) {
-      // Create last time sync for each period sync execution
-      yield createSyncAllDataFlag();
-
       // Sync categories to local db
       yield call(syncCategories, allCategories);
 
       // Sync products by categories
       yield call(syncAllProducts, allCategories);
+
+      // Wait for sync completed and create last time sync for each period sync execution
+      yield createSyncAllDataFlag();
     } else {
       console.warn(
         'offline mode not on, pls enable offline mode and connect to the internet'
@@ -772,6 +772,7 @@ function* bootstrapApplicationSaga(loggedDb) {
  */
 function* checkLoginBackgroundSaga() {
   const loggedDb = yield getLoggedDb();
+
   if (loggedDb !== false) {
     // After login succeed => call bootstrapApplication
     yield bootstrapApplicationSaga(loggedDb);

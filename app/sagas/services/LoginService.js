@@ -1,4 +1,5 @@
 import { baseUrl } from '../../params';
+import { cashierInfoSync, getCashierInfoLocal } from './SettingsService';
 import { createKey, getByKey } from '../../reducers/db/settings';
 
 const loggedInfoKey = 'logged_info';
@@ -46,20 +47,43 @@ export async function loginService(payload) {
   return '';
 }
 
+/**
+ * Get info cashier
+ * @returns void
+ */
 export async function getInfoCashierService() {
-  const response = await fetch(`${baseUrl}index.php/rest/V1/lof-cashier`, {
-    method: 'GET', // *GET, POST, PUT, DELETE, etc.
-    mode: 'cors', // no-cors, *cors, same-origin
-    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-    credentials: 'same-origin', // include, *same-origin, omit
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${window.liveToken}`
-      // 'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    redirect: 'follow', // manual, *follow, error
-    referrer: 'no-referrer' // no-referrer, *clien
-  });
-  const data = await response.json(); // parses JSON response into native JavaScript objects
+  let data;
+  let error = false;
+  try {
+    const response = await fetch(`${baseUrl}index.php/rest/V1/lof-cashier`, {
+      method: 'GET', // *GET, POST, PUT, DELETE, etc.
+      mode: 'cors', // no-cors, *cors, same-origin
+      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: 'same-origin', // include, *same-origin, omit
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${window.liveToken}`
+      },
+      redirect: 'follow', // manual, *follow, error
+      referrer: 'no-referrer' // no-referrer, *clien
+    });
+    data = await response.json();
+  } catch (e) {
+    data = [];
+    error = true;
+  }
+
+  console.log('cashier:', data);
+
+  if (error) {
+    // Query to local
+    data = await getCashierInfoLocal();
+    if (data.length > 0) {
+      return data[0].value;
+    }
+  } else {
+    // Sync now
+    await cashierInfoSync(data);
+  }
   return data;
 }
