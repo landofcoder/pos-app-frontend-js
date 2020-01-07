@@ -6,14 +6,13 @@ export async function signUpCustomer(customers) {
     email: payload.customer.email,
     payload
   };
-  const signUpCustomerTbl = db.table('sign_up_customers');
+  const signUpCustomerTbl = db.table('sync_customers');
   const customer = await signUpCustomerTbl.get({
     email: payload.customer.email
   });
   if (customer) {
     await signUpCustomerTbl.update(customer.id, data);
-  }
-  else {
+  } else {
     await signUpCustomerTbl.add(data);
   }
 }

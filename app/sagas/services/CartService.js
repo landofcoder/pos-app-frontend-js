@@ -1,6 +1,7 @@
 import { baseUrl } from '../../params';
 import { BUNDLE } from '../../constants/product-types';
 import { getBundleOption } from '../../common/product';
+import { createOrders } from '../../reducers/db/sync_orders';
 
 /**
  * Add product to quote
@@ -95,7 +96,8 @@ export async function placeCashOrderService(cartToken, payloadCart) {
       cashier_phone: cashierInfo.phone
     })
   });
-  return await response.json();
+  const data = await response.json();
+  return data;
 }
 
 /**
@@ -117,7 +119,8 @@ export async function createGuestCartService() {
     referrer: 'no-referrer', // no-referrer, *client
     body: JSON.stringify({}) // body data type must match "Content-Type" header
   });
-  return await response.json(); // parses JSON response into native JavaScript objects
+  const data = await response.json();
+  return data;
 }
 
 /**
@@ -159,7 +162,8 @@ export async function addShippingInformationService(cartToken, payloadCart) {
       }
     })
   });
-  return await response.json();
+  const data = await response.json();
+  return data;
 }
 
 /**
@@ -216,7 +220,8 @@ export async function createInvoiceService(orderId) {
       }) // body data type must match "Content-Type" header
     }
   );
-  return await response.json();
+  const data = await response.json();
+  return data;
 }
 
 export async function createShipmentService(orderId) {
@@ -237,7 +242,8 @@ export async function createShipmentService(orderId) {
       body: JSON.stringify({}) // body data type must match "Content-Type" header
     }
   );
-  return await response.json();
+  const data = await response.json();
+  return data;
 }
 
 /**
@@ -266,7 +272,7 @@ export async function getDiscountForQuoteService(payload) {
         },
         redirect: 'follow', // manual, *follow, error
         referrer: 'no-referrer', // no-referrer, *client
-        body: JSON.stringify({ param: JSON.stringify({ cart, config }) }) // body data type must match "Content-Type" header
+        body: JSON.stringify({ param: JSON.stringify({ cart, config }) })
       }
     );
     data = await response.json();
@@ -274,4 +280,14 @@ export async function getDiscountForQuoteService(payload) {
     return 'error';
   }
   return data;
+}
+
+/**
+ * Get order from local
+ * @param payload
+ * @returns void
+ */
+export async function createOrderLocal(payload) {
+  const res = await createOrders(payload);
+  console.log('response:', res);
 }
