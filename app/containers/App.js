@@ -5,7 +5,8 @@ import {
   updateSwitchingMode,
   checkLoginBackground
 } from '../actions/authenAction';
-import Login from '../components/login/Login';
+import Login from '../components/Login/Login';
+import { CHILDREN, LOGIN_FORM, LOADING } from '../constants/main-panel-types';
 
 type Props = {
   children: React.Node,
@@ -60,7 +61,7 @@ class App extends React.Component<Props> {
       <React.Fragment>
         {(() => {
           switch (switchingMode) {
-            case 'Loading':
+            case LOADING:
               return (
                 <div className="d-flex justify-content-center mt-5">
                   <div className="spinner-border text-secondary" role="status">
@@ -68,9 +69,9 @@ class App extends React.Component<Props> {
                   </div>
                 </div>
               );
-            case 'LoginForm':
+            case LOGIN_FORM:
               return <Login />;
-            case 'Children':
+            case CHILDREN:
               return <div className="container-fluid">{children}</div>;
             default:
               return <></>;

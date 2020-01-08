@@ -1,14 +1,17 @@
 // @flow
 import produce from 'immer';
 import * as types from '../constants/root';
-import { HOME_DEFAULT_PRODUCT_LIST } from '../constants/main-panel-types';
+import {
+  HOME_DEFAULT_PRODUCT_LIST,
+  LOADING
+} from '../constants/main-panel-types';
 import {
   cartCurrentDefaultData,
   testCartCurrentForDefaultReceipt
 } from './common';
 
 const initialState = {
-  switchingMode: 'Loading', // Loading, LoginForm, Children
+  switchingMode: LOADING, // Loading, LoginForm, Children
   flagSwitchModeCounter: 1, // When this flag counter up, render in App.js will re-render and backgroundLogin will re-check
   internetConnected: false,
   isLoadingSystemConfig: true,

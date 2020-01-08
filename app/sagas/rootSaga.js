@@ -8,7 +8,8 @@ import {
   createInvoiceService,
   createShipmentService,
   getDiscountForQuoteService,
-  placeCashOrderService
+  placeCashOrderService,
+  createOrderLocal
 } from './services/CartService';
 import {
   getDetailProductBundleService,
@@ -53,8 +54,9 @@ import { BUNDLE, CONFIGURABLE, GROUPED } from '../constants/product-types';
 import { CHECK_LOGIN_BACKGROUND, RECEIVED_TOKEN } from '../constants/authen';
 import { syncCategories } from '../reducers/db/categories';
 import { syncCustomers } from '../reducers/db/customers';
-import { signUpCustomer } from '../reducers/db/signUpCustomers';
+import { signUpCustomer } from '../reducers/db/sync_customers';
 import { getOfflineMode } from '../common/settings';
+import { CHILDREN, LOGIN_FORM } from '../constants/main-panel-types';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
 const cartCurrentToken = state => state.mainRd.cartCurrent.customerToken;
@@ -80,7 +82,8 @@ function* cashCheckout() {
   const cartCurrentResult = yield select(cartCurrent);
 
   if (offlineMode === 1) {
-    console.log('offline mode');
+    // Nothing todo yet
+    console.info('Show cash with offline mode');
   } else {
     // Handles for online mode
     const posSystemConfigResult = yield select(posSystemConfig);
@@ -214,7 +217,8 @@ function* cashCheckoutPlaceOrder() {
   const offlineMode = yield getOfflineMode();
 
   if (offlineMode === 1) {
-    console.log('offline mode');
+    const cartCurrentResult = yield select(cartCurrent);
+    yield createOrderLocal(cartCurrentResult);
   } else {
     const cartCurrentTokenResult = yield select(cartCurrentToken);
     const isGuestCustomer = yield select(cartIsGuestCustomer);
@@ -596,6 +600,7 @@ function* syncData() {
   const allCategories = yield call(getAllCategoriesService);
   const haveToSync = yield haveToSyncAllData();
   let letSync = false;
+  let syncUpdateId = false;
 
   if (haveToSync.length === 0) {
     letSync = true;
@@ -606,8 +611,7 @@ function* syncData() {
     const distanceMinute = differenceInMinutes(new Date(), new Date(time));
     if (distanceMinute > timePeriod) {
       letSync = true;
-      // Update flag to get current time as flag
-      yield updateSyncAllDataFlag(obj.id);
+      syncUpdateId = obj.id;
     }
   }
 
@@ -618,14 +622,19 @@ function* syncData() {
     const offlineMode = yield getOfflineMode();
 
     if (offlineMode === 1) {
-      // Create last time sync for each period sync execution
-      yield createSyncAllDataFlag();
-
       // Sync categories to local db
       yield call(syncCategories, allCategories);
 
       // Sync products by categories
       yield call(syncAllProducts, allCategories);
+
+      if (syncUpdateId !== false) {
+        // Update flag to get current time as flag
+        yield updateSyncAllDataFlag(syncUpdateId);
+      } else {
+        // Wait for sync completed and create last time sync for each period sync execution
+        yield createSyncAllDataFlag();
+      }
     } else {
       console.warn(
         'offline mode not on, pls enable offline mode and connect to the internet'
@@ -760,7 +769,7 @@ function* bootstrapApplicationSaga(loggedDb) {
   yield getPostConfigGeneralConfig();
 
   // Update switching mode
-  yield put({ type: types.UPDATE_SWITCHING_MODE, payload: 'Children' });
+  yield put({ type: types.UPDATE_SWITCHING_MODE, payload: CHILDREN });
 
   // Sync
   yield syncData();
@@ -772,12 +781,14 @@ function* bootstrapApplicationSaga(loggedDb) {
  */
 function* checkLoginBackgroundSaga() {
   const loggedDb = yield getLoggedDb();
+
+  // Logged
   if (loggedDb !== false) {
-    // After login succeed => call bootstrapApplication
+    // If logged before => call bootstrapApplication
     yield bootstrapApplicationSaga(loggedDb);
   } else {
-    // Update switch mode to login
-    yield put({ type: types.UPDATE_SWITCHING_MODE, payload: 'LoginForm' });
+    // Not login yet =
+    yield put({ type: types.UPDATE_SWITCHING_MODE, payload: LOGIN_FORM });
   }
 }
 

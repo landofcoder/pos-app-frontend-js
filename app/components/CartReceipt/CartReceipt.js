@@ -25,6 +25,8 @@ class CartReceipt extends Component<Props> {
       cashierInfo
     } = this.props;
 
+    console.log('customer receipt:', customReceipt);
+
     /* eslint-disable-next-line */
     const { subtotal_display, subtotal_label, discount_display, discount_label, cashier_name_display, cashier_label, grand_total_label } = customReceipt;
 

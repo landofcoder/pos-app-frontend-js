@@ -36,21 +36,7 @@ function* loginAction(payload) {
 function* logoutAction() {
   yield put({ type: UPDATE_SWITCHING_MODE, payload: 'LoginForm' });
   yield put({ type: types.LOGOUT_AUTHEN_ACTION });
-  yield put({ type: typeRoots.LOGOUT_POS_ACTION });
   yield put({ type: LOGOUT_POS_ACTION });
-}
-
-function* takeLatestToken() {
-  const adminTokenResult = yield select(adminToken);
-  console.log('run to take latest');
-
-  // const cashierInfo = yield call(getInfoCashierService, adminTokenResult);
-  // yield put({ type: types.RECEIVED_CASHIER_INFO, payload: cashierInfo });
-  //
-  // const outletId = cashierInfo.outlet_id;
-  //
-  // const detailOutlet = yield call(getDetailOutletService, outletId);
-  // yield put({ type: RECEIVED_DETAIL_OUTLET, payload: detailOutlet });
 }
 
 function* setMainUrl(payload) {
@@ -78,7 +64,6 @@ function* getMainUrl() {
 function* authenSaga() {
   yield takeEvery(types.LOGIN_ACTION, loginAction);
   yield takeEvery(types.LOGOUT_ACTION, logoutAction);
-  yield takeLatest(types.RECEIVED_TOKEN, takeLatestToken);
   yield takeLatest(types.SET_MAIN_URL, setMainUrl);
   yield takeEvery(types.GET_MAIN_URL, getMainUrl);
 }
