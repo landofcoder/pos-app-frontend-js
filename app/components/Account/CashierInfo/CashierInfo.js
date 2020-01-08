@@ -4,7 +4,6 @@ import { Redirect } from 'react-router-dom';
 import { logout } from '../../../actions/authenAction';
 import Styles from './CashierInfo.scss';
 import * as routes from '../../../constants/routes.json';
-
 type Props = {
   cashierInfo: Object,
   logout: () => void
