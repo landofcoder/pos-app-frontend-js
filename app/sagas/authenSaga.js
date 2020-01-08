@@ -6,12 +6,13 @@ import {
   UPDATE_SWITCHING_MODE,
   UPDATE_FLAG_SWITCHING_MODE
 } from '../constants/root.json';
-import { loginService, createLoggedDb } from './services/LoginService';
+import { loginService, createLoggedDb, AuthenService, getInfoCashierService } from './services/LoginService';
 import * as typeRoots from '../constants/root.json';
 import { setMainUrlKey, getMainUrlKey } from '../reducers/db/settings';
 import { checkValidateUrlLink } from '../common/settings';
 
 const adminToken = state => state.authenRd.token;
+
 
 function* loginAction(payload) {
   // Start loading

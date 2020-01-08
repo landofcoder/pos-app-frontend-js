@@ -9,7 +9,8 @@ import {
 } from '../../../actions/authenAction';
 type Props = {
   loading: boolean,
-  setMainUrlKey: payload => void,
+  setMainUrlWorkPlace: payload => void,
+  getMainUrlWorkPlace: payload => void,
   message: string
 };
 class WorkPlace extends Component {
@@ -30,10 +31,13 @@ class WorkPlace extends Component {
   };
 
   loginFormSubmit = e => {
+
     e.preventDefault();
-    const { setMainUrlKey } = this.props;
+
+    const { setMainUrlWorkPlace } = this.props;
     const { mainUrl, defaultProtocol } = this.state;
-    setMainUrlKey(defaultProtocol + mainUrl);
+
+    setMainUrlWorkPlace(defaultProtocol + mainUrl);
   };
 
   render() {
