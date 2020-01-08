@@ -1,4 +1,3 @@
-import { baseUrl } from '../../params';
 import {
   systemConfigSync,
   getSystemConfigLocal,
@@ -17,7 +16,7 @@ export async function getSystemConfigService() {
   let getError = false;
   try {
     const response = await fetch(
-      `${baseUrl}index.php/rest/V1/pos/getSystemConfig`,
+      `${window.mainUrl}index.php/rest/V1/pos/getSystemConfig`,
       {
         method: 'GET', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors', // no-cors, *cors, same-origin
@@ -59,7 +58,7 @@ export async function getShopInfoService() {
   let error = false;
   try {
     const response = await fetch(
-      `${baseUrl}index.php/rest/V1/pos/getShopInfo`,
+      `${window.mainUrl}index.php/rest/V1/pos/getShopInfo`,
       {
         method: 'GET',
         mode: 'cors',
@@ -100,7 +99,7 @@ export async function getCustomReceiptService() {
   let data;
   try {
     const response = await fetch(
-      `${baseUrl}index.php/rest/V1/lof-posreceipt/pos/${1}`,
+      `${window.mainUrl}index.php/rest/V1/lof-posreceipt/pos/${1}`,
       {
         method: 'GET', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors', // no-cors, *cors, same-origin
@@ -132,7 +131,7 @@ export async function getDetailOutletService(payload) {
   let data = [];
   try {
     const response = await fetch(
-      `${baseUrl}index.php/rest/V1/lof-outlet/get-detail-outlet?id=${outletId}`,
+      `${window.mainUrl}index.php/rest/V1/lof-outlet/get-detail-outlet?id=${outletId}`,
       {
         method: 'GET', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors', // no-cors, *cors, same-origin
@@ -163,7 +162,7 @@ export async function getAllCategoriesService() {
   let error = false;
   let response = {};
   try {
-    response = await fetch(`${baseUrl}index.php/rest/V1/categories`, {
+    response = await fetch(`${window.mainUrl}index.php/rest/V1/categories`, {
       method: 'GET', // *GET, POST, PUT, DELETE, etc.
       mode: 'cors', // no-cors, *cors, same-origin
       cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -198,7 +197,7 @@ export async function getAllCategoriesService() {
  */
 export async function getOrderHistoryService() {
   const response = await fetch(
-    `${baseUrl}/rest/V1/pos/order_history/search?searchCriteria[sortOrders][0][field]=pos_order_id`,
+    `${window.mainUrl}/rest/V1/pos/order_history/search?searchCriteria[sortOrders][0][field]=pos_order_id`,
     {
       method: 'GET', // *GET, POST, PUT, DELETE, etc.
       mode: 'cors', // no-cors, *cors, same-origin
@@ -218,7 +217,7 @@ export async function getOrderHistoryService() {
 }
 
 export async function getOrderHistoryServiceDetails(index) {
-  const response = await fetch(`${baseUrl}rest/V1/orders/${index}`, {
+  const response = await fetch(`${window.mainUrl}rest/V1/orders/${index}`, {
     method: 'GET', // *GET, POST, PUT, DELETE, etc.
     mode: 'cors', // no-cors, *cors, same-origin
     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached

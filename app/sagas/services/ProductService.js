@@ -1,4 +1,4 @@
-import { baseUrl } from '../../params';
+
 import {
   searchProductsLocal,
   getProductsByCategoryLocal,
@@ -7,7 +7,7 @@ import {
 } from '../../reducers/db/products';
 import { getCategories } from '../../reducers/db/categories';
 
-const graphqlPath = `${baseUrl}graphql`;
+const graphqlPath = `${window.mainUrl}graphql`;
 
 /**
  * Search product service

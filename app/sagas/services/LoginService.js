@@ -1,4 +1,3 @@
-import { baseUrl } from '../../params';
 import { cashierInfoSync, getCashierInfoLocal } from './SettingsService';
 import { createKey, getByKey } from '../../reducers/db/settings';
 
@@ -20,7 +19,7 @@ export async function loginService(payload) {
   let response;
   try {
     response = await fetch(
-      `${baseUrl}index.php/rest/V1/integration/admin/token`,
+      `${window.mainUrl}index.php/rest/V1/integration/admin/token`,
       {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors', // no-cors, *cors, same-origin
@@ -55,7 +54,7 @@ export async function getInfoCashierService() {
   let data;
   let error = false;
   try {
-    const response = await fetch(`${baseUrl}index.php/rest/V1/lof-cashier`, {
+    const response = await fetch(`${window.mainUrl}index.php/rest/V1/lof-cashier`, {
       method: 'GET', // *GET, POST, PUT, DELETE, etc.
       mode: 'cors', // no-cors, *cors, same-origin
       cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached

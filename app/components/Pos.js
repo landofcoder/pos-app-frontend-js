@@ -11,7 +11,6 @@ import {
   BUNDLE,
   GROUPED
 } from '../constants/product-types';
-import { baseUrl } from '../params';
 import Configuration from './product-types/Configuration';
 import Bundle from './product-types/Bundle';
 import Grouped from './product-types/Grouped';
@@ -78,10 +77,10 @@ export default class Pos extends Component<Props, State> {
       : [];
     if (gallery.length > 0) {
       const image = gallery[0].file;
-      return `${baseUrl}pub/media/catalog/product/${image}`;
+      return `${window.mainUrl}pub/media/catalog/product/${image}`;
     }
     // Return default image
-    return `${baseUrl}pub/media/catalog/product/`;
+    return `${window.mainUrl}pub/media/catalog/product/`;
   };
 
   /**

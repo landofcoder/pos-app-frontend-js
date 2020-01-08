@@ -1,4 +1,3 @@
-import { baseUrl } from '../../params';
 import { BUNDLE } from '../../constants/product-types';
 import { getBundleOption } from '../../common/product';
 import { createOrders } from '../../reducers/db/sync_orders';
@@ -16,10 +15,10 @@ export async function addProductToQuote(cartId, item, payloadCart) {
   const { sku } = item;
   const posQty = item.pos_qty;
   if (payloadCart.isGuestCustomer) {
-    url = `${baseUrl}index.php/rest/V1/guest-carts/${cartId}/items`;
+    url = `${window.mainUrl}index.php/rest/V1/guest-carts/${cartId}/items`;
   } else {
     // Customer logged
-    url = `${baseUrl}index.php/rest/V1/carts/mine/items`;
+    url = `${window.mainUrl}index.php/rest/V1/carts/mine/items`;
     token = payloadCart.customerToken;
   }
 
@@ -68,10 +67,10 @@ export async function placeCashOrderService(cartToken, payloadCart) {
   let method = 'PUT';
 
   if (payloadCart.isGuestCustomer) {
-    url = `${baseUrl}index.php/rest/V1/guest-carts/${cartId}/order`;
+    url = `${window.mainUrl}index.php/rest/V1/guest-carts/${cartId}/order`;
   } else {
     // Customer logged
-    url = `${baseUrl}index.php/rest/V1/carts/mine/payment-information`;
+    url = `${window.mainUrl}index.php/rest/V1/carts/mine/payment-information`;
     token = payloadCart.customerToken;
     method = 'POST';
   }
@@ -105,20 +104,23 @@ export async function placeCashOrderService(cartToken, payloadCart) {
  * @returns void
  */
 export async function createGuestCartService() {
-  const response = await fetch(`${baseUrl}index.php/rest/V1/guest-carts/`, {
-    method: 'POST', // *GET, POST, PUT, DELETE, etc.
-    mode: 'cors', // no-cors, *cors, same-origin
-    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-    credentials: 'same-origin', // include, *same-origin, omit
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${window.liveToken}`
-      // 'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    redirect: 'follow', // manual, *follow, error
-    referrer: 'no-referrer', // no-referrer, *client
-    body: JSON.stringify({}) // body data type must match "Content-Type" header
-  });
+  const response = await fetch(
+    `${window.mainUrl}index.php/rest/V1/guest-carts/`,
+    {
+      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      mode: 'cors', // no-cors, *cors, same-origin
+      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: 'same-origin', // include, *same-origin, omit
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${window.liveToken}`
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      redirect: 'follow', // manual, *follow, error
+      referrer: 'no-referrer', // no-referrer, *client
+      body: JSON.stringify({}) // body data type must match "Content-Type" header
+    }
+  );
   const data = await response.json();
   return data;
 }
@@ -134,10 +136,10 @@ export async function addShippingInformationService(cartToken, payloadCart) {
   let token = window.liveToken;
   const { defaultShippingMethod, posSystemConfigCustomer } = payloadCart;
   if (payloadCart.isGuestCustomer) {
-    url = `${baseUrl}index.php/rest/V1/guest-carts/${cartToken}/shipping-information`;
+    url = `${window.mainUrl}index.php/rest/V1/guest-carts/${cartToken}/shipping-information`;
   } else {
     // Customer logged
-    url = `${baseUrl}index.php/rest/V1/carts/mine/shipping-information`;
+    url = `${window.mainUrl}index.php/rest/V1/carts/mine/shipping-information`;
     token = payloadCart.customerToken;
   }
 
@@ -201,7 +203,7 @@ function renderShippingAddress(customerConfig) {
  */
 export async function createInvoiceService(orderId) {
   const response = await fetch(
-    `${baseUrl}index.php/rest/V1/order/${orderId}/invoice`,
+    `${window.mainUrl}index.php/rest/V1/order/${orderId}/invoice`,
     {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
       mode: 'cors', // no-cors, *cors, same-origin
@@ -226,7 +228,7 @@ export async function createInvoiceService(orderId) {
 
 export async function createShipmentService(orderId) {
   const response = await fetch(
-    `${baseUrl}index.php/rest/V1/order/${orderId}/ship`,
+    `${window.mainUrl}index.php/rest/V1/order/${orderId}/ship`,
     {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
       mode: 'cors', // no-cors, *cors, same-origin
@@ -259,7 +261,7 @@ export async function getDiscountForQuoteService(payload) {
   const { config } = payload;
   try {
     const response = await fetch(
-      `${baseUrl}index.php/rest/V1/pos/get-discount-quote`,
+      `${window.mainUrl}index.php/rest/V1/pos/get-discount-quote`,
       {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors', // no-cors, *cors, same-origin

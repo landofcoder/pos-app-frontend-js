@@ -1,5 +1,6 @@
 import produce from 'immer';
 import * as typesAuthen from '../constants/authen';
+
 const initialState = {
   token: '',
   authenticate: '',
@@ -50,6 +51,7 @@ const authenRd = (state = initialState, action) =>
         draft.loadingWorkPlace = action.payload;
         break;
       case typesAuthen.RECEIVED_MAIN_URL:
+        window.mainUrl = action.payload;
         draft.mainUrl = action.payload;
         break;
       case typesAuthen.ERROR_URL_WORKPLACE:

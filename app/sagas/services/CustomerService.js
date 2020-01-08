@@ -1,5 +1,3 @@
-import { baseUrl } from '../../params';
-
 /**
  * Create guest cart service
  * @returns {Promise<any>}
@@ -7,7 +5,7 @@ import { baseUrl } from '../../params';
 export async function searchCustomer(payload) {
   const searchValue = payload.payload;
   const response = await fetch(
-    `${baseUrl}index.php/rest/V1/customers/search?searchCriteria[filterGroups][0][filters][0][field]=entity_id&searchCriteria[filterGroups][0][filters][0][value]=${searchValue}&searchCriteria[filterGroups][0][filters][0][condition_type]=like&searchCriteria[filterGroups][0][filters][1][field]=email&searchCriteria[filterGroups][0][filters][1][value]=${searchValue}&searchCriteria[filterGroups][0][filters][1][condition_type]=like`,
+    `${window.mainUrl}index.php/rest/V1/customers/search?searchCriteria[filterGroups][0][filters][0][field]=entity_id&searchCriteria[filterGroups][0][filters][0][value]=${searchValue}&searchCriteria[filterGroups][0][filters][0][condition_type]=like&searchCriteria[filterGroups][0][filters][1][field]=email&searchCriteria[filterGroups][0][filters][1][value]=${searchValue}&searchCriteria[filterGroups][0][filters][1][condition_type]=like`,
     {
       method: 'GET', // *GET, POST, PUT, DELETE, etc.
       mode: 'cors', // no-cors, *cors, same-origin
@@ -32,7 +30,7 @@ export async function searchCustomer(payload) {
  */
 export async function getCustomerCartTokenService(customerId) {
   const response = await fetch(
-    `${baseUrl}index.php/rest/V1/pos/${customerId}/customer/token`,
+    `${window.mainUrl}index.php/rest/V1/pos/${customerId}/customer/token`,
     {
       method: 'GET', // *GET, POST, PUT, DELETE, etc.
       mode: 'cors', // no-cors, *cors, same-origin
@@ -57,7 +55,7 @@ export async function getCustomerCartTokenService(customerId) {
  * @returns void
  */
 export async function signUpCustomerService(payload) {
-  const response = await fetch(`${baseUrl}rest/V1/customers/?`, {
+  const response = await fetch(`${window.mainUrl}rest/V1/customers/?`, {
     method: 'POST', // *GET, POST, PUT, DELETE, etc.
     mode: 'cors', // no-cors, *cors, same-origin
     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
