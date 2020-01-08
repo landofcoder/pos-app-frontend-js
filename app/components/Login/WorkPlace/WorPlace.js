@@ -35,7 +35,6 @@ class WorkPlace extends Component {
   };
 
   loginFormSubmit = e => {
-
     e.preventDefault();
 
     const { setMainUrlWorkPlace } = this.props;
@@ -52,17 +51,17 @@ class WorkPlace extends Component {
         <div
           className={`${commonStyles.contentColumn} ${styles.wrapWorkPlacePage}`}
         >
-          <div className="col-sm-12 col-md-5 col-lg-3">
+          <div className="col-sm-12 col-md-5 col-lg-4">
             <form
               onSubmit={this.loginFormSubmit}
               className={`${styles.contentColumn} text-center`}
             >
               <h1 className="h3 mb-3 font-weight-normal">
-                Sign in to your workspace
+                Sign in to POS system
               </h1>
               <div className="form-group">
                 <span className="text-center">
-                  Enter your workspace’s POS URL.
+                  Enter your magneto website url
                 </span>
               </div>
               <div className="form-group">
@@ -71,7 +70,7 @@ class WorkPlace extends Component {
                   onChange={this.handleChangeUrl}
                   type="text"
                   className="form-control"
-                  placeholder="Your WorkPlace"
+                  placeholder="http://magentowebsite.com"
                   required
                 />
               </div>
