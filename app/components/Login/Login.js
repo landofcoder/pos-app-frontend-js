@@ -6,11 +6,14 @@ import { setToken } from '../../actions/homeAction';
 import styles from './pagelogin.scss';
 import commonStyles from '../styles/common.scss';
 import Loading from '../commons/Loading';
+import WorkPlace from './WorkPlace/WorPlace';
+import { nl } from 'date-fns/esm/locale';
 
 type Props = {
   login: (payload: Object) => void,
   message: string,
-  loading: boolean
+  loading: boolean,
+  mainUrl: string,
 };
 
 type State = {
@@ -46,8 +49,11 @@ class Login extends Component<Props, State> {
   };
 
   render() {
-    const { message, loading } = this.props;
+    const { message, loading, mainUrl } = this.props;
     const { valueUser, valuePass } = this.state;
+    if(mainUrl === ''){
+      return <WorkPlace/>;
+    }
     return (
       <>
         <div
@@ -115,7 +121,8 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state) {
   return {
     message: state.authenRd.message,
-    loading: state.authenRd.loading
+    loading: state.authenRd.loading,
+    mainUrl: state.authenRd.mainUrl,
   };
 }
 export default connect(
