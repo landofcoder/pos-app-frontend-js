@@ -6,8 +6,12 @@ import {
   UPDATE_SWITCHING_MODE,
   UPDATE_FLAG_SWITCHING_MODE
 } from '../constants/root.json';
-import { loginService, createLoggedDb } from './services/LoginService';
-import { setMainUrlKey, getMainUrlKey } from '../reducers/db/settings';
+import {
+  loginService,
+  createLoggedDb,
+  setMainUrlKey,
+  getMainUrlKey
+} from './services/LoginService';
 import { checkValidateUrlLink } from '../common/settings';
 
 function* loginAction(payload) {
@@ -56,11 +60,15 @@ function* getMainUrl() {
     yield put({ type: types.RECEIVED_MAIN_URL, payload: data.payload.url });
   }
 }
+
+function cleanUrlWorkplace() {}
+
 function* authenSaga() {
   yield takeEvery(types.LOGIN_ACTION, loginAction);
   yield takeEvery(types.LOGOUT_ACTION, logoutAction);
   yield takeLatest(types.SET_MAIN_URL, setMainUrl);
   yield takeEvery(types.GET_MAIN_URL, getMainUrl);
+  yield takeEvery(types.CLEAN_URL_WORKPLACE, cleanUrlWorkplace);
 }
 
 export default authenSaga;

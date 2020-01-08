@@ -4,7 +4,8 @@ const table = 'settings';
 
 export async function getByKey(key) {
   const tbl = db.table(table);
-  return await tbl.where({ key }).toArray();
+  const data = await tbl.get({ key });
+  return data;
 }
 
 export async function createKey(key, value) {

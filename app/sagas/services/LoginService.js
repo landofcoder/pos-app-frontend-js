@@ -1,16 +1,21 @@
 import { cashierInfoSync, getCashierInfoLocal } from './SettingsService';
-import { createKey, getByKey } from '../../reducers/db/settings';
+import {
+  getByKey as getByKeyV2,
+  createKey,
+  updateById
+} from '../../reducers/db/settings_new';
 
 const loggedInfoKey = 'logged_info';
+const mainUrlKey = 'main_url';
 
 export async function createLoggedDb(payload) {
   await createKey(loggedInfoKey, payload);
 }
 
 export async function getLoggedDb() {
-  const data = await getByKey(loggedInfoKey);
-  if (data.length > 0) {
-    return data[0];
+  const data = await getByKeyV2(loggedInfoKey);
+  if (data) {
+    return data;
   }
   return false;
 }
@@ -21,19 +26,19 @@ export async function loginService(payload) {
     response = await fetch(
       `${window.mainUrl}index.php/rest/V1/integration/admin/token`,
       {
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
-        mode: 'cors', // no-cors, *cors, same-origin
-        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: 'same-origin', // include, *same-origin, omit
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
         headers: {
           'Content-Type': 'application/json'
         },
-        redirect: 'follow', // manual, *follow, error
-        referrer: 'no-referrer', // no-referrer, *client
+        redirect: 'follow',
+        referrer: 'no-referrer',
         body: JSON.stringify({
-          username: payload.payload.username, // roni_cost@example.com
-          password: payload.payload.password // roni_cost3@example.com
-        }) // body data type must match "Content-Type" header
+          username: payload.payload.username,
+          password: payload.payload.password
+        })
       }
     );
   } catch (e) {
@@ -88,4 +93,24 @@ export async function getInfoCashierService() {
     await cashierInfoSync(data);
   }
   return data;
+}
+
+export async function setMainUrlKey(payload) {
+  const data = {
+    key: mainUrlKey,
+    url: payload.payload
+  };
+  const url = await getByKeyV2(mainUrlKey);
+  if (url) {
+    await updateById(url.id, data);
+  } else await createKey(mainUrlKey, data);
+  return data.url;
+}
+
+export async function getMainUrlKey() {
+  const payload = await getByKeyV2(mainUrlKey);
+  if (payload) {
+    return { status: true, payload };
+  }
+  return { status: false };
 }
