@@ -54,17 +54,11 @@ class WorkPlace extends Component {
           <div className="col-sm-12 col-md-5 col-lg-4">
             <form
               onSubmit={this.loginFormSubmit}
-              className={`${styles.contentColumn} text-center`}
+              className={`${styles.contentColumn}`}
             >
-              <h1 className="h3 mb-3 font-weight-normal">
-                Sign in to POS system
-              </h1>
+              <h1 className="h3 mb-5 text-center">Sign in to POS system</h1>
               <div className="form-group">
-                <span className="text-center">
-                  Enter your magneto website url
-                </span>
-              </div>
-              <div className="form-group">
+                <label>Enter your magneto website url</label>
                 <input
                   value={mainUrl}
                   onChange={this.handleChangeUrl}
@@ -73,15 +67,15 @@ class WorkPlace extends Component {
                   placeholder="http://magentowebsite.com"
                   required
                 />
-              </div>
-              <div className="form-group">
                 {message !== '' ? (
-                  <div className="alert alert-danger" role="alert">
-                    {message}
-                  </div>
+                  <>
+                    <span className="error text-danger">{message}</span>
+                  </>
                 ) : (
                   <></>
                 )}
+              </div>
+              <div className="form-group">
                 <button
                   className="btn btn-lg btn-primary btn-block"
                   type="submit"
@@ -91,7 +85,7 @@ class WorkPlace extends Component {
                       <span className="sr-only">Loading...</span>
                     </div>
                   ) : (
-                    <>Sign In</>
+                    <>Next</>
                   )}
                 </button>
               </div>

@@ -40,6 +40,12 @@ export function setMainUrlWorkPlace(payload) {
   };
 }
 
+export function learnUrlWorkPlace() {
+  return {
+    type: types.CLEAN_URL_WORKPLACE
+  };
+}
+
 export function checkLoginBackground() {
   return {
     type: types.CHECK_LOGIN_BACKGROUND

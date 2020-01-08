@@ -443,13 +443,13 @@ export default class Pos extends Component<Props, State> {
           </div>
           <div className={Styles.wrapActionSecondLine}>
             <div className="col-md-1 pl-0 pr-1">
-              <a
-                role="presentation"
+              <button
+                type="button"
                 className="btn btn-outline-secondary btn-lg btn-block"
                 onClick={this.handleRedirectToAccount}
               >
                 Account
-              </a>
+              </button>
             </div>
             <div className="col-md-2 pl-0 pr-1">
               <button

@@ -1,19 +1,24 @@
 // @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { login } from '../../actions/authenAction';
+import {
+  login,
+  setMainUrlWorkPlace,
+  learnUrlWorkPlace
+} from '../../actions/authenAction';
 import { setToken } from '../../actions/homeAction';
 import styles from './pagelogin.scss';
 import commonStyles from '../styles/common.scss';
 import Loading from '../commons/Loading';
-import WorkPlace from './WorkPlace/WorPlace';
-import { nl } from 'date-fns/esm/locale';
+import WorkPlace from './WorkPlace/WorkPlace';
 
 type Props = {
   login: (payload: Object) => void,
   message: string,
   loading: boolean,
   mainUrl: string,
+  setMainUrlWorkPlace: (payload: string) => void,
+  learnUrlWorkPlace: () => void
 };
 
 type State = {
@@ -48,11 +53,17 @@ class Login extends Component<Props, State> {
     login(payload);
   };
 
+  backToWorkPlace = () => {
+    const { learnUrlWorkPlace, setMainUrlWorkPlace } = this.props;
+    learnUrlWorkPlace();
+    setMainUrlWorkPlace('');
+  };
+
   render() {
     const { message, loading, mainUrl } = this.props;
     const { valueUser, valuePass } = this.state;
-    if(mainUrl === ''){
-      return <WorkPlace/>;
+    if (mainUrl === '') {
+      return <WorkPlace />;
     }
     return (
       <>
@@ -89,9 +100,7 @@ class Login extends Component<Props, State> {
               </div>
               <div className="form-group">
                 {message !== '' ? (
-                  <div className="text-danger">
-                    {message}
-                  </div>
+                  <div className="text-danger">{message}</div>
                 ) : (
                   <></>
                 )}
@@ -102,6 +111,15 @@ class Login extends Component<Props, State> {
                   type="submit"
                 >
                   {loading ? <Loading /> : <>Sign In</>}
+                </button>
+              </div>
+              <div>
+                <button
+                  type="button"
+                  className="btn btn-link"
+                  onClick={this.backToWorkPlace}
+                >
+                  Back
                 </button>
               </div>
             </form>
@@ -115,14 +133,16 @@ class Login extends Component<Props, State> {
 function mapDispatchToProps(dispatch) {
   return {
     login: payload => dispatch(login(payload)),
-    setToken: payload => dispatch(setToken(payload))
+    setToken: payload => dispatch(setToken(payload)),
+    setMainUrlWorkPlace: payload => dispatch(setMainUrlWorkPlace(payload)),
+    learnUrlWorkPlace: () => dispatch(learnUrlWorkPlace())
   };
 }
 function mapStateToProps(state) {
   return {
     message: state.authenRd.message,
     loading: state.authenRd.loading,
-    mainUrl: state.authenRd.mainUrl,
+    mainUrl: state.authenRd.mainUrl
   };
 }
 export default connect(

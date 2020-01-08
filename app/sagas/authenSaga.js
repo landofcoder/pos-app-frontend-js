@@ -44,8 +44,7 @@ function* setMainUrl(payload) {
   } else {
     yield put({
       type: types.ERROR_URL_WORKPLACE,
-      payload:
-        'Invalid URL Please check the URL for proper spelling and capitalization'
+      payload: 'Invalid URL, please try again!'
     });
   }
   yield put({ type: types.STOP_LOADING_WORKPLACE });
