@@ -1,4 +1,3 @@
-
 import {
   searchProductsLocal,
   getProductsByCategoryLocal,
@@ -6,8 +5,7 @@ import {
   counterProduct
 } from '../../reducers/db/products';
 import { getCategories } from '../../reducers/db/categories';
-
-const graphqlPath = `${window.mainUrl}graphql`;
+import { getGraphqlPath } from '../../common/settings';
 
 /**
  * Search product service
@@ -20,7 +18,7 @@ export async function searchProductService(payload) {
     const data = await searchProductsLocal(searchValue);
     return data;
   }
-  const response = await fetch(graphqlPath, {
+  const response = await fetch(getGraphqlPath(), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -102,7 +100,7 @@ export async function searchProductService(payload) {
  * @param payload
  */
 export async function getDetailProductConfigurableService(payload) {
-  const response = await fetch(graphqlPath, {
+  const response = await fetch(getGraphqlPath(), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -184,7 +182,7 @@ export async function getDetailProductConfigurableService(payload) {
  * @returns {Promise<void>}
  */
 export async function getDetailProductBundleService(payload) {
-  const response = await fetch(graphqlPath, {
+  const response = await fetch(getGraphqlPath(), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -260,7 +258,7 @@ export async function getDetailProductBundleService(payload) {
  * @returns {Promise<void>}
  */
 export async function getDetailProductGroupedService(payload) {
-  const response = await fetch(graphqlPath, {
+  const response = await fetch(getGraphqlPath(), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -315,7 +313,7 @@ export async function getDetailProductGroupedService(payload) {
  * @returns {Promise<any>}
  */
 export async function getDefaultProductsService() {
-  const response = await fetch(graphqlPath, {
+  const response = await fetch(getGraphqlPath(), {
     method: 'POST', // *GET, POST, PUT, DELETE, etc.
     mode: 'cors', // no-cors, *cors, same-origin
     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -388,7 +386,7 @@ const defaultPageSize = 100;
  * @returns array
  */
 async function getProductsByCategory(categoryId, currentPage = 1) {
-  const response = await fetch(graphqlPath, {
+  const response = await fetch(getGraphqlPath(), {
     method: 'POST', // *GET, POST, PUT, DELETE, etc.
     mode: 'cors', // no-cors, *cors, same-origin
     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached

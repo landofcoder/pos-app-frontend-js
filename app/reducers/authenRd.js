@@ -45,7 +45,6 @@ const authenRd = (state = initialState, action) =>
         draft.token = '';
         draft.message = '';
         draft.cashierInfo = {};
-        // localStorage.clear();
         break;
       case typesAuthen.SIGN_IN_WORKPLACE_ACTION:
         draft.loadingWorkPlace = action.payload;

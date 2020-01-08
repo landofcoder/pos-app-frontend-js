@@ -1,18 +1,14 @@
 // @flow
-import { takeEvery, call, put, takeLatest, select } from 'redux-saga/effects';
+import { takeEvery, call, put, takeLatest } from 'redux-saga/effects';
 import * as types from '../constants/authen';
 import {
   LOGOUT_POS_ACTION,
   UPDATE_SWITCHING_MODE,
   UPDATE_FLAG_SWITCHING_MODE
 } from '../constants/root.json';
-import { loginService, createLoggedDb, AuthenService, getInfoCashierService } from './services/LoginService';
-import * as typeRoots from '../constants/root.json';
+import { loginService, createLoggedDb } from './services/LoginService';
 import { setMainUrlKey, getMainUrlKey } from '../reducers/db/settings';
 import { checkValidateUrlLink } from '../common/settings';
-
-const adminToken = state => state.authenRd.token;
-
 
 function* loginAction(payload) {
   // Start loading

@@ -17,3 +17,7 @@ export function checkValidateUrlLink(url) {
     return false;
   }
 }
+
+export function getGraphqlPath() {
+  return `${window.mainUrl}graphql`;
+}

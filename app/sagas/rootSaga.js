@@ -51,12 +51,17 @@ import {
 } from './common/orderSaga';
 import { calcPrice } from '../common/productPrice';
 import { BUNDLE, CONFIGURABLE, GROUPED } from '../constants/product-types';
-import { CHECK_LOGIN_BACKGROUND, RECEIVED_TOKEN } from '../constants/authen';
+import {
+  CHECK_LOGIN_BACKGROUND,
+  RECEIVED_TOKEN,
+  RECEIVED_MAIN_URL
+} from '../constants/authen';
 import { syncCategories } from '../reducers/db/categories';
 import { syncCustomers } from '../reducers/db/customers';
 import { signUpCustomer } from '../reducers/db/sync_customers';
 import { getOfflineMode } from '../common/settings';
 import { CHILDREN, LOGIN_FORM } from '../constants/main-panel-types';
+import { getMainUrlKey } from '../reducers/db/settings';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
 const cartCurrentToken = state => state.mainRd.cartCurrent.customerToken;
@@ -761,6 +766,14 @@ function* bootstrapApplicationSaga(loggedDb) {
 
   // Assign to global variables
   window.liveToken = token;
+
+  // Get main url key
+  const data = yield call(getMainUrlKey);
+  if (data.status) {
+    const { url } = data.payload;
+    yield put({ type: RECEIVED_MAIN_URL, payload: data.payload.url });
+    window.mainUrl = url;
+  }
 
   // Set token
   yield put({ type: RECEIVED_TOKEN, payload: token });

@@ -21,7 +21,7 @@ class WorkPlace extends Component {
     super(props);
     this.state = {
       mainUrl: '',
-      defaultProtocol: 'http://'
+      defaultProtocol: ''
     };
   }
 
