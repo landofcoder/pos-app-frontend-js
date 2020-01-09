@@ -72,14 +72,12 @@ class WorkPlace extends Component {
   };
   loginFormSubmit = e => {
     e.preventDefault();
-
     const { setMainUrlWorkPlace, errorSignInWorkPlaceMessage } = this.props;
-    const {
-      mainUrl,
-      defaultProtocol,
-      lastUrlRequired,
-      isValidUrl
-    } = this.state;
+    let { mainUrl, defaultProtocol, lastUrlRequired, isValidUrl } = this.state;
+
+    if (mainUrl[mainUrl.length - 1] === '/') {
+      mainUrl = mainUrl.slice(0, mainUrl.length - 1);
+    }
     if (isValidUrl)
       setMainUrlWorkPlace(defaultProtocol + mainUrl + lastUrlRequired);
     else {
