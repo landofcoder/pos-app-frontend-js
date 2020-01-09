@@ -773,7 +773,7 @@ function* bootstrapApplicationSaga(loggedDb) {
   // Get main url key
   const data = yield call(getMainUrlKey);
   if (data.status) {
-    const { url } = data.payload;
+    const { url } = data.payload.value;
     yield put({ type: RECEIVED_MAIN_URL, payload: data.payload.url });
     window.mainUrl = url;
   }
