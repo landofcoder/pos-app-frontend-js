@@ -53,7 +53,11 @@ function* getMainUrl() {
   }
 }
 
-function cleanUrlWorkplace() {}
+function* cleanUrlWorkplace() {
+  yield put({ type: types.START_LOADING_WORKPLACE });
+  const url = yield call(setMainUrlKey, '');
+  yield put({ type: types.STOP_LOADING_WORKPLACE });
+}
 
 function* authenSaga() {
   yield takeEvery(types.LOGIN_ACTION, loginAction);
