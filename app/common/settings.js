@@ -16,7 +16,6 @@ export function checkValidateUrlLink(
 ) {
   const url = defaultProtocol + mainUrl + lastUrlRequired;
   if (mainUrl.length < 3) return false;
-  if (url.indexOf('.') === -1) return false;
   if (url.lastIndexOf('http')) return false;
   if (url.indexOf(" ") !== -1) return false;
   try {
