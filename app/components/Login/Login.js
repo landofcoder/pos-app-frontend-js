@@ -11,6 +11,7 @@ import styles from './pagelogin.scss';
 import commonStyles from '../styles/common.scss';
 import Loading from '../commons/Loading';
 import WorkPlace from './WorkPlace/WorkPlace';
+import ModuleSelected from './ModuleSelect/ModuleSelect';
 
 type Props = {
   login: (payload: Object) => void,
@@ -62,9 +63,10 @@ class Login extends Component<Props, State> {
   render() {
     const { message, loading, mainUrl } = this.props;
     const { valueUser, valuePass } = this.state;
-    if (mainUrl === '') {
-      return <WorkPlace />;
-    }
+    // if (mainUrl === '') {
+    //   return <WorkPlace />;
+    // }
+    return <ModuleSelected />;
     return (
       <>
         <div
