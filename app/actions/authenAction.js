@@ -51,3 +51,10 @@ export function checkLoginBackground() {
     type: types.CHECK_LOGIN_BACKGROUND
   };
 }
+
+export function errorSignInWorkPlaceMessage(payload){
+  return {
+    type: types.ERROR_URL_WORKPLACE,
+    payload: payload
+  }
+}

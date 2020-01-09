@@ -62,7 +62,7 @@ class Login extends Component<Props, State> {
   render() {
     const { message, loading, mainUrl } = this.props;
     const { valueUser, valuePass } = this.state;
-    if (mainUrl === '') {
+    if (mainUrl === '' || mainUrl === undefined) {
       return <WorkPlace />;
     }
     return (
