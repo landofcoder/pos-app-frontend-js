@@ -12,6 +12,8 @@ import { getCategories } from '../../reducers/db/categories';
  * @returns array
  */
 export async function getSystemConfigService() {
+  console.log('main url:', window.mainUrl);
+
   let data = null;
   let getError = false;
   try {
