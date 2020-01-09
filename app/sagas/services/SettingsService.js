@@ -3,6 +3,7 @@ import { getByKey, createKey, updateById } from '../../reducers/db/settings';
 const syncAllDataLabel = 'sync_all_data';
 const systemConfigLabel = 'system_config';
 const shopInfoKey = 'shop_info_config';
+const cashierInfoLabel = 'cashier_info';
 
 export async function haveToSyncAllData() {
   const data = await getByKey(syncAllDataLabel);
@@ -52,5 +53,28 @@ export async function shopInfoSync(shopInfo) {
 }
 
 export async function getShopInfoLocal() {
-  return await getByKey(shopInfoKey);
+  const data = await getByKey(shopInfoKey);
+  return data;
+}
+
+/**
+ * Sync cashier info
+ * @param data
+ * @returns void
+ */
+export async function cashierInfoSync(data) {
+  const cashierInfo = await getByKey(cashierInfoLabel);
+  if (cashierInfo.length === 0) {
+    // Create new
+    await createKey(cashierInfoLabel, data);
+  } else {
+    // Update
+    await updateById(cashierInfo[0].id, data);
+  }
+  return data;
+}
+
+export async function getCashierInfoLocal() {
+  const cashierInfo = await getByKey(cashierInfoLabel);
+  return cashierInfo;
 }

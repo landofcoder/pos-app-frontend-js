@@ -1,30 +1,28 @@
-import { adminToken, baseUrl } from '../../params';
 import {
-  getDefaultProductLocal,
+  searchProductsLocal,
   getProductsByCategoryLocal,
   syncProducts,
   counterProduct
 } from '../../reducers/db/products';
 import { getCategories } from '../../reducers/db/categories';
-import { getOfflineMode } from '../../common/settings';
-
-const graphqlPath = `${baseUrl}graphql`;
+import { getGraphqlPath } from '../../common/settings';
 
 /**
  * Search product service
- * @returns {any}
+ * @returns array
  */
 export async function searchProductService(payload) {
-  const { searchValue } = payload;
-  const { offlineMode } = payload;
+  const { searchValue, offlineMode } = payload;
+
   if (offlineMode === 1) {
-    return await getDefaultProductLocal();
+    const data = await searchProductsLocal(searchValue);
+    return data;
   }
-  const response = await fetch(graphqlPath, {
+  const response = await fetch(getGraphqlPath(), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${adminToken}`
+      Authorization: `Bearer ${window.liveToken}`
     },
     body: JSON.stringify({
       query: `{
@@ -102,15 +100,15 @@ export async function searchProductService(payload) {
  * @param payload
  */
 export async function getDetailProductConfigurableService(payload) {
-  const response = await fetch(graphqlPath, {
+  const response = await fetch(getGraphqlPath(), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${adminToken}`
+      Authorization: `Bearer ${window.liveToken}`
     },
     body: JSON.stringify({
       query: `{
-      products(filter: { sku: { eq: "${payload.payload}" } }) {
+      products(filter: { sku: { eq: "${payload}" } }) {
         items {
           id
           attribute_set_id
@@ -184,16 +182,16 @@ export async function getDetailProductConfigurableService(payload) {
  * @returns {Promise<void>}
  */
 export async function getDetailProductBundleService(payload) {
-  const response = await fetch(graphqlPath, {
+  const response = await fetch(getGraphqlPath(), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${adminToken}`
+      Authorization: `Bearer ${window.liveToken}`
     },
     body: JSON.stringify({
       query: `{
         products(filter: {sku:
-          {eq: "${payload.payload}"}
+          {eq: "${payload}"}
         })
          {
             items{
@@ -260,16 +258,16 @@ export async function getDetailProductBundleService(payload) {
  * @returns {Promise<void>}
  */
 export async function getDetailProductGroupedService(payload) {
-  const response = await fetch(graphqlPath, {
+  const response = await fetch(getGraphqlPath(), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${adminToken}`
+      Authorization: `Bearer ${window.liveToken}`
     },
     body: JSON.stringify({
       query: `
            {
-        products(filter: {sku: {eq: "${payload.payload}"}}) {
+        products(filter: {sku: {eq: "${payload}"}}) {
           items {
             id
             name
@@ -315,14 +313,14 @@ export async function getDetailProductGroupedService(payload) {
  * @returns {Promise<any>}
  */
 export async function getDefaultProductsService() {
-  const response = await fetch(graphqlPath, {
+  const response = await fetch(getGraphqlPath(), {
     method: 'POST', // *GET, POST, PUT, DELETE, etc.
     mode: 'cors', // no-cors, *cors, same-origin
     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
     credentials: 'same-origin', // include, *same-origin, omit
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${adminToken}`
+      Authorization: `Bearer ${window.liveToken}`
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
     redirect: 'follow', // manual, *follow, error
@@ -369,10 +367,13 @@ export async function getDefaultProductsService() {
  * @returns {Promise<any>}
  */
 export async function getProductByCategoryService({ categoryId, offlineMode }) {
+  let data;
   if (offlineMode === 1) {
-    return await getProductsByCategoryLocal(categoryId);
+    data = await getProductsByCategoryLocal(categoryId);
+    return data;
   }
-  return await getProductsByCategory(categoryId).items;
+  data = await getProductsByCategory(categoryId).items;
+  return data;
 }
 
 /* Page size for query products */
@@ -385,21 +386,14 @@ const defaultPageSize = 100;
  * @returns array
  */
 async function getProductsByCategory(categoryId, currentPage = 1) {
-  const offlineMode = getOfflineMode();
-  if (offlineMode === 1) {
-    // Get product offline now
-    return {
-      items: []
-    };
-  }
-  const response = await fetch(graphqlPath, {
+  const response = await fetch(getGraphqlPath(), {
     method: 'POST', // *GET, POST, PUT, DELETE, etc.
     mode: 'cors', // no-cors, *cors, same-origin
     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
     credentials: 'same-origin', // include, *same-origin, omit
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${adminToken}`
+      Authorization: `Bearer ${window.liveToken}`
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
     redirect: 'follow', // manual, *follow, error
@@ -447,6 +441,9 @@ async function getProductsByCategory(categoryId, currentPage = 1) {
                 id
                 name
                 sku
+                media_gallery_entries {
+                  file
+                }
                 attribute_set_id
                 ... on PhysicalProductInterface {
                   weight
@@ -580,12 +577,9 @@ export async function syncAllProducts(listCategories) {
  * @param categoryId
  */
 async function syncAllProductsByCategory(categoryId) {
-  console.log('run sync all product by category');
   const currentPage = 1;
   // Get products as first page
   const productsResult = await getProductsByCategory(categoryId, currentPage);
-
-  console.log('product result here:', productsResult);
 
   // Let all parents categories of this category
   const defaultCategory = await getCategories();
@@ -604,7 +598,7 @@ async function syncAllProductsByCategory(categoryId) {
     const numberPage = Math.ceil(page);
 
     // Get products from n page
-    for (let i = 2; i <= numberPage; i++) {
+    for (let i = 2; i <= numberPage; i += 1) {
       // Sync products
       const productsResult = await getProductsByCategory(categoryId, i);
       await syncProducts(productsResult.items, allParentIds);

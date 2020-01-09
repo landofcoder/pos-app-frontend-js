@@ -1,33 +1,30 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import {
-  updateIsInternetConnected,
-  bootstrapApplication
-} from '../actions/homeAction';
+import { updateIsInternetConnected } from '../actions/homeAction';
 import {
   updateSwitchingMode,
   checkLoginBackground
 } from '../actions/authenAction';
-import Login from '../components/login/Login';
+import Login from '../components/Login/Login';
+import { CHILDREN, LOGIN_FORM, LOADING } from '../constants/main-panel-types';
 
 type Props = {
   children: React.Node,
   updateIsInternetConnected: (payload: any) => void,
-  updateSwitchingMode: (payload: any) => void,
   checkLoginBackground: () => void,
-  bootstrapApplication: () => void,
-  token: string,
-  switchingMode: string
+  switchingMode: string,
+  flagSwitchModeCounter: number
 };
 
 class App extends React.Component<Props> {
   props: Props;
 
+  state = {
+    counterMode: 0
+  };
+
   componentDidMount() {
-    const { updateIsInternetConnected, checkLoginBackground } = this.props;
-
-    checkLoginBackground();
-
+    const { updateIsInternetConnected } = this.props;
     // Listen online and offline mode
     window.addEventListener('online', this.alertOnlineStatus);
     window.addEventListener('offline', this.alertOnlineStatus);
@@ -48,32 +45,23 @@ class App extends React.Component<Props> {
   render() {
     const {
       children,
-      token,
       switchingMode,
-      updateSwitchingMode,
-      checkLoginBackground
+      checkLoginBackground,
+      flagSwitchModeCounter
     } = this.props;
+    const { counterMode } = this.state;
 
-    // Always check login as background
-    checkLoginBackground();
-
-    // const loginPos = localStorage.getItem(POS_LOGIN_STORAGE);
-    // if (!token) {
-    //   if (loginPos && switchingMode !== 'Children') {
-    //     // Logged and get all config
-    //     bootstrapApplication();
-    //   }
-    //
-    //   if (!loginPos) {
-    //     updateSwitchingMode('LoginForm');
-    //   }
-    // }
+    // Make sure checkLoginBackground just run when flagSwitchModeCounter count up
+    if (counterMode !== flagSwitchModeCounter) {
+      this.setState({ counterMode: flagSwitchModeCounter });
+      checkLoginBackground();
+    }
 
     return (
       <React.Fragment>
         {(() => {
           switch (switchingMode) {
-            case 'Loading':
+            case LOADING:
               return (
                 <div className="d-flex justify-content-center mt-5">
                   <div className="spinner-border text-secondary" role="status">
@@ -81,9 +69,9 @@ class App extends React.Component<Props> {
                   </div>
                 </div>
               );
-            case 'LoginForm':
+            case LOGIN_FORM:
               return <Login />;
-            case 'Children':
+            case CHILDREN:
               return <div className="container-fluid">{children}</div>;
             default:
               return <></>;
@@ -98,7 +86,8 @@ function mapStateToProps(state) {
   return {
     isLoadingSystemConfig: state.mainRd.isLoadingSystemConfig,
     token: state.authenRd.token,
-    switchingMode: state.mainRd.switchingMode
+    switchingMode: state.mainRd.switchingMode,
+    flagSwitchModeCounter: state.mainRd.flagSwitchModeCounter
   };
 }
 
@@ -107,7 +96,6 @@ function mapDispatchToProps(dispatch) {
     updateIsInternetConnected: payload =>
       dispatch(updateIsInternetConnected(payload)),
     updateSwitchingMode: payload => dispatch(updateSwitchingMode(payload)),
-    bootstrapApplication: () => dispatch(bootstrapApplication()),
     checkLoginBackground: () => dispatch(checkLoginBackground())
   };
 }

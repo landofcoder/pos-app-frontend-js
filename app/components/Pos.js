@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router';
-import ListCart from './cart/ListCart';
+import ListCart from './ListCart/ListCart';
 import Styles from './pos.scss';
 import CommonStyle from './styles/common.scss';
 import ModalStyle from './styles/modal.scss';
@@ -11,7 +11,6 @@ import {
   BUNDLE,
   GROUPED
 } from '../constants/product-types';
-import { baseUrl } from '../params';
 import Configuration from './product-types/Configuration';
 import Bundle from './product-types/Bundle';
 import Grouped from './product-types/Grouped';
@@ -31,9 +30,9 @@ type Props = {
   cartCurrent: Object,
   mainPanelType: string,
   cashCheckoutAction: () => void,
-  getDetailProductConfigurable: (sku: string) => void,
-  getDetailProductBundle: (sku: string) => void,
-  getDetailProductGrouped: (sku: string) => void,
+  getDetailProductConfigurable: (payload: Object) => void,
+  getDetailProductBundle: (payload: Object) => void,
+  getDetailProductGrouped: (payload: Object) => void,
   productOption: Object,
   isShowCashPaymentModel: boolean,
   updateIsShowingProductOption: (payload: boolean) => void,
@@ -78,10 +77,10 @@ export default class Pos extends Component<Props, State> {
       : [];
     if (gallery.length > 0) {
       const image = gallery[0].file;
-      return `${baseUrl}pub/media/catalog/product/${image}`;
+      return `${window.mainUrl}pub/media/catalog/product/${image}`;
     }
     // Return default image
-    return `${baseUrl}pub/media/catalog/product/`;
+    return `${window.mainUrl}pub/media/catalog/product/`;
   };
 
   /**
@@ -114,7 +113,7 @@ export default class Pos extends Component<Props, State> {
     // Set type_id to state for switchingProductSettings render settings form
     this.setState({ typeId: item.type_id });
 
-    if (item.type_id !== 'simple') {
+    if (item.type_id !== 'simple' && item.type_id !== 'downloadable') {
       // Show product option
       const { updateIsShowingProductOption } = this.props;
       updateIsShowingProductOption(true);
@@ -124,7 +123,7 @@ export default class Pos extends Component<Props, State> {
       case CONFIGURABLE:
         {
           const { sku } = item;
-          getDetailProductConfigurable(sku);
+          getDetailProductConfigurable({ item, sku });
         }
         break;
       case SIMPLE:
@@ -133,13 +132,13 @@ export default class Pos extends Component<Props, State> {
       case BUNDLE:
         {
           const { sku } = item;
-          getDetailProductBundle(sku);
+          getDetailProductBundle({ item, sku });
         }
         break;
       case GROUPED:
         {
           const { sku } = item;
-          getDetailProductGrouped(sku);
+          getDetailProductGrouped({ item, sku });
         }
         break;
       default:
@@ -444,13 +443,13 @@ export default class Pos extends Component<Props, State> {
           </div>
           <div className={Styles.wrapActionSecondLine}>
             <div className="col-md-1 pl-0 pr-1">
-              <a
-                role="presentation"
+              <button
+                type="button"
                 className="btn btn-outline-secondary btn-lg btn-block"
                 onClick={this.handleRedirectToAccount}
               >
                 Account
-              </a>
+              </button>
             </div>
             <div className="col-md-2 pl-0 pr-1">
               <button

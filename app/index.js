@@ -13,6 +13,8 @@ const store = configureStore();
 
 // Global config
 window.config = {};
+window.liveToken = '';
+window.mainUrl = '';
 
 const AppContainer = process.env.PLAIN_HMR ? Fragment : ReactHotAppContainer;
 

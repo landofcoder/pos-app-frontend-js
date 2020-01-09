@@ -1,39 +1,44 @@
-import { baseUrl } from '../../params';
-import { createKey, getByKey } from '../../reducers/db/settings';
+import { cashierInfoSync, getCashierInfoLocal } from './SettingsService';
+import {
+  getByKey as getByKeyV2,
+  createKey,
+  updateById
+} from '../../reducers/db/settings_new';
 
 const loggedInfoKey = 'logged_info';
+const mainUrlKey = 'main_url';
 
 export async function createLoggedDb(payload) {
-  // Create key
   await createKey(loggedInfoKey, payload);
 }
 
 export async function getLoggedDb() {
-  const data = await getByKey(loggedInfoKey);
-  return data;
+  const data = await getByKeyV2(loggedInfoKey);
+  if (data) {
+    return data;
+  }
+  return false;
 }
 
 export async function loginService(payload) {
   let response;
   try {
     response = await fetch(
-      `${baseUrl}index.php/rest/V1/integration/admin/token`,
+      `${window.mainUrl}index.php/rest/V1/integration/admin/token`,
       {
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
-        mode: 'cors', // no-cors, *cors, same-origin
-        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: 'same-origin', // include, *same-origin, omit
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
         headers: {
           'Content-Type': 'application/json'
-          // Authorization: `Bearer ${adminToken}`
-          // 'Content-Type': 'application/x-www-form-urlencoded',
         },
-        redirect: 'follow', // manual, *follow, error
-        referrer: 'no-referrer', // no-referrer, *client
+        redirect: 'follow',
+        referrer: 'no-referrer',
         body: JSON.stringify({
-          username: payload.payload.username, // roni_cost@example.com
-          password: payload.payload.password // roni_cost3@example.com
-        }) // body data type must match "Content-Type" header
+          username: payload.payload.username,
+          password: payload.payload.password
+        })
       }
     );
   } catch (e) {
@@ -46,20 +51,66 @@ export async function loginService(payload) {
   return '';
 }
 
-export async function getInfoCashierService(adminToken) {
-  const response = await fetch(`${baseUrl}index.php/rest/V1/lof-cashier`, {
-    method: 'GET', // *GET, POST, PUT, DELETE, etc.
-    mode: 'cors', // no-cors, *cors, same-origin
-    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-    credentials: 'same-origin', // include, *same-origin, omit
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${adminToken}`
-      // 'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    redirect: 'follow', // manual, *follow, error
-    referrer: 'no-referrer' // no-referrer, *clien
-  });
-  const data = await response.json(); // parses JSON response into native JavaScript objects
+/**
+ * Get info cashier
+ * @returns void
+ */
+export async function getInfoCashierService() {
+  let data;
+  let error = false;
+  try {
+    const response = await fetch(
+      `${window.mainUrl}index.php/rest/V1/lof-cashier`,
+      {
+        method: 'GET', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors', // no-cors, *cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omit
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${window.liveToken}`
+        },
+        redirect: 'follow', // manual, *follow, error
+        referrer: 'no-referrer' // no-referrer, *clien
+      }
+    );
+    data = await response.json();
+  } catch (e) {
+    data = [];
+    error = true;
+  }
+
+  console.log('cashier:', data);
+
+  if (error) {
+    // Query to local
+    data = await getCashierInfoLocal();
+    if (data.length > 0) {
+      return data[0].value;
+    }
+  } else {
+    // Sync now
+    await cashierInfoSync(data);
+  }
   return data;
+}
+
+export async function setMainUrlKey(payload) {
+  const data = {
+    key: mainUrlKey,
+    url: payload.payload
+  };
+  const url = await getByKeyV2(mainUrlKey);
+  if (url) {
+    await updateById(url.id, data);
+  } else await createKey(mainUrlKey, data);
+  return data.url;
+}
+
+export async function getMainUrlKey() {
+  const payload = await getByKeyV2(mainUrlKey);
+  if (payload) {
+    return { status: true, payload };
+  }
+  return { status: false };
 }

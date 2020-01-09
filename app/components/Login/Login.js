@@ -1,18 +1,24 @@
 // @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { login } from '../../actions/authenAction';
-import { setToken, bootstrapApplication } from '../../actions/homeAction';
+import {
+  login,
+  setMainUrlWorkPlace,
+  learnUrlWorkPlace
+} from '../../actions/authenAction';
+import { setToken } from '../../actions/homeAction';
 import styles from './pagelogin.scss';
 import commonStyles from '../styles/common.scss';
 import Loading from '../commons/Loading';
+import WorkPlace from './WorkPlace/WorkPlace';
 
 type Props = {
   login: (payload: Object) => void,
-  bootstrapApplication: () => void,
   message: string,
-  token: string,
-  loading: boolean
+  loading: boolean,
+  mainUrl: string,
+  setMainUrlWorkPlace: (payload: string) => void,
+  learnUrlWorkPlace: () => void
 };
 
 type State = {
@@ -47,15 +53,24 @@ class Login extends Component<Props, State> {
     login(payload);
   };
 
+  backToWorkPlace = () => {
+    const { learnUrlWorkPlace, setMainUrlWorkPlace } = this.props;
+    learnUrlWorkPlace();
+    setMainUrlWorkPlace('');
+  };
+
   render() {
-    const { message, loading } = this.props;
+    const { message, loading, mainUrl } = this.props;
     const { valueUser, valuePass } = this.state;
+    if (mainUrl === '') {
+      return <WorkPlace />;
+    }
     return (
       <>
         <div
           className={`${commonStyles.contentColumn} ${styles.wrapLoginPage}`}
         >
-          <div className="col-sm-12 col-md-4 col-lg-3 ">
+          <div className="col-sm-12 col-md-4 col-lg-4">
             <form
               onSubmit={this.loginFormSubmit}
               className={`${styles.contentColumn}`}
@@ -85,17 +100,26 @@ class Login extends Component<Props, State> {
               </div>
               <div className="form-group">
                 {message !== '' ? (
-                  <div className="alert alert-danger" role="alert">
-                    {message}
-                  </div>
+                  <div className="text-danger">{message}</div>
                 ) : (
                   <></>
                 )}
+              </div>
+              <div className="form-group">
                 <button
-                  className="btn btn-lg btn-primary btn-block"
+                  className="btn btn-lg btn-primary btn-block mt-1"
                   type="submit"
                 >
                   {loading ? <Loading /> : <>Sign In</>}
+                </button>
+              </div>
+              <div>
+                <button
+                  type="button"
+                  className="btn btn-link"
+                  onClick={this.backToWorkPlace}
+                >
+                  Back
                 </button>
               </div>
             </form>
@@ -110,14 +134,15 @@ function mapDispatchToProps(dispatch) {
   return {
     login: payload => dispatch(login(payload)),
     setToken: payload => dispatch(setToken(payload)),
-    bootstrapApplication: () => dispatch(bootstrapApplication())
+    setMainUrlWorkPlace: payload => dispatch(setMainUrlWorkPlace(payload)),
+    learnUrlWorkPlace: () => dispatch(learnUrlWorkPlace())
   };
 }
 function mapStateToProps(state) {
   return {
     message: state.authenRd.message,
-    token: state.authenRd.token,
-    loading: state.authenRd.loading
+    loading: state.authenRd.loading,
+    mainUrl: state.authenRd.mainUrl
   };
 }
 export default connect(

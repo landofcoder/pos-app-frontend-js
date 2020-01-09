@@ -1,4 +1,4 @@
-import { BUNDLE, SIMPLE } from '../constants/product-types';
+import { BUNDLE, SIMPLE, DOWNLOADABLE } from '../constants/product-types';
 import { formatCurrencyCode } from './product';
 
 export function calcPrice(product, currencyCode) {
@@ -6,6 +6,7 @@ export function calcPrice(product, currencyCode) {
   const typeId = productAssign.type_id;
   switch (typeId) {
     case SIMPLE:
+    case DOWNLOADABLE:
     case undefined: {
       const price = productAssign.price.regularPrice.amount.value;
       const qty = productAssign.pos_qty;
