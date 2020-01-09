@@ -51,12 +51,12 @@ class WorkPlace extends Component {
     let mainUrl = event.target.value;
     if (mainUrl.indexOf('http://') !== -1) {
       mainUrl = mainUrl.slice(
-        mainUrl.indexOf('http://') + 6,
+        mainUrl.indexOf('http://') + 7,
         mainUrl.length - 1
       );
     } else if (mainUrl.indexOf('https://') !== -1) {
       mainUrl = mainUrl.slice(
-        mainUrl.indexOf('https://') + 7,
+        mainUrl.indexOf('https://') + 8,
         mainUrl.length - 1
       );
     }
