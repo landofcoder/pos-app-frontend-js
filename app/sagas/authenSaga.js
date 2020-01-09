@@ -41,17 +41,9 @@ function* logoutAction() {
 }
 
 function* setMainUrl(payload) {
-  const validUrl = checkValidateUrlLink(payload.payload);
   yield put({ type: types.START_LOADING_WORKPLACE });
-  if (validUrl) {
-    const url = yield call(setMainUrlKey, payload);
-    yield put({ type: types.RECEIVED_MAIN_URL, payload: url });
-  } else {
-    yield put({
-      type: types.ERROR_URL_WORKPLACE,
-      payload: 'Invalid URL, please try again!'
-    });
-  }
+  const url = yield call(setMainUrlKey, payload);
+  yield put({ type: types.RECEIVED_MAIN_URL, payload: url });
   yield put({ type: types.STOP_LOADING_WORKPLACE });
 }
 
@@ -62,7 +54,11 @@ function* getMainUrl() {
   }
 }
 
-function cleanUrlWorkplace() {}
+function* cleanUrlWorkplace() {
+  yield put({ type: types.START_LOADING_WORKPLACE });
+  const url = yield call(setMainUrlKey, '');
+  yield put({ type: types.STOP_LOADING_WORKPLACE });
+}
 
 function* authenSaga() {
   yield takeEvery(types.LOGIN_ACTION, loginAction);
