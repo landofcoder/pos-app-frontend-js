@@ -39,7 +39,11 @@ import {
   haveToSyncAllData,
   updateSyncAllDataFlag
 } from './services/SettingsService';
-import { getInfoCashierService, getLoggedDb } from './services/LoginService';
+import {
+  getInfoCashierService,
+  getLoggedDb,
+  getMainUrlKey
+} from './services/LoginService';
 
 import {
   handleProductType,
@@ -61,7 +65,6 @@ import { syncCustomers } from '../reducers/db/customers';
 import { signUpCustomer } from '../reducers/db/sync_customers';
 import { getOfflineMode } from '../common/settings';
 import { CHILDREN, LOGIN_FORM } from '../constants/main-panel-types';
-import { getMainUrlKey } from '../reducers/db/settings';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
 const cartCurrentToken = state => state.mainRd.cartCurrent.customerToken;
@@ -770,7 +773,7 @@ function* bootstrapApplicationSaga(loggedDb) {
   // Get main url key
   const data = yield call(getMainUrlKey);
   if (data.status) {
-    const { url } = data.payload;
+    const { url } = data.payload.value;
     yield put({ type: RECEIVED_MAIN_URL, payload: data.payload.url });
     window.mainUrl = url;
   }

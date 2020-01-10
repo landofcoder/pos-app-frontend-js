@@ -19,6 +19,7 @@ function* loginAction(payload) {
   yield put({ type: types.START_LOADING });
   try {
     const data = yield call(loginService, payload);
+    console.log('res login data:', data);
     if (data !== '') {
       yield createLoggedDb({ info: payload.payload, token: data });
       // Update flag login to make App reload and background check
