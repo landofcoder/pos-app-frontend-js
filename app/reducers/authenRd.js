@@ -10,7 +10,10 @@ const initialState = {
   cashierInfo: {},
   isReloadingToken: false,
   loadingWorkPlace: false,
-  mainUrl: ''
+  mainUrl: '',
+  urlInput: '',
+  changeInput: false,
+  defaultProtocol: 'http://'
 };
 
 /*  eslint no-param-reassign: "error" */
@@ -55,6 +58,13 @@ const authenRd = (state = initialState, action) =>
         break;
       case typesAuthen.ERROR_URL_WORKPLACE:
         draft.messageErrorWorkPlace = action.payload;
+        break;
+      case typesAuthen.CHANGE_URL_INPUT_WORKPLACE:
+        draft.urlInput = action.payload;
+        draft.changeInput = true;
+        break;
+      case typesAuthen.SET_DEFAULT_PROTOCOL_WORKPLACE:
+        draft.defaultProtocol = action.payload;
         break;
       default:
     }

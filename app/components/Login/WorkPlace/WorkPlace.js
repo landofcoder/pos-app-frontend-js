@@ -6,15 +6,22 @@ import { checkValidateUrlLink } from '../../../common/settings';
 import {
   setMainUrlWorkPlace,
   getMainUrlWorkPlace,
-  errorSignInWorkPlaceMessage
+  errorSignInWorkPlaceMessage,
+  changeUrlInputWorkplace,
+  setDefaultProtocolWorkplace
 } from '../../../actions/authenAction';
 
 type Props = {
   loading: boolean,
   setMainUrlWorkPlace: payload => void,
   getMainUrlWorkPlace: payload => void,
-  errorSignInWorkPlaceMessage: payload => void,
-  message: string
+  errorSignIn: payload => void,
+  changeUrlInput: payload => void,
+  setDefaultProtocol: payload => void,
+  message: string,
+  defaultProtocol: string,
+  mainUrl: string,
+  didDo: boolean
 };
 
 class WorkPlace extends Component {
@@ -23,14 +30,17 @@ class WorkPlace extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      mainUrl: '',
-      defaultProtocol: 'http://',
-      lastUrlRequired: '/',
       showSelectProtocol: '',
       isValidUrl: false
     };
   }
 
+  componentWillMount() {
+    const { mainUrl } = this.props;
+    this.setState({
+      isValidUrl: this.checkValidateUrlLink(mainUrl)
+    });
+  }
   componentDidMount() {
     const { getMainUrlWorkPlace } = this.props;
     getMainUrlWorkPlace();
@@ -43,11 +53,13 @@ class WorkPlace extends Component {
   };
 
   setDefaultProtocol = protocol => {
-    this.setState({ defaultProtocol: protocol });
+    const { setDefaultProtocol } = this.props;
+    setDefaultProtocol(protocol);
     this.changeShowSelectProtocol();
   };
 
   handleChangeUrl = event => {
+    const { changeUrlInput } = this.props;
     let mainUrl = event.target.value;
     if (mainUrl.indexOf('http://') !== -1) {
       mainUrl = mainUrl.slice(
@@ -60,39 +72,33 @@ class WorkPlace extends Component {
         mainUrl.length - 1
       );
     }
+    changeUrlInput(mainUrl);
     this.setState({
-      mainUrl: mainUrl,
       isValidUrl: this.checkValidateUrlLink(mainUrl)
     });
   };
 
   checkValidateUrlLink = mainUrl => {
-    const { defaultProtocol, lastUrlRequired } = this.state;
-    return checkValidateUrlLink(defaultProtocol, mainUrl, lastUrlRequired);
+    const { defaultProtocol } = this.props;
+    return checkValidateUrlLink(defaultProtocol, mainUrl, '/');
   };
   loginFormSubmit = e => {
     e.preventDefault();
-    const { setMainUrlWorkPlace, errorSignInWorkPlaceMessage } = this.props;
-    let { mainUrl, defaultProtocol, lastUrlRequired, isValidUrl } = this.state;
-
+    const { setMainUrlWorkPlace, errorSignIn, defaultProtocol } = this.props;
+    const { isValidUrl } = this.state;
+    let { mainUrl } = this.props;
     if (mainUrl[mainUrl.length - 1] === '/') {
       mainUrl = mainUrl.slice(0, mainUrl.length - 1);
     }
-    if (isValidUrl)
-      setMainUrlWorkPlace(defaultProtocol + mainUrl + lastUrlRequired);
+    if (isValidUrl) setMainUrlWorkPlace(defaultProtocol + mainUrl + '/');
     else {
-      errorSignInWorkPlaceMessage('Invalid URL, please try again!');
+      errorSignIn('Invalid URL, please try again!');
     }
   };
 
   render() {
-    const {
-      mainUrl,
-      showSelectProtocol,
-      defaultProtocol,
-      isValidUrl
-    } = this.state;
-    const { loading, message } = this.props;
+    const { showSelectProtocol, isValidUrl } = this.state;
+    const { loading, message, mainUrl, defaultProtocol, didDo } = this.props;
     return (
       <>
         <div
@@ -146,10 +152,10 @@ class WorkPlace extends Component {
                     onChange={this.handleChangeUrl}
                     type="text"
                     className={`form-control ${
-                      isValidUrl ? 'is-valid' : 'is-invalid'
+                      didDo ? (isValidUrl ? 'is-valid' : 'is-invalid') : ''
                     }`}
                     aria-label="Text input with dropdown button"
-                    placeholder="http://magentowebsite.com"
+                    placeholder="magentowebsite.com"
                     required
                   />
                 </div>
@@ -186,15 +192,20 @@ class WorkPlace extends Component {
 function mapStateToProps(state) {
   return {
     loading: state.authenRd.loadingWorkPlace,
-    message: state.authenRd.messageErrorWorkPlace
+    message: state.authenRd.messageErrorWorkPlace,
+    mainUrl: state.authenRd.urlInput,
+    defaultProtocol: state.authenRd.defaultProtocol,
+    didDo: state.authenRd.changeInput
   };
 }
 function mapDispatchToProps(dispatch) {
   return {
     setMainUrlWorkPlace: payload => dispatch(setMainUrlWorkPlace(payload)),
     getMainUrlWorkPlace: () => dispatch(getMainUrlWorkPlace()),
-    errorSignInWorkPlaceMessage: payload =>
-      dispatch(errorSignInWorkPlaceMessage(payload))
+    errorSignIn: payload => dispatch(errorSignInWorkPlaceMessage(payload)),
+    changeUrlInput: payload => dispatch(changeUrlInputWorkplace(payload)),
+    setDefaultProtocol: payload =>
+      dispatch(setDefaultProtocolWorkplace(payload))
   };
 }
 export default connect(
