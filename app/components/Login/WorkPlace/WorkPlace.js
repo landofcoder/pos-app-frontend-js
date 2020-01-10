@@ -155,7 +155,7 @@ class WorkPlace extends Component {
                       didDo ? (isValidUrl ? 'is-valid' : 'is-invalid') : ''
                     }`}
                     aria-label="Text input with dropdown button"
-                    placeholder="http://magentowebsite.com"
+                    placeholder="magentowebsite.com"
                     required
                   />
                 </div>
