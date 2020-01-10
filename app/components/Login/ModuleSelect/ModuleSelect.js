@@ -9,10 +9,11 @@ class ModuleSelected extends Component {
     return (
       <>
         <div
-          className={`${commonStyles.contentColumn} ${styles.wrapLoginPage}`}
+          className={`${commonStyles.contentColumn} ${styles.wrapModulePage}`}
         >
-          <span>Hello world</span>
-          <div className="col-sm-12 col-md-4 col-lg-4"></div>
+          <div className="col-sm-12 col-md-4 col-lg-4 text-center">
+            <span>Hello world</span>
+          </div>
         </div>
       </>
     );
