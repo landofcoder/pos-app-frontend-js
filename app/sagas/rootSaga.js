@@ -759,6 +759,23 @@ function* getDiscountForOfflineCheckoutSaga() {
 }
 
 /**
+ * Check login background
+ * @returns void
+ */
+function* checkLoginBackgroundSaga() {
+  const loggedDb = yield getLoggedDb();
+
+  // Logged
+  if (loggedDb !== false) {
+    // If logged before => call bootstrapApplication
+    yield bootstrapApplicationSaga(loggedDb);
+  } else {
+    // Not login yet =
+    yield put({ type: types.UPDATE_SWITCHING_MODE, payload: LOGIN_FORM });
+  }
+}
+
+/**
  * Bootstrap application and load all config
  * @param loggedDb
  * @returns void
@@ -789,23 +806,6 @@ function* bootstrapApplicationSaga(loggedDb) {
 
   // Sync
   yield syncData();
-}
-
-/**
- * Check login background
- * @returns void
- */
-function* checkLoginBackgroundSaga() {
-  const loggedDb = yield getLoggedDb();
-
-  // Logged
-  if (loggedDb !== false) {
-    // If logged before => call bootstrapApplication
-    yield bootstrapApplicationSaga(loggedDb);
-  } else {
-    // Not login yet =
-    yield put({ type: types.UPDATE_SWITCHING_MODE, payload: LOGIN_FORM });
-  }
 }
 
 /**

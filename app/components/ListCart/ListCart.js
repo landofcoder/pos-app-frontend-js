@@ -2,12 +2,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import styles from './listcart.scss';
-import { deleteItemCart } from '../../actions/homeAction';
+import {
+  deleteItemCart,
+  updateIsShowModelEditingCartItem
+} from '../../actions/homeAction';
 import { formatCurrencyCode } from '../../common/product';
 
 type Props = {
   cartCurrent: Array,
-  deleteItemCart: (payload: object) => void,
+  deleteItemCart: (payload: Object) => void,
+  updateIsShowModelEditingCartItem: (payload: Object) => void,
   currencyCode: string
 };
 
@@ -84,6 +88,11 @@ class ListCart extends Component<Props> {
     return listProductSelected;
   };
 
+  editCartItem = item => {
+    const { updateIsShowModelEditingCartItem } = this.props;
+    updateIsShowModelEditingCartItem({ open: true, item });
+  };
+
   render() {
     const { cartCurrent } = this.props;
     return (
@@ -91,7 +100,11 @@ class ListCart extends Component<Props> {
         <ul className={styles.listGroup}>
           {cartCurrent.data.map((item, index) => {
             return (
-              <li key={`${item.id}${index}`} className={`${styles.item}`}>
+              <li
+                key={`${item.id}${index}`}
+                onClick={() => this.editCartItem(item)}
+                className={`${styles.item}`}
+              >
                 <div className={styles.wrapLineProduct}>
                   <div className={styles.wrapImage}>
                     <img src={this.getFirstMedia(item)} alt="" />
@@ -136,7 +149,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => {
   return {
-    deleteItemCart: payload => dispatch(deleteItemCart(payload))
+    deleteItemCart: payload => dispatch(deleteItemCart(payload)),
+    updateIsShowModelEditingCartItem: payload =>
+      dispatch(updateIsShowModelEditingCartItem(payload))
   };
 };
 

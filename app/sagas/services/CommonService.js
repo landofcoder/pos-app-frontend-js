@@ -187,8 +187,6 @@ export async function getAllCategoriesService() {
     data = await getCategories();
     // eslint-disable-next-line prefer-destructuring
     data = data[0];
-
-    console.log('res data categories:', data);
   }
   return data;
 }

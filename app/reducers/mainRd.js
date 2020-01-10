@@ -29,6 +29,24 @@ const initialState = {
     isOpenReceiptModal: false,
     cartForReceipt: testCartCurrentForDefaultReceipt // When customer checkout succeed, copy current cart to this
   },
+  checkout: {
+    // All checkout variables
+    offline: {
+      isLoadingDiscount: false,
+      cartInfo: {
+        base_discount_amount: 0,
+        base_grand_total: 0,
+        base_sub_total: 0,
+        quote_id: 0,
+        shipping_and_tax_amount: 0
+      }
+    }
+  },
+  cartHoldList: [],
+  itemCartEditing: {
+    showModal: false,
+    item: {}
+  },
   allCategories: null, // Main store categories
   customReceipt: {
     cashier_label: null,
@@ -74,7 +92,6 @@ const initialState = {
   isLoadingOrderHistoryDetail: true,
   isLoadingSignUpCustomer: false,
   customerSearchResult: [],
-  cartHoldList: [],
   orderPreparingCheckout: {
     totals: {
       discount_amount: 0,
@@ -92,19 +109,6 @@ const initialState = {
     isLoadingProductOption: false, // Show a loading in screen for product option loading
     isShowingProductOption: false, // Show model for choose product type option
     optionValue: null // Keep detail product clicked
-  },
-  checkout: {
-    // All checkout variables
-    offline: {
-      isLoadingDiscount: false,
-      cartInfo: {
-        base_discount_amount: 0,
-        base_grand_total: 0,
-        base_sub_total: 0,
-        quote_id: 0,
-        shipping_and_tax_amount: 0
-      }
-    }
   }
 };
 
@@ -367,6 +371,19 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.RECEIVED_CASHIER_INFO:
         draft.cashierInfo = action.payload;
+        break;
+      case types.UPDATE_IS_SHOW_MODEL_EDITING_CART_ITEM:
+      {
+        const open = action.payload.open;
+        const item = action.payload.item;
+        if(open === true) {
+          draft.itemCartEditing.item = item;
+        }
+        draft.itemCartEditing.showModal = open;
+        break;
+      }
+      case types.UPDATE_QTY_CART_ITEM:
+        console.log('update qty cart now');
         break;
       default:
         return draft;
