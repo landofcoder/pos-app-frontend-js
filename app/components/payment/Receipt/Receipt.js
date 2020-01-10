@@ -82,6 +82,10 @@ class Receipt extends Component<Props> {
     } = customReceipt;
     /* eslint-enable */
 
+    const { data } = cartForReceipt.data;
+
+    console.log('data cart:', data);
+
     /* eslint-disable */
     return (
       <div className={Style.wrapMainReceipt}>

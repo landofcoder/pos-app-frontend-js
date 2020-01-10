@@ -254,8 +254,9 @@ export function updateIsShowModelEditingCartItem(payload) {
   };
 }
 
-export function updateQtyEditCart() {
+export function updateQtyEditCart(payload) {
   return {
-    type: types.UPDATE_QTY_CART_ITEM
+    type: types.UPDATE_QTY_CART_ITEM,
+    payload
   };
 }

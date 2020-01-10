@@ -44,6 +44,7 @@ const initialState = {
   },
   cartHoldList: [],
   itemCartEditing: {
+    index: 0,
     showModal: false,
     item: {}
   },
@@ -380,11 +381,16 @@ const mainRd = (state: Object = initialState, action: Object) =>
           draft.itemCartEditing.item = item;
         }
         draft.itemCartEditing.showModal = open;
+        draft.itemCartEditing.index = action.payload.index;
         break;
       }
-      case types.UPDATE_QTY_CART_ITEM:
-        console.log('update qty cart now');
+      case types.RESET_ITEM_CART_EDITING:
+      {
+        draft.itemCartEditing.index = 0;
+        draft.itemCartEditing.showModal = false;
+        draft.itemCartEditing.item = {};
         break;
+      }
       default:
         return draft;
     }

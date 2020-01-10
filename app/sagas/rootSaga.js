@@ -75,6 +75,7 @@ const customer = state => state.mainRd.cartCurrent.customer;
 const shopInfoConfig = state => state.mainRd.shopInfoConfig;
 const posSystemConfig = state => state.mainRd.posSystemConfig;
 const cashierInfo = state => state.authenRd.cashierInfo;
+const itemCartEditing = state => state.mainRd.itemCartEditing;
 
 /**
  * Create quote
@@ -776,6 +777,35 @@ function* checkLoginBackgroundSaga() {
 }
 
 /**
+ * Update qty in cart
+ * @param payload
+ * @returns void
+ */
+function* updateQtyCartItemSaga(payload) {
+  const qty = payload.payload;
+  const cartEditingResult = yield select(itemCartEditing);
+  const { index } = cartEditingResult;
+
+  const product = Object.assign({}, cartEditingResult.item);
+
+  // // Update qty
+  product.pos_qty = qty;
+
+  let currencyCode = yield select(shopInfoConfig);
+  // eslint-disable-next-line prefer-destructuring
+  currencyCode = currencyCode[0];
+
+  const productAssign = yield calcPrice(product, currencyCode);
+  yield put({
+    type: types.UPDATE_ITEM_CART,
+    payload: { index, item: productAssign }
+  });
+
+  // Reset itemCartEditing
+  yield put({ type: types.RESET_ITEM_CART_EDITING });
+}
+
+/**
  * Bootstrap application and load all config
  * @param loggedDb
  * @returns void
@@ -841,6 +871,7 @@ function* rootSaga() {
     getDiscountForOfflineCheckoutSaga
   );
   yield takeEvery(CHECK_LOGIN_BACKGROUND, checkLoginBackgroundSaga);
+  yield takeEvery(types.UPDATE_QTY_CART_ITEM, updateQtyCartItemSaga);
 }
 
 export default rootSaga;

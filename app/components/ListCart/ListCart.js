@@ -88,9 +88,9 @@ class ListCart extends Component<Props> {
     return listProductSelected;
   };
 
-  editCartItem = item => {
+  editCartItem = (item, index) => {
     const { updateIsShowModelEditingCartItem } = this.props;
-    updateIsShowModelEditingCartItem({ open: true, item });
+    updateIsShowModelEditingCartItem({ open: true, item, index });
   };
 
   render() {
@@ -102,7 +102,7 @@ class ListCart extends Component<Props> {
             return (
               <li
                 key={`${item.id}${index}`}
-                onClick={() => this.editCartItem(item)}
+                onClick={() => this.editCartItem(item, index)}
                 className={`${styles.item}`}
               >
                 <div className={styles.wrapLineProduct}>

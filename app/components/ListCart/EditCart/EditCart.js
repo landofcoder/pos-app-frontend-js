@@ -8,7 +8,7 @@ import {
 type Props = {
   itemCartEditing: Object,
   updateIsShowModelEditingCartItem: (payload: Object) => void,
-  updateQtyEditCart: () => void
+  updateQtyEditCart: (payload: Object) => void
 };
 
 type State = {
@@ -107,7 +107,7 @@ class EditCart extends Component<Props, State> {
               <button
                 type="button"
                 className="btn btn-primary btn-lg btn-block"
-                onClick={updateQtyEditCart}
+                onClick={() => updateQtyEditCart(posQty)}
               >
                 UPDATE
               </button>
