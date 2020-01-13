@@ -296,6 +296,9 @@ const mainRd = (state: Object = initialState, action: Object) =>
           break;
         }
       }
+      case types.COPY_CART_CURRENT_TO_RECEIPT:
+        draft.receipt.cartForReceipt = draft.cartCurrent;
+        break;
       case types.OPEN_RECEIPT_MODAL: {
         draft.receipt.isOpenReceiptModal = true;
         break;

@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Style from './receipt.scss';
-import CartReceipt from '../../CartReceipt/CartReceipt';
+import CartReceipt from './CartReceipt/CartReceipt';
 import { closeReceiptModal } from '../../../actions/homeAction';
 
 type Props = {
@@ -81,11 +81,6 @@ class Receipt extends Component<Props> {
       footer_content
     } = customReceipt;
     /* eslint-enable */
-
-    const { data } = cartForReceipt.data;
-
-    console.log('data cart:', data);
-
     /* eslint-disable */
     return (
       <div className={Style.wrapMainReceipt}>

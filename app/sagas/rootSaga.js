@@ -122,6 +122,8 @@ function* cashCheckout() {
       posSystemConfigGuestCustomer
     });
 
+    console.log('example for response:', response);
+
     yield put({
       type: types.RECEIVED_ORDER_PREPARING_CHECKOUT,
       payload: response
@@ -228,6 +230,9 @@ function* cashCheckoutPlaceOrder() {
   if (offlineMode === 1) {
     const cartCurrentResult = yield select(cartCurrent);
     yield createOrderLocal(cartCurrentResult);
+
+    // Copy cart current to cart in receipt
+    yield put({ type: types.COPY_CART_CURRENT_TO_RECEIPT });
   } else {
     const cartCurrentTokenResult = yield select(cartCurrentToken);
     const isGuestCustomer = yield select(cartIsGuestCustomer);
