@@ -66,7 +66,7 @@ class Login extends Component<Props, State> {
     if (mainUrl === '' || mainUrl === undefined) {
       return <WorkPlace />;
     }
-    return <ModuleSelected />;
+    // return <ModuleSelected />;
     return (
       <>
         <div

@@ -71,6 +71,15 @@ class ModuleSelected extends Component {
           className={`${commonStyles.contentColumn} ${styles.wrapModulePage}`}
         >
           <div className="col-sm-6 col-md-5 col-lg-4">
+            <div className="col-2 pl-0 pr-2">
+              <button
+                type="button"
+                className="btn btn-link"
+                onClick={this.backToWorkPlace}
+              >
+                Back
+              </button>
+            </div>
             <form>
               {Object.keys(moduleInstalled).map(key => {
                 return this.showModuleInstalled(moduleInstalled[key], key);
@@ -78,17 +87,7 @@ class ModuleSelected extends Component {
               <div className="form-group">
                 <div className="form-check">
                   <div className="row">
-                    <div className="col-2 pl-0 pr-2">
-                      <button
-                        type="button"
-                        className="btn btn-link"
-                        onClick={this.backToWorkPlace}
-                      >
-                        Back
-                      </button>
-                    </div>
-
-                    <div className="col-3 pl-0 pr-1">
+                    <div className="col-3 pl-0 pr-2">
                       <button
                         type="button"
                         className="btn btn-secondary btn-block"

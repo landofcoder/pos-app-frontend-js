@@ -67,6 +67,10 @@ function* getModuleInstalled() {
   const data = yield call(getModuleInstalledService);
   console.log(data);
   if (data.error) {
+    yield put({
+      type: types.ERROR_URL_WORKPLACE,
+      payload: 'Your URL address '
+    });
   } else
     yield put({ type: types.RECEIVED_MODULE_INSTALLED, payload: data.data[0] });
   yield put({ type: types.LOADING_MODULE_COMPONENT, payload: false });
