@@ -44,6 +44,7 @@ import {
   getLoggedDb,
   getMainUrlKey
 } from './services/LoginService';
+import { sumCartTotalPrice } from '../common/cart';
 
 import {
   handleProductType,
@@ -67,6 +68,7 @@ import { getOfflineMode } from '../common/settings';
 import { CHILDREN, LOGIN_FORM } from '../constants/main-panel-types';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
+const cartCurrentObj = state => state.mainRd.cartCurrent;
 const cartCurrentToken = state => state.mainRd.cartCurrent.customerToken;
 const cartId = state => state.mainRd.cartCurrent.cartId;
 const cartIsGuestCustomer = state => state.mainRd.cartCurrent.isGuestCustomer;
@@ -88,16 +90,37 @@ function* cashCheckout() {
   yield put({ type: types.UPDATE_CASH_LOADING_PREPARING_ORDER, payload: true });
 
   const offlineMode = yield getOfflineMode();
-  const cartCurrentResult = yield select(cartCurrent);
+  const cartCurrentResultObj = yield select(cartCurrentObj);
 
   if (offlineMode === 1) {
-    // Nothing todo yet
-    console.info('Show cash with offline mode');
+    let currencyCode = yield select(shopInfoConfig);
+    // eslint-disable-next-line prefer-destructuring
+    currencyCode = currencyCode[0];
+    const totalPrice = sumCartTotalPrice(
+      cartCurrentResultObj,
+      currencyCode,
+      false
+    );
+
+    const fakeResponse = {
+      payment_methods: [],
+      totals: {
+        base_subtotal: totalPrice,
+        discount_amount: 0,
+        base_shipping_amount: 0,
+        grand_total: totalPrice
+      }
+    };
+    yield put({
+      type: types.RECEIVED_ORDER_PREPARING_CHECKOUT,
+      payload: fakeResponse
+    });
   } else {
     // Handles for online mode
     const posSystemConfigResult = yield select(posSystemConfig);
     const posSystemConfigGuestCustomer = posSystemConfigResult[3];
     const defaultShippingMethod = yield getDefaultShippingMethod();
+    const cartCurrentResult = yield select(cartCurrent);
 
     const {
       cartId,
@@ -121,8 +144,6 @@ function* cashCheckout() {
       defaultShippingMethod,
       posSystemConfigGuestCustomer
     });
-
-    console.log('example for response:', response);
 
     yield put({
       type: types.RECEIVED_ORDER_PREPARING_CHECKOUT,
@@ -562,6 +583,14 @@ function updateQtyProduct(product) {
   return productAssign;
 }
 
+function* getCustomReceipt(outletId) {
+  const customReceiptResult = yield call(getCustomReceiptService, outletId);
+  if (customReceiptResult.length > 0) {
+    const result = customReceiptResult[0];
+    yield put({ type: types.RECEIVED_CUSTOM_RECEIPT, payload: result.data });
+  }
+}
+
 /**
  * Get pos general config
  * @returns void
@@ -583,6 +612,9 @@ function* getPostConfigGeneralConfig() {
   const outletId = cashierInfo.outlet_id;
   const detailOutlet = yield call(getDetailOutletService, outletId);
   yield put({ type: types.RECEIVED_DETAIL_OUTLET, payload: detailOutlet });
+
+  // Get custom receipt
+  yield getCustomReceipt(outletId);
 
   yield put({
     type: types.RECEIVED_POST_GENERAL_CONFIG,
@@ -656,14 +688,6 @@ function* syncData() {
     }
   } else {
     console.info('not sync yet!');
-  }
-}
-
-function* getCustomReceipt() {
-  const customReceiptResult = yield call(getCustomReceiptService);
-  if (customReceiptResult.length > 0) {
-    const result = customReceiptResult[0];
-    yield put({ type: types.RECEIVED_CUSTOM_RECEIPT, payload: result.data });
   }
 }
 
@@ -866,7 +890,6 @@ function* rootSaga() {
   yield takeEvery(types.GET_DETAIL_PRODUCT_GROUPED, getDetailGroupedProduct);
   yield takeEvery(types.SEARCH_CUSTOMER, getSearchCustomer);
   yield takeEvery(types.ADD_TO_CART, addToCart);
-  yield takeEvery(types.GET_CUSTOM_RECEIPT, getCustomReceipt);
   yield takeEvery(types.GET_ORDER_HISTORY_ACTION, getOrderHistory);
   yield takeEvery(types.GET_PRODUCT_BY_CATEGORY, getProductByCategory);
   yield takeEvery(types.SIGN_UP_CUSTOMER, signUpAction);

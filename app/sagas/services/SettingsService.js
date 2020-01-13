@@ -1,9 +1,15 @@
-import { getByKey, createKey, updateById } from '../../reducers/db/settings';
+import {
+  getByKey,
+  createKey,
+  updateById,
+  getByKeyV2
+} from '../../reducers/db/settings';
 
 const syncAllDataLabel = 'sync_all_data';
 const systemConfigLabel = 'system_config';
 const shopInfoKey = 'shop_info_config';
 const cashierInfoLabel = 'cashier_info';
+const receiptInfoLabel = 'receipt_info';
 
 export async function haveToSyncAllData() {
   const data = await getByKey(syncAllDataLabel);
@@ -52,8 +58,24 @@ export async function shopInfoSync(shopInfo) {
   }
 }
 
+export async function receiptInfoSync(receipt) {
+  const receiptInfo = await getByKeyV2(receiptInfoLabel);
+  if (!receiptInfo) {
+    // Create new
+    await createKey(receiptInfoLabel, receipt);
+  } else {
+    // Update by key
+    await updateById(receiptInfo.id, receipt);
+  }
+}
+
 export async function getShopInfoLocal() {
   const data = await getByKey(shopInfoKey);
+  return data;
+}
+
+export async function getReceiptInfoLocal() {
+  const data = await getByKey(cashierInfoLabel);
   return data;
 }
 

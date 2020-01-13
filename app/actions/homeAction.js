@@ -207,12 +207,6 @@ export function setToken(payload) {
   };
 }
 
-export function getCustomReceipt() {
-  return {
-    type: types.GET_CUSTOM_RECEIPT
-  };
-}
-
 export function getProductByCategory(payload) {
   return {
     type: types.GET_PRODUCT_BY_CATEGORY,

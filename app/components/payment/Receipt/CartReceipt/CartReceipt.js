@@ -25,8 +25,6 @@ class CartReceipt extends Component<Props> {
       cashierInfo
     } = this.props;
 
-    console.log('dd1:', orderPreparingCheckout);
-
     /* eslint-disable-next-line */
     const { subtotal_display, subtotal_label, discount_display, discount_label, cashier_name_display, cashier_label, grand_total_label } = customReceipt;
 
@@ -44,7 +42,7 @@ class CartReceipt extends Component<Props> {
     // eslint-disable-next-line no-lone-blocks
     /*eslint-disable*/
 
-    console.log('run 2:', cartForReceipt);
+    console.log('grand total label:', grand_total_label);
 
     return (
       <div className={style.wrapCartReceipt}>
