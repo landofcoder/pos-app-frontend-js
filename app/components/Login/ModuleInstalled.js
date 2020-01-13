@@ -55,7 +55,7 @@ class ModuleInstalled extends Component {
       <div key={moduleName} className="form-group">
         <div className="form-check">
           <i
-            className={`far fa-check-circle ${
+            className={`far ${check ?'fa-check-circle':'fa-times-circle'} ${
               check ? styles.validColor : styles.invalidColor
             } pr-1`}
           ></i>
