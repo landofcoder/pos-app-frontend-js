@@ -52,23 +52,29 @@ export function checkLoginBackground() {
   };
 }
 
-export function errorSignInWorkPlaceMessage(payload){
+export function errorSignInWorkPlaceMessage(payload) {
   return {
     type: types.ERROR_URL_WORKPLACE,
     payload
-  }
+  };
 }
 
 export function changeUrlInputWorkplace(payload) {
   return {
     type: types.CHANGE_URL_INPUT_WORKPLACE,
     payload
-  }
+  };
 }
 
-export function setDefaultProtocolWorkplace(payload){
+export function setDefaultProtocolWorkplace(payload) {
   return {
     type: types.SET_DEFAULT_PROTOCOL_WORKPLACE,
     payload
-  }
+  };
+}
+
+export function getModuleInstalled() {
+  return {
+    type: types.GET_MODULE_INSTALLED
+  };
 }

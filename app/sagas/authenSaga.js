@@ -10,7 +10,8 @@ import {
   loginService,
   createLoggedDb,
   setMainUrlKey,
-  getMainUrlKey
+  getMainUrlKey,
+  getModuleInstalledService
 } from './services/LoginService';
 import { checkValidateUrlLink } from '../common/settings';
 
@@ -60,12 +61,24 @@ function* cleanUrlWorkplace() {
   yield put({ type: types.STOP_LOADING_WORKPLACE });
 }
 
+function* getModuleInstalled() {
+  yield put({ type: types.LOADING_MODULE_COMPONENT, payload: true });
+
+  const data = yield call(getModuleInstalledService);
+  console.log(data);
+  if (data.error) {
+  } else
+    yield put({ type: types.RECEIVED_MODULE_INSTALLED, payload: data.data[0] });
+  yield put({ type: types.LOADING_MODULE_COMPONENT, payload: false });
+}
+
 function* authenSaga() {
   yield takeEvery(types.LOGIN_ACTION, loginAction);
   yield takeEvery(types.LOGOUT_ACTION, logoutAction);
   yield takeLatest(types.SET_MAIN_URL, setMainUrl);
   yield takeEvery(types.GET_MAIN_URL, getMainUrl);
   yield takeEvery(types.CLEAN_URL_WORKPLACE, cleanUrlWorkplace);
+  yield takeLatest(types.GET_MODULE_INSTALLED, getModuleInstalled);
 }
 
 export default authenSaga;

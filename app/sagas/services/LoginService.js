@@ -114,3 +114,26 @@ export async function getMainUrlKey() {
   }
   return { status: false };
 }
+
+export async function getModuleInstalledService() {
+  let data,
+    error = false;
+  try {
+    const response = await fetch(
+      `${window.mainUrl}index.php/rest/V1/pos/check-all-module-installed`,
+      {
+        method: 'GET', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors', // no-cors, *cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omit
+        redirect: 'follow', // manual, *follow, error
+        referrer: 'no-referrer' // no-referrer, *clien
+      }
+    );
+    data = await response.json();
+  } catch (e) {
+    data = [];
+    error = true;
+  }
+  return { data, error };
+}

@@ -10,10 +10,12 @@ const initialState = {
   cashierInfo: {},
   isReloadingToken: false,
   loadingWorkPlace: false,
+  loadingModuleComponent: true,
   mainUrl: '',
   urlInput: '',
   changeInput: false,
-  defaultProtocol: 'http://'
+  defaultProtocol: 'http://',
+  moduleInstalled: {}
 };
 
 /*  eslint no-param-reassign: "error" */
@@ -66,6 +68,11 @@ const authenRd = (state = initialState, action) =>
       case typesAuthen.SET_DEFAULT_PROTOCOL_WORKPLACE:
         draft.defaultProtocol = action.payload;
         break;
+      case typesAuthen.LOADING_MODULE_COMPONENT:
+        draft.loadingModuleComponent = action.payload;
+        break;
+      case typesAuthen.RECEIVED_MODULE_INSTALLED:
+        draft.moduleInstalled = action.payload;
       default:
     }
   });
