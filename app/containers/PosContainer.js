@@ -20,7 +20,8 @@ function mapStateToProps(state) {
     internetConnected: state.mainRd.internetConnected,
     isShowHaveNoSearchResultFound: state.mainRd.isShowHaveNoSearchResultFound,
     isLoadingSignUpCustomer: state.mainRd.isLoadingSignUpCustomer,
-    isOpenSignUpCustomer: state.mainRd.isOpenSignUpCustomer
+    isOpenSignUpCustomer: state.mainRd.isOpenSignUpCustomer,
+    isShowModalItemEditCart: state.mainRd.itemCartEditing.showModal
   };
 }
 

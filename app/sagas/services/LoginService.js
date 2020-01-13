@@ -1,10 +1,10 @@
 import { cashierInfoSync, getCashierInfoLocal } from './SettingsService';
 import {
-  getByKey as getByKeyV2,
+  getByKeyV2,
   createKey,
   updateById,
   deleteByKey
-} from '../../reducers/db/settings_new';
+} from '../../reducers/db/settings';
 
 const loggedInfoKey = 'logged_info';
 const mainUrlKey = 'main_url';
@@ -84,9 +84,6 @@ export async function getInfoCashierService() {
     data = [];
     error = true;
   }
-
-  console.log('cashier:', data);
-
   if (error) {
     // Query to local
     data = await getCashierInfoLocal();

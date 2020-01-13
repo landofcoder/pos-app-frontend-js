@@ -28,11 +28,6 @@ export function holdAction() {
   };
 }
 
-/**
- * Switching to hold cart
- * @param payload index of hold cart item
- * @returns {{type: string}}
- */
 export function switchToHoldItemCart(payload) {
   return {
     type: types.SWITCH_TO_HOLD_ITEM_CART,
@@ -212,12 +207,6 @@ export function setToken(payload) {
   };
 }
 
-export function getCustomReceipt() {
-  return {
-    type: types.GET_CUSTOM_RECEIPT
-  };
-}
-
 export function getProductByCategory(payload) {
   return {
     type: types.GET_PRODUCT_BY_CATEGORY,
@@ -249,5 +238,19 @@ export function updateIsInternetConnected(payload) {
 export function getDiscountForOfflineCheckout() {
   return {
     type: types.GET_DISCOUNT_FOR_OFFLINE_CHECKOUT
+  };
+}
+
+export function updateIsShowModelEditingCartItem(payload) {
+  return {
+    type: types.UPDATE_IS_SHOW_MODEL_EDITING_CART_ITEM,
+    payload
+  };
+}
+
+export function updateQtyEditCart(payload) {
+  return {
+    type: types.UPDATE_QTY_CART_ITEM,
+    payload
   };
 }

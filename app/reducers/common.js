@@ -349,7 +349,7 @@ const testCartCurrentForReceipt = [
 export const testCartCurrentForDefaultReceipt = {
   cartId: '',
   customerToken: '',
-  data: testCartCurrentForReceipt,
+  data: [],
   customer: null, // Current customer for current cart
   isGuestCustomer: true
 };
