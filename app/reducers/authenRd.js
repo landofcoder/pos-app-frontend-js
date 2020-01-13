@@ -9,10 +9,15 @@ const initialState = {
   cashierInfo: {},
   isReloadingToken: false,
   loadingWorkPlace: false,
+  loadingModuleComponent: true,
   mainUrl: '',
   urlInput: '',
   changeInput: false,
-  defaultProtocol: 'http://'
+  defaultProtocol: 'http://',
+  moduleInstalled: {},
+  errorServiceModuleInstalled: false,
+  senseUrl: '',
+  toModuleInstalled: false
 };
 
 /*  eslint no-param-reassign: "error" */
@@ -64,6 +69,21 @@ const authenRd = (state = initialState, action) =>
         break;
       case typesAuthen.SET_DEFAULT_PROTOCOL_WORKPLACE:
         draft.defaultProtocol = action.payload;
+        break;
+      case typesAuthen.LOADING_MODULE_COMPONENT:
+        draft.loadingModuleComponent = action.payload;
+        break;
+      case typesAuthen.RECEIVED_MODULE_INSTALLED:
+        draft.moduleInstalled = action.payload;
+        break;
+      case typesAuthen.ERROR_SERVICE_MODULES_INSTALLED:
+        draft.errorServiceModuleInstalled = action.payload;
+        break;
+      case typesAuthen.CHANGE_SENSE_URL:
+        draft.senseUrl = action.payload;
+        break;
+      case typesAuthen.CHANGE_STATUS_TO_MODULE_INSTALLED:
+        draft.toModuleInstalled = action.payload;
         break;
       default:
     }
