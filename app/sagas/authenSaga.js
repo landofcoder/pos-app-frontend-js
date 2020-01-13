@@ -11,7 +11,7 @@ import {
   createLoggedDb,
   setMainUrlKey,
   getMainUrlKey,
-  getModuleInstalledService
+  getModuleInstalledService,
   deleteLoggedDb
 } from './services/LoginService';
 import { checkValidateUrlLink } from '../common/settings';
