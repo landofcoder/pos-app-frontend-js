@@ -10,7 +10,8 @@ import {
   loginService,
   createLoggedDb,
   setMainUrlKey,
-  getMainUrlKey
+  getMainUrlKey,
+  deleteLoggedDb
 } from './services/LoginService';
 
 function* loginAction(payload) {
@@ -32,8 +33,9 @@ function* loginAction(payload) {
 }
 
 function* logoutAction() {
-  yield put({ type: UPDATE_SWITCHING_MODE, payload: 'LoginForm' });
+  yield put({ type: UPDATE_SWITCHING_MODE, payload: 'LOGIN_FORM' });
   yield put({ type: types.LOGOUT_AUTHEN_ACTION });
+  yield deleteLoggedDb({});
   yield put({ type: LOGOUT_POS_ACTION });
 }
 
@@ -46,8 +48,9 @@ function* setMainUrl(payload) {
 
 function* getMainUrl() {
   const data = yield call(getMainUrlKey);
+  console.log(data);
   if (data.status) {
-    yield put({ type: types.RECEIVED_MAIN_URL, payload: data.payload.url });
+    yield put({ type: types.RECEIVED_MAIN_URL, payload: data.payload.value.url });
   }
 }
 

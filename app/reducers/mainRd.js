@@ -359,6 +359,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.cartHoldList = [];
         draft.orderHistory = [];
         draft.customerSearchResult = [];
+        draft.cashierInfo = {};
         break;
       case types.UPDATE_IS_LOADING_GET_CHECKOUT_OFFLINE:
         draft.checkout.offline.isLoadingDiscount = action.payload;
