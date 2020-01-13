@@ -3,15 +3,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Styles from './cash.scss';
 import { formatCurrencyCode } from '../../../common/product';
-import { cashPlaceOrderAction } from '../../../actions/checkoutActions';
-import { updateShowCashModal } from '../../../actions/homeAction';
 
 type Props = {
   cashLoadingPreparingOrder: boolean,
   orderPreparingCheckout: Object,
-  cashPlaceOrderAction: () => void,
-  updateShowCashModal: () => void,
-  isLoadingCashPlaceOrder: boolean,
   currencyCode: string
 };
 
@@ -19,7 +14,11 @@ class CashOnline extends Component<Props> {
   props: Props;
 
   render() {
-    const { orderPreparingCheckout, cashLoadingPreparingOrder, currencyCode } = this.props;
+    const {
+      orderPreparingCheckout,
+      cashLoadingPreparingOrder,
+      currencyCode
+    } = this.props;
     const subTotal = formatCurrencyCode(
       orderPreparingCheckout.totals.base_subtotal,
       currencyCode
@@ -44,10 +43,7 @@ class CashOnline extends Component<Props> {
           </label>
           <div className="col-sm-8 pt-1">
             {cashLoadingPreparingOrder ? (
-              <div
-                className="spinner-border spinner-border-sm"
-                role="status"
-              >
+              <div className="spinner-border spinner-border-sm" role="status">
                 <span className="sr-only">Loading...</span>
               </div>
             ) : (
@@ -75,16 +71,13 @@ class CashOnline extends Component<Props> {
               {shippingAmount}
             </p>
           </div>
-          <div className={Styles.lineSubTotal}/>
+          <div className={Styles.lineSubTotal} />
           <label htmlFor="staticEmail" className="col-sm-4 col-form-label">
             Order total
           </label>
           <div className="col-sm-8 pt-1">
             {cashLoadingPreparingOrder ? (
-              <div
-                className="spinner-border spinner-border-sm"
-                role="status"
-              >
+              <div className="spinner-border spinner-border-sm" role="status">
                 <span className="sr-only">Loading...</span>
               </div>
             ) : (
@@ -99,24 +92,15 @@ class CashOnline extends Component<Props> {
   }
 }
 
-
 function mapStateToProps(state) {
   return {
     cashLoadingPreparingOrder: state.mainRd.cashLoadingPreparingOrder,
     orderPreparingCheckout: state.mainRd.orderPreparingCheckout,
-    isLoadingCashPlaceOrder: state.mainRd.isLoadingCashPlaceOrder,
     currencyCode: state.mainRd.shopInfoConfig[0]
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    cashPlaceOrderAction: () => dispatch(cashPlaceOrderAction()),
-    updateShowCashModal: payload => dispatch(updateShowCashModal(payload))
   };
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  null
 )(CashOnline);

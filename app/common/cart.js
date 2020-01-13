@@ -1,6 +1,12 @@
-// @flow
 import LocaleCurrency from 'locale-currency';
 
+/**
+ * Sum total price for offline mode
+ * @param cartCurrent
+ * @param currencyCode
+ * @param withCurrency
+ * @returns {number|*}
+ */
 export function sumCartTotalPrice(
   cartCurrent: Object,
   currencyCode: string,

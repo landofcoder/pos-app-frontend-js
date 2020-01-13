@@ -29,6 +29,25 @@ const initialState = {
     isOpenReceiptModal: false,
     cartForReceipt: testCartCurrentForDefaultReceipt // When customer checkout succeed, copy current cart to this
   },
+  checkout: {
+    // All checkout variables
+    offline: {
+      isLoadingDiscount: false,
+      cartInfo: {
+        base_discount_amount: 0,
+        base_grand_total: 0,
+        base_sub_total: 0,
+        quote_id: 0,
+        shipping_and_tax_amount: 0
+      }
+    }
+  },
+  cartHoldList: [],
+  itemCartEditing: {
+    index: 0,
+    showModal: false,
+    item: {}
+  },
   allCategories: null, // Main store categories
   customReceipt: {
     cashier_label: null,
@@ -74,7 +93,6 @@ const initialState = {
   isLoadingOrderHistoryDetail: true,
   isLoadingSignUpCustomer: false,
   customerSearchResult: [],
-  cartHoldList: [],
   orderPreparingCheckout: {
     totals: {
       discount_amount: 0,
@@ -92,19 +110,6 @@ const initialState = {
     isLoadingProductOption: false, // Show a loading in screen for product option loading
     isShowingProductOption: false, // Show model for choose product type option
     optionValue: null // Keep detail product clicked
-  },
-  checkout: {
-    // All checkout variables
-    offline: {
-      isLoadingDiscount: false,
-      cartInfo: {
-        base_discount_amount: 0,
-        base_grand_total: 0,
-        base_sub_total: 0,
-        quote_id: 0,
-        shipping_and_tax_amount: 0
-      }
-    }
   }
 };
 
@@ -291,6 +296,9 @@ const mainRd = (state: Object = initialState, action: Object) =>
           break;
         }
       }
+      case types.COPY_CART_CURRENT_TO_RECEIPT:
+        draft.receipt.cartForReceipt = draft.cartCurrent;
+        break;
       case types.OPEN_RECEIPT_MODAL: {
         draft.receipt.isOpenReceiptModal = true;
         break;
@@ -352,6 +360,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.cartHoldList = [];
         draft.orderHistory = [];
         draft.customerSearchResult = [];
+        draft.cashierInfo = {};
         break;
       case types.UPDATE_IS_LOADING_GET_CHECKOUT_OFFLINE:
         draft.checkout.offline.isLoadingDiscount = action.payload;
@@ -368,6 +377,24 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.RECEIVED_CASHIER_INFO:
         draft.cashierInfo = action.payload;
         break;
+      case types.UPDATE_IS_SHOW_MODEL_EDITING_CART_ITEM:
+      {
+        const open = action.payload.open;
+        const item = action.payload.item;
+        if(open === true) {
+          draft.itemCartEditing.item = item;
+        }
+        draft.itemCartEditing.showModal = open;
+        draft.itemCartEditing.index = action.payload.index;
+        break;
+      }
+      case types.RESET_ITEM_CART_EDITING:
+      {
+        draft.itemCartEditing.index = 0;
+        draft.itemCartEditing.showModal = false;
+        draft.itemCartEditing.item = {};
+        break;
+      }
       default:
         return draft;
     }

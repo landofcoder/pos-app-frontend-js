@@ -3,7 +3,6 @@ import * as typesAuthen from '../constants/authen';
 
 const initialState = {
   token: '',
-  authenticate: '',
   loading: false,
   message: '',
   messageErrorWorkPlace: '',
