@@ -43,7 +43,7 @@ export async function systemConfigSync(systemConfig) {
 }
 
 export async function getSystemConfigLocal() {
-  const data = await getByKey(systemConfigLabel);
+  const data = await getByKeyV2(systemConfigLabel);
   return data;
 }
 

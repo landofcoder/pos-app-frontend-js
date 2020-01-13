@@ -41,7 +41,6 @@ export async function getSystemConfigService() {
   if (getError) {
     // Query to local
     data = await getSystemConfigLocal();
-    data = data[0].value;
   } else {
     // Sync it now
     await systemConfigSync(data);

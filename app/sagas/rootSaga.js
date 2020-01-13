@@ -64,8 +64,13 @@ import {
 import { syncCategories } from '../reducers/db/categories';
 import { syncCustomers } from '../reducers/db/customers';
 import { signUpCustomer } from '../reducers/db/sync_customers';
+import { counterProduct } from '../reducers/db/products';
 import { getOfflineMode } from '../common/settings';
-import { CHILDREN, LOGIN_FORM } from '../constants/main-panel-types';
+import {
+  CHILDREN,
+  LOGIN_FORM,
+  SYNC_SCREEN
+} from '../constants/main-panel-types';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
 const cartCurrentObj = state => state.mainRd.cartCurrent;
@@ -599,8 +604,8 @@ function* getPostConfigGeneralConfig() {
   // Start loading
   // yield put({ type: types.UPDATE_IS_LOADING_SYSTEM_CONFIG, payload: true });
 
-  // Get system config settings
-  const configGeneralResponse = yield call(getSystemConfigService);
+  // // Get system config settings
+  // const configGeneralResponse = yield call(getSystemConfigService);
 
   // Get shop info
   const shopInfoResponse = yield call(getShopInfoService);
@@ -616,10 +621,10 @@ function* getPostConfigGeneralConfig() {
   // Get custom receipt
   yield getCustomReceipt(outletId);
 
-  yield put({
-    type: types.RECEIVED_POST_GENERAL_CONFIG,
-    payload: configGeneralResponse
-  });
+  // yield put({
+  //   type: types.RECEIVED_POST_GENERAL_CONFIG,
+  //   payload: configGeneralResponse
+  // });
 
   yield put({
     type: types.RECEIVED_SHOP_INFO_CONFIG,
@@ -795,14 +800,54 @@ function* getDiscountForOfflineCheckoutSaga() {
 function* checkLoginBackgroundSaga() {
   const loggedDb = yield getLoggedDb();
 
-  // Logged
-  if (loggedDb !== false) {
-    // If logged before => call bootstrapApplication
-    yield bootstrapApplicationSaga(loggedDb);
-  } else {
-    // Not login yet =
-    yield put({ type: types.UPDATE_SWITCHING_MODE, payload: LOGIN_FORM });
-  }
+  yield put({ type: types.UPDATE_SWITCHING_MODE, payload: SYNC_SCREEN });
+
+  // // Logged
+  // if (loggedDb !== false) {
+  //   // Get main url key
+  //   const data = yield call(getMainUrlKey);
+  //   if (data.status) {
+  //     const { url } = data.payload.value;
+  //     yield put({ type: RECEIVED_MAIN_URL, payload: url });
+  //     window.mainUrl = url;
+  //   }
+  //
+  //   // Set token first
+  //   const { token } = loggedDb.value;
+  //
+  //   // Assign to global variables
+  //   window.liveToken = token;
+  //
+  //   // Set token to reducers
+  //   yield put({ type: RECEIVED_TOKEN, payload: token });
+  //
+  //   // Call get system config first
+  //   const configGeneralResponse = yield call(getSystemConfigService);
+  //   yield put({
+  //     type: types.RECEIVED_POST_GENERAL_CONFIG,
+  //     payload: configGeneralResponse
+  //   });
+  //
+  //   // eslint-disable-next-line prefer-destructuring
+  //   window.config = configGeneralResponse[0];
+  //   const offlineMode = yield getOfflineMode();
+  //   const counterProductLocal = yield counterProduct();
+  //
+  //   // If offline enabled and have no product sync => Show sync screen
+  //   if (offlineMode === 1 && counterProductLocal === 0) {
+  //     // Show screen sync
+  //     yield put({ type: types.UPDATE_SWITCHING_MODE, payload: SYNC_SCREEN });
+  //   } else {
+  //     // Next to show children form
+  //     yield put({ type: types.UPDATE_SWITCHING_MODE, payload: CHILDREN });
+  //   }
+  //
+  //   // If logged before => call bootstrapApplication
+  //   yield bootstrapApplicationSaga();
+  // } else {
+  //   // Not login yet =
+  //   yield put({ type: types.UPDATE_SWITCHING_MODE, payload: LOGIN_FORM });
+  // }
 }
 
 /**
@@ -836,32 +881,11 @@ function* updateQtyCartItemSaga(payload) {
 
 /**
  * Bootstrap application and load all config
- * @param loggedDb
  * @returns void
  */
-function* bootstrapApplicationSaga(loggedDb) {
-  // Set token first
-  const { token } = loggedDb.value;
-
-  // Assign to global variables
-  window.liveToken = token;
-
-  // Get main url key
-  const data = yield call(getMainUrlKey);
-  if (data.status) {
-    const { url } = data.payload.value;
-    yield put({ type: RECEIVED_MAIN_URL, payload: data.payload.url });
-    window.mainUrl = url;
-  }
-
-  // Set token
-  yield put({ type: RECEIVED_TOKEN, payload: token });
-
+function* bootstrapApplicationSaga() {
   // Get all config
   yield getPostConfigGeneralConfig();
-
-  // Update switching mode
-  yield put({ type: types.UPDATE_SWITCHING_MODE, payload: CHILDREN });
 
   // Sync
   yield syncData();

@@ -11,7 +11,7 @@ import {
 } from './common';
 
 const initialState = {
-  switchingMode: LOADING, // Loading, LoginForm, Children
+  switchingMode: LOADING, // LOADING, LOGIN_FORM, CHILDREN, SYNC_SCREEN
   flagSwitchModeCounter: 1, // When this flag counter up, render in App.js will re-render and backgroundLogin will re-check
   internetConnected: false,
   isLoadingSystemConfig: true,
@@ -265,7 +265,6 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.RECEIVED_POST_GENERAL_CONFIG:
         // eslint-disable-next-line prefer-destructuring
         draft.posSystemConfig = action.payload[0];
-        window.config = action.payload[0];
         break;
       case types.UPDATE_IS_LOADING_SYSTEM_CONFIG:
         draft.isLoadingSystemConfig = action.payload;

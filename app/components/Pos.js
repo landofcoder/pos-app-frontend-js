@@ -335,7 +335,6 @@ export default class Pos extends Component<Props, State> {
           ) : (
             <></>
           )}
-
           <div className="row" id={Styles.wrapPostContainerId}>
             <div className="col-md-9">
               <div className={classWrapProductPanel}>
@@ -374,6 +373,7 @@ export default class Pos extends Component<Props, State> {
                       )}
                     </div>
                   </div>
+
                   {isShowHaveNoSearchResultFound ? (
                     <>
                       <p className="text-center text-muted">
@@ -384,6 +384,7 @@ export default class Pos extends Component<Props, State> {
                     <></>
                   )}
                 </div>
+
                 {mainProductListLoading ? (
                   <div className="col-md-12">
                     <div className="d-flex justify-content-center">

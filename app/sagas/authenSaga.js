@@ -12,18 +12,15 @@ import {
   setMainUrlKey,
   getMainUrlKey
 } from './services/LoginService';
-import { checkValidateUrlLink } from '../common/settings';
 
 function* loginAction(payload) {
   // Start loading
   yield put({ type: types.START_LOADING });
   try {
     const data = yield call(loginService, payload);
-    console.log('res login data:', data);
     if (data !== '') {
       yield createLoggedDb({ info: payload.payload, token: data });
-      // Update flag login to make App reload and background check
-      yield put({ type: UPDATE_FLAG_SWITCHING_MODE });
+      yield put({ type: UPDATE_FLAG_SWITCHING_MODE }); // Update flag login to make App reload and background check
     } else {
       yield put({ type: types.ERROR_LOGIN });
     }
@@ -56,7 +53,7 @@ function* getMainUrl() {
 
 function* cleanUrlWorkplace() {
   yield put({ type: types.START_LOADING_WORKPLACE });
-  const url = yield call(setMainUrlKey, '');
+  yield call(setMainUrlKey, '');
   yield put({ type: types.STOP_LOADING_WORKPLACE });
 }
 

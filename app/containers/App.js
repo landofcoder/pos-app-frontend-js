@@ -6,7 +6,13 @@ import {
   checkLoginBackground
 } from '../actions/authenAction';
 import Login from '../components/Login/Login';
-import { CHILDREN, LOGIN_FORM, LOADING } from '../constants/main-panel-types';
+import {
+  CHILDREN,
+  LOGIN_FORM,
+  LOADING,
+  SYNC_SCREEN
+} from '../constants/main-panel-types';
+import SyncFirstScreen from '../components/Login/SyncFirstScreen';
 
 type Props = {
   children: React.Node,
@@ -73,6 +79,8 @@ class App extends React.Component<Props> {
               return <Login />;
             case CHILDREN:
               return <div className="container-fluid">{children}</div>;
+            case SYNC_SCREEN:
+              return <SyncFirstScreen />;
             default:
               return <></>;
           }
