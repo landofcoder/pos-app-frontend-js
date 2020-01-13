@@ -1,9 +1,9 @@
 // @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { deleteItemCart } from '../../actions/homeAction';
+import { deleteItemCart } from '../../../../actions/homeAction';
 import style from './cartReceipt.scss';
-import { formatCurrencyCode } from '../../common/product';
+import { formatCurrencyCode } from '../../../../common/product';
 
 type Props = {
   cartForReceipt: Array,
@@ -25,8 +25,6 @@ class CartReceipt extends Component<Props> {
       cashierInfo
     } = this.props;
 
-    console.log('customer receipt:', customReceipt);
-
     /* eslint-disable-next-line */
     const { subtotal_display, subtotal_label, discount_display, discount_label, cashier_name_display, cashier_label, grand_total_label } = customReceipt;
 
@@ -42,8 +40,9 @@ class CartReceipt extends Component<Props> {
     );
     const grandTotal = formatCurrencyCode(totals.grand_total, currencyCode);
     // eslint-disable-next-line no-lone-blocks
-    {/*eslint-disable*/
-    }
+    /*eslint-disable*/
+
+    console.log('grand total label:', grand_total_label);
 
     return (
       <div className={style.wrapCartReceipt}>
@@ -144,10 +143,6 @@ class CartReceipt extends Component<Props> {
           }
       </div>
     );
-    // eslint-disable-next-line no-lone-blocks
-    {
-      /* eslint-enable */
-    }
   }
 }
 

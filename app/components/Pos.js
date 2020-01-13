@@ -18,6 +18,7 @@ import CartCustomer from './customer/CartCustomer';
 import SignUpCustomer from './customer/SignUpCustomer/SignUpCustomer';
 import CashPanel from './payment/Cash/Cash';
 import Receipt from './payment/Receipt/Receipt';
+import EditCart from './ListCart/EditCart/EditCart';
 import { sumCartTotalPrice } from '../common/cart';
 import Categories from './commons/Categories/Categories';
 import routers from '../constants/routes';
@@ -37,7 +38,8 @@ type Props = {
   isShowCashPaymentModel: boolean,
   updateIsShowingProductOption: (payload: boolean) => void,
   mainProductListLoading: boolean,
-  isOpenReceiptModal: Object,
+  isOpenReceiptModal: boolean,
+  isShowModalItemEditCart: boolean,
   cartHoldList: Array<Object>,
   switchToHoldItemCart: (payload: number) => void,
   emptyCart: () => void,
@@ -45,8 +47,7 @@ type Props = {
   isLoadingSearchHandle: boolean,
   isShowHaveNoSearchResultFound: boolean,
   isOpenSignUpCustomer: boolean,
-  internetConnected: boolean,
-  token: string
+  internetConnected: boolean
 };
 
 type State = {
@@ -257,8 +258,7 @@ export default class Pos extends Component<Props, State> {
       isLoadingSearchHandle,
       isShowHaveNoSearchResultFound,
       internetConnected,
-      isOpenSignUpCustomer,
-      token
+      isOpenSignUpCustomer
     } = this.props;
     const { redirectToAccount } = this.state;
 
@@ -272,7 +272,8 @@ export default class Pos extends Component<Props, State> {
       productList,
       holdAction,
       cartCurrent,
-      cashCheckoutAction
+      cashCheckoutAction,
+      isShowModalItemEditCart
     } = this.props;
     // Enable checkout button or disable
     const disableCheckout = cartCurrent.data.length <= 0;
@@ -282,13 +283,6 @@ export default class Pos extends Component<Props, State> {
       isOpenReceiptModal
     } = this.props;
     const { isShowingProductOption } = productOption;
-
-    if (token === '') {
-      // if (localStorage.getItem(POS_LOGIN_STORAGE)) {
-      //   // Set token
-      // } else return <Redirect to={routers.LOGIN} />;
-    }
-
     return (
       <>
         <div data-tid="container">
@@ -322,6 +316,26 @@ export default class Pos extends Component<Props, State> {
               <Receipt />
             </div>
           </div>
+          {/* Edit cart item model */}
+          {isShowModalItemEditCart ? (
+            <>
+              <div
+                id="editCartModelModal"
+                className={ModalStyle.modal}
+                style={{ display: 'block' }}
+              >
+                <div
+                  className={ModalStyle.modalContent}
+                  style={{ width: '450px' }}
+                >
+                  <EditCart />
+                </div>
+              </div>
+            </>
+          ) : (
+            <></>
+          )}
+
           <div className="row" id={Styles.wrapPostContainerId}>
             <div className="col-md-9">
               <div className={classWrapProductPanel}>

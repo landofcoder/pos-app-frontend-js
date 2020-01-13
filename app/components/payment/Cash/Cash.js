@@ -8,11 +8,10 @@ import CashOnline from './CashOnline';
 
 type Props = {
   cashLoadingPreparingOrder: boolean,
-  orderPreparingCheckout: Object,
   cashPlaceOrderAction: () => void,
   updateShowCashModal: () => void,
   isLoadingCashPlaceOrder: boolean,
-  currencyCode: string
+  posSystemConfig: Object
 };
 
 class CashPayment extends Component<Props> {
@@ -26,7 +25,9 @@ class CashPayment extends Component<Props> {
       isLoadingCashPlaceOrder,
       posSystemConfig
     } = this.props;
-    const enableOfflineMode = Number(posSystemConfig.general_configuration.enable_offline_mode);
+    const enableOfflineMode = Number(
+      posSystemConfig.general_configuration.enable_offline_mode
+    );
     return (
       <div>
         <div className="modal-content">
@@ -42,9 +43,7 @@ class CashPayment extends Component<Props> {
             />
           </div>
           <div className="modal-body">
-            {
-              enableOfflineMode === 1 ? <CashOffline/> : <CashOnline/>
-            }
+            {enableOfflineMode === 1 ? <CashOffline /> : <CashOnline />}
           </div>
           <div className="modal-footer">
             <div className="col-md-6 p-0">
@@ -85,7 +84,6 @@ class CashPayment extends Component<Props> {
 function mapStateToProps(state) {
   return {
     cashLoadingPreparingOrder: state.mainRd.cashLoadingPreparingOrder,
-    orderPreparingCheckout: state.mainRd.orderPreparingCheckout,
     isLoadingCashPlaceOrder: state.mainRd.isLoadingCashPlaceOrder,
     currencyCode: state.mainRd.shopInfoConfig[0],
     posSystemConfig: state.mainRd.posSystemConfig

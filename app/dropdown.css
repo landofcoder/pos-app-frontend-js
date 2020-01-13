@@ -3,12 +3,12 @@
 }
 
 .dropdown-menu {
-  padding: 0;
-  margin: 0;
-  border: 0;
-  border-radius: 0;
-  -webkit-box-shadow: none !important;
-  box-shadow: none !important
+  /*padding: 0;*/
+  /*margin: 0;*/
+  /*border: 0;*/
+  /*border-radius: 0;*/
+  /*-webkit-box-shadow: none !important;*/
+  /*box-shadow: none !important*/
 }
 
 .mainmenu a, .navbar-default .navbar-nav > li > a,
