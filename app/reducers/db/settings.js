@@ -23,3 +23,11 @@ export async function updateById(id, value) {
   const tbl = db.table(table);
   await tbl.update(id, { value, update_at: new Date() });
 }
+
+export async function deleteByKey(key){
+  const tbl = db.table(table);
+  const data = await tbl.get({ key });
+  if(data){
+    await tbl.delete(data.id);
+  }
+}
