@@ -2,7 +2,8 @@ import { cashierInfoSync, getCashierInfoLocal } from './SettingsService';
 import {
   getByKey as getByKeyV2,
   createKey,
-  updateById
+  updateById,
+  deleteByKey
 } from '../../reducers/db/settings_new';
 
 const loggedInfoKey = 'logged_info';
@@ -10,6 +11,10 @@ const mainUrlKey = 'main_url';
 
 export async function createLoggedDb(payload) {
   await createKey(loggedInfoKey, payload);
+}
+
+export async function deleteLoggedDb(){
+  await deleteByKey(loggedInfoKey);
 }
 
 export async function getLoggedDb() {
