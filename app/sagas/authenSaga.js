@@ -1,5 +1,5 @@
 // @flow
-import { takeEvery, call, put, takeLatest } from 'redux-saga/effects';
+import { takeEvery, call, put, takeLatest, select } from 'redux-saga/effects';
 import * as types from '../constants/authen';
 import {
   LOGOUT_POS_ACTION,
@@ -14,6 +14,8 @@ import {
   getModuleInstalledService
 } from './services/LoginService';
 import { checkValidateUrlLink } from '../common/settings';
+
+const senseUrl = state => state.authenRd.senseUrl;
 
 function* loginAction(payload) {
   // Start loading
@@ -51,7 +53,8 @@ function* setMainUrl(payload) {
 function* getMainUrl() {
   const data = yield call(getMainUrlKey);
   if (data.status) {
-    yield put({ type: types.RECEIVED_MAIN_URL, payload: data.payload.url });
+    console.log(data);
+    yield put({ type: types.RECEIVED_MAIN_URL, payload: data.payload.value.url });
   }
 }
 
@@ -63,16 +66,22 @@ function* cleanUrlWorkplace() {
 
 function* getModuleInstalled() {
   yield put({ type: types.LOADING_MODULE_COMPONENT, payload: true });
-
-  const data = yield call(getModuleInstalledService);
+  const url = yield select(senseUrl);
+  const data = yield call(getModuleInstalledService,url);
   console.log(data);
   if (data.error) {
     yield put({
-      type: types.ERROR_URL_WORKPLACE,
-      payload: 'Your URL address '
+      type: types.ERROR_SERVICE_MODULES_INSTALLED,
+      payload: true
     });
-  } else
+    yield put({ type: types.RECEIVED_MODULE_INSTALLED, payload: [] });
+  } else {
+    yield put({
+      type: types.ERROR_SERVICE_MODULES_INSTALLED,
+      payload: false
+    });
     yield put({ type: types.RECEIVED_MODULE_INSTALLED, payload: data.data[0] });
+  }
   yield put({ type: types.LOADING_MODULE_COMPONENT, payload: false });
 }
 

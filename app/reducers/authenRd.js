@@ -15,7 +15,10 @@ const initialState = {
   urlInput: '',
   changeInput: false,
   defaultProtocol: 'http://',
-  moduleInstalled: {}
+  moduleInstalled: {},
+  errorServiceModuleInstalled: false,
+  senseUrl: '',
+  toModuleInstalled: false
 };
 
 /*  eslint no-param-reassign: "error" */
@@ -73,6 +76,16 @@ const authenRd = (state = initialState, action) =>
         break;
       case typesAuthen.RECEIVED_MODULE_INSTALLED:
         draft.moduleInstalled = action.payload;
+        break;
+      case typesAuthen.ERROR_SERVICE_MODULES_INSTALLED:
+        draft.errorServiceModuleInstalled = action.payload;
+        break;
+      case typesAuthen.CHANGE_SENSE_URL:
+        draft.senseUrl = action.payload;
+        break;
+      case typesAuthen.CHANGE_STATUS_TO_MODULE_INSTALLED:
+        draft.toModuleInstalled = action.payload;
+        break;
       default:
     }
   });

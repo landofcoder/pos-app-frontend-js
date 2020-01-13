@@ -11,7 +11,7 @@ import styles from './pagelogin.scss';
 import commonStyles from '../styles/common.scss';
 import Loading from '../commons/Loading';
 import WorkPlace from './WorkPlace/WorkPlace';
-import ModuleSelected from './ModuleSelect/ModuleSelect';
+import ModuleInstalled from './ModuleInstalled';
 
 type Props = {
   login: (payload: Object) => void,
@@ -66,11 +66,10 @@ class Login extends Component<Props, State> {
     if (mainUrl === '' || mainUrl === undefined) {
       return <WorkPlace />;
     }
-    // return <ModuleSelected />;
     return (
       <>
         <div
-          className={`${commonStyles.contentColumn} ${styles.wrapLoginPage}`}
+          className={`${commonStyles.contentColumn} ${styles.wrapPage}`}
         >
           <div className="col-sm-12 col-md-4 col-lg-4">
             <form

@@ -78,3 +78,17 @@ export function getModuleInstalled() {
     type: types.GET_MODULE_INSTALLED
   };
 }
+
+export function changeToModuleInstalled(payload) {
+  return {
+    type: types.CHANGE_STATUS_TO_MODULE_INSTALLED,
+    payload
+  };
+}
+
+export function changeSenseUrl(payload) {
+  return {
+    type: types.CHANGE_SENSE_URL,
+    payload
+  };
+}

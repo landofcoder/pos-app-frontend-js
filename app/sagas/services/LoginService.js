@@ -115,12 +115,12 @@ export async function getMainUrlKey() {
   return { status: false };
 }
 
-export async function getModuleInstalledService() {
+export async function getModuleInstalledService(url) {
   let data,
     error = false;
   try {
     const response = await fetch(
-      `${window.mainUrl}index.php/rest/V1/pos/check-all-module-installed`,
+      `${url}index.php/rest/V1/pos/check-all-module-installed`,
       {
         method: 'GET', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors', // no-cors, *cors, same-origin
