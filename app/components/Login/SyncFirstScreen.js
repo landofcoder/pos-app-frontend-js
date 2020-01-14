@@ -54,7 +54,7 @@ class SyncFirstScreen extends Component {
             className="btn btn-primary btn-lg"
             onClick={this.nextToMainPage}
           >
-            Next
+            Skip & Next
           </button>
         </div>
       </div>
