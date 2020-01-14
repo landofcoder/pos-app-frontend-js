@@ -590,6 +590,7 @@ function updateQtyProduct(product) {
 
 function* getCustomReceipt(outletId) {
   const customReceiptResult = yield call(getCustomReceiptService, outletId);
+  console.log('custom receipt result:', customReceiptResult);
   if (customReceiptResult.length > 0) {
     const result = customReceiptResult[0];
     yield put({ type: types.RECEIVED_CUSTOM_RECEIPT, payload: result.data });

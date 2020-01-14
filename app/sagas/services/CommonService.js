@@ -41,9 +41,12 @@ export async function getSystemConfigService() {
   if (getError) {
     // Query to local
     data = await getSystemConfigLocal();
+    data = data.value;
+    console.log('dd1 data from local:', data);
   } else {
     // Sync it now
     await systemConfigSync(data);
+    console.log('dd2');
   }
 
   return data;
@@ -123,7 +126,7 @@ export async function getCustomReceiptService(outletId) {
   if (error) {
     // Query to local
     const data = await getReceiptInfoLocal();
-    return data;
+    return data.value;
   }
   // Sync now
   await receiptInfoSync(data);

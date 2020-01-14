@@ -75,7 +75,7 @@ export async function getShopInfoLocal() {
 }
 
 export async function getReceiptInfoLocal() {
-  const data = await getByKey(cashierInfoLabel);
+  const data = await getByKeyV2(cashierInfoLabel);
   return data;
 }
 
