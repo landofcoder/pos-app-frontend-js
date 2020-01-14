@@ -798,56 +798,73 @@ function* getDiscountForOfflineCheckoutSaga() {
  * @returns void
  */
 function* checkLoginBackgroundSaga() {
+  console.log('background login checking...');
   const loggedDb = yield getLoggedDb();
 
   yield put({ type: types.UPDATE_SWITCHING_MODE, payload: SYNC_SCREEN });
 
-  // // Logged
-  // if (loggedDb !== false) {
-  //   // Get main url key
-  //   const data = yield call(getMainUrlKey);
-  //   if (data.status) {
-  //     const { url } = data.payload.value;
-  //     yield put({ type: RECEIVED_MAIN_URL, payload: url });
-  //     window.mainUrl = url;
-  //   }
-  //
-  //   // Set token first
-  //   const { token } = loggedDb.value;
-  //
-  //   // Assign to global variables
-  //   window.liveToken = token;
-  //
-  //   // Set token to reducers
-  //   yield put({ type: RECEIVED_TOKEN, payload: token });
-  //
-  //   // Call get system config first
-  //   const configGeneralResponse = yield call(getSystemConfigService);
-  //   yield put({
-  //     type: types.RECEIVED_POST_GENERAL_CONFIG,
-  //     payload: configGeneralResponse
-  //   });
-  //
-  //   // eslint-disable-next-line prefer-destructuring
-  //   window.config = configGeneralResponse[0];
-  //   const offlineMode = yield getOfflineMode();
-  //   const counterProductLocal = yield counterProduct();
-  //
-  //   // If offline enabled and have no product sync => Show sync screen
-  //   if (offlineMode === 1 && counterProductLocal === 0) {
-  //     // Show screen sync
-  //     yield put({ type: types.UPDATE_SWITCHING_MODE, payload: SYNC_SCREEN });
-  //   } else {
-  //     // Next to show children form
-  //     yield put({ type: types.UPDATE_SWITCHING_MODE, payload: CHILDREN });
-  //   }
-  //
-  //   // If logged before => call bootstrapApplication
-  //   yield bootstrapApplicationSaga();
-  // } else {
-  //   // Not login yet =
-  //   yield put({ type: types.UPDATE_SWITCHING_MODE, payload: LOGIN_FORM });
-  // }
+  // Logged
+  if (loggedDb !== false) {
+    // Get main url key
+    const data = yield call(getMainUrlKey);
+    if (data.status) {
+      const { url } = data.payload.value;
+      yield put({ type: RECEIVED_MAIN_URL, payload: url });
+      window.mainUrl = url;
+    }
+
+    // Set token first
+    const { token } = loggedDb.value;
+
+    // Assign to global variables
+    window.liveToken = token;
+
+    // Set token to reducers
+    yield put({ type: RECEIVED_TOKEN, payload: token });
+
+    // Call get system config first
+    const configGeneralResponse = yield call(getSystemConfigService);
+    yield put({
+      type: types.RECEIVED_POST_GENERAL_CONFIG,
+      payload: configGeneralResponse
+    });
+
+    // eslint-disable-next-line prefer-destructuring
+    window.config = configGeneralResponse[0];
+    const offlineMode = yield getOfflineMode();
+    const counterProductLocal = yield counterProduct();
+
+    console.log('dd1:', offlineMode);
+    console.log('dd2:', counterProductLocal);
+
+    // If offline enabled and have no product sync => Show sync screen
+    if (offlineMode === 1 && counterProductLocal === 0) {
+      // Show screen sync
+      yield put({ type: types.UPDATE_SWITCHING_MODE, payload: SYNC_SCREEN });
+      // Sync
+      yield syncData();
+    } else {
+      console.log('well auto switching');
+      yield gotoChildrenPanelSaga();
+    }
+  } else {
+    // Not login yet =
+    yield put({ type: types.UPDATE_SWITCHING_MODE, payload: LOGIN_FORM });
+  }
+}
+
+function* gotoChildrenPanelSaga() {
+  // Next to show children form
+  // If logged before => call bootstrapApplication
+  yield bootstrapApplicationSaga();
+  console.log('pass application children');
+  yield put({ type: types.UPDATE_SWITCHING_MODE, payload: CHILDREN });
+}
+
+function* gotoChildrenPanelTriggerSaga() {
+  yield gotoChildrenPanelSaga();
+  // Update counter for switch detect
+  yield put({ type: types.UPDATE_FLAG_SWITCHING_MODE });
 }
 
 /**
@@ -886,9 +903,6 @@ function* updateQtyCartItemSaga(payload) {
 function* bootstrapApplicationSaga() {
   // Get all config
   yield getPostConfigGeneralConfig();
-
-  // Sync
-  yield syncData();
 }
 
 /**
@@ -924,6 +938,7 @@ function* rootSaga() {
   );
   yield takeEvery(CHECK_LOGIN_BACKGROUND, checkLoginBackgroundSaga);
   yield takeEvery(types.UPDATE_QTY_CART_ITEM, updateQtyCartItemSaga);
+  yield takeEvery(types.GO_TO_CHILDREN_PANEL_TRIGGER, gotoChildrenPanelTriggerSaga);
 }
 
 export default rootSaga;

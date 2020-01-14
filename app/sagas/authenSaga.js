@@ -3,7 +3,6 @@ import { takeEvery, call, put, takeLatest } from 'redux-saga/effects';
 import * as types from '../constants/authen';
 import {
   LOGOUT_POS_ACTION,
-  UPDATE_SWITCHING_MODE,
   UPDATE_FLAG_SWITCHING_MODE
 } from '../constants/root.json';
 import {
@@ -33,7 +32,6 @@ function* loginAction(payload) {
 }
 
 function* logoutAction() {
-  yield put({ type: UPDATE_SWITCHING_MODE, payload: 'LOGIN_FORM' });
   yield put({ type: types.LOGOUT_AUTHEN_ACTION });
   yield deleteLoggedDb({});
   yield put({ type: LOGOUT_POS_ACTION });

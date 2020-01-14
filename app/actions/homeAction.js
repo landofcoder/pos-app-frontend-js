@@ -254,3 +254,9 @@ export function updateQtyEditCart(payload) {
     payload
   };
 }
+
+export function gotoChildrenPanel() {
+  return {
+    type: types.GO_TO_CHILDREN_PANEL_TRIGGER
+  };
+}
