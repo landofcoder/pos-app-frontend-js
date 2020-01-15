@@ -5,43 +5,43 @@ import styles from './pagelogin.scss';
 import {
   getModuleInstalled,
   setMainUrlWorkPlace,
-  learnUrlWorkPlace,
   changeToModuleInstalled
-} from '../../actions/authenAction.js';
+} from '../../actions/authenAction';
+
 type Props = {
   loading: boolean,
   getModuleInstalled: () => void,
   moduleInstalled: object,
   setMainUrlWorkPlace: (payload: string) => void,
-  learnUrlWorkPlace: () => void,
-  changeToModuleInstalled: payload => void,
+  changeToModuleInstalled: (payload: boolean) => void,
   error: boolean,
   senseUrl: string
 };
 class ModuleInstalled extends Component {
   props: Props;
-  constructor(props) {
-    super(props);
-  }
+
   componentDidMount() {
     const { getModuleInstalled } = this.props;
     getModuleInstalled();
   }
+
   backToWorkPlace = () => {
     const { changeToModuleInstalled } = this.props;
     changeToModuleInstalled(false);
   };
+
   refreshMoudleInstalledCheck = () => {
     const { getModuleInstalled } = this.props;
     getModuleInstalled();
   };
+
   checkAcceptConditions = () => {
     let lengthData = 0;
     let lengthDataCheck = 0;
     const { moduleInstalled, error } = this.props;
     Object.keys(moduleInstalled).map(key => {
-      lengthData++;
-      if (moduleInstalled[key] === true) lengthDataCheck++;
+      lengthData += 1;
+      if (moduleInstalled[key] === true) lengthDataCheck += 1;
     });
 
     if (lengthData > 0 && lengthDataCheck === lengthData && !error) {
@@ -50,13 +50,14 @@ class ModuleInstalled extends Component {
     }
     return false;
   };
+
   showModuleInstalled = (check, moduleName) => {
     return (
       <div key={moduleName} className="form-group row">
         <div className="col-3"></div>
         <div className="form-check">
           <i
-            className={`far ${check ?'fa-check-circle':'fa-times-circle'} ${
+            className={`far ${check ? 'fa-check-circle' : 'fa-times-circle'} ${
               check ? styles.validColor : styles.invalidColor
             } pr-1`}
           ></i>
@@ -66,10 +67,12 @@ class ModuleInstalled extends Component {
       </div>
     );
   };
+
   submitSuiteUrl = () => {
     const { setMainUrlWorkPlace, senseUrl } = this.props;
     setMainUrlWorkPlace(senseUrl);
   };
+
   render() {
     const { loading, moduleInstalled, error } = this.props;
     if (loading) {
@@ -84,7 +87,7 @@ class ModuleInstalled extends Component {
     return (
       <>
         <div className={`${commonStyles.contentColumn} ${styles.wrapPage}`}>
-          <div className="col-sm-6 col-md-5 col-lg-4">
+          <div className="col-sm-6 col-md-5 col-lg-6">
             <div className="col-2 pl-0 pr-2">
               <button
                 type="button"
@@ -94,47 +97,52 @@ class ModuleInstalled extends Component {
                 Back
               </button>
             </div>
-            <form>
-              {error ? (
-                <div className="form-group">
-                  <div className="form-check">
-                    <label className="form-check-label">
-                      Your URL address didn't support POS's services. Please try
-                      again
-                    </label>
+
+            <div className="card">
+              <div className="card-header">All module required</div>
+              <div className="card-body">
+                <form className="text-center">
+                  {error ? (
+                    <div className="form-group">
+                      <div className="form-check">
+                        <label className="form-check-label">
+                          Your URL address didn&apos;t support POS&apos;s
+                          services. Please try again
+                        </label>
+                      </div>
+                    </div>
+                  ) : (
+                    Object.keys(moduleInstalled).map(key => {
+                      return this.showModuleInstalled(
+                        moduleInstalled[key],
+                        key
+                      );
+                    })
+                  )}
+                </form>
+                <div className="row">
+                  <div className="col-md-6">
+                    <button
+                      type="button"
+                      className="btn btn-secondary btn-block"
+                      onClick={() => this.refreshMoudleInstalledCheck()}
+                    >
+                      Re-check
+                    </button>
                   </div>
-                </div>
-              ) : (
-                Object.keys(moduleInstalled).map(key => {
-                  return this.showModuleInstalled(moduleInstalled[key], key);
-                })
-              )}
-              <div className="form-group">
-                <div className="form-check">
-                  <div className="row">
-                    <div className="col-3 pl-0 pr-2">
-                      <button
-                        type="button"
-                        className="btn btn-secondary btn-block"
-                        onClick={() => this.refreshMoudleInstalledCheck()}
-                      >
-                        Refresh
-                      </button>
-                    </div>
-                    <div className="col-6 pl-0 pr-1">
-                      <button
-                        type="submit"
-                        className="btn btn-primary btn-block"
-                        disabled={!this.checkAcceptConditions()}
-                        onClick={() => this.submitSuiteUrl()}
-                      >
-                        Next
-                      </button>
-                    </div>
+                  <div className="col-md-6">
+                    <button
+                      type="submit"
+                      className="btn btn-primary btn-block"
+                      disabled={!this.checkAcceptConditions()}
+                      onClick={() => this.submitSuiteUrl()}
+                    >
+                      Next
+                    </button>
                   </div>
                 </div>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       </>
@@ -153,7 +161,6 @@ function mapDispatchToProps(dispatch) {
   return {
     getModuleInstalled: () => dispatch(getModuleInstalled()),
     setMainUrlWorkPlace: payload => dispatch(setMainUrlWorkPlace(payload)),
-    learnUrlWorkPlace: () => dispatch(learnUrlWorkPlace()),
     changeToModuleInstalled: payload =>
       dispatch(changeToModuleInstalled(payload))
   };
