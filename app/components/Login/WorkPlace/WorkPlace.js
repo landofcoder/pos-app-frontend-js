@@ -45,6 +45,7 @@ class WorkPlace extends Component {
       isValidUrl: this.checkValidateUrlLink(mainUrl)
     });
   }
+
   componentDidMount() {
     const { getMainUrlWorkPlace } = this.props;
     getMainUrlWorkPlace();

@@ -3,7 +3,6 @@ import { takeEvery, call, put, takeLatest, select } from 'redux-saga/effects';
 import * as types from '../constants/authen';
 import {
   LOGOUT_POS_ACTION,
-  UPDATE_SWITCHING_MODE,
   UPDATE_FLAG_SWITCHING_MODE
 } from '../constants/root.json';
 import {
@@ -14,7 +13,6 @@ import {
   getModuleInstalledService,
   deleteLoggedDb
 } from './services/LoginService';
-import { checkValidateUrlLink } from '../common/settings';
 
 const senseUrl = state => state.authenRd.senseUrl;
 
@@ -23,11 +21,9 @@ function* loginAction(payload) {
   yield put({ type: types.START_LOADING });
   try {
     const data = yield call(loginService, payload);
-    console.log('res login data:', data);
     if (data !== '') {
       yield createLoggedDb({ info: payload.payload, token: data });
-      // Update flag login to make App reload and background check
-      yield put({ type: UPDATE_FLAG_SWITCHING_MODE });
+      yield put({ type: UPDATE_FLAG_SWITCHING_MODE }); // Update flag login to make App reload and background check
     } else {
       yield put({ type: types.ERROR_LOGIN });
     }
@@ -39,7 +35,6 @@ function* loginAction(payload) {
 }
 
 function* logoutAction() {
-  yield put({ type: UPDATE_SWITCHING_MODE, payload: 'LOGIN_FORM' });
   yield put({ type: types.LOGOUT_AUTHEN_ACTION });
   yield deleteLoggedDb({});
   yield put({ type: LOGOUT_POS_ACTION });
@@ -62,7 +57,7 @@ function* getMainUrl() {
 
 function* cleanUrlWorkplace() {
   yield put({ type: types.START_LOADING_WORKPLACE });
-  const url = yield call(setMainUrlKey, '');
+  yield call(setMainUrlKey, '');
   yield put({ type: types.STOP_LOADING_WORKPLACE });
 }
 

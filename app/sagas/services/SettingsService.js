@@ -43,7 +43,7 @@ export async function systemConfigSync(systemConfig) {
 }
 
 export async function getSystemConfigLocal() {
-  const data = await getByKey(systemConfigLabel);
+  const data = await getByKeyV2(systemConfigLabel);
   return data;
 }
 
@@ -75,7 +75,7 @@ export async function getShopInfoLocal() {
 }
 
 export async function getReceiptInfoLocal() {
-  const data = await getByKey(cashierInfoLabel);
+  const data = await getByKeyV2(cashierInfoLabel);
   return data;
 }
 

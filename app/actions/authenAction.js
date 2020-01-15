@@ -20,13 +20,6 @@ export function signInWorkplace(payload) {
   };
 }
 
-export function updateSwitchingMode(payload) {
-  return {
-    type: types.UPDATE_SWITCHING_MODE,
-    payload
-  };
-}
-
 export function getMainUrlWorkPlace() {
   return {
     type: types.GET_MAIN_URL

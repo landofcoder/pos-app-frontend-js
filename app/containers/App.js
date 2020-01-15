@@ -1,12 +1,15 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { updateIsInternetConnected } from '../actions/homeAction';
-import {
-  updateSwitchingMode,
-  checkLoginBackground
-} from '../actions/authenAction';
+import { checkLoginBackground } from '../actions/authenAction';
 import Login from '../components/Login/Login';
-import { CHILDREN, LOGIN_FORM, LOADING } from '../constants/main-panel-types';
+import {
+  CHILDREN,
+  LOGIN_FORM,
+  LOADING,
+  SYNC_SCREEN
+} from '../constants/main-panel-types';
+import SyncFirstScreen from '../components/Login/SyncFirstScreen';
 
 type Props = {
   children: React.Node,
@@ -73,6 +76,8 @@ class App extends React.Component<Props> {
               return <Login />;
             case CHILDREN:
               return <div className="container-fluid">{children}</div>;
+            case SYNC_SCREEN:
+              return <SyncFirstScreen />;
             default:
               return <></>;
           }
@@ -95,7 +100,6 @@ function mapDispatchToProps(dispatch) {
   return {
     updateIsInternetConnected: payload =>
       dispatch(updateIsInternetConnected(payload)),
-    updateSwitchingMode: payload => dispatch(updateSwitchingMode(payload)),
     checkLoginBackground: () => dispatch(checkLoginBackground())
   };
 }
