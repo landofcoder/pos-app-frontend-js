@@ -1,19 +1,20 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import commonStyles from '../../styles/common.scss';
+import ModuleInstalled from '../ModuleInstalled';
 import styles from './workplace.scss';
 import { checkValidateUrlLink } from '../../../common/settings';
 import {
-  setMainUrlWorkPlace,
   getMainUrlWorkPlace,
   errorSignInWorkPlaceMessage,
   changeUrlInputWorkplace,
-  setDefaultProtocolWorkplace
+  setDefaultProtocolWorkplace,
+  changeToModuleInstalled,
+  changeSenseUrl
 } from '../../../actions/authenAction';
 
 type Props = {
   loading: boolean,
-  setMainUrlWorkPlace: payload => void,
   getMainUrlWorkPlace: payload => void,
   errorSignIn: payload => void,
   changeUrlInput: payload => void,
@@ -21,7 +22,10 @@ type Props = {
   message: string,
   defaultProtocol: string,
   mainUrl: string,
-  didDo: boolean
+  didDo: boolean,
+  toModuleInstalled: false,
+  changeToModuleInstalled: payload => void,
+  changeSenseUrl: payload => void
 };
 
 class WorkPlace extends Component {
@@ -85,21 +89,40 @@ class WorkPlace extends Component {
   };
   loginFormSubmit = e => {
     e.preventDefault();
-    const { setMainUrlWorkPlace, errorSignIn, defaultProtocol } = this.props;
+    const {
+      errorSignIn,
+      defaultProtocol,
+      changeToModuleInstalled,
+      changeSenseUrl
+    } = this.props;
     const { isValidUrl } = this.state;
     let { mainUrl } = this.props;
     if (mainUrl[mainUrl.length - 1] === '/') {
       mainUrl = mainUrl.slice(0, mainUrl.length - 1);
     }
-    if (isValidUrl) setMainUrlWorkPlace(defaultProtocol + mainUrl + '/');
-    else {
+    if (isValidUrl) {
+      changeToModuleInstalled(true);
+      changeSenseUrl(defaultProtocol + mainUrl + '/');
+      // rd toModuleInstalled rd senseUrl
+      // setMainUrlWorkPlace(defaultProtocol + mainUrl + '/');
+    } else {
       errorSignIn('Invalid URL, please try again!');
     }
   };
 
   render() {
     const { showSelectProtocol, isValidUrl } = this.state;
-    const { loading, message, mainUrl, defaultProtocol, didDo } = this.props;
+    const {
+      loading,
+      message,
+      mainUrl,
+      defaultProtocol,
+      didDo,
+      toModuleInstalled
+    } = this.props;
+    if (toModuleInstalled) {
+      return <ModuleInstalled />;
+    }
     return (
       <>
         <div
@@ -196,17 +219,20 @@ function mapStateToProps(state) {
     message: state.authenRd.messageErrorWorkPlace,
     mainUrl: state.authenRd.urlInput,
     defaultProtocol: state.authenRd.defaultProtocol,
-    didDo: state.authenRd.changeInput
+    didDo: state.authenRd.changeInput,
+    toModuleInstalled: state.authenRd.toModuleInstalled
   };
 }
 function mapDispatchToProps(dispatch) {
   return {
-    setMainUrlWorkPlace: payload => dispatch(setMainUrlWorkPlace(payload)),
     getMainUrlWorkPlace: () => dispatch(getMainUrlWorkPlace()),
     errorSignIn: payload => dispatch(errorSignInWorkPlaceMessage(payload)),
     changeUrlInput: payload => dispatch(changeUrlInputWorkplace(payload)),
     setDefaultProtocol: payload =>
-      dispatch(setDefaultProtocolWorkplace(payload))
+      dispatch(setDefaultProtocolWorkplace(payload)),
+    changeToModuleInstalled: payload =>
+      dispatch(changeToModuleInstalled(payload)),
+    changeSenseUrl: payload => dispatch(changeSenseUrl(payload))
   };
 }
 export default connect(

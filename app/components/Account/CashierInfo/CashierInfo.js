@@ -39,42 +39,18 @@ class CashierInfo extends Component<Props> {
               <p className="card-text font-weight-bold">First Name</p>
               <div className="form-group">
                 <label className="">{first_name}</label>
-                {/* {<input
-
-                    type="text"
-                    className="form-control"
-                    required
-                  />} */}
               </div>
               <p className="card-text font-weight-bold">Last Name</p>
               <div className="form-group">
                 <label className="">{last_name}</label>
-                {/* {<input
-                    value={last_name}
-                    type="text"
-                    className="form-control"
-                    required
-                  />} */}
               </div>
               <p className="card-text font-weight-bold">Email Adrdress</p>
               <div className="form-group">
                 <label className="">{email}</label>
-                {/* {<input
-                    value={email}
-                    type="text"
-                    className="form-control"
-                    required
-                  />} */}
               </div>
               <p className="card-text font-weight-bold">Phone</p>
               <div className="form-group">
                 <label className="">{phone}</label>
-                {/* {<input
-                    value={phone}
-                    type="text"
-                    className="form-control"
-                    required
-                  />} */}
               </div>
             </div>
           </div>

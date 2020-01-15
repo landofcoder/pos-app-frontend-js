@@ -1,5 +1,5 @@
 // @flow
-import { takeEvery, call, put, takeLatest } from 'redux-saga/effects';
+import { takeEvery, call, put, takeLatest, select } from 'redux-saga/effects';
 import * as types from '../constants/authen';
 import {
   LOGOUT_POS_ACTION,
@@ -10,8 +10,11 @@ import {
   createLoggedDb,
   setMainUrlKey,
   getMainUrlKey,
+  getModuleInstalledService,
   deleteLoggedDb
 } from './services/LoginService';
+
+const senseUrl = state => state.authenRd.senseUrl;
 
 function* loginAction(payload) {
   // Start loading
@@ -58,12 +61,34 @@ function* cleanUrlWorkplace() {
   yield put({ type: types.STOP_LOADING_WORKPLACE });
 }
 
+function* getModuleInstalled() {
+  yield put({ type: types.LOADING_MODULE_COMPONENT, payload: true });
+  const url = yield select(senseUrl);
+  const data = yield call(getModuleInstalledService,url);
+  console.log(data);
+  if (data.error) {
+    yield put({
+      type: types.ERROR_SERVICE_MODULES_INSTALLED,
+      payload: true
+    });
+    yield put({ type: types.RECEIVED_MODULE_INSTALLED, payload: [] });
+  } else {
+    yield put({
+      type: types.ERROR_SERVICE_MODULES_INSTALLED,
+      payload: false
+    });
+    yield put({ type: types.RECEIVED_MODULE_INSTALLED, payload: data.data[0] });
+  }
+  yield put({ type: types.LOADING_MODULE_COMPONENT, payload: false });
+}
+
 function* authenSaga() {
   yield takeEvery(types.LOGIN_ACTION, loginAction);
   yield takeEvery(types.LOGOUT_ACTION, logoutAction);
   yield takeLatest(types.SET_MAIN_URL, setMainUrl);
   yield takeEvery(types.GET_MAIN_URL, getMainUrl);
   yield takeEvery(types.CLEAN_URL_WORKPLACE, cleanUrlWorkplace);
+  yield takeLatest(types.GET_MODULE_INSTALLED, getModuleInstalled);
 }
 
 export default authenSaga;
