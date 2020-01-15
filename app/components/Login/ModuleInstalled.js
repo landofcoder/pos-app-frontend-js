@@ -88,16 +88,6 @@ class ModuleInstalled extends Component {
       <>
         <div className={`${commonStyles.contentColumn} ${styles.wrapPage}`}>
           <div className="col-sm-6 col-md-5 col-lg-6">
-            <div className="col-2 pl-0 pr-2">
-              <button
-                type="button"
-                className="btn btn-link"
-                onClick={this.backToWorkPlace}
-              >
-                Back
-              </button>
-            </div>
-
             <div className="card">
               <div className="card-header">All module required</div>
               <div className="card-body">
@@ -142,6 +132,15 @@ class ModuleInstalled extends Component {
                   </div>
                 </div>
               </div>
+            </div>
+            <div className="col-2 pl-0 pr-2">
+              <button
+                type="button"
+                className="btn btn-link"
+                onClick={this.backToWorkPlace}
+              >
+                Back
+              </button>
             </div>
           </div>
         </div>
