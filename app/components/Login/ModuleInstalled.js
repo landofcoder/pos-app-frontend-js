@@ -52,7 +52,8 @@ class ModuleInstalled extends Component {
   };
   showModuleInstalled = (check, moduleName) => {
     return (
-      <div key={moduleName} className="form-group">
+      <div key={moduleName} className="form-group row">
+        <div className="col-3"></div>
         <div className="form-check">
           <i
             className={`far ${check ?'fa-check-circle':'fa-times-circle'} ${
@@ -61,6 +62,7 @@ class ModuleInstalled extends Component {
           ></i>
           <label className="form-check-label">{moduleName}</label>
         </div>
+        <div className="col-3"></div>
       </div>
     );
   };
