@@ -51,7 +51,10 @@ function* getMainUrl() {
   const data = yield call(getMainUrlKey);
   console.log(data);
   if (data.status) {
-    yield put({ type: types.RECEIVED_MAIN_URL, payload: data.payload.value.url });
+    yield put({
+      type: types.RECEIVED_MAIN_URL,
+      payload: data.payload.value.url
+    });
   }
 }
 
@@ -64,7 +67,7 @@ function* cleanUrlWorkplace() {
 function* getModuleInstalled() {
   yield put({ type: types.LOADING_MODULE_COMPONENT, payload: true });
   const url = yield select(senseUrl);
-  const data = yield call(getModuleInstalledService,url);
+  const data = yield call(getModuleInstalledService, url);
   console.log(data);
   if (data.error) {
     yield put({

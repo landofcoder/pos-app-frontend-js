@@ -302,6 +302,9 @@ function* cashCheckoutPlaceOrder() {
 
   // Step 4: Open receipt modal
   yield put({ type: types.OPEN_RECEIPT_MODAL });
+
+  // Clean cart current
+  yield put({ type: types.CLEAN_CART_CURRENT });
 }
 
 /**

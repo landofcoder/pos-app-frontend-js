@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
@@ -11,7 +10,6 @@ import styles from './pagelogin.scss';
 import commonStyles from '../styles/common.scss';
 import Loading from '../commons/Loading';
 import WorkPlace from './WorkPlace/WorkPlace';
-import ModuleInstalled from './ModuleInstalled';
 
 type Props = {
   login: (payload: Object) => void,

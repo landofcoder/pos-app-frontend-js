@@ -394,6 +394,9 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.itemCartEditing.item = {};
         break;
       }
+      case types.CLEAN_CART_CURRENT:
+        draft.cartCurrent = cartCurrentDefaultData;
+        break;
       default:
         return draft;
     }
