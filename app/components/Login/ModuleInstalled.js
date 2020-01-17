@@ -56,7 +56,7 @@ class ModuleInstalled extends Component {
         <div className="col-3"></div>
         <div className="form-check">
           <i
-            className={`far ${check ?'fa-check-circle':'fa-times-circle'} ${
+            className={`far ${check ? 'fa-check-circle' : 'fa-times-circle'} ${
               check ? styles.validColor : styles.invalidColor
             } pr-1`}
           ></i>
@@ -72,15 +72,6 @@ class ModuleInstalled extends Component {
   };
   render() {
     const { loading, moduleInstalled, error } = this.props;
-    if (loading) {
-      return (
-        <div className="d-flex justify-content-center mt-5 mb-5">
-          <div className="spinner-border text-secondary" role="status">
-            <span className="sr-only">Loading...</span>
-          </div>
-        </div>
-      );
-    }
     return (
       <>
         <div className={`${commonStyles.contentColumn} ${styles.wrapPage}`}>
@@ -112,19 +103,25 @@ class ModuleInstalled extends Component {
               <div className="form-group">
                 <div className="form-check">
                   <div className="row">
-                    <div className="col-3 pl-0 pr-2">
+                    <div className="col-4 pl-0 pr-2">
                       <button
                         type="button"
                         className="btn btn-secondary btn-block"
                         onClick={() => this.refreshMoudleInstalledCheck()}
                       >
-                        Refresh
+                        {loading ? (
+                          <div className="spinner-border spinner-border-sm" role="status">
+                            <span className="sr-only">Loading...</span>
+                          </div>
+                        ) : (
+                          'Re-check'
+                        )}
                       </button>
                     </div>
                     <div className="col-6 pl-0 pr-1">
                       <button
                         type="submit"
-                        className="btn btn-primary btn-block"
+                        className="btn btn-primary btn-block overflow-hidden"
                         disabled={!this.checkAcceptConditions()}
                         onClick={() => this.submitSuiteUrl()}
                       >
