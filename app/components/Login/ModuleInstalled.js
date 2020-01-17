@@ -121,7 +121,7 @@ class ModuleInstalled extends Component {
                     <div className="col-6 pl-0 pr-1">
                       <button
                         type="submit"
-                        className="btn btn-primary btn-block overflow-hidden"
+                        className="btn btn-primary btn-block"
                         disabled={!this.checkAcceptConditions()}
                         onClick={() => this.submitSuiteUrl()}
                       >
