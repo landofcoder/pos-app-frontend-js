@@ -42,7 +42,7 @@ class CartReceipt extends Component<Props> {
     // eslint-disable-next-line no-lone-blocks
     /*eslint-disable*/
 
-    console.log('grand total label:', grand_total_label);
+    console.log('custom receipt data:', customReceipt);
 
     return (
       <div className={style.wrapCartReceipt}>
