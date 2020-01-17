@@ -38,6 +38,7 @@ function* logoutAction() {
   yield put({ type: types.LOGOUT_AUTHEN_ACTION });
   yield deleteLoggedDb({});
   yield put({ type: LOGOUT_POS_ACTION });
+  yield put({ type: types.CHECK_LOGIN_BACKGROUND});
 }
 
 function* setMainUrl(payload) {
