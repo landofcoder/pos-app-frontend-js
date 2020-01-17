@@ -64,8 +64,14 @@ function* cleanUrlWorkplace() {
   yield put({ type: types.STOP_LOADING_WORKPLACE });
 }
 
+/**
+ * Get all module installed or not
+ * @returns void
+ */
 function* getModuleInstalled() {
+  // Start loading
   yield put({ type: types.LOADING_MODULE_COMPONENT, payload: true });
+
   const url = yield select(senseUrl);
   const data = yield call(getModuleInstalledService, url);
   console.log(data);
@@ -82,6 +88,8 @@ function* getModuleInstalled() {
     });
     yield put({ type: types.RECEIVED_MODULE_INSTALLED, payload: data.data[0] });
   }
+
+  // Stop loading
   yield put({ type: types.LOADING_MODULE_COMPONENT, payload: false });
 }
 

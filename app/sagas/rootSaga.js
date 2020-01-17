@@ -69,7 +69,8 @@ import { getOfflineMode } from '../common/settings';
 import {
   CHILDREN,
   LOGIN_FORM,
-  SYNC_SCREEN
+  SYNC_SCREEN,
+  LINK_CASHIER_TO_ADMIN_REQUIRE
 } from '../constants/main-panel-types';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
@@ -593,7 +594,6 @@ function updateQtyProduct(product) {
 
 function* getCustomReceipt(outletId) {
   const customReceiptResult = yield call(getCustomReceiptService, outletId);
-  console.log('custom receipt result:', customReceiptResult);
   if (customReceiptResult.length > 0) {
     const result = customReceiptResult[0];
     yield put({ type: types.RECEIVED_CUSTOM_RECEIPT, payload: result.data });
@@ -822,15 +822,31 @@ function* checkLoginBackgroundSaga() {
     const offlineMode = yield getOfflineMode();
     const counterProductLocal = yield counterProduct();
 
-    // If offline enabled and have no product sync => Show sync screen
-    if (offlineMode === 1 && counterProductLocal === 0) {
-      // Show screen sync
-      yield put({ type: types.UPDATE_SWITCHING_MODE, payload: SYNC_SCREEN });
-      // Sync
-      yield syncData();
+    // Call cashier api
+    const cashierInfo = yield call(getInfoCashierService);
+    yield put({ type: types.RECEIVED_CASHIER_INFO, payload: cashierInfo });
+
+    if (
+      !cashierInfo.cashier_id ||
+      (!cashierInfo.outlet_id || cashierInfo.outlet_id === 0)
+    ) {
+      console.log('test run here');
+      yield put({
+        type: types.UPDATE_SWITCHING_MODE,
+        payload: LINK_CASHIER_TO_ADMIN_REQUIRE
+      });
+      // Show form please link cashier to outlet
     } else {
-      yield bootstrapApplicationSaga();
-      yield put({ type: types.UPDATE_SWITCHING_MODE, payload: CHILDREN });
+      console.log('cashier result:', cashierInfo);
+      // If offline enabled and have no product sync => Show sync screen
+      if (offlineMode === 1 && counterProductLocal === 0) {
+        // Show screen sync
+        yield put({ type: types.UPDATE_SWITCHING_MODE, payload: SYNC_SCREEN });
+        yield syncData();
+      } else {
+        yield bootstrapApplicationSaga();
+        yield put({ type: types.UPDATE_SWITCHING_MODE, payload: CHILDREN });
+      }
     }
   } else {
     // Not login yet =

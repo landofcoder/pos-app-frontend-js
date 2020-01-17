@@ -30,7 +30,7 @@ class ModuleInstalled extends Component {
     changeToModuleInstalled(false);
   };
 
-  refreshMoudleInstalledCheck = () => {
+  refreshModuleInstalledCheck = () => {
     const { getModuleInstalled } = this.props;
     getModuleInstalled();
   };
@@ -115,7 +115,7 @@ class ModuleInstalled extends Component {
                     <button
                       type="button"
                       className="btn btn-secondary btn-block"
-                      onClick={() => this.refreshMoudleInstalledCheck()}
+                      onClick={() => this.refreshModuleInstalledCheck()}
                     >
                       Re-check
                     </button>

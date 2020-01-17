@@ -87,6 +87,7 @@ class WorkPlace extends Component {
     const { defaultProtocol } = this.props;
     return checkValidateUrlLink(defaultProtocol, mainUrl, '/');
   };
+
   loginFormSubmit = e => {
     e.preventDefault();
     const {
@@ -102,7 +103,7 @@ class WorkPlace extends Component {
     }
     if (isValidUrl) {
       changeToModuleInstalled(true);
-      changeSenseUrl(defaultProtocol + mainUrl + '/');
+      changeSenseUrl(`${defaultProtocol + mainUrl}/`);
       // rd toModuleInstalled rd senseUrl
       // setMainUrlWorkPlace(defaultProtocol + mainUrl + '/');
     } else {

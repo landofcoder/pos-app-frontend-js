@@ -66,9 +66,7 @@ class Login extends Component<Props, State> {
     }
     return (
       <>
-        <div
-          className={`${commonStyles.contentColumn} ${styles.wrapPage}`}
-        >
+        <div className={`${commonStyles.contentColumn} ${styles.wrapPage}`}>
           <div className="col-sm-12 col-md-4 col-lg-4">
             <form
               onSubmit={this.loginFormSubmit}
