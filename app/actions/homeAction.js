@@ -260,3 +260,9 @@ export function gotoChildrenPanel() {
     type: types.GO_TO_CHILDREN_PANEL_TRIGGER
   };
 }
+
+export function reCheckRequireStep() {
+  return {
+    type: types.RE_CHECK_REQUIRE_STEP
+  };
+}

@@ -17,6 +17,7 @@ const initialState = {
   isLoadingSystemConfig: true,
   isLoadingSearchHandle: false, // Main search loading
   isShowHaveNoSearchResultFound: false,
+  isLoadingRequireStep: false,
   posSystemConfig: {}, // General config for pos
   shopInfoConfig: {}, // Shop info config
   mainPanelType: HOME_DEFAULT_PRODUCT_LIST, // Main panel type for switching all main panel
@@ -396,6 +397,9 @@ const mainRd = (state: Object = initialState, action: Object) =>
       }
       case types.CLEAN_CART_CURRENT:
         draft.cartCurrent = cartCurrentDefaultData;
+        break;
+      case types.UPDATE_RE_CHECK_REQUIRE_STEP_LOADING:
+        draft.isLoadingRequireStep = action.payload;
         break;
       default:
         return draft;

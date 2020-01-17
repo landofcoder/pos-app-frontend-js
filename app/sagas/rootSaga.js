@@ -826,18 +826,19 @@ function* checkLoginBackgroundSaga() {
     const cashierInfo = yield call(getInfoCashierService);
     yield put({ type: types.RECEIVED_CASHIER_INFO, payload: cashierInfo });
 
+    console.log('cashier result:', cashierInfo);
+
     if (
       !cashierInfo.cashier_id ||
-      (!cashierInfo.outlet_id || cashierInfo.outlet_id === 0)
+      (!cashierInfo.outlet_id || cashierInfo.outlet_id === 0) ||
+      cashierInfo.active === false
     ) {
-      console.log('test run here');
+      // Show form please link cashier to outlet
       yield put({
         type: types.UPDATE_SWITCHING_MODE,
         payload: LINK_CASHIER_TO_ADMIN_REQUIRE
       });
-      // Show form please link cashier to outlet
     } else {
-      console.log('cashier result:', cashierInfo);
       // If offline enabled and have no product sync => Show sync screen
       if (offlineMode === 1 && counterProductLocal === 0) {
         // Show screen sync
@@ -859,6 +860,22 @@ function* gotoChildrenPanelTriggerSaga() {
   yield put({ type: types.UPDATE_SWITCHING_MODE, payload: CHILDREN });
   // Update counter for switch detect
   yield put({ type: types.UPDATE_FLAG_SWITCHING_MODE });
+}
+
+function* reCheckRequireStepSaga() {
+  // Start loading
+  yield put({
+    type: types.UPDATE_RE_CHECK_REQUIRE_STEP_LOADING,
+    payload: true
+  });
+
+  yield checkLoginBackgroundSaga();
+
+  // Stop loading
+  yield put({
+    type: types.UPDATE_RE_CHECK_REQUIRE_STEP_LOADING,
+    payload: false
+  });
 }
 
 /**
@@ -936,6 +953,7 @@ function* rootSaga() {
     types.GO_TO_CHILDREN_PANEL_TRIGGER,
     gotoChildrenPanelTriggerSaga
   );
+  yield takeEvery(types.RE_CHECK_REQUIRE_STEP, reCheckRequireStepSaga);
 }
 
 export default rootSaga;
