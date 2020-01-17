@@ -87,6 +87,7 @@ const initialState = {
   order_id_history: null,
   isOpenFindCustomer: false,
   isOpenSignUpCustomer: false,
+  isOpenCalculator: false,
   isOpenDetailOrder: false,
   isLoadingSearchCustomer: false,
   isLoadingOrderHistory: false,
@@ -327,6 +328,9 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.isOpenDetailOrder = action.payload.isShow;
         draft.order_id_history = action.payload.order_id;
         break;
+      case types.TOGGLE_MODAL_CALCULATOR:
+        draft.isOpenCalculator = action.payload;
+        break;
       case types.TURN_OFF_LOADING_ORDER_HISTORY:
         draft.isLoadingOrderHistory = false;
         break;
@@ -376,19 +380,17 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.RECEIVED_CASHIER_INFO:
         draft.cashierInfo = action.payload;
         break;
-      case types.UPDATE_IS_SHOW_MODEL_EDITING_CART_ITEM:
-      {
+      case types.UPDATE_IS_SHOW_MODEL_EDITING_CART_ITEM: {
         const open = action.payload.open;
         const item = action.payload.item;
-        if(open === true) {
+        if (open === true) {
           draft.itemCartEditing.item = item;
         }
         draft.itemCartEditing.showModal = open;
         draft.itemCartEditing.index = action.payload.index;
         break;
       }
-      case types.RESET_ITEM_CART_EDITING:
-      {
+      case types.RESET_ITEM_CART_EDITING: {
         draft.itemCartEditing.index = 0;
         draft.itemCartEditing.showModal = false;
         draft.itemCartEditing.item = {};
