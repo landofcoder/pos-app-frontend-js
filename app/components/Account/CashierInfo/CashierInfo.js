@@ -27,9 +27,6 @@ class CashierInfo extends Component<Props> {
     const { cashierInfo } = this.props;
     const { first_name, last_name, phone, email } = cashierInfo;
     const { redirect } = this.state;
-    if (redirect) {
-      return <Redirect to={routes.LOGIN} />;
-    }
     return (
       <>
         <div className="card">
