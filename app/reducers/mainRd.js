@@ -1,4 +1,3 @@
-// @flow
 import produce from 'immer';
 import * as types from '../constants/root';
 import {
@@ -14,6 +13,14 @@ import {
 const initialState = {
   switchingMode: LOADING, // LOADING, LOGIN_FORM, CHILDREN, SYNC_SCREEN
   flagSwitchModeCounter: 1, // When this flag counter up, render in App.js will re-render and backgroundLogin will re-check
+  currentPosCommand: {
+    query: {
+      categoryId: 0,
+      currentPage: '',
+      type: ''
+    },
+    status: 0
+  }, // Current POS product filter by to paging
   internetConnected: false,
   isLoadingSystemConfig: true,
   isLoadingSearchHandle: false, // Main search loading
@@ -396,7 +403,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       }
       case types.RESET_ITEM_CART_EDITING: {
-        draft.itemCartEditing.index = 0;
+        draft.itemCartEditing.index   = 0;
         draft.itemCartEditing.showModal = false;
         draft.itemCartEditing.item = {};
         break;
@@ -406,6 +413,10 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.UPDATE_RE_CHECK_REQUIRE_STEP_LOADING:
         draft.isLoadingRequireStep = action.payload;
+        break;
+      case types.UPDATE_CURRENT_POS_COMMAND:
+        console.log('current pos command:', action.payload);
+        draft.currentPosCommand.query = action.payload;
         break;
       default:
         return draft;

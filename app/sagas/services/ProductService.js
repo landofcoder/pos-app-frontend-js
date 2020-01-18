@@ -1,3 +1,4 @@
+import { call, put } from 'redux-saga/effects';
 import {
   searchProductsLocal,
   getProductsByCategoryLocal,
@@ -6,6 +7,7 @@ import {
 } from '../../reducers/db/products';
 import { getCategories } from '../../reducers/db/categories';
 import { getGraphqlPath } from '../../common/settings';
+import { UPDATE_CURRENT_POS_COMMAND } from '../../constants/root';
 
 /**
  * Search product service
@@ -363,41 +365,44 @@ export async function getDefaultProductsService() {
 
 /**
  * Get products
- * @returns {Promise<any>}
- * @returns {Promise<any>}
+ * @returns array
  */
-export async function getProductByCategoryService({ categoryId, offlineMode }) {
-  let data;
+export function* getProductByCategoryService({ categoryId, offlineMode }) {
+  const currentPage = 1;
+  // Update to current command
+  yield put({
+    type: UPDATE_CURRENT_POS_COMMAND,
+    payload: { type: 'getProductByCategory', categoryId, currentPage }
+  });
+
   if (offlineMode === 1) {
-    data = await getProductsByCategoryLocal(categoryId);
+    const data = yield call(getProductsByCategoryLocal, categoryId);
     return data;
   }
-  data = await getProductsByCategory(categoryId).items;
-  return data;
+  const data = yield call(getProductsByCategory, categoryId);
+  return data.items;
 }
 
 /* Page size for query products */
 const defaultPageSize = 100;
 
 /**
- *
  * @param categoryId
  * @param currentPage
  * @returns array
  */
 async function getProductsByCategory(categoryId, currentPage = 1) {
   const response = await fetch(getGraphqlPath(), {
-    method: 'POST', // *GET, POST, PUT, DELETE, etc.
-    mode: 'cors', // no-cors, *cors, same-origin
-    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-    credentials: 'same-origin', // include, *same-origin, omit
+    method: 'POST',
+    mode: 'cors',
+    cache: 'no-cache',
+    credentials: 'same-origin',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${window.liveToken}`
-      // 'Content-Type': 'application/x-www-form-urlencoded',
     },
-    redirect: 'follow', // manual, *follow, error
-    referrer: 'no-referrer', // no-referrer, *client
+    redirect: 'follow',
+    referrer: 'no-referrer',
     body: JSON.stringify({
       query: `{
       products(filter: {category_id: {eq: "${categoryId}"}}, pageSize: ${defaultPageSize}, currentPage: ${currentPage}) {
