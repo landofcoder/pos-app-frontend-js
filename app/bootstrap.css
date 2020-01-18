@@ -63,6 +63,66 @@
   color: white;
 }
 
+
+[data-theme="green"] .btn-outline-secondary {
+  border-color: #15880F !important;
+  color: #15880F;
+}
+
+[data-theme="green"] .btn-outline-danger {
+  border-color: #15880F !important;
+}
+
+[data-theme="green"] .btn-outline-info {
+  border-color: #15880F !important;
+  color: #15880F;
+}
+
+[data-theme="green"] .btn-outline-dark {
+  border-color: #15880F !important;
+}
+
+[data-theme="green"] .btn-secondary {
+  border-color: #15880F !important;
+}
+
+[data-theme="green"] .theme-line {
+  background-color: #15880F;
+  color: white;
+}
+
+[data-theme="green"] .btn-primary {
+  background-color: #15880F;
+  border-color: #15880F !important;
+}
+
+[data-theme="green"] .btn-primary:disabled {
+  background-color: #15880F;
+  border-color: #15880F !important;
+}
+
+[data-theme="green"] .btn-primary:hover {
+  background-color: #137b0e;
+  border-color: #137b0e !important;
+}
+
+[data-theme="green"] .btn-outline-primary {
+  border-color: #15880F !important;
+  color: #15880F;
+}
+
+[data-theme="green"] .btn-outline-primary:hover {
+  border-color: #15880F !important;
+  color: #fff;
+  background-color: #15880F;
+}
+
+[data-theme="green"] .btn-outline-primary:active {
+  border-color: #15880F !important;
+  color: #fff;
+  background-color: #15880F;
+  outline-color: white;
+}
 /* #E85A4D */
 /* [data-theme="green"] .bg-light {
   background-color: #333 !important;
