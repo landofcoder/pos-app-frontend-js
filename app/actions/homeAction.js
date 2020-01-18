@@ -1,4 +1,3 @@
-// @flow
 import * as types from '../constants/root';
 import * as typesAuthen from '../constants/authen.json';
 
@@ -264,5 +263,11 @@ export function gotoChildrenPanel() {
 export function reCheckRequireStep() {
   return {
     type: types.RE_CHECK_REQUIRE_STEP
+  };
+}
+
+export function backToLogin() {
+  return {
+    type: types.BACK_TO_LOGIN
   };
 }

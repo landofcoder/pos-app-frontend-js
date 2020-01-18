@@ -68,7 +68,8 @@ export default class Pos extends Component<Props, State> {
     this.state = {
       delayTimer: {},
       typeId: '',
-      redirectToAccount: false
+      redirectToAccount: false,
+      mainWrapProductPanel: 'main-wrap-product-panel'
     };
   }
 
@@ -249,6 +250,14 @@ export default class Pos extends Component<Props, State> {
     this.setState({ delayTimer: delayTimerRes });
   };
 
+  handleScroll = e => {
+    const bottom =
+      e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+    if (bottom) {
+      console.log('is run to bottom');
+    }
+  };
+
   render() {
     const {
       mainProductListLoading,
@@ -258,9 +267,17 @@ export default class Pos extends Component<Props, State> {
       isLoadingSearchHandle,
       isShowHaveNoSearchResultFound,
       internetConnected,
-      isOpenSignUpCustomer
+      isOpenSignUpCustomer,
+      productList,
+      holdAction,
+      cartCurrent,
+      cashCheckoutAction,
+      isShowModalItemEditCart,
+      productOption,
+      isShowCashPaymentModel,
+      isOpenReceiptModal
     } = this.props;
-    const { redirectToAccount } = this.state;
+    const { redirectToAccount, mainWrapProductPanel } = this.state;
 
     // Check Redirect To Layout Account
     if (redirectToAccount) {
@@ -268,20 +285,8 @@ export default class Pos extends Component<Props, State> {
     }
 
     const classWrapProductPanel = `pr-3 ${Styles.wrapProductPanel} row`;
-    const {
-      productList,
-      holdAction,
-      cartCurrent,
-      cashCheckoutAction,
-      isShowModalItemEditCart
-    } = this.props;
     // Enable checkout button or disable
     const disableCheckout = cartCurrent.data.length <= 0;
-    const {
-      productOption,
-      isShowCashPaymentModel,
-      isOpenReceiptModal
-    } = this.props;
     const { isShowingProductOption } = productOption;
     return (
       <>
@@ -337,7 +342,11 @@ export default class Pos extends Component<Props, State> {
           )}
           <div className="row" id={Styles.wrapPostContainerId}>
             <div className="col-md-9">
-              <div className={classWrapProductPanel}>
+              <div
+                className={classWrapProductPanel}
+                id={mainWrapProductPanel}
+                onScroll={this.handleScroll}
+              >
                 <div className="col-md-2">
                   <Categories />
                 </div>
