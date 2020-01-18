@@ -516,7 +516,7 @@ export default class Pos extends Component<Props, State> {
               </button>
             </div>
           </div>
-          <div className={Styles.wrapFooterLine}>
+          <div className={`${Styles.wrapFooterLine} theme-line`}>
             <div className={Styles.wrapLeft}>&nbsp;</div>
             <div className={Styles.wrapRight}>
               <div className={Styles.wrapStatusOnline} />
@@ -524,7 +524,7 @@ export default class Pos extends Component<Props, State> {
                 <span>
                   {' '}
                   {internetConnected ? (
-                    <span className="text-success text-bold font-weight-bolder">
+                    <span className="text-success text-bold font-weight-bolder theme-line">
                       Online
                     </span>
                   ) : (
