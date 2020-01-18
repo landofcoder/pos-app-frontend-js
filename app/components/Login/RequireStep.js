@@ -2,14 +2,19 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
   gotoChildrenPanel,
-  reCheckRequireStep
+  reCheckRequireStep,
+  backToLogin
 } from '../../actions/homeAction';
 
 class RequireStep extends Component {
   props: Props;
 
   render() {
-    const { reCheckRequireStep, isLoadingRequireStep } = this.props;
+    const {
+      reCheckRequireStep,
+      isLoadingRequireStep,
+      backToLogin
+    } = this.props;
     return (
       <div>
         <div className="container center-loading">
@@ -25,22 +30,46 @@ class RequireStep extends Component {
               </ul>
             </div>
             <div className="card-footer">
-              <button
-                onClick={reCheckRequireStep}
-                className="btn btn-primary"
-                disabled={!!isLoadingRequireStep}
-              >
-                {isLoadingRequireStep ? (
-                  <span
-                    className="spinner-border spinner-border-sm"
-                    role="status"
-                    aria-hidden="true"
-                  ></span>
-                ) : (
-                  <></>
-                )}
-                Re-check
-              </button>
+              <div className="row">
+                <div className="col-md-6">
+                  <button
+                    type="button"
+                    onClick={backToLogin}
+                    className="btn btn-light  "
+                    disabled={!!isLoadingRequireStep}
+                  >
+                    {isLoadingRequireStep ? (
+                      <span
+                        className="spinner-border spinner-border-sm"
+                        role="status"
+                        aria-hidden="true"
+                      ></span>
+                    ) : (
+                      <></>
+                    )}
+                    Back to login
+                  </button>
+                </div>
+                <div className="col-md-6 pull-right text-right">
+                  <button
+                    type="button"
+                    onClick={reCheckRequireStep}
+                    className="btn btn-primary"
+                    disabled={!!isLoadingRequireStep}
+                  >
+                    {isLoadingRequireStep ? (
+                      <span
+                        className="spinner-border spinner-border-sm"
+                        role="status"
+                        aria-hidden="true"
+                      ></span>
+                    ) : (
+                      <></>
+                    )}
+                    Re-check
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -58,7 +87,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     gotoChildrenPanel: () => dispatch(gotoChildrenPanel()),
-    reCheckRequireStep: () => dispatch(reCheckRequireStep())
+    reCheckRequireStep: () => dispatch(reCheckRequireStep()),
+    backToLogin: () => dispatch(backToLogin())
   };
 }
 
