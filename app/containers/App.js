@@ -3,11 +3,13 @@ import { connect } from 'react-redux';
 import { updateIsInternetConnected } from '../actions/homeAction';
 import { checkLoginBackground } from '../actions/authenAction';
 import Login from '../components/Login/Login';
+import RequireStep from '../components/Login/RequireStep';
 import {
   CHILDREN,
   LOGIN_FORM,
   LOADING,
-  SYNC_SCREEN
+  SYNC_SCREEN,
+  LINK_CASHIER_TO_ADMIN_REQUIRE
 } from '../constants/main-panel-types';
 import SyncFirstScreen from '../components/Login/SyncFirstScreen';
 
@@ -78,6 +80,8 @@ class App extends React.Component<Props> {
               return <div className="container-fluid">{children}</div>;
             case SYNC_SCREEN:
               return <SyncFirstScreen />;
+            case LINK_CASHIER_TO_ADMIN_REQUIRE:
+              return <RequireStep />;
             default:
               return <></>;
           }

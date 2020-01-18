@@ -52,7 +52,10 @@ function* getMainUrl() {
   const data = yield call(getMainUrlKey);
   console.log(data);
   if (data.status) {
-    yield put({ type: types.RECEIVED_MAIN_URL, payload: data.payload.value.url });
+    yield put({
+      type: types.RECEIVED_MAIN_URL,
+      payload: data.payload.value.url
+    });
   }
 }
 
@@ -62,10 +65,16 @@ function* cleanUrlWorkplace() {
   yield put({ type: types.STOP_LOADING_WORKPLACE });
 }
 
+/**
+ * Get all module installed or not
+ * @returns void
+ */
 function* getModuleInstalled() {
+  // Start loading
   yield put({ type: types.LOADING_MODULE_COMPONENT, payload: true });
+
   const url = yield select(senseUrl);
-  const data = yield call(getModuleInstalledService,url);
+  const data = yield call(getModuleInstalledService, url);
   console.log(data);
   if (data.error) {
     yield put({
@@ -80,6 +89,8 @@ function* getModuleInstalled() {
     });
     yield put({ type: types.RECEIVED_MODULE_INSTALLED, payload: data.data[0] });
   }
+
+  // Stop loading
   yield put({ type: types.LOADING_MODULE_COMPONENT, payload: false });
 }
 

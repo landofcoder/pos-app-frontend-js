@@ -268,4 +268,8 @@ export function gotoChildrenPanel() {
   };
 }
 
-
+export function reCheckRequireStep() {
+  return {
+    type: types.RE_CHECK_REQUIRE_STEP
+  };
+}

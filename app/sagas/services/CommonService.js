@@ -42,11 +42,9 @@ export async function getSystemConfigService() {
     // Query to local
     data = await getSystemConfigLocal();
     data = data.value;
-    console.log('dd1 data from local:', data);
   } else {
     // Sync it now
     await systemConfigSync(data);
-    console.log('dd2');
   }
 
   return data;

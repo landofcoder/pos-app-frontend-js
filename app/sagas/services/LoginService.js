@@ -13,7 +13,7 @@ export async function createLoggedDb(payload) {
   await createKey(loggedInfoKey, payload);
 }
 
-export async function deleteLoggedDb(){
+export async function deleteLoggedDb() {
   await deleteByKey(loggedInfoKey);
 }
 
@@ -118,8 +118,8 @@ export async function getMainUrlKey() {
 }
 
 export async function getModuleInstalledService(url) {
-  let data,
-    error = false;
+  let data;
+  let error = false;
   try {
     const response = await fetch(
       `${url}index.php/rest/V1/pos/check-all-module-installed`,
