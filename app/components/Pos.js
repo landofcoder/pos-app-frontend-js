@@ -47,7 +47,8 @@ type Props = {
   isLoadingSearchHandle: boolean,
   isShowHaveNoSearchResultFound: boolean,
   isOpenSignUpCustomer: boolean,
-  internetConnected: boolean
+  internetConnected: boolean,
+  toggleModalCalculatorStatus: boolean
 };
 
 type State = {
@@ -307,7 +308,13 @@ export default class Pos extends Component<Props, State> {
             id="cashPaymentModal"
             style={{ display: isShowCashPaymentModel ? 'block' : 'none' }}
           >
-            <div className={ModalStyle.modalContent}>
+            <div
+              className={
+                toggleModalCalculatorStatus
+                  ? ModalStyle.modalContentLg
+                  : ModalStyle.modalContent
+              }
+            >
               {isShowCashPaymentModel ? <CashPanel /> : <></>}
             </div>
           </div>
