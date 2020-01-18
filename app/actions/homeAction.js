@@ -152,6 +152,13 @@ export function toggleModalCustomer(payload) {
   };
 }
 
+export function toggleModalCalculator(payload: boolean) {
+  return {
+    type: types.TOGGLE_MODAL_CALCULATOR,
+    payload
+  };
+}
+
 export function toggleModalSignUpCustomer(payload) {
   return {
     type: types.TOGGLE_MODAL_SIGN_UP_CUSTOMER,

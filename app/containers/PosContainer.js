@@ -21,7 +21,8 @@ function mapStateToProps(state) {
     isShowHaveNoSearchResultFound: state.mainRd.isShowHaveNoSearchResultFound,
     isLoadingSignUpCustomer: state.mainRd.isLoadingSignUpCustomer,
     isOpenSignUpCustomer: state.mainRd.isOpenSignUpCustomer,
-    isShowModalItemEditCart: state.mainRd.itemCartEditing.showModal
+    isShowModalItemEditCart: state.mainRd.itemCartEditing.showModal,
+    toggleModalCalculatorStatus: state.mainRd.isOpenCalculator
   };
 }
 
