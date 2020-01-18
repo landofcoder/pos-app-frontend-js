@@ -276,7 +276,8 @@ export default class Pos extends Component<Props, State> {
       isShowModalItemEditCart,
       productOption,
       isShowCashPaymentModel,
-      isOpenReceiptModal
+      isOpenReceiptModal,
+      toggleModalCalculatorStatus
     } = this.props;
     const { redirectToAccount, mainWrapProductPanel } = this.state;
 
