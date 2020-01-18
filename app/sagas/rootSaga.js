@@ -826,8 +826,6 @@ function* checkLoginBackgroundSaga() {
     const cashierInfo = yield call(getInfoCashierService);
     yield put({ type: types.RECEIVED_CASHIER_INFO, payload: cashierInfo });
 
-    console.log('cashier result:', cashierInfo);
-
     if (
       !cashierInfo.cashier_id ||
       (!cashierInfo.outlet_id || cashierInfo.outlet_id === 0) ||
