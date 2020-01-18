@@ -3,7 +3,8 @@ import produce from 'immer';
 import * as types from '../constants/root';
 import {
   HOME_DEFAULT_PRODUCT_LIST,
-  LOADING
+  LOADING,
+  LOGIN_FORM
 } from '../constants/main-panel-types';
 import {
   cartCurrentDefaultData,
@@ -370,6 +371,9 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.UPDATE_SWITCHING_MODE:
         draft.switchingMode = action.payload;
+        break;
+      case types.BACK_TO_LOGIN:
+        draft.switchingMode = LOGIN_FORM;
         break;
       case types.UPDATE_FLAG_SWITCHING_MODE:
         draft.flagSwitchModeCounter = draft.flagSwitchModeCounter + 1;

@@ -7,7 +7,8 @@ import {
   setMainUrlWorkPlace,
   learnUrlWorkPlace,
   changeToModuleInstalled
-} from '../../actions/authenAction.js';
+} from '../../actions/authenAction';
+
 type Props = {
   loading: boolean,
   getModuleInstalled: () => void,
@@ -20,21 +21,26 @@ type Props = {
 };
 class ModuleInstalled extends Component {
   props: Props;
+
   constructor(props) {
     super(props);
   }
+
   componentDidMount() {
     const { getModuleInstalled } = this.props;
     getModuleInstalled();
   }
+
   backToWorkPlace = () => {
     const { changeToModuleInstalled } = this.props;
     changeToModuleInstalled(false);
   };
+
   refreshMoudleInstalledCheck = () => {
     const { getModuleInstalled } = this.props;
     getModuleInstalled();
   };
+
   checkAcceptConditions = () => {
     let lengthData = 0;
     let lengthDataCheck = 0;
@@ -50,6 +56,7 @@ class ModuleInstalled extends Component {
     }
     return false;
   };
+
   showModuleInstalled = (check, moduleName) => {
     return (
       <div key={moduleName} className="form-group row">
@@ -66,10 +73,12 @@ class ModuleInstalled extends Component {
       </div>
     );
   };
+
   submitSuiteUrl = () => {
     const { setMainUrlWorkPlace, senseUrl } = this.props;
     setMainUrlWorkPlace(senseUrl);
   };
+
   render() {
     const { loading, moduleInstalled, error } = this.props;
     return (
@@ -110,7 +119,10 @@ class ModuleInstalled extends Component {
                         onClick={() => this.refreshMoudleInstalledCheck()}
                       >
                         {loading ? (
-                          <div className="spinner-border spinner-border-sm" role="status">
+                          <div
+                            className="spinner-border spinner-border-sm"
+                            role="status"
+                          >
                             <span className="sr-only">Loading...</span>
                           </div>
                         ) : (
