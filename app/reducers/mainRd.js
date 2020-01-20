@@ -19,7 +19,8 @@ const initialState = {
       currentPage: '',
       type: ''
     },
-    status: 0
+    status: 0,
+    isFetchingProduct: false
   }, // Current POS product filter by to paging
   internetConnected: false,
   isLoadingSystemConfig: true,
@@ -132,6 +133,9 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.RECEIVED_PRODUCT_RESULT:
         draft.productList = action.payload;
+        break;
+      case types.JOIN_PRODUCT_RESULT:
+        draft.productList = draft.productList.concat(action.payload);
         break;
       case types.UPDATE_CASH_LOADING_PREPARING_ORDER:
         draft.cashLoadingPreparingOrder = action.payload;
@@ -415,8 +419,10 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.isLoadingRequireStep = action.payload;
         break;
       case types.UPDATE_CURRENT_POS_COMMAND:
-        console.log('current pos command:', action.payload);
         draft.currentPosCommand.query = action.payload;
+        break;
+      case types.UPDATE_POS_COMMAND_FETCHING_PRODUCT:
+        draft.currentPosCommand.isFetchingProduct = action.payload;
         break;
       default:
         return draft;

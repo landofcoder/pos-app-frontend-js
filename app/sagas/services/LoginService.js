@@ -10,7 +10,14 @@ const loggedInfoKey = 'logged_info';
 const mainUrlKey = 'main_url';
 
 export async function createLoggedDb(payload) {
-  await createKey(loggedInfoKey, payload);
+  const loggedDb = await getByKeyV2(loggedInfoKey);
+  if (loggedDb) {
+    // Update
+    await updateById(loggedDb.id, payload);
+  } else {
+    // Create new
+    await createKey(loggedInfoKey, payload);
+  }
 }
 
 export async function deleteLoggedDb() {
@@ -124,12 +131,12 @@ export async function getModuleInstalledService(url) {
     const response = await fetch(
       `${url}index.php/rest/V1/pos/check-all-module-installed`,
       {
-        method: 'GET', // *GET, POST, PUT, DELETE, etc.
-        mode: 'cors', // no-cors, *cors, same-origin
-        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: 'same-origin', // include, *same-origin, omit
-        redirect: 'follow', // manual, *follow, error
-        referrer: 'no-referrer' // no-referrer, *clien
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        redirect: 'follow',
+        referrer: 'no-referrer'
       }
     );
     data = await response.json();

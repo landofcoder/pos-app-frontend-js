@@ -6,8 +6,9 @@ import {
   counterProduct
 } from '../../reducers/db/products';
 import { getCategories } from '../../reducers/db/categories';
-import { getGraphqlPath } from '../../common/settings';
+import { getGraphqlPath, getOfflineMode } from '../../common/settings';
 import { UPDATE_CURRENT_POS_COMMAND } from '../../constants/root';
+import { QUERY_GET_PRODUCT_BY_CATEGORY } from '../../constants/product-query';
 
 /**
  * Search product service
@@ -367,44 +368,47 @@ export async function getDefaultProductsService() {
  * Get products
  * @returns array
  */
-export function* getProductByCategoryService({ categoryId, offlineMode }) {
-  const currentPage = 1;
+export function* getProductByCategoryService({ categoryId, currentPage = 1 }) {
+  const offlineMode = yield getOfflineMode();
   // Update to current command
   yield put({
     type: UPDATE_CURRENT_POS_COMMAND,
-    payload: { type: 'getProductByCategory', categoryId, currentPage }
+    payload: { type: QUERY_GET_PRODUCT_BY_CATEGORY, categoryId, currentPage }
   });
 
   if (offlineMode === 1) {
-    const data = yield call(getProductsByCategoryLocal, categoryId);
+    const data = yield call(getProductsByCategoryLocal, {
+      categoryId,
+      currentPage
+    });
     return data;
   }
-  const data = yield call(getProductsByCategory, categoryId);
+  const data = yield call(getProductsByCategory, { categoryId, currentPage });
   return data.items;
 }
 
 /* Page size for query products */
-const defaultPageSize = 100;
+const defaultPageSize = 20;
 
 /**
- * @param categoryId
- * @param currentPage
  * @returns array
  */
-async function getProductsByCategory(categoryId, currentPage = 1) {
-  const response = await fetch(getGraphqlPath(), {
-    method: 'POST',
-    mode: 'cors',
-    cache: 'no-cache',
-    credentials: 'same-origin',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${window.liveToken}`
-    },
-    redirect: 'follow',
-    referrer: 'no-referrer',
-    body: JSON.stringify({
-      query: `{
+async function getProductsByCategory(payload) {
+  const { categoryId, currentPage } = payload;
+  try {
+    const response = await fetch(getGraphqlPath(), {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${window.liveToken}`
+      },
+      redirect: 'follow',
+      referrer: 'no-referrer',
+      body: JSON.stringify({
+        query: `{
       products(filter: {category_id: {eq: "${categoryId}"}}, pageSize: ${defaultPageSize}, currentPage: ${currentPage}) {
         total_count
         items {
@@ -540,13 +544,18 @@ async function getProductsByCategory(categoryId, currentPage = 1) {
         }
       }
     }`
-    })
-  });
-  const data = await response.json();
-  return {
-    items: data.data.products.items,
-    totalCount: data.data.products.total_count
-  };
+      })
+    });
+    const data = await response.json();
+    return {
+      items: data.data.products.items,
+      totalCount: data.data.products.total_count
+    };
+  } catch (e) {
+    return {
+      items: []
+    };
+  }
 }
 
 /**

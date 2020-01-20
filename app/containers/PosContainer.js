@@ -22,7 +22,9 @@ function mapStateToProps(state) {
     isLoadingSignUpCustomer: state.mainRd.isLoadingSignUpCustomer,
     isOpenSignUpCustomer: state.mainRd.isOpenSignUpCustomer,
     isShowModalItemEditCart: state.mainRd.itemCartEditing.showModal,
-    toggleModalCalculatorStatus: state.mainRd.isOpenCalculator
+    toggleModalCalculatorStatus: state.mainRd.isOpenCalculator,
+    posCommandIsFetchingProduct:
+      state.mainRd.currentPosCommand.isFetchingProduct
   };
 }
 
