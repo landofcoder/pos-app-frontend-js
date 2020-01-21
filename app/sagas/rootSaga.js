@@ -726,6 +726,7 @@ function* getProductByCategory(payload) {
  * @returns void
  */
 function* getProductByCategoryLazyLoad(categoryId, currentPage) {
+  console.log('pass1:', currentPage);
   const productByCategory = yield call(getProductByCategoryService, {
     categoryId,
     currentPage
@@ -854,6 +855,7 @@ function* checkLoginBackgroundSaga() {
     const cashierInfo = yield call(getInfoCashierService);
     yield put({ type: types.RECEIVED_CASHIER_INFO, payload: cashierInfo });
 
+    // If form invalid
     if (
       !cashierInfo.cashier_id ||
       (!cashierInfo.outlet_id || cashierInfo.outlet_id === 0) ||
@@ -871,8 +873,10 @@ function* checkLoginBackgroundSaga() {
         yield put({ type: types.UPDATE_SWITCHING_MODE, payload: SYNC_SCREEN });
         yield syncData();
       } else {
+        // All it's ok
         yield bootstrapApplicationSaga();
         yield put({ type: types.UPDATE_SWITCHING_MODE, payload: CHILDREN });
+        yield syncData();
       }
     }
   } else {

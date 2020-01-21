@@ -6,7 +6,11 @@ import {
   counterProduct
 } from '../../reducers/db/products';
 import { getCategories } from '../../reducers/db/categories';
-import { getGraphqlPath, getOfflineMode } from '../../common/settings';
+import {
+  getGraphqlPath,
+  getOfflineMode,
+  defaultPageSize
+} from '../../common/settings';
 import {
   QUERY_GET_PRODUCT_BY_CATEGORY,
   QUERY_SEARCH_PRODUCT
@@ -30,7 +34,7 @@ export function* searchProductService(payload) {
   );
 
   if (offlineMode === 1) {
-    const data = yield searchProductsLocal(searchValue);
+    const data = yield searchProductsLocal(searchValue, currentPage);
     return data;
   }
 
@@ -412,9 +416,6 @@ export function* getProductByCategoryService({ categoryId, currentPage = 1 }) {
   return data.items;
 }
 
-/* Page size for query products */
-const defaultPageSize = 12;
-
 /**
  * @returns array
  */
@@ -618,7 +619,12 @@ export async function syncAllProducts(listCategories) {
 async function syncAllProductsByCategory(categoryId) {
   const currentPage = 1;
   // Get products as first page
-  const productsResult = await getProductsByCategory(categoryId, currentPage);
+  const productsResult = await getProductsByCategory({
+    categoryId,
+    currentPage
+  });
+
+  console.log('product by category:', categoryId, productsResult);
 
   // Let all parents categories of this category
   const defaultCategory = await getCategories();
@@ -639,7 +645,10 @@ async function syncAllProductsByCategory(categoryId) {
     // Get products from n page
     for (let i = 2; i <= numberPage; i += 1) {
       // Sync products
-      const productsResult = await getProductsByCategory(categoryId, i);
+      const productsResult = await getProductsByCategory({
+        categoryId,
+        currentPage: i
+      });
       await syncProducts(productsResult.items, allParentIds);
     }
   }
