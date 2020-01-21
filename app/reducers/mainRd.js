@@ -15,7 +15,8 @@ const initialState = {
   flagSwitchModeCounter: 1, // When this flag counter up, render in App.js will re-render and backgroundLogin will re-check
   currentPosCommand: {
     query: {
-      categoryId: 0,
+      categoryId: 0, // For product type
+      searchValue: '', // For search type
       currentPage: '',
       type: ''
     },

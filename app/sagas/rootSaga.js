@@ -72,7 +72,10 @@ import {
   SYNC_SCREEN,
   LINK_CASHIER_TO_ADMIN_REQUIRE
 } from '../constants/main-panel-types';
-import { QUERY_GET_PRODUCT_BY_CATEGORY } from '../constants/product-query';
+import {
+  QUERY_GET_PRODUCT_BY_CATEGORY,
+  QUERY_SEARCH_PRODUCT
+} from '../constants/product-query';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
 const cartCurrentObj = state => state.mainRd.cartCurrent;
@@ -231,11 +234,9 @@ function* getDefaultProduct() {
 
   // Set empty if want get default response from magento2
   const searchValue = '';
-
-  const offlineMode = yield getOfflineMode();
   const response = yield call(searchProductService, {
     searchValue,
-    offlineMode
+    currentPage: 1
   });
 
   const productResult = response.length > 0 ? response : [];
@@ -316,14 +317,12 @@ function* cashCheckoutPlaceOrder() {
  * @param payload
  */
 function* searchProduct(payload) {
-  console.log('search action:', payload);
   // Start loading
   yield put({ type: types.UPDATE_IS_LOADING_SEARCH_HANDLE, payload: true });
 
-  const offlineMode = yield getOfflineMode();
   const searchResult = yield call(searchProductService, {
     searchValue: payload.payload,
-    offlineMode
+    currentPage: 1
   });
   const productResult = searchResult.length > 0 ? searchResult : [];
 
@@ -342,13 +341,22 @@ function* searchProduct(payload) {
       payload: false
     });
   }
-
-  console.log('product result:', productResult);
-
   yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productResult });
-
   // Stop loading
   yield put({ type: types.UPDATE_IS_LOADING_SEARCH_HANDLE, payload: false });
+}
+
+function* searchProductLazy(searchValue, currentPage) {
+  const searchResult = yield call(searchProductService, {
+    searchValue,
+    currentPage
+  });
+  if (searchResult.length > 0) {
+    // Join product result
+    yield put({ type: types.JOIN_PRODUCT_RESULT, payload: searchResult });
+    return true;
+  }
+  return false;
 }
 
 /**
@@ -939,6 +947,12 @@ function* loadProductPagingSaga() {
         {
           const { categoryId } = currentPosCommandResult.query;
           isNext = yield getProductByCategoryLazyLoad(categoryId, currentPage);
+        }
+        break;
+      case QUERY_SEARCH_PRODUCT:
+        {
+          const { searchValue } = currentPosCommandResult.query;
+          isNext = yield searchProductLazy(searchValue, currentPage);
         }
         break;
       default:
