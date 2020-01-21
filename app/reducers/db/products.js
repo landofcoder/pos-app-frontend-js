@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import db from './db';
+import { defaultPageSize } from '../../common/settings';
 
 const table = 'products';
 
@@ -77,9 +78,10 @@ export async function getDefaultProductLocal() {
 /**
  * Search product by sku or by name
  * @param payload
+ * @param currentPage
  * @returns array
  */
-export async function searchProductsLocal(payload) {
+export async function searchProductsLocal(payload, currentPage = 1) {
   const searchValue = payload;
   try {
     const data = await db
@@ -93,7 +95,8 @@ export async function searchProductsLocal(payload) {
         }
         return isMatchSku;
       })
-      .limit(20)
+      .offset(currentPage * defaultPageSize)
+      .limit(defaultPageSize)
       .toArray();
     return data;
   } catch (e) {
@@ -101,15 +104,18 @@ export async function searchProductsLocal(payload) {
   }
 }
 
-export async function getProductsByCategoryLocal(categoryId) {
+export async function getProductsByCategoryLocal({ categoryId, currentPage }) {
   let data;
   try {
     data = await db
       .table(table)
       .where('categoryIds')
       .anyOf(categoryId)
+      .offset(currentPage * defaultPageSize)
+      .limit(defaultPageSize)
       .toArray();
   } catch (e) {
+    console.log('error:', e);
     data = [];
   }
   return data;
