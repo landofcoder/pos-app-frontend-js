@@ -19,7 +19,6 @@ const initialState = {
       currentPage: '',
       type: ''
     },
-    status: 0,
     isFetchingProduct: false,
     lockPagingForFetching: false,
     reachedLimit: false
@@ -420,7 +419,16 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.UPDATE_RE_CHECK_REQUIRE_STEP_LOADING:
         draft.isLoadingRequireStep = action.payload;
         break;
+      case types.RESET_CURRENT_POS_COMMAND:
+        draft.currentPosCommand.query.categoryId = 0;
+        draft.currentPosCommand.query.currentPage = 0;
+        draft.currentPosCommand.query.type = '';
+        draft.currentPosCommand.isFetchingProduct = false;
+        draft.currentPosCommand.lockPagingForFetching = false;
+        draft.currentPosCommand.reachedLimit = false;
+        break;
       case types.UPDATE_CURRENT_POS_COMMAND:
+        // Update payload to current query
         draft.currentPosCommand.query = action.payload;
         break;
       case types.UPDATE_POS_COMMAND_FETCHING_PRODUCT:

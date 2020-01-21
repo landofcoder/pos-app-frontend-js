@@ -910,6 +910,15 @@ function* loadProductPagingSaga() {
     lockPagingForFetching === false &&
     reachedLimit === false
   ) {
+    // Reset commandPos first
+    yield put({ type: types.RESET_CURRENT_POS_COMMAND });
+
+    // Start loading
+    yield put({
+      type: types.UPDATE_POS_COMMAND_FETCHING_PRODUCT,
+      payload: true
+    });
+
     // Lock paging for fetching
     yield put({
       type: types.UPDATE_IS_LOCK_PAGING_FOR_FETCHING,
@@ -924,12 +933,6 @@ function* loadProductPagingSaga() {
     // If isNext = true => get new products for paging success
     // If isNext = false => get new products for paging failure
     let isNext = false;
-
-    // Start loading
-    yield put({
-      type: types.UPDATE_POS_COMMAND_FETCHING_PRODUCT,
-      payload: true
-    });
 
     switch (queryType) {
       case QUERY_GET_PRODUCT_BY_CATEGORY:
