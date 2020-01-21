@@ -722,9 +722,6 @@ function* getProductByCategoryLazyLoad(categoryId, currentPage) {
     categoryId,
     currentPage
   });
-
-  console.log('product by lazy:', productByCategory);
-
   // If have no product returned
   if (productByCategory.length > 0) {
     // Join product result
@@ -906,7 +903,19 @@ function* reCheckRequireStepSaga() {
 function* loadProductPagingSaga() {
   const currentPosCommandResult = yield select(currentPosCommand);
   const queryType = currentPosCommandResult.query.type;
-  if (queryType !== '') {
+  const { lockPagingForFetching, reachedLimit } = currentPosCommandResult;
+
+  if (
+    queryType !== '' &&
+    lockPagingForFetching === false &&
+    reachedLimit === false
+  ) {
+    // Lock paging for fetching
+    yield put({
+      type: types.UPDATE_IS_LOCK_PAGING_FOR_FETCHING,
+      payload: true
+    });
+
     // Counter up current page
     let { currentPage } = currentPosCommandResult.query;
     currentPage += 1;
@@ -934,13 +943,22 @@ function* loadProductPagingSaga() {
     }
 
     // Update current page counted to commandPos
-    if (isNext) {
+    if (isNext === true) {
       yield put({ type: types.UPDATE_POST_COMMAND_CURRENT_PAGE, currentPage });
+    } else {
+      // Update to reached limit
+      yield put({ type: types.UPDATE_REACHED_LIMIT, payload: true });
     }
 
     // Stop loading
     yield put({
       type: types.UPDATE_POS_COMMAND_FETCHING_PRODUCT,
+      payload: false
+    });
+
+    // Unlock paging for fetching
+    yield put({
+      type: types.UPDATE_IS_LOCK_PAGING_FOR_FETCHING,
       payload: false
     });
   }

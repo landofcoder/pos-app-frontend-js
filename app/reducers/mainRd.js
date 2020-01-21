@@ -20,7 +20,9 @@ const initialState = {
       type: ''
     },
     status: 0,
-    isFetchingProduct: false
+    isFetchingProduct: false,
+    lockPagingForFetching: false,
+    reachedLimit: false
   }, // Current POS product filter by to paging
   internetConnected: false,
   isLoadingSystemConfig: true,
@@ -423,6 +425,12 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.UPDATE_POS_COMMAND_FETCHING_PRODUCT:
         draft.currentPosCommand.isFetchingProduct = action.payload;
+        break;
+      case types.UPDATE_IS_LOCK_PAGING_FOR_FETCHING:
+        draft.currentPosCommand.lockPagingForFetching = action.payload;
+        break;
+      case types.UPDATE_REACHED_LIMIT:
+        draft.currentPosCommand.reachedLimit = action.payload;
         break;
       default:
         return draft;
