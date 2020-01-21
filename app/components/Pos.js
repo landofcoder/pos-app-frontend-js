@@ -284,7 +284,6 @@ export default class Pos extends Component<Props, State> {
       posCommandIsFetchingProduct
     } = this.props;
     const { redirectToAccount, mainWrapProductPanel } = this.state;
-
     // Check Redirect To Layout Account
     if (redirectToAccount) {
       return <Redirect to={routers.ACCOUNT} />;

@@ -1,4 +1,4 @@
-import { call, put } from 'redux-saga/effects';
+import { call } from 'redux-saga/effects';
 import {
   searchProductsLocal,
   getProductsByCategoryLocal,
@@ -7,29 +7,48 @@ import {
 } from '../../reducers/db/products';
 import { getCategories } from '../../reducers/db/categories';
 import { getGraphqlPath, getOfflineMode } from '../../common/settings';
-import { UPDATE_CURRENT_POS_COMMAND } from '../../constants/root';
-import { QUERY_GET_PRODUCT_BY_CATEGORY } from '../../constants/product-query';
+import {
+  QUERY_GET_PRODUCT_BY_CATEGORY,
+  QUERY_SEARCH_PRODUCT
+} from '../../constants/product-query';
+import { updateCurrentPosCommand } from './CommonService';
 
 /**
  * Search product service
  * @returns array
  */
-export async function searchProductService(payload) {
-  const { searchValue, offlineMode } = payload;
+export function* searchProductService(payload) {
+  const offlineMode = yield getOfflineMode();
+  const { searchValue, currentPage } = payload;
+
+  // Update to current command
+  yield updateCurrentPosCommand(
+    QUERY_SEARCH_PRODUCT,
+    0,
+    searchValue,
+    currentPage
+  );
 
   if (offlineMode === 1) {
-    const data = await searchProductsLocal(searchValue);
+    const data = yield searchProductsLocal(searchValue);
     return data;
   }
-  const response = await fetch(getGraphqlPath(), {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${window.liveToken}`
-    },
-    body: JSON.stringify({
-      query: `{
-      products(filter: { sku: { like: "%${searchValue}%" } }) {
+
+  const data = yield querySearchProduct(searchValue, currentPage);
+  return data;
+}
+
+async function querySearchProduct(searchValue, currentPage) {
+  try {
+    const response = await fetch(getGraphqlPath(), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${window.liveToken}`
+      },
+      body: JSON.stringify({
+        query: `{
+      products(filter: { sku: { like: "%${searchValue}%" }}, pageSize: ${defaultPageSize}, currentPage: ${currentPage}) {
         items {
           id
           attribute_set_id
@@ -92,10 +111,13 @@ export async function searchProductService(payload) {
         }
       }
     }`
-    })
-  });
-  const data = await response.json();
-  return data.data.products.items;
+      })
+    });
+    const data = await response.json();
+    return data.data.products.items;
+  } catch (e) {
+    return [];
+  }
 }
 
 /**
@@ -370,11 +392,14 @@ export async function getDefaultProductsService() {
  */
 export function* getProductByCategoryService({ categoryId, currentPage = 1 }) {
   const offlineMode = yield getOfflineMode();
+
   // Update to current command
-  yield put({
-    type: UPDATE_CURRENT_POS_COMMAND,
-    payload: { type: QUERY_GET_PRODUCT_BY_CATEGORY, categoryId, currentPage }
-  });
+  yield updateCurrentPosCommand(
+    QUERY_GET_PRODUCT_BY_CATEGORY,
+    categoryId,
+    '',
+    currentPage
+  );
 
   if (offlineMode === 1) {
     const data = yield call(getProductsByCategoryLocal, {
@@ -388,7 +413,7 @@ export function* getProductByCategoryService({ categoryId, currentPage = 1 }) {
 }
 
 /* Page size for query products */
-const defaultPageSize = 20;
+const defaultPageSize = 12;
 
 /**
  * @returns array
