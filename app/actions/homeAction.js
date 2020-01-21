@@ -278,3 +278,9 @@ export function backToLogin() {
     type: types.BACK_TO_LOGIN
   };
 }
+
+export function loadProductPaging() {
+  return {
+    type: types.LOAD_PRODUCT_PAGING
+  };
+}

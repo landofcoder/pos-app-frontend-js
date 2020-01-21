@@ -10,6 +10,7 @@
   overflow-y: scroll;
   max-height: 100%; // remove this for enabled all scroll
   min-height: 100%;
+  padding-bottom: 50px;
 }
 
 #wrapSearchLoading {
@@ -53,7 +54,6 @@
 
     .wrapRight {
       width: 50%;
-
 
       .wrapStatusOnline {
 
