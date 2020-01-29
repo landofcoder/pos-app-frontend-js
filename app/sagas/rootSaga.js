@@ -72,6 +72,10 @@ import {
   SYNC_SCREEN,
   LINK_CASHIER_TO_ADMIN_REQUIRE
 } from '../constants/main-panel-types';
+import {
+  QUERY_GET_PRODUCT_BY_CATEGORY,
+  QUERY_SEARCH_PRODUCT
+} from '../constants/product-query';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
 const cartCurrentObj = state => state.mainRd.cartCurrent;
@@ -84,6 +88,7 @@ const shopInfoConfig = state => state.mainRd.shopInfoConfig;
 const posSystemConfig = state => state.mainRd.posSystemConfig;
 const cashierInfo = state => state.authenRd.cashierInfo;
 const itemCartEditing = state => state.mainRd.itemCartEditing;
+const currentPosCommand = state => state.mainRd.currentPosCommand;
 
 /**
  * Create quote
@@ -229,11 +234,9 @@ function* getDefaultProduct() {
 
   // Set empty if want get default response from magento2
   const searchValue = '';
-
-  const offlineMode = yield getOfflineMode();
   const response = yield call(searchProductService, {
     searchValue,
-    offlineMode
+    currentPage: 1
   });
 
   const productResult = response.length > 0 ? response : [];
@@ -314,14 +317,12 @@ function* cashCheckoutPlaceOrder() {
  * @param payload
  */
 function* searchProduct(payload) {
-  console.log('search action:', payload);
   // Start loading
   yield put({ type: types.UPDATE_IS_LOADING_SEARCH_HANDLE, payload: true });
 
-  const offlineMode = yield getOfflineMode();
   const searchResult = yield call(searchProductService, {
     searchValue: payload.payload,
-    offlineMode
+    currentPage: 1
   });
   const productResult = searchResult.length > 0 ? searchResult : [];
 
@@ -340,13 +341,22 @@ function* searchProduct(payload) {
       payload: false
     });
   }
-
-  console.log('product result:', productResult);
-
   yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productResult });
-
   // Stop loading
   yield put({ type: types.UPDATE_IS_LOADING_SEARCH_HANDLE, payload: false });
+}
+
+function* searchProductLazy(searchValue, currentPage) {
+  const searchResult = yield call(searchProductService, {
+    searchValue,
+    currentPage
+  });
+  if (searchResult.length > 0) {
+    // Join product result
+    yield put({ type: types.JOIN_PRODUCT_RESULT, payload: searchResult });
+    return true;
+  }
+  return false;
 }
 
 /**
@@ -697,11 +707,8 @@ function* getProductByCategory(payload) {
 
   const categoryId = payload.payload;
 
-  const offlineMode = yield getOfflineMode();
-
   const productByCategory = yield call(getProductByCategoryService, {
-    categoryId,
-    offlineMode
+    categoryId
   });
   yield put({
     type: types.RECEIVED_PRODUCT_RESULT,
@@ -710,6 +717,28 @@ function* getProductByCategory(payload) {
 
   // Stop loading
   yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: false });
+}
+
+/**
+ * Get product by category with lazy loading
+ * @param categoryId
+ * @param currentPage
+ * @returns void
+ */
+function* getProductByCategoryLazyLoad(categoryId, currentPage) {
+  console.log('pass1:', currentPage);
+  const productByCategory = yield call(getProductByCategoryService, {
+    categoryId,
+    currentPage
+  });
+  // If have no product returned
+  if (productByCategory.length > 0) {
+    // Join product result
+    yield put({ type: types.JOIN_PRODUCT_RESULT, payload: productByCategory });
+    return true;
+  }
+
+  return false;
 }
 
 function* getOrderHistoryDetail(payload) {
@@ -826,6 +855,7 @@ function* checkLoginBackgroundSaga() {
     const cashierInfo = yield call(getInfoCashierService);
     yield put({ type: types.RECEIVED_CASHIER_INFO, payload: cashierInfo });
 
+    // If form invalid
     if (
       !cashierInfo.cashier_id ||
       (!cashierInfo.outlet_id || cashierInfo.outlet_id === 0) ||
@@ -843,8 +873,10 @@ function* checkLoginBackgroundSaga() {
         yield put({ type: types.UPDATE_SWITCHING_MODE, payload: SYNC_SCREEN });
         yield syncData();
       } else {
+        // All it's ok
         yield bootstrapApplicationSaga();
         yield put({ type: types.UPDATE_SWITCHING_MODE, payload: CHILDREN });
+        yield syncData();
       }
     }
   } else {
@@ -877,6 +909,83 @@ function* reCheckRequireStepSaga() {
 }
 
 /**
+ * Load product paging
+ * @returns void
+ */
+function* loadProductPagingSaga() {
+  const currentPosCommandResult = yield select(currentPosCommand);
+  const queryType = currentPosCommandResult.query.type;
+  const { lockPagingForFetching, reachedLimit } = currentPosCommandResult;
+
+  if (
+    queryType !== '' &&
+    lockPagingForFetching === false &&
+    reachedLimit === false
+  ) {
+    // Reset commandPos first
+    yield put({ type: types.RESET_CURRENT_POS_COMMAND });
+
+    // Start loading
+    yield put({
+      type: types.UPDATE_POS_COMMAND_FETCHING_PRODUCT,
+      payload: true
+    });
+
+    // Lock paging for fetching
+    yield put({
+      type: types.UPDATE_IS_LOCK_PAGING_FOR_FETCHING,
+      payload: true
+    });
+
+    // Counter up current page
+    let { currentPage } = currentPosCommandResult.query;
+    currentPage += 1;
+
+    // If next page success
+    // If isNext = true => get new products for paging success
+    // If isNext = false => get new products for paging failure
+    let isNext = false;
+
+    switch (queryType) {
+      case QUERY_GET_PRODUCT_BY_CATEGORY:
+        {
+          const { categoryId } = currentPosCommandResult.query;
+          isNext = yield getProductByCategoryLazyLoad(categoryId, currentPage);
+        }
+        break;
+      case QUERY_SEARCH_PRODUCT:
+        {
+          const { searchValue } = currentPosCommandResult.query;
+          isNext = yield searchProductLazy(searchValue, currentPage);
+        }
+        break;
+      default:
+        break;
+    }
+
+    // Update current page counted to commandPos
+    if (isNext === true) {
+      yield put({ type: types.UPDATE_POST_COMMAND_CURRENT_PAGE, currentPage });
+    } else {
+      // Update to reached limit
+      yield put({ type: types.UPDATE_REACHED_LIMIT, payload: true });
+    }
+
+    // Stop loading
+    yield put({
+      type: types.UPDATE_POS_COMMAND_FETCHING_PRODUCT,
+      payload: false
+    });
+
+    // Unlock paging for fetching
+    yield put({
+      type: types.UPDATE_IS_LOCK_PAGING_FOR_FETCHING,
+      payload: false
+    });
+  }
+}
+
+/**
  * Update qty in cart
  * @param payload
  * @returns void
@@ -888,7 +997,7 @@ function* updateQtyCartItemSaga(payload) {
 
   const product = Object.assign({}, cartEditingResult.item);
 
-  // // Update qty
+  // Update qty
   product.pos_qty = qty;
 
   let currencyCode = yield select(shopInfoConfig);
@@ -952,6 +1061,7 @@ function* rootSaga() {
     gotoChildrenPanelTriggerSaga
   );
   yield takeEvery(types.RE_CHECK_REQUIRE_STEP, reCheckRequireStepSaga);
+  yield takeEvery(types.LOAD_PRODUCT_PAGING, loadProductPagingSaga);
 }
 
 export default rootSaga;

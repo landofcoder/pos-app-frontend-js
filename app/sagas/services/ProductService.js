@@ -1,3 +1,4 @@
+import { call } from 'redux-saga/effects';
 import {
   searchProductsLocal,
   getProductsByCategoryLocal,
@@ -5,28 +6,53 @@ import {
   counterProduct
 } from '../../reducers/db/products';
 import { getCategories } from '../../reducers/db/categories';
-import { getGraphqlPath } from '../../common/settings';
+import {
+  getGraphqlPath,
+  getOfflineMode,
+  defaultPageSize
+} from '../../common/settings';
+import {
+  QUERY_GET_PRODUCT_BY_CATEGORY,
+  QUERY_SEARCH_PRODUCT
+} from '../../constants/product-query';
+import { updateCurrentPosCommand } from './CommonService';
 
 /**
  * Search product service
  * @returns array
  */
-export async function searchProductService(payload) {
-  const { searchValue, offlineMode } = payload;
+export function* searchProductService(payload) {
+  const offlineMode = yield getOfflineMode();
+  const { searchValue, currentPage } = payload;
+
+  // Update to current command
+  yield updateCurrentPosCommand(
+    QUERY_SEARCH_PRODUCT,
+    0,
+    searchValue,
+    currentPage
+  );
 
   if (offlineMode === 1) {
-    const data = await searchProductsLocal(searchValue);
+    const data = yield searchProductsLocal(searchValue, currentPage);
     return data;
   }
-  const response = await fetch(getGraphqlPath(), {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${window.liveToken}`
-    },
-    body: JSON.stringify({
-      query: `{
-      products(filter: { sku: { like: "%${searchValue}%" } }) {
+
+  const data = yield querySearchProduct(searchValue, currentPage);
+  return data;
+}
+
+async function querySearchProduct(searchValue, currentPage) {
+  try {
+    const response = await fetch(getGraphqlPath(), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${window.liveToken}`
+      },
+      body: JSON.stringify({
+        query: `{
+      products(filter: { sku: { like: "%${searchValue}%" }}, pageSize: ${defaultPageSize}, currentPage: ${currentPage}) {
         items {
           id
           attribute_set_id
@@ -89,10 +115,13 @@ export async function searchProductService(payload) {
         }
       }
     }`
-    })
-  });
-  const data = await response.json();
-  return data.data.products.items;
+      })
+    });
+    const data = await response.json();
+    return data.data.products.items;
+  } catch (e) {
+    return [];
+  }
 }
 
 /**
@@ -363,43 +392,49 @@ export async function getDefaultProductsService() {
 
 /**
  * Get products
- * @returns {Promise<any>}
- * @returns {Promise<any>}
- */
-export async function getProductByCategoryService({ categoryId, offlineMode }) {
-  let data;
-  if (offlineMode === 1) {
-    data = await getProductsByCategoryLocal(categoryId);
-    return data;
-  }
-  data = await getProductsByCategory(categoryId).items;
-  return data;
-}
-
-/* Page size for query products */
-const defaultPageSize = 100;
-
-/**
- *
- * @param categoryId
- * @param currentPage
  * @returns array
  */
-async function getProductsByCategory(categoryId, currentPage = 1) {
-  const response = await fetch(getGraphqlPath(), {
-    method: 'POST', // *GET, POST, PUT, DELETE, etc.
-    mode: 'cors', // no-cors, *cors, same-origin
-    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-    credentials: 'same-origin', // include, *same-origin, omit
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${window.liveToken}`
-      // 'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    redirect: 'follow', // manual, *follow, error
-    referrer: 'no-referrer', // no-referrer, *client
-    body: JSON.stringify({
-      query: `{
+export function* getProductByCategoryService({ categoryId, currentPage = 1 }) {
+  const offlineMode = yield getOfflineMode();
+
+  // Update to current command
+  yield updateCurrentPosCommand(
+    QUERY_GET_PRODUCT_BY_CATEGORY,
+    categoryId,
+    '',
+    currentPage
+  );
+
+  if (offlineMode === 1) {
+    const data = yield call(getProductsByCategoryLocal, {
+      categoryId,
+      currentPage
+    });
+    return data;
+  }
+  const data = yield call(getProductsByCategory, { categoryId, currentPage });
+  return data.items;
+}
+
+/**
+ * @returns array
+ */
+async function getProductsByCategory(payload) {
+  const { categoryId, currentPage } = payload;
+  try {
+    const response = await fetch(getGraphqlPath(), {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${window.liveToken}`
+      },
+      redirect: 'follow',
+      referrer: 'no-referrer',
+      body: JSON.stringify({
+        query: `{
       products(filter: {category_id: {eq: "${categoryId}"}}, pageSize: ${defaultPageSize}, currentPage: ${currentPage}) {
         total_count
         items {
@@ -535,13 +570,18 @@ async function getProductsByCategory(categoryId, currentPage = 1) {
         }
       }
     }`
-    })
-  });
-  const data = await response.json();
-  return {
-    items: data.data.products.items,
-    totalCount: data.data.products.total_count
-  };
+      })
+    });
+    const data = await response.json();
+    return {
+      items: data.data.products.items,
+      totalCount: data.data.products.total_count
+    };
+  } catch (e) {
+    return {
+      items: []
+    };
+  }
 }
 
 /**
@@ -579,7 +619,12 @@ export async function syncAllProducts(listCategories) {
 async function syncAllProductsByCategory(categoryId) {
   const currentPage = 1;
   // Get products as first page
-  const productsResult = await getProductsByCategory(categoryId, currentPage);
+  const productsResult = await getProductsByCategory({
+    categoryId,
+    currentPage
+  });
+
+  console.log('product by category:', categoryId, productsResult);
 
   // Let all parents categories of this category
   const defaultCategory = await getCategories();
@@ -600,7 +645,10 @@ async function syncAllProductsByCategory(categoryId) {
     // Get products from n page
     for (let i = 2; i <= numberPage; i += 1) {
       // Sync products
-      const productsResult = await getProductsByCategory(categoryId, i);
+      const productsResult = await getProductsByCategory({
+        categoryId,
+        currentPage: i
+      });
       await syncProducts(productsResult.items, allParentIds);
     }
   }

@@ -1,0 +1,4 @@
+{
+  "QUERY_GET_PRODUCT_BY_CATEGORY": "getProductByCategory",
+  "QUERY_SEARCH_PRODUCT": "searchProduct"
+}

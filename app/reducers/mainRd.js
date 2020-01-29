@@ -1,4 +1,3 @@
-// @flow
 import produce from 'immer';
 import * as types from '../constants/root';
 import {
@@ -14,6 +13,17 @@ import {
 const initialState = {
   switchingMode: LOADING, // LOADING, LOGIN_FORM, CHILDREN, SYNC_SCREEN
   flagSwitchModeCounter: 1, // When this flag counter up, render in App.js will re-render and backgroundLogin will re-check
+  currentPosCommand: {
+    query: {
+      categoryId: 0, // For product type
+      searchValue: '', // For search type
+      currentPage: '',
+      type: ''
+    },
+    isFetchingProduct: false,
+    lockPagingForFetching: false,
+    reachedLimit: false
+  }, // Current POS product filter by to paging
   internetConnected: false,
   isLoadingSystemConfig: true,
   isLoadingSearchHandle: false, // Main search loading
@@ -125,6 +135,9 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.RECEIVED_PRODUCT_RESULT:
         draft.productList = action.payload;
+        break;
+      case types.JOIN_PRODUCT_RESULT:
+        draft.productList = draft.productList.concat(action.payload);
         break;
       case types.UPDATE_CASH_LOADING_PREPARING_ORDER:
         draft.cashLoadingPreparingOrder = action.payload;
@@ -396,7 +409,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       }
       case types.RESET_ITEM_CART_EDITING: {
-        draft.itemCartEditing.index = 0;
+        draft.itemCartEditing.index   = 0;
         draft.itemCartEditing.showModal = false;
         draft.itemCartEditing.item = {};
         break;
@@ -406,6 +419,27 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.UPDATE_RE_CHECK_REQUIRE_STEP_LOADING:
         draft.isLoadingRequireStep = action.payload;
+        break;
+      case types.RESET_CURRENT_POS_COMMAND:
+        draft.currentPosCommand.query.categoryId = 0;
+        draft.currentPosCommand.query.currentPage = 0;
+        draft.currentPosCommand.query.type = '';
+        draft.currentPosCommand.isFetchingProduct = false;
+        draft.currentPosCommand.lockPagingForFetching = false;
+        draft.currentPosCommand.reachedLimit = false;
+        break;
+      case types.UPDATE_CURRENT_POS_COMMAND:
+        // Update payload to current query
+        draft.currentPosCommand.query = action.payload;
+        break;
+      case types.UPDATE_POS_COMMAND_FETCHING_PRODUCT:
+        draft.currentPosCommand.isFetchingProduct = action.payload;
+        break;
+      case types.UPDATE_IS_LOCK_PAGING_FOR_FETCHING:
+        draft.currentPosCommand.lockPagingForFetching = action.payload;
+        break;
+      case types.UPDATE_REACHED_LIMIT:
+        draft.currentPosCommand.reachedLimit = action.payload;
         break;
       default:
         return draft;

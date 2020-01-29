@@ -1,3 +1,4 @@
+import { put } from 'redux-saga/effects';
 import {
   systemConfigSync,
   getSystemConfigLocal,
@@ -7,6 +8,7 @@ import {
   getReceiptInfoLocal
 } from './SettingsService';
 import { getCategories } from '../../reducers/db/categories';
+import { UPDATE_CURRENT_POS_COMMAND } from '../../constants/root';
 
 /**
  * Data from systemConfig will always get latest settings from api,
@@ -236,4 +238,24 @@ export async function getOrderHistoryServiceDetails(index) {
   });
   const data = await response.json();
   return data;
+}
+
+/**
+ * Update current pos command
+ * @param type
+ * @param categoryId
+ * @param searchValue
+ * @param currentPage
+ * @returns void
+ */
+export function* updateCurrentPosCommand(
+  type = '',
+  categoryId = 0,
+  searchValue = '',
+  currentPage = 0
+) {
+  yield put({
+    type: UPDATE_CURRENT_POS_COMMAND,
+    payload: { type, categoryId, searchValue, currentPage }
+  });
 }

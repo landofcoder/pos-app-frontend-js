@@ -34,6 +34,7 @@ type Props = {
   getDetailProductConfigurable: (payload: Object) => void,
   getDetailProductBundle: (payload: Object) => void,
   getDetailProductGrouped: (payload: Object) => void,
+  loadProductPaging: () => void,
   productOption: Object,
   isShowCashPaymentModel: boolean,
   updateIsShowingProductOption: (payload: boolean) => void,
@@ -48,7 +49,8 @@ type Props = {
   isShowHaveNoSearchResultFound: boolean,
   isOpenSignUpCustomer: boolean,
   internetConnected: boolean,
-  toggleModalCalculatorStatus: boolean
+  toggleModalCalculatorStatus: boolean,
+  posCommandIsFetchingProduct: boolean
 };
 
 type State = {
@@ -252,10 +254,11 @@ export default class Pos extends Component<Props, State> {
   };
 
   handleScroll = e => {
+    const { loadProductPaging } = this.props;
     const bottom =
       e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
     if (bottom) {
-      console.log('is run to bottom');
+      loadProductPaging();
     }
   };
 
@@ -277,10 +280,10 @@ export default class Pos extends Component<Props, State> {
       productOption,
       isShowCashPaymentModel,
       isOpenReceiptModal,
-      toggleModalCalculatorStatus
+      toggleModalCalculatorStatus,
+      posCommandIsFetchingProduct
     } = this.props;
     const { redirectToAccount, mainWrapProductPanel } = this.state;
-
     // Check Redirect To Layout Account
     if (redirectToAccount) {
       return <Redirect to={routers.ACCOUNT} />;
@@ -353,6 +356,7 @@ export default class Pos extends Component<Props, State> {
               <div
                 className={classWrapProductPanel}
                 id={mainWrapProductPanel}
+                data-id="mainPosProduct"
                 onScroll={this.handleScroll}
               >
                 <div className="col-md-2">
@@ -401,7 +405,6 @@ export default class Pos extends Component<Props, State> {
                     <></>
                   )}
                 </div>
-
                 {mainProductListLoading ? (
                   <div className="col-md-12">
                     <div className="d-flex justify-content-center">
@@ -416,6 +419,20 @@ export default class Pos extends Component<Props, State> {
                 ) : (
                   this.renderSwitchPanel(productList)
                 )}
+                <div className="col-md-12">
+                  {posCommandIsFetchingProduct ? (
+                    <div className="d-flex justify-content-center">
+                      <div
+                        className="spinner-border text-secondary"
+                        role="status"
+                      >
+                        <span className="sr-only">Loading...</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <></>
+                  )}
+                </div>
               </div>
             </div>
             <div className="col-md-3">
