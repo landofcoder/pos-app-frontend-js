@@ -124,6 +124,11 @@ export async function getMainUrlKey() {
   return { status: false };
 }
 
+/**
+ * Get module installed
+ * @param url
+ * @returns void
+ */
 export async function getModuleInstalledService(url) {
   let data;
   let error = false;
@@ -139,9 +144,18 @@ export async function getModuleInstalledService(url) {
         referrer: 'no-referrer'
       }
     );
-    data = await response.json();
+    const statusCode = response.status;
+    if (statusCode === 200) {
+      data = await response.json();
+    } else {
+      data = [
+        {
+          'module-all': false
+        }
+      ];
+    }
   } catch (e) {
-    data = [];
+    data = {};
     error = true;
   }
   return { data, error };

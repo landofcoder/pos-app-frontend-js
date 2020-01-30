@@ -6,6 +6,7 @@ import {
   getOrderHistoryDetail,
   toggleModalOrderDetail
 } from '../../../../actions/accountAction';
+
 type Props = {
   orderHistoryDetail: {},
   order_id_history: number,

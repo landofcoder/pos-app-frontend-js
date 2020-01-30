@@ -817,7 +817,6 @@ function* getDiscountForOfflineCheckoutSaga() {
  * @returns void
  */
 function* checkLoginBackgroundSaga() {
-  console.log('background login checking...');
   const loggedDb = yield getLoggedDb();
 
   // Logged
