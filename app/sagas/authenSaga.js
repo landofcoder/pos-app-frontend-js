@@ -75,7 +75,6 @@ function* getModuleInstalled() {
 
   const url = yield select(senseUrl);
   const data = yield call(getModuleInstalledService, url);
-  console.log(data);
   if (data.error) {
     yield put({
       type: types.ERROR_SERVICE_MODULES_INSTALLED,

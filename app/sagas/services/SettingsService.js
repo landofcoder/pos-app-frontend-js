@@ -1,8 +1,8 @@
 import {
-  getByKey,
   createKey,
-  updateById,
-  getByKeyV2
+  getByKey,
+  getByKeyV2,
+  updateById
 } from '../../reducers/db/settings';
 
 const syncAllDataLabel = 'sync_all_data';
@@ -18,17 +18,13 @@ export async function haveToSyncAllData() {
 
 export async function createSyncAllDataFlag() {
   // Check exists for create new or update
-  const data = await getByKey(syncAllDataLabel);
-  if (data.length > 0) {
-    const config = data[0];
-    await updateById(config, syncAllDataLabel);
+  const data = await getByKeyV2(syncAllDataLabel);
+  console.log('sync all data:', data);
+  if (data) {
+    await updateById(data, syncAllDataLabel);
   } else {
     await createKey(syncAllDataLabel);
   }
-}
-
-export async function updateSyncAllDataFlag(id) {
-  await updateById(id, { time: Date.now(), timeFormat: new Date() });
 }
 
 export async function systemConfigSync(systemConfig) {

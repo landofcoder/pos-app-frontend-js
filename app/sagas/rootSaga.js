@@ -36,8 +36,7 @@ import {
 } from './services/CommonService';
 import {
   createSyncAllDataFlag,
-  haveToSyncAllData,
-  updateSyncAllDataFlag
+  haveToSyncAllData
 } from './services/SettingsService';
 import {
   getInfoCashierService,
@@ -679,13 +678,11 @@ function* syncData() {
       // Sync products by categories
       yield call(syncAllProducts, allCategories);
 
-      if (syncUpdateId !== false) {
-        // Update flag to get current time as flag
-        yield updateSyncAllDataFlag(syncUpdateId);
-      } else {
-        // Wait for sync completed and create last time sync for each period sync execution
-        yield createSyncAllDataFlag();
-      }
+      // Update time to flag sync
+      yield createSyncAllDataFlag();
+
+      // Update counterMode for recheck background
+      yield put({ type: types.UPDATE_FLAG_SWITCHING_MODE });
     } else {
       console.warn(
         'offline mode not on, pls enable offline mode and connect to the internet'
@@ -726,7 +723,6 @@ function* getProductByCategory(payload) {
  * @returns void
  */
 function* getProductByCategoryLazyLoad(categoryId, currentPage) {
-  console.log('pass1:', currentPage);
   const productByCategory = yield call(getProductByCategoryService, {
     categoryId,
     currentPage
@@ -818,7 +814,7 @@ function* getDiscountForOfflineCheckoutSaga() {
  */
 function* checkLoginBackgroundSaga() {
   const loggedDb = yield getLoggedDb();
-
+  console.info('login background checking');
   // Logged
   if (loggedDb !== false) {
     // Get main url key
@@ -866,14 +862,15 @@ function* checkLoginBackgroundSaga() {
         payload: LINK_CASHIER_TO_ADMIN_REQUIRE
       });
     } else {
+      // All it's ok
+      yield bootstrapApplicationSaga();
+
       // If offline enabled and have no product sync => Show sync screen
       if (offlineMode === 1 && counterProductLocal === 0) {
         // Show screen sync
         yield put({ type: types.UPDATE_SWITCHING_MODE, payload: SYNC_SCREEN });
         yield syncData();
       } else {
-        // All it's ok
-        yield bootstrapApplicationSaga();
         yield put({ type: types.UPDATE_SWITCHING_MODE, payload: CHILDREN });
         yield syncData();
       }
@@ -884,8 +881,12 @@ function* checkLoginBackgroundSaga() {
   }
 }
 
+/**
+ * Skip sync form and go to main POS
+ * @returns void
+ */
 function* gotoChildrenPanelTriggerSaga() {
-  yield bootstrapApplicationSaga();
+  yield getDefaultProduct();
   yield put({ type: types.UPDATE_SWITCHING_MODE, payload: CHILDREN });
   // Update counter for switch detect
   yield put({ type: types.UPDATE_FLAG_SWITCHING_MODE });
