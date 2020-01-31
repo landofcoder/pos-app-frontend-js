@@ -22,6 +22,7 @@ import EditCart from './ListCart/EditCart/EditCart';
 import { sumCartTotalPrice } from '../common/cart';
 import Categories from './commons/Categories/Categories';
 import routers from '../constants/routes';
+import { limitLoop } from '../common/settings';
 
 type Props = {
   productList: Array<Object>,
@@ -38,6 +39,7 @@ type Props = {
   productOption: Object,
   isShowCashPaymentModel: boolean,
   updateIsShowingProductOption: (payload: boolean) => void,
+  autoLoginToGetNewToken: () => void,
   mainProductListLoading: boolean,
   isOpenReceiptModal: boolean,
   isShowModalItemEditCart: boolean,
@@ -74,6 +76,11 @@ export default class Pos extends Component<Props, State> {
       redirectToAccount: false,
       mainWrapProductPanel: 'main-wrap-product-panel'
     };
+  }
+
+  componentDidMount(): void {
+    const { autoLoginToGetNewToken } = this.props;
+    limitLoop(autoLoginToGetNewToken, 30, 3000);
   }
 
   getFirstMedia = (item: Object) => {

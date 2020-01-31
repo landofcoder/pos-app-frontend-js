@@ -284,3 +284,9 @@ export function loadProductPaging() {
     type: types.LOAD_PRODUCT_PAGING
   };
 }
+
+export function autoLoginToGetNewToken() {
+  return {
+    type: types.AUTO_LOGIN_TO_GET_NEW_TOKEN
+  };
+}

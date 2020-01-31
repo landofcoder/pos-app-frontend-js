@@ -60,7 +60,7 @@ export async function loginService(payload) {
     const data = await response.json();
     return data;
   }
-  return '';
+  return 'error';
 }
 
 /**
