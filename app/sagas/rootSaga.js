@@ -1019,6 +1019,12 @@ function* updateQtyCartItemSaga(payload) {
 function* bootstrapApplicationSaga() {
   // Get all config
   yield getPostConfigGeneralConfig();
+
+  // Apply all main settings
+  const posSystemConfigResult = yield select(posSystemConfig);
+  const generalConfig = posSystemConfigResult.general_configuration;
+  const posTitle = generalConfig.pos_title;
+  document.title = posTitle;
 }
 
 /**
