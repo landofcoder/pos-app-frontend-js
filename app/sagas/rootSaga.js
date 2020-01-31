@@ -650,7 +650,6 @@ function* syncData() {
   const allCategories = yield call(getAllCategoriesService);
   const haveToSync = yield haveToSyncAllData();
   let letSync = false;
-  let syncUpdateId = false;
 
   if (haveToSync.length === 0) {
     letSync = true;
@@ -661,7 +660,6 @@ function* syncData() {
     const distanceMinute = differenceInMinutes(new Date(), new Date(time));
     if (distanceMinute > timePeriod) {
       letSync = true;
-      syncUpdateId = obj.id;
     }
   }
 

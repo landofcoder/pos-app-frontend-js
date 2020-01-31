@@ -64,4 +64,4 @@ export function limitLoop(fn, fps = 30, timeOut = null) {
  * Default page number per page for product
  * @type {number}
  */
-export const defaultPageSize = 12;
+export const defaultPageSize = 20;

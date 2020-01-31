@@ -19,7 +19,6 @@ export async function haveToSyncAllData() {
 export async function createSyncAllDataFlag() {
   // Check exists for create new or update
   const data = await getByKeyV2(syncAllDataLabel);
-  console.log('sync all data:', data);
   if (data) {
     await updateById(data, syncAllDataLabel);
   } else {
