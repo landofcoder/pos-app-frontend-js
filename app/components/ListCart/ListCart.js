@@ -102,7 +102,6 @@ class ListCart extends Component<Props> {
             return (
               <li
                 key={`${item.id}${index}`}
-                onClick={() => this.editCartItem(item, index)}
                 className={`${styles.item}`}
               >
                 <div className={styles.wrapLineProduct}>
@@ -110,7 +109,7 @@ class ListCart extends Component<Props> {
                     <img src={this.getFirstMedia(item)} alt="" />
                   </div>
                   <div className={styles.wrapInfo}>
-                    <div className={styles.wrapProductName}>
+                    <div className={styles.wrapProductName} onClick={() => this.editCartItem(item, index)}>
                       <span>{item.name}</span>
                     </div>
                     <div className={styles.wrapPriceInfo}>

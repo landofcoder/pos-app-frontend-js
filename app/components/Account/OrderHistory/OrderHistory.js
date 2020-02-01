@@ -45,9 +45,9 @@ class OrderHistory extends Component<Props> {
               <tr className={Styles.fixBorderTop}>
                 <th scope="col">#</th>
                 <th scope="col">Id</th>
-                <th scope="col">Product Name</th>
                 <th scope="col">Total</th>
                 <th scope="col">Status</th>
+                <th scope="col">Created at</th>
               </tr>
             </thead>
             <tbody>
@@ -61,24 +61,10 @@ class OrderHistory extends Component<Props> {
                     }
                   >
                     <th scope="row">{index + 1}</th>
-                    <td>{item.increment_id}</td>
-                    <td>
-                      {item.items === undefined
-                        ? null
-                        : item.items.map(product => (
-                            <>
-                              <p className="mb-0">{product.name}</p>
-                              <p className={`mb-0 ${Styles.shapeText}`}>
-                                1 Unit(s) at ${product.price_incl_tax}/Unit
-                              </p>
-                              <p className={Styles.shapeText}>
-                                ${product.row_total_incl_tax}
-                              </p>
-                            </>
-                          ))}
-                    </td>
-                    <td>${item.subtotal_incl_tax}</td>
-                    <td>{item.status}</td>
+                    <td>{item.sales_order_id}</td>
+                    <td>${item.grand_total}</td>
+                    <td>{item.order_status}</td>
+                    <td>{item.created_at}</td>
                   </tr>
                 );
               })}
