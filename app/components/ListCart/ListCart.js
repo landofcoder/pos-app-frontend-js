@@ -100,16 +100,16 @@ class ListCart extends Component<Props> {
         <ul className={styles.listGroup}>
           {cartCurrent.data.map((item, index) => {
             return (
-              <li
-                key={`${item.id}${index}`}
-                className={`${styles.item}`}
-              >
+              <li key={`${item.id}${index}`} className={`${styles.item}`}>
                 <div className={styles.wrapLineProduct}>
                   <div className={styles.wrapImage}>
                     <img src={this.getFirstMedia(item)} alt="" />
                   </div>
                   <div className={styles.wrapInfo}>
-                    <div className={styles.wrapProductName} onClick={() => this.editCartItem(item, index)}>
+                    <div
+                      className={styles.wrapProductName}
+                      onClick={() => this.editCartItem(item, index)}
+                    >
                       <span>{item.name}</span>
                     </div>
                     <div className={styles.wrapPriceInfo}>
