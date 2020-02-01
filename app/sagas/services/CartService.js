@@ -37,20 +37,20 @@ export async function addProductToQuote(cartId, item, payloadCart) {
     }
   };
   const response = await fetch(url, {
-    method: 'POST', // *GET, POST, PUT, DELETE, etc.
-    mode: 'cors', // no-cors, *cors, same-origin
-    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-    credentials: 'same-origin', // include, *same-origin, omit
+    method: 'POST',
+    mode: 'cors',
+    cache: 'no-cache',
+    credentials: 'same-origin',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`
-      // 'Content-Type': 'application/x-www-form-urlencoded',
     },
-    redirect: 'follow', // manual, *follow, error
-    referrer: 'no-referrer', // no-referrer, *client
-    body: JSON.stringify(cartItem) // body data type must match "Content-Type" header
+    redirect: 'follow',
+    referrer: 'no-referrer',
+    body: JSON.stringify(cartItem)
   });
-  return await response.json(); // parses JSON response into native JavaScript objects
+  const data = await response.json();
+  return data;
 }
 
 /**
@@ -77,16 +77,15 @@ export async function placeCashOrderService(cartToken, payloadCart) {
 
   const response = await fetch(url, {
     method,
-    mode: 'cors', // no-cors, *cors, same-origin
-    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-    credentials: 'same-origin', // include, *same-origin, omit
+    mode: 'cors',
+    cache: 'no-cache',
+    credentials: 'same-origin',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`
-      // 'Content-Type': 'application/x-www-form-urlencoded',
     },
-    redirect: 'follow', // manual, *follow, error
-    referrer: 'no-referrer', // no-referrer, *client
+    redirect: 'follow',
+    referrer: 'no-referrer',
     body: JSON.stringify({
       paymentMethod: { method: defaultPaymentMethod },
       app: 'LOF_POS',
@@ -107,18 +106,17 @@ export async function createGuestCartService() {
   const response = await fetch(
     `${window.mainUrl}index.php/rest/V1/guest-carts/`,
     {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
-      mode: 'cors', // no-cors, *cors, same-origin
-      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: 'same-origin', // include, *same-origin, omit
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${window.liveToken}`
-        // 'Content-Type': 'application/x-www-form-urlencoded',
       },
-      redirect: 'follow', // manual, *follow, error
-      referrer: 'no-referrer', // no-referrer, *client
-      body: JSON.stringify({}) // body data type must match "Content-Type" header
+      redirect: 'follow',
+      referrer: 'no-referrer',
+      body: JSON.stringify({})
     }
   );
   const data = await response.json();
@@ -132,9 +130,14 @@ export async function createGuestCartService() {
  * @returns void
  */
 export async function addShippingInformationService(cartToken, payloadCart) {
+  console.log('payload cart:', payloadCart);
   let url = '';
   let token = window.liveToken;
-  const { defaultShippingMethod, posSystemConfigCustomer } = payloadCart;
+  const {
+    defaultShippingMethod,
+    posSystemConfigCustomer,
+    defaultGuestCheckout
+  } = payloadCart;
   if (payloadCart.isGuestCustomer) {
     url = `${window.mainUrl}index.php/rest/V1/guest-carts/${cartToken}/shipping-information`;
   } else {
@@ -144,21 +147,26 @@ export async function addShippingInformationService(cartToken, payloadCart) {
   }
 
   const response = await fetch(url, {
-    method: 'POST', // *GET, POST, PUT, DELETE, etc.
-    mode: 'cors', // no-cors, *cors, same-origin
-    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-    credentials: 'same-origin', // include, *same-origin, omit
+    method: 'POST',
+    mode: 'cors',
+    cache: 'no-cache',
+    credentials: 'same-origin',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`
-      // 'Content-Type': 'application/x-www-form-urlencoded',
     },
-    redirect: 'follow', // manual, *follow, error
-    referrer: 'no-referrer', // no-referrer, *client
+    redirect: 'follow',
+    referrer: 'no-referrer',
     body: JSON.stringify({
       addressInformation: {
-        shippingAddress: renderShippingAddress(posSystemConfigCustomer),
-        billingAddress: renderShippingAddress(posSystemConfigCustomer),
+        shippingAddress: renderShippingAddress(
+          posSystemConfigCustomer,
+          defaultGuestCheckout
+        ),
+        billingAddress: renderShippingAddress(
+          posSystemConfigCustomer,
+          defaultGuestCheckout
+        ),
         shipping_method_code: defaultShippingMethod,
         shipping_carrier_code: defaultShippingMethod
       }
@@ -171,26 +179,60 @@ export async function addShippingInformationService(cartToken, payloadCart) {
 /**
  * Render shipping address
  * @param customerConfig
+ * @param defaultGuestCheckout
  * @returns void
  */
-function renderShippingAddress(customerConfig) {
-  const city = customerConfig ? customerConfig.city : 'California';
-  const country = customerConfig ? customerConfig.country : 'US';
-  const email = customerConfig ? customerConfig.email : 'guestemail@gmail.com';
-  const firstName = customerConfig ? customerConfig.first_name : 'john';
-  const lastName = customerConfig ? customerConfig.harrison : 'harrison';
-  const street = customerConfig ? customerConfig.street : ['Street Address'];
-  const telephone = customerConfig ? customerConfig.telephone : '2313131312';
+function renderShippingAddress(customerConfig, defaultGuestCheckout) {
+  console.log('dd1:', customerConfig);
+  console.log('dd2:', defaultGuestCheckout);
+
+  let city;
+  let country;
+  let email;
+  let firstName;
+  let lastName;
+  let street;
+  let telephone;
+  let postcode = '';
+  let regionId = 1;
+
+  // If customer selected
+  if (customerConfig) {
+    city = customerConfig ? customerConfig.city : '';
+    country = customerConfig ? customerConfig.country : '';
+    email = customerConfig ? customerConfig.email : '';
+    firstName = customerConfig ? customerConfig.first_name : '';
+    lastName = customerConfig ? customerConfig.last_name : '';
+    street = customerConfig ? customerConfig.street : [''];
+    telephone = customerConfig ? customerConfig.telephone : '';
+  } else {
+    // Get from customer guest checkout
+    // eslint-disable-next-line prefer-destructuring
+    city = defaultGuestCheckout.city;
+    // eslint-disable-next-line prefer-destructuring
+    country = defaultGuestCheckout.country;
+    // eslint-disable-next-line prefer-destructuring
+    email = defaultGuestCheckout.email;
+    firstName = defaultGuestCheckout.first_name;
+    lastName = defaultGuestCheckout.last_name;
+    // eslint-disable-next-line prefer-destructuring
+    street = [defaultGuestCheckout.street];
+    // eslint-disable-next-line prefer-destructuring
+    telephone = defaultGuestCheckout.telephone;
+    // eslint-disable-next-line prefer-destructuring
+    regionId = defaultGuestCheckout.region_id;
+    postcode = defaultGuestCheckout.zip_code;
+  }
   return {
     country_id: country,
     street,
     company: '',
     telephone,
-    postcode: 'A1B2C3',
-    regionId: '1',
+    postcode,
+    regionId,
     city,
-    firstname: firstName || 'john',
-    lastname: lastName || 'harrison',
+    firstname: firstName,
+    lastname: lastName,
     email,
     sameAsBilling: 1
   };
@@ -205,21 +247,20 @@ export async function createInvoiceService(orderId) {
   const response = await fetch(
     `${window.mainUrl}index.php/rest/V1/order/${orderId}/invoice`,
     {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
-      mode: 'cors', // no-cors, *cors, same-origin
-      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: 'same-origin', // include, *same-origin, omit
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${window.liveToken}`
-        // 'Content-Type': 'application/x-www-form-urlencoded',
       },
-      redirect: 'follow', // manual, *follow, error
-      referrer: 'no-referrer', // no-referrer, *client
+      redirect: 'follow',
+      referrer: 'no-referrer',
       body: JSON.stringify({
         capture: true,
         notify: true
-      }) // body data type must match "Content-Type" header
+      })
     }
   );
   const data = await response.json();
@@ -230,18 +271,17 @@ export async function createShipmentService(orderId) {
   const response = await fetch(
     `${window.mainUrl}index.php/rest/V1/order/${orderId}/ship`,
     {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
-      mode: 'cors', // no-cors, *cors, same-origin
-      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: 'same-origin', // include, *same-origin, omit
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${window.liveToken}`
-        // 'Content-Type': 'application/x-www-form-urlencoded',
       },
-      redirect: 'follow', // manual, *follow, error
-      referrer: 'no-referrer', // no-referrer, *client
-      body: JSON.stringify({}) // body data type must match "Content-Type" header
+      redirect: 'follow',
+      referrer: 'no-referrer',
+      body: JSON.stringify({})
     }
   );
   const data = await response.json();
@@ -263,17 +303,16 @@ export async function getDiscountForQuoteService(payload) {
     const response = await fetch(
       `${window.mainUrl}index.php/rest/V1/pos/get-discount-quote`,
       {
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
-        mode: 'cors', // no-cors, *cors, same-origin
-        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: 'same-origin', // include, *same-origin, omit
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${window.liveToken}`
-          // 'Content-Type': 'application/x-www-form-urlencoded',
         },
-        redirect: 'follow', // manual, *follow, error
-        referrer: 'no-referrer', // no-referrer, *client
+        redirect: 'follow',
+        referrer: 'no-referrer',
         body: JSON.stringify({ param: JSON.stringify({ cart, config }) })
       }
     );

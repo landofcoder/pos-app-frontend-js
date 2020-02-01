@@ -90,7 +90,7 @@ const itemCartEditing = state => state.mainRd.itemCartEditing;
 const currentPosCommand = state => state.mainRd.currentPosCommand;
 
 /**
- * Create quote
+ * Create quote and show cash model
  */
 function* cashCheckout() {
   // Show cash modal
@@ -135,8 +135,9 @@ function* cashCheckout() {
     const {
       cartId,
       isGuestCustomer,
-      customerToken
-    } = yield getCustomerCartToken();
+      customerToken,
+      defaultGuestCheckout
+    } = yield getCustomerCart();
 
     yield all(
       cartCurrentResult.map(item =>
@@ -152,7 +153,8 @@ function* cashCheckout() {
       isGuestCustomer,
       customerToken,
       defaultShippingMethod,
-      posSystemConfigGuestCustomer
+      posSystemConfigGuestCustomer,
+      defaultGuestCheckout
     });
 
     yield put({
@@ -170,10 +172,13 @@ function* cashCheckout() {
 
 /**
  * Create cart token for guest or customer user
- * @returns {Generator<any, {isGuestCustomer: *, customerToken: *, cardId: *}>}
+ * @returns void
  */
-function* getCustomerCartToken() {
+function* getCustomerCart() {
   const customerRdResult = yield select(customer);
+  const posSystemConfigResult = yield select(posSystemConfig);
+  const defaultGuestCheckout = posSystemConfigResult.default_guest_checkout;
+
   let isGuestCustomer = true;
   if (customerRdResult !== null) {
     // Customer logged
@@ -208,7 +213,8 @@ function* getCustomerCartToken() {
   return {
     cartId,
     isGuestCustomer,
-    customerToken
+    customerToken,
+    defaultGuestCheckout
   };
 }
 

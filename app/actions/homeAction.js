@@ -1,6 +1,12 @@
 import * as types from '../constants/root';
 import * as typesAuthen from '../constants/authen.json';
 
+export function cashPlaceOrderAction() {
+  return {
+    type: types.CASH_CHECKOUT_PLACE_ORDER_ACTION
+  };
+}
+
 export function addToCart(payload: any) {
   return {
     type: types.ADD_TO_CART,
