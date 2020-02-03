@@ -43,7 +43,7 @@ class CashOnline extends Component<Props> {
       const output = eval(
         inputCustomerCash + '-' + this.filterToNumberString(grandTotal)
       );
-      return output;
+      return formatCurrencyCode(output, currencyCode);
     } catch (err) {
       console.log('calculate error');
     }
