@@ -12,12 +12,50 @@ type Props = {
 class CashOnline extends Component<Props> {
   props: Props;
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      inputCustomerCash: ''
+    };
+  }
+
+  changeInputCustomerCash = event => {
+    console.log(event);
+    this.setState({ inputCustomerCash: event.target.value });
+  };
+
+  filterToNumberString = value => {
+    let number = '';
+    for (let i = 0; i < value.length; i += 1)
+      if ((value[i] >= 0 && value[i] < 10) || value[i] === '.')
+        number += value[i];
+    return number;
+  };
+
+  calculateNumberString = () => {
+    const { inputCustomerCash } = this.state;
+    const { orderPreparingCheckout, currencyCode } = this.props;
+    const grandTotal = formatCurrencyCode(
+      orderPreparingCheckout.totals.grand_total,
+      currencyCode
+    );
+    try {
+      const output = eval(
+        inputCustomerCash + '-' + this.filterToNumberString(grandTotal)
+      );
+      return output;
+    } catch (err) {
+      console.log('calculate error');
+    }
+  };
+
   render() {
     const {
       orderPreparingCheckout,
       cashLoadingPreparingOrder,
       currencyCode
     } = this.props;
+    const { inputCustomerCash } = this.state;
     const subTotal = formatCurrencyCode(
       orderPreparingCheckout.totals.base_subtotal,
       currencyCode
@@ -85,6 +123,43 @@ class CashOnline extends Component<Props> {
               </div>
             )}
           </div>
+          <div className="col-sm-4 pt-1">
+            <label htmlFor="staticEmail">Customer's Cash</label>
+          </div>
+          <div className="col-sm-8 pb-1">
+            <input
+              type="number"
+              placeholder="Input Customer's Cash"
+              className="form-control"
+              onChange={this.changeInputCustomerCash}
+              value={inputCustomerCash}
+            />
+          </div>
+          {/* <div className={Styles.lineSubTotal} /> */}
+          {inputCustomerCash === '' ? null : (
+            <>
+              <div className="col-sm-4 pt-1">
+                <label htmlFor="staticEmail">Spare Cash</label>
+              </div>
+
+              <div className="col-sm-8 pt-1">
+                {cashLoadingPreparingOrder ? (
+                  <div
+                    className="spinner-border spinner-border-sm"
+                    role="status"
+                  >
+                    <span className="sr-only">Loading...</span>
+                  </div>
+                ) : (
+                  <div className="font-weight-bold">
+                    <p className="font-weight-bold">
+                      {this.calculateNumberString()}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
         </div>
       </>
     );
