@@ -207,22 +207,26 @@ export async function getAllCategoriesService() {
  * @returns void
  */
 export async function getOrderHistoryService() {
-  const response = await fetch(
-    `${window.mainUrl}/rest/V1/pos/order_history/search?searchCriteria[sortOrders][0][field]=pos_order_id`,
-    {
-      method: 'GET',
-      cache: 'no-cache',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${window.liveToken}`
-      },
-      redirect: 'follow',
-      referrer: 'no-referrer'
-    }
-  );
-  const data = await response.json();
-  return data;
+  try {
+    const response = await fetch(
+      `${window.mainUrl}/rest/V1/pos/order_history/search?searchCriteria[sortOrders][0][field]=pos_order_id`,
+      {
+        method: 'GET',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${window.liveToken}`
+        },
+        redirect: 'follow',
+        referrer: 'no-referrer'
+      }
+    );
+    const data = await response.json();
+    return data;
+  } catch (e) {
+    return { items: [] };
+  }
 }
 
 export async function getOrderHistoryServiceDetails(index) {

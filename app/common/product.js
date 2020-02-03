@@ -135,15 +135,6 @@ export function reformatConfigurableProduct(item, firstInit = true) {
   return reAssignItem;
 }
 
-export function formatCurrencyCode(value, currencyCode) {
-  const locale = LocaleCurrency.getLocales(currencyCode)[0];
-  const formatter = new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency: currencyCode
-  });
-  return formatter.format(value);
-}
-
 /**
  * Get bundle option with selected id
  * @param item

@@ -1,8 +1,7 @@
-// @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Styles from './cash.scss';
-import { formatCurrencyCode } from '../../../common/product';
+import { formatCurrencyCode } from '../../../common/settings';
 
 type Props = {
   cashLoadingPreparingOrder: boolean,

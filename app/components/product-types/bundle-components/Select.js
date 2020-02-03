@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
@@ -6,7 +5,7 @@ import {
   onBundleProductQtyOnChange
 } from '../../../actions/homeAction';
 import { findOptionById } from '../../../utils/common';
-import { formatCurrencyCode } from '../../../common/product';
+import { formatCurrencyCode } from '../../../common/settings';
 
 type Props = {
   item: Object,

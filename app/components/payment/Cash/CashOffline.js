@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Styles from './cash.scss';
 import { getDiscountForOfflineCheckout } from '../../../actions/homeAction';
-import { sumCartTotalPrice, formatCurrencyCode } from '../../../common/cart';
+import { sumCartTotalPrice } from '../../../common/cart';
+import { formatCurrencyCode } from '../../../common/settings';
 
 type Props = {
   getDiscountForOfflineCheckout: () => void,

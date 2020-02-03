@@ -1,5 +1,5 @@
 import { BUNDLE, SIMPLE, DOWNLOADABLE } from '../constants/product-types';
-import { formatCurrencyCode } from './product';
+import { formatCurrencyCode } from './settings';
 
 export function calcPrice(product, currencyCode) {
   let productAssign = Object.assign({}, product);

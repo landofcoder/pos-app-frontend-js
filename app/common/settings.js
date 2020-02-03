@@ -1,3 +1,5 @@
+import LocaleCurrency from 'locale-currency';
+
 /**
  * Get offline mode
  * @returns number
@@ -58,6 +60,15 @@ export function limitLoop(fn, fps = 30, timeOut = null) {
       fn();
     }
   })(0);
+}
+
+export function formatCurrencyCode(value: number) {
+  const locale = LocaleCurrency.getLocales(window.currency)[0];
+  const formatter = new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: window.currency
+  });
+  return formatter.format(value);
 }
 
 /**

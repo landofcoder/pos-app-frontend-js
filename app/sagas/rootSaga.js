@@ -63,6 +63,7 @@ import {
 import { syncCategories } from '../reducers/db/categories';
 import { syncCustomers } from '../reducers/db/customers';
 import { signUpCustomer } from '../reducers/db/sync_customers';
+import { getAllOrders } from '../reducers/db/sync_orders';
 import { counterProduct } from '../reducers/db/products';
 import { getOfflineMode } from '../common/settings';
 import {
@@ -83,7 +84,6 @@ const cartId = state => state.mainRd.cartCurrent.cartId;
 const cartIsGuestCustomer = state => state.mainRd.cartCurrent.isGuestCustomer;
 const optionValue = state => state.mainRd.productOption.optionValue;
 const customer = state => state.mainRd.cartCurrent.customer;
-const shopInfoConfig = state => state.mainRd.shopInfoConfig;
 const posSystemConfig = state => state.mainRd.posSystemConfig;
 const cashierInfo = state => state.authenRd.cashierInfo;
 const itemCartEditing = state => state.mainRd.itemCartEditing;
@@ -103,9 +103,8 @@ function* cashCheckout() {
   const cartCurrentResultObj = yield select(cartCurrentObj);
 
   if (offlineMode === 1) {
-    let currencyCode = yield select(shopInfoConfig);
     // eslint-disable-next-line prefer-destructuring
-    currencyCode = currencyCode[0];
+    const currencyCode = window.currency;
     const totalPrice = sumCartTotalPrice(
       cartCurrentResultObj,
       currencyCode,
@@ -546,9 +545,7 @@ function* getSearchCustomer(payload) {
 function* addToCart(payload) {
   // Find sky if exits sku, then increment qty
   const listCartCurrent = yield select(cartCurrent);
-  let currencyCode = yield select(shopInfoConfig);
-  // eslint-disable-next-line prefer-destructuring
-  currencyCode = currencyCode[0];
+  const currencyCode = window.currency;
 
   const product = Object.assign({}, payload.payload);
   const productSku = product.sku;
@@ -622,6 +619,13 @@ function* getCustomReceipt(outletId) {
 function* getPostConfigGeneralConfig() {
   // Get shop info
   const shopInfoResponse = yield call(getShopInfoService);
+  yield put({
+    type: types.RECEIVED_SHOP_INFO_CONFIG,
+    payload: shopInfoResponse
+  });
+
+  // eslint-disable-next-line prefer-destructuring
+  window.currency = shopInfoResponse[0];
 
   // Get all cashier info
   const cashierInfo = yield call(getInfoCashierService);
@@ -633,11 +637,6 @@ function* getPostConfigGeneralConfig() {
 
   // Get custom receipt
   yield getCustomReceipt(outletId);
-
-  yield put({
-    type: types.RECEIVED_SHOP_INFO_CONFIG,
-    payload: shopInfoResponse
-  });
 
   // Get all categories
   const allCategories = yield call(getAllCategoriesService);
@@ -755,7 +754,15 @@ function* getOrderHistory() {
   yield put({ type: types.TURN_ON_LOADING_ORDER_HISTORY });
   const data = yield call(getOrderHistoryService);
 
-  yield put({ type: types.RECEIVED_ORDER_HISTORY_ACTION, payload: data.items });
+  // Get orders from local db
+  const allOrders = yield getAllOrders();
+  console.log('all orders:', allOrders);
+
+  yield put({
+    type: types.RECEIVED_ORDER_HISTORY_ACTION,
+    payload: data.items,
+    syncOrders: allOrders
+  });
   yield put({ type: types.TURN_OFF_LOADING_ORDER_HISTORY });
 }
 
@@ -1003,10 +1010,7 @@ function* updateQtyCartItemSaga(payload) {
 
   // Update qty
   product.pos_qty = qty;
-
-  let currencyCode = yield select(shopInfoConfig);
-  // eslint-disable-next-line prefer-destructuring
-  currencyCode = currencyCode[0];
+  const currencyCode = window.currency;
 
   const productAssign = yield calcPrice(product, currencyCode);
   yield put({

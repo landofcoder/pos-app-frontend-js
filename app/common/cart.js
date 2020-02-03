@@ -1,4 +1,4 @@
-import LocaleCurrency from 'locale-currency';
+import { formatCurrencyCode } from './settings';
 
 /**
  * Sum total price for offline mode
@@ -20,13 +20,4 @@ export function sumCartTotalPrice(
     return formatCurrencyCode(totalPrice, currencyCode);
   }
   return totalPrice;
-}
-
-export function formatCurrencyCode(value: number, currencyCode: string) {
-  const locale = LocaleCurrency.getLocales(currencyCode)[0];
-  const formatter = new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency: currencyCode
-  });
-  return formatter.format(value);
 }

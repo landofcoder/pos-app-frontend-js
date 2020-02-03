@@ -1,9 +1,8 @@
-// @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { deleteItemCart } from '../../../../actions/homeAction';
 import style from './cartReceipt.scss';
-import { formatCurrencyCode } from '../../../../common/product';
+import { formatCurrencyCode } from '../../../../common/settings';
 
 type Props = {
   cartForReceipt: Array,

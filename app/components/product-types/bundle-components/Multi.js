@@ -1,11 +1,10 @@
-// @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
   onBundleMultipleCheckboxOnChange,
   onBundleMultipleCheckboxRemoveItem
 } from '../../../actions/homeAction';
-import { formatCurrencyCode } from '../../../common/product';
+import { formatCurrencyCode } from '../../../common/settings';
 
 type Props = {
   item: Object,

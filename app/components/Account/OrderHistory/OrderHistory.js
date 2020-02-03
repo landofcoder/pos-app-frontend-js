@@ -6,6 +6,7 @@ import {
 } from '../../../actions/accountAction';
 import DetailOrder from './DetailOrder/DetailOrder';
 import Styles from './order-history.scss';
+import { formatCurrencyCode } from '../../../common/settings';
 
 type Props = {
   getOrderHistory: () => void,
@@ -62,7 +63,7 @@ class OrderHistory extends Component<Props> {
                   >
                     <th scope="row">{index + 1}</th>
                     <td>{item.sales_order_id}</td>
-                    <td>${item.grand_total}</td>
+                    <td>{formatCurrencyCode(item.grand_total)}</td>
                     <td>{item.order_status}</td>
                     <td>{item.created_at}</td>
                   </tr>

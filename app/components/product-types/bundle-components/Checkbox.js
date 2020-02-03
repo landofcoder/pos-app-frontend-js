@@ -1,8 +1,7 @@
-// @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { onBundleCheckBoxOnChange } from '../../../actions/homeAction';
-import { formatCurrencyCode } from '../../../common/product';
+import { formatCurrencyCode } from '../../../common/settings';
 
 type Props = {
   item: Object,

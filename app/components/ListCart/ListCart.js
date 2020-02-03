@@ -6,7 +6,7 @@ import {
   deleteItemCart,
   updateIsShowModelEditingCartItem
 } from '../../actions/homeAction';
-import { formatCurrencyCode } from '../../common/product';
+import { formatCurrencyCode } from '../../common/settings';
 
 type Props = {
   cartCurrent: Array,
