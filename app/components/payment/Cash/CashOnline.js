@@ -111,9 +111,21 @@ class CashOnline extends Component<Props> {
               </div>
             )}
           </div>
-          <div className="col-sm-4 pt-1 pr-0">
-            <label htmlFor="staticEmail">Customer's cash recieved</label>
+          <div className={Styles.lineSubTotal} />
+          <div className="col-sm-12 pt-2">
+            <p
+              className="modal-title font-weight-bold col-form-label"
+              id="modalCashPayment"
+            >
+              Checkout
+            </p>
           </div>
+          <label
+            className="col-sm-4 pt-1 pr-0 col-form-label"
+            htmlFor="staticEmail"
+          >
+            Customer's cash recieved
+          </label>
           <div className="col-sm-8 pb-1">
             <input
               ref={input => input && input.focus()}
@@ -127,9 +139,9 @@ class CashOnline extends Component<Props> {
           {/* <div className={Styles.lineSubTotal} /> */}
           {inputCustomerCash === '' ? null : (
             <>
-              <div className="col-sm-4 pt-1">
-                <label htmlFor="staticEmail">Change money</label>
-              </div>
+              <label htmlFor="staticEmail" className="col-sm-4 pt-1">
+                Change money
+              </label>
 
               <div className="col-sm-8 pt-1">
                 {cashLoadingPreparingOrder ? (
