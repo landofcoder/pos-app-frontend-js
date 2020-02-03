@@ -26,7 +26,21 @@ class EditCart extends Component<Props, State> {
     const { itemCartEditing } = this.props;
     const qty = itemCartEditing.pos_qty;
     this.setState({ posQty: qty });
+    document.addEventListener('keydown', this.escFunction, false);
   }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.escFunction, false);
+  }
+
+  escFunction = event => {
+    if (event.keyCode === 27) {
+      // Do whatever when esc is pressed
+      const { updateIsShowModelEditingCartItem } = this.props;
+      // Hide any modal
+      updateIsShowModelEditingCartItem({ open: false });
+    }
+  };
 
   counterUpQty = () => {
     const { posQty } = this.state;

@@ -35,28 +35,40 @@ class SignUpCustomer extends Component {
     this.state = initialState;
   }
 
+  componentDidMount(): void {
+    document.addEventListener('keydown', this.escFunction, false);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.escFunction, false);
+  }
+
+  escFunction = event => {
+    if (event.keyCode === 27) {
+      // Do whatever when esc is pressed
+      const { toggleModalSignUpCustomer } = this.props;
+      // Hide any modal
+      toggleModalSignUpCustomer(false);
+    }
+  };
+
   onChangeFirstName = event => {
-    let customer = this.state.customer;
+    const { customer } = this.state;
     customer.firstname = event.target.value;
-    this.setState({ customer: customer });
+    this.setState({ customer });
   };
 
   onChangeLastName = event => {
-    let customer = this.state.customer;
+    const { customer } = this.state;
     customer.lastname = event.target.value;
-    this.setState({ customer: customer });
+    this.setState({ customer });
   };
 
   onChangeEmail = event => {
-    let customer = this.state.customer;
+    const { customer } = this.state;
     customer.email = event.target.value;
-    this.setState({ customer: customer });
+    this.setState({ customer });
   };
-  // onChangePhone = event => {
-  //   if(event.target.value[event.target.value.length - 1] >=0 && +event.target.value[event.target.value.length - 1] <=9 || event.target.value == ''){
-  //     this.setState({ password: event.target.value });
-  //   }
-  // };
 
   onChangePassword = event => {
     this.setState({ password: event.target.value });
@@ -193,4 +205,7 @@ function mapDispatchToProps(dispatch) {
     signUpCustomer: payload => dispatch(signUpCustomer(payload))
   };
 }
-export default connect(mapStateToProps, mapDispatchToProps)(SignUpCustomer);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SignUpCustomer);

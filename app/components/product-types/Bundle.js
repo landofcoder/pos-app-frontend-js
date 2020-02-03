@@ -26,6 +26,23 @@ type Props = {
 class Bundle extends Component<Props> {
   props: Props;
 
+  componentDidMount(): void {
+    document.addEventListener('keydown', this.escFunction, false);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.escFunction, false);
+  }
+
+  escFunction = event => {
+    if (event.keyCode === 27) {
+      // Do whatever when esc is pressed
+      const { updateIsShowingProductOption } = this.props;
+      // Hide any modal
+      updateIsShowingProductOption(false);
+    }
+  };
+
   renderViewByComponent = (item, index) => {
     switch (item.type) {
       case SELECT:
@@ -59,7 +76,8 @@ class Bundle extends Component<Props> {
     const isLoading = !optionValue;
     let totalPrice = 0;
     if (optionValue) {
-      totalPrice = sumBundlePrice(optionValue, currencyCode).pos_totalPriceFormat;
+      totalPrice = sumBundlePrice(optionValue, currencyCode)
+        .pos_totalPriceFormat;
     }
     return (
       <div className="modal-content">
@@ -97,7 +115,8 @@ class Bundle extends Component<Props> {
                 type="button"
                 className="close"
                 data-dismiss="modal"
-                aria-label="Close">
+                aria-label="Close"
+              >
                 {totalPrice}
               </button>
             </div>
