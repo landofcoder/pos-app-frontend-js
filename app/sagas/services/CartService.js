@@ -329,6 +329,14 @@ export async function getDiscountForQuoteService(payload) {
  * @returns void
  */
 export async function createOrderLocal(payload) {
-  const res = await createOrders(payload);
+  const { cartCurrentResult, orderPreparingCheckoutResult } = payload;
+  console.log('dd1:', cartCurrentResult);
+  console.log('dd2:', orderPreparingCheckoutResult);
+  const newOrder = {
+    id: Date.now(),
+    grand_total: orderPreparingCheckoutResult.totals.grand_total,
+    items: payload
+  };
+  const res = await createOrders(newOrder);
   console.log('response:', res);
 }

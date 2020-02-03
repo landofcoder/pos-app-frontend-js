@@ -88,6 +88,7 @@ const posSystemConfig = state => state.mainRd.posSystemConfig;
 const cashierInfo = state => state.authenRd.cashierInfo;
 const itemCartEditing = state => state.mainRd.itemCartEditing;
 const currentPosCommand = state => state.mainRd.currentPosCommand;
+const orderPreparingCheckout = state => state.mainRd.orderPreparingCheckout;
 
 /**
  * Create quote and show cash model
@@ -263,7 +264,8 @@ function* cashCheckoutPlaceOrder() {
 
   if (offlineMode === 1) {
     const cartCurrentResult = yield select(cartCurrent);
-    yield createOrderLocal(cartCurrentResult);
+    const orderPreparingCheckoutResult = yield select(orderPreparingCheckout);
+    yield createOrderLocal({ cartCurrentResult, orderPreparingCheckoutResult });
 
     // Copy cart current to cart in receipt
     yield put({ type: types.COPY_CART_CURRENT_TO_RECEIPT });
