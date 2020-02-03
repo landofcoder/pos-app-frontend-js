@@ -49,10 +49,12 @@ class OrderHistory extends Component<Props> {
                 <th scope="col">Total</th>
                 <th scope="col">Status</th>
                 <th scope="col">Created at</th>
+                <th scope="col">Sync</th>
               </tr>
             </thead>
             <tbody>
               {orderHistory.map((item, index) => {
+                console.log('log item:', item);
                 return (
                   <tr
                     key={index}
@@ -66,6 +68,13 @@ class OrderHistory extends Component<Props> {
                     <td>{formatCurrencyCode(item.grand_total)}</td>
                     <td>{item.order_status}</td>
                     <td>{item.created_at}</td>
+                    <td>
+                      {item.local ? (
+                        <p className="text-muted">Not synced</p>
+                      ) : (
+                        <></>
+                      )}
+                    </td>
                   </tr>
                 );
               })}
@@ -77,6 +86,7 @@ class OrderHistory extends Component<Props> {
     );
   }
 }
+
 function mapStateToProps(state) {
   return {
     isOpenDetailOrder: state.mainRd.isOpenDetailOrder,
@@ -84,12 +94,14 @@ function mapStateToProps(state) {
     orderHistory: state.mainRd.orderHistory
   };
 }
+
 function mapDispatchToProps(dispatch) {
   return {
     getOrderHistory: () => dispatch(getOrderHistory()),
     toggleModalOrderDetail: payload => dispatch(toggleModalOrderDetail(payload))
   };
 }
+
 export default connect(
   mapStateToProps,
   mapDispatchToProps
