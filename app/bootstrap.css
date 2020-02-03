@@ -250,13 +250,13 @@
 [data-theme="orange"] .btn-outline-primary:hover {
   border-color: #FBA400 !important;
   color: #fff;
-  background-color: #F36300;
+  background-color: #FBA400;
 }
 
 [data-theme="orange"] .btn-outline-primary:active {
   border-color: #FBA400 !important;
   color: #fff;
-  background-color: #F36300;
+  background-color: #FBA400;
   outline-color: white;
 }
 /* #E85A4D */

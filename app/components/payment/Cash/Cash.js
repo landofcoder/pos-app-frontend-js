@@ -1,10 +1,9 @@
-// @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { cashPlaceOrderAction } from '../../../actions/checkoutActions';
 import {
   updateShowCashModal,
-  toggleModalCalculator
+  toggleModalCalculator,
+  cashPlaceOrderAction
 } from '../../../actions/homeAction';
 import Calculator from '../Calculator/Calculator';
 import CashOffline from './CashOffline';
@@ -22,10 +21,12 @@ type Props = {
 
 class CashPayment extends Component<Props> {
   props: Props;
+
   toggleModalCalculator = () => {
     const { toggleModalCalculatorStatus, toggleModalCalculator } = this.props;
     toggleModalCalculator(!toggleModalCalculatorStatus);
   };
+
   render() {
     const {
       cashLoadingPreparingOrder,

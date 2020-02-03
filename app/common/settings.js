@@ -16,7 +16,7 @@ export function checkValidateUrlLink(
 ) {
   const url = defaultProtocol + mainUrl + lastUrlRequired;
   if (mainUrl.length < 3) return false;
-  // if (url.indexOf('.') === -1) return false;
+  if (url.indexOf('.') === -1) return false;
   if (url.lastIndexOf('http')) return false;
   if (url.indexOf(' ') !== -1) return false;
   if (url[url.length - 2] === '.') return false;
@@ -64,4 +64,4 @@ export function limitLoop(fn, fps = 30, timeOut = null) {
  * Default page number per page for product
  * @type {number}
  */
-export const defaultPageSize = 12;
+export const defaultPageSize = 20;

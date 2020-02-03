@@ -1,6 +1,12 @@
 import * as types from '../constants/root';
 import * as typesAuthen from '../constants/authen.json';
 
+export function cashPlaceOrderAction() {
+  return {
+    type: types.CASH_CHECKOUT_PLACE_ORDER_ACTION
+  };
+}
+
 export function addToCart(payload: any) {
   return {
     type: types.ADD_TO_CART,
@@ -282,5 +288,11 @@ export function backToLogin() {
 export function loadProductPaging() {
   return {
     type: types.LOAD_PRODUCT_PAGING
+  };
+}
+
+export function autoLoginToGetNewToken() {
+  return {
+    type: typesAuthen.AUTO_LOGIN_TO_GET_NEW_TOKEN
   };
 }
