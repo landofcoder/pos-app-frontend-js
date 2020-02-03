@@ -116,6 +116,7 @@ class CashOnline extends Component<Props> {
           </div>
           <div className="col-sm-8 pb-1">
             <input
+              ref={input => input && input.focus()}
               type="number"
               placeholder="Input Customer's Cash"
               className="form-control"
@@ -127,7 +128,7 @@ class CashOnline extends Component<Props> {
           {inputCustomerCash === '' ? null : (
             <>
               <div className="col-sm-4 pt-1">
-                <label htmlFor="staticEmail">Spare Cash</label>
+                <label htmlFor="staticEmail">Change money</label>
               </div>
 
               <div className="col-sm-8 pt-1">
