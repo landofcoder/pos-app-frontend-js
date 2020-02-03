@@ -36,8 +36,7 @@ import {
 } from './services/CommonService';
 import {
   createSyncAllDataFlag,
-  haveToSyncAllData,
-  updateSyncAllDataFlag
+  haveToSyncAllData
 } from './services/SettingsService';
 import {
   getInfoCashierService,
@@ -91,7 +90,7 @@ const itemCartEditing = state => state.mainRd.itemCartEditing;
 const currentPosCommand = state => state.mainRd.currentPosCommand;
 
 /**
- * Create quote
+ * Create quote and show cash model
  */
 function* cashCheckout() {
   // Show cash modal
@@ -136,8 +135,9 @@ function* cashCheckout() {
     const {
       cartId,
       isGuestCustomer,
-      customerToken
-    } = yield getCustomerCartToken();
+      customerToken,
+      defaultGuestCheckout
+    } = yield getCustomerCart();
 
     yield all(
       cartCurrentResult.map(item =>
@@ -153,7 +153,8 @@ function* cashCheckout() {
       isGuestCustomer,
       customerToken,
       defaultShippingMethod,
-      posSystemConfigGuestCustomer
+      posSystemConfigGuestCustomer,
+      defaultGuestCheckout
     });
 
     yield put({
@@ -171,10 +172,13 @@ function* cashCheckout() {
 
 /**
  * Create cart token for guest or customer user
- * @returns {Generator<any, {isGuestCustomer: *, customerToken: *, cardId: *}>}
+ * @returns void
  */
-function* getCustomerCartToken() {
+function* getCustomerCart() {
   const customerRdResult = yield select(customer);
+  const posSystemConfigResult = yield select(posSystemConfig);
+  const defaultGuestCheckout = posSystemConfigResult.default_guest_checkout;
+
   let isGuestCustomer = true;
   if (customerRdResult !== null) {
     // Customer logged
@@ -209,7 +213,8 @@ function* getCustomerCartToken() {
   return {
     cartId,
     isGuestCustomer,
-    customerToken
+    customerToken,
+    defaultGuestCheckout
   };
 }
 
@@ -651,7 +656,6 @@ function* syncData() {
   const allCategories = yield call(getAllCategoriesService);
   const haveToSync = yield haveToSyncAllData();
   let letSync = false;
-  let syncUpdateId = false;
 
   if (haveToSync.length === 0) {
     letSync = true;
@@ -662,7 +666,6 @@ function* syncData() {
     const distanceMinute = differenceInMinutes(new Date(), new Date(time));
     if (distanceMinute > timePeriod) {
       letSync = true;
-      syncUpdateId = obj.id;
     }
   }
 
@@ -679,13 +682,11 @@ function* syncData() {
       // Sync products by categories
       yield call(syncAllProducts, allCategories);
 
-      if (syncUpdateId !== false) {
-        // Update flag to get current time as flag
-        yield updateSyncAllDataFlag(syncUpdateId);
-      } else {
-        // Wait for sync completed and create last time sync for each period sync execution
-        yield createSyncAllDataFlag();
-      }
+      // Update time to flag sync
+      yield createSyncAllDataFlag();
+
+      // Update counterMode for recheck background
+      yield put({ type: types.UPDATE_FLAG_SWITCHING_MODE });
     } else {
       console.warn(
         'offline mode not on, pls enable offline mode and connect to the internet'
@@ -726,7 +727,6 @@ function* getProductByCategory(payload) {
  * @returns void
  */
 function* getProductByCategoryLazyLoad(categoryId, currentPage) {
-  console.log('pass1:', currentPage);
   const productByCategory = yield call(getProductByCategoryService, {
     categoryId,
     currentPage
@@ -817,9 +817,8 @@ function* getDiscountForOfflineCheckoutSaga() {
  * @returns void
  */
 function* checkLoginBackgroundSaga() {
-  console.log('background login checking...');
   const loggedDb = yield getLoggedDb();
-
+  console.info('login background checking');
   // Logged
   if (loggedDb !== false) {
     // Get main url key
@@ -867,14 +866,15 @@ function* checkLoginBackgroundSaga() {
         payload: LINK_CASHIER_TO_ADMIN_REQUIRE
       });
     } else {
+      // All it's ok
+      yield bootstrapApplicationSaga();
+
       // If offline enabled and have no product sync => Show sync screen
       if (offlineMode === 1 && counterProductLocal === 0) {
         // Show screen sync
         yield put({ type: types.UPDATE_SWITCHING_MODE, payload: SYNC_SCREEN });
         yield syncData();
       } else {
-        // All it's ok
-        yield bootstrapApplicationSaga();
         yield put({ type: types.UPDATE_SWITCHING_MODE, payload: CHILDREN });
         yield syncData();
       }
@@ -885,8 +885,12 @@ function* checkLoginBackgroundSaga() {
   }
 }
 
+/**
+ * Skip sync form and go to main POS
+ * @returns void
+ */
 function* gotoChildrenPanelTriggerSaga() {
-  yield bootstrapApplicationSaga();
+  yield getDefaultProduct();
   yield put({ type: types.UPDATE_SWITCHING_MODE, payload: CHILDREN });
   // Update counter for switch detect
   yield put({ type: types.UPDATE_FLAG_SWITCHING_MODE });
@@ -1021,6 +1025,12 @@ function* updateQtyCartItemSaga(payload) {
 function* bootstrapApplicationSaga() {
   // Get all config
   yield getPostConfigGeneralConfig();
+
+  // Apply all main settings
+  const posSystemConfigResult = yield select(posSystemConfig);
+  const generalConfig = posSystemConfigResult.general_configuration;
+  const posTitle = generalConfig.pos_title;
+  document.title = posTitle;
 }
 
 /**

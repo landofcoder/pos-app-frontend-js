@@ -60,7 +60,7 @@ export async function loginService(payload) {
     const data = await response.json();
     return data;
   }
-  return '';
+  return 'error';
 }
 
 /**
@@ -74,19 +74,24 @@ export async function getInfoCashierService() {
     const response = await fetch(
       `${window.mainUrl}index.php/rest/V1/lof-cashier`,
       {
-        method: 'GET', // *GET, POST, PUT, DELETE, etc.
-        mode: 'cors', // no-cors, *cors, same-origin
-        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: 'same-origin', // include, *same-origin, omit
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${window.liveToken}`
         },
-        redirect: 'follow', // manual, *follow, error
-        referrer: 'no-referrer' // no-referrer, *clien
+        redirect: 'follow',
+        referrer: 'no-referrer'
       }
     );
-    data = await response.json();
+    const { status } = response;
+    if (status === 401) {
+      error = true;
+    } else {
+      data = await response.json();
+    }
   } catch (e) {
     data = [];
     error = true;
@@ -124,6 +129,11 @@ export async function getMainUrlKey() {
   return { status: false };
 }
 
+/**
+ * Get module installed
+ * @param url
+ * @returns void
+ */
 export async function getModuleInstalledService(url) {
   let data;
   let error = false;
@@ -139,9 +149,18 @@ export async function getModuleInstalledService(url) {
         referrer: 'no-referrer'
       }
     );
-    data = await response.json();
+    const statusCode = response.status;
+    if (statusCode === 200) {
+      data = await response.json();
+    } else {
+      data = [
+        {
+          'module-all': false
+        }
+      ];
+    }
   } catch (e) {
-    data = [];
+    data = {};
     error = true;
   }
   return { data, error };

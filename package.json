@@ -260,7 +260,7 @@
     "@hot-loader/react-dom": "^16.8.6",
     "connected-react-router": "^6.3.2",
     "core-js": "2",
-    "date-fns": "^2.8.1",
+    "date-fns": "^2.9.0",
     "devtron": "^1.4.0",
     "dexie": "^2.0.4",
     "electron-debug": "^2.1.0",

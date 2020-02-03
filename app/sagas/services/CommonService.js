@@ -39,6 +39,8 @@ export async function getSystemConfigService() {
     getError = true;
   }
 
+  console.log('config error:', getError);
+
   // Check data result is ok, then save to local db
   if (getError) {
     // Query to local

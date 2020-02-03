@@ -5,7 +5,6 @@ import styles from './pagelogin.scss';
 import {
   getModuleInstalled,
   setMainUrlWorkPlace,
-  learnUrlWorkPlace,
   changeToModuleInstalled
 } from '../../actions/authenAction';
 
@@ -14,17 +13,12 @@ type Props = {
   getModuleInstalled: () => void,
   moduleInstalled: object,
   setMainUrlWorkPlace: (payload: string) => void,
-  learnUrlWorkPlace: () => void,
-  changeToModuleInstalled: payload => void,
+  changeToModuleInstalled: (payload: boolean) => void,
   error: boolean,
   senseUrl: string
 };
 class ModuleInstalled extends Component {
   props: Props;
-
-  constructor(props) {
-    super(props);
-  }
 
   componentDidMount() {
     const { getModuleInstalled } = this.props;
@@ -36,7 +30,7 @@ class ModuleInstalled extends Component {
     changeToModuleInstalled(false);
   };
 
-  refreshMoudleInstalledCheck = () => {
+  refreshModuleInstalledCheck = () => {
     const { getModuleInstalled } = this.props;
     getModuleInstalled();
   };
@@ -46,8 +40,8 @@ class ModuleInstalled extends Component {
     let lengthDataCheck = 0;
     const { moduleInstalled, error } = this.props;
     Object.keys(moduleInstalled).map(key => {
-      lengthData++;
-      if (moduleInstalled[key] === true) lengthDataCheck++;
+      lengthData += 1;
+      if (moduleInstalled[key] === true) lengthDataCheck += 1;
     });
 
     if (lengthData > 0 && lengthDataCheck === lengthData && !error) {
@@ -59,17 +53,13 @@ class ModuleInstalled extends Component {
 
   showModuleInstalled = (check, moduleName) => {
     return (
-      <div key={moduleName} className="form-group row">
-        <div className="col-3"></div>
-        <div className="form-check">
-          <i
-            className={`far ${check ? 'fa-check-circle' : 'fa-times-circle'} ${
-              check ? styles.validColor : styles.invalidColor
-            } pr-1`}
-          ></i>
-          <label className="form-check-label">{moduleName}</label>
-        </div>
-        <div className="col-3"></div>
+      <div key={moduleName}>
+        <i
+          className={`far ${check ? 'fa-check-circle' : 'fa-times-circle'} ${
+            check ? styles.validColor : styles.invalidColor
+          } pr-1`}
+        ></i>
+        <label className="form-check-label">{moduleName}</label>
       </div>
     );
   };
@@ -81,11 +71,12 @@ class ModuleInstalled extends Component {
 
   render() {
     const { loading, moduleInstalled, error } = this.props;
+    console.log('module installed:', moduleInstalled);
     return (
       <>
         <div className={`${commonStyles.contentColumn} ${styles.wrapPage}`}>
           <div className="col-sm-6 col-md-5 col-lg-4">
-            <div className="col-2 pl-0 pr-2">
+            <div className="form-group">
               <button
                 type="button"
                 className="btn btn-link"
@@ -99,24 +90,36 @@ class ModuleInstalled extends Component {
                 <div className="form-group">
                   <div className="form-check">
                     <label className="form-check-label">
-                      Your URL address didn't support POS's services. Please try
-                      again
+                      Your URL address didn&apos;t support POS&apos;s services.
+                      Please try again
                     </label>
                   </div>
                 </div>
               ) : (
-                Object.keys(moduleInstalled).map(key => {
-                  return this.showModuleInstalled(moduleInstalled[key], key);
-                })
+                <div>
+                  <div className="card">
+                    <div className="card-body">
+                      <h5 className="card-title">
+                        Please install all modules below:
+                      </h5>
+                      {Object.keys(moduleInstalled).map(key => {
+                        return this.showModuleInstalled(
+                          moduleInstalled[key],
+                          key
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
               )}
-              <div className="form-group">
+              <div className="form-group mt-3">
                 <div className="form-check">
                   <div className="row">
                     <div className="col-4 pl-0 pr-2">
                       <button
                         type="button"
                         className="btn btn-secondary btn-block"
-                        onClick={() => this.refreshMoudleInstalledCheck()}
+                        onClick={() => this.refreshModuleInstalledCheck()}
                       >
                         {loading ? (
                           <div
@@ -162,7 +165,6 @@ function mapDispatchToProps(dispatch) {
   return {
     getModuleInstalled: () => dispatch(getModuleInstalled()),
     setMainUrlWorkPlace: payload => dispatch(setMainUrlWorkPlace(payload)),
-    learnUrlWorkPlace: () => dispatch(learnUrlWorkPlace()),
     changeToModuleInstalled: payload =>
       dispatch(changeToModuleInstalled(payload))
   };
