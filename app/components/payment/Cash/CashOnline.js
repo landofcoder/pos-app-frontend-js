@@ -71,7 +71,7 @@ class CashOnline extends Component<Props> {
             </p>
           </div>
           <div className={Styles.lineSubTotal} />
-          <label htmlFor="inputValue" className="col-sm-4 col-form-label">
+          <label htmlFor="staticEmail" className="col-sm-4 col-form-label">
             Order total
           </label>
           <div className="col-sm-8 pt-1">
