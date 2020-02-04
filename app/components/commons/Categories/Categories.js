@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getProductByCategory } from '../../../actions/homeAction';
@@ -11,10 +10,25 @@ type Props = {
 class Categories extends Component<Props> {
   props: Props;
 
+  state = {
+    openNavigation: false
+  };
+
+  componentDidMount(): void {
+    window.addEventListener('resize', this.windowDimensionChange);
+  }
+
   getProductByCategory = item => {
     const categoryId = item.id;
     const { getProductByCategory } = this.props;
     getProductByCategory(categoryId);
+  };
+
+  windowDimensionChange = () => {
+    // When scaled from window width to pc width openNavigation for mobile default is off
+    if (window.innerWidth > 768) {
+      this.setState({ openNavigation: false });
+    }
   };
 
   /**
@@ -46,8 +60,18 @@ class Categories extends Component<Props> {
     );
   };
 
+  navigationClick = () => {
+    const { openNavigation } = this.state;
+    if (openNavigation) {
+      this.setState({ openNavigation: false });
+    } else {
+      this.setState({ openNavigation: true });
+    }
+  };
+
   render() {
     const { allCategories } = this.props;
+    const { openNavigation } = this.state;
     /* eslint-disable */
     const children_data = allCategories.children_data ? allCategories.children_data : [];
     /* eslint-enable */
@@ -62,10 +86,16 @@ class Categories extends Component<Props> {
             aria-controls="navbarSupportedContent"
             aria-expanded="false"
             aria-label="Toggle navigation"
+            onClick={this.navigationClick}
           >
             <span className="navbar-toggler-icon"></span>
           </button>
-          <div className="collapse navbar-collapse" id="navbarSupportedContent">
+          <div
+            className={`collapse navbar-collapse ${
+              openNavigation ? 'show' : ''
+            }`}
+            id="navbarSupportedContent"
+          >
             <ul className="navbar-nav mr-auto">
               <li className="dropdown">
                 <a
@@ -79,7 +109,11 @@ class Categories extends Component<Props> {
                 >
                   Default category
                 </a>
-                <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
+                <ul
+                  className="dropdown-menu"
+                  data-naviga-redirect={openNavigation}
+                  aria-labelledby="navbarDropdown"
+                >
                   {children_data.map((value, index) => {
                     return (
                       <li
