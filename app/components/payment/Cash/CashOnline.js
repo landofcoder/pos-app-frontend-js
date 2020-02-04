@@ -97,7 +97,7 @@ class CashOnline extends Component<Props> {
             </p>
           </div>
           <div className={Styles.lineSubTotal} />
-          <label htmlFor="staticEmail" className="col-sm-4 col-form-label">
+          <label htmlFor="inputValue" className="col-sm-4 col-form-label">
             Order total
           </label>
           <div className="col-sm-8 pt-1">
@@ -112,17 +112,15 @@ class CashOnline extends Component<Props> {
             )}
           </div>
           <div className={Styles.lineSubTotal} />
-          <div className="col-sm-12 pt-2">
-            <p
-              className="modal-title font-weight-bold col-form-label"
-              id="modalCashPayment"
-            >
-              Checkout
-            </p>
-          </div>
+          <label
+            className="col-sm-12 pt-4 pb-2 col-form-label font-weight-bold"
+            htmlFor="inputValue"
+          >
+            Cash Transaction
+          </label>
           <label
             className="col-sm-4 pt-1 pr-0 col-form-label"
-            htmlFor="staticEmail"
+            htmlFor="inputValue"
           >
             Customer's cash recieved
           </label>
@@ -134,12 +132,13 @@ class CashOnline extends Component<Props> {
               className="form-control"
               onChange={this.changeInputCustomerCash}
               value={inputCustomerCash}
+              id="inputValue"
             />
           </div>
           {/* <div className={Styles.lineSubTotal} /> */}
           {inputCustomerCash === '' ? null : (
             <>
-              <label htmlFor="staticEmail" className="col-sm-4 pt-1">
+              <label htmlFor="inputValue" className="col-sm-4 pt-1">
                 Change money
               </label>
 
