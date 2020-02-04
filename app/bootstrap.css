@@ -238,8 +238,8 @@
 }
 
 [data-theme="orange"] .btn-primary:hover {
-  background-color: #F36300;
-  border-color: #F36300 !important;
+  background-color: #ed8e00;
+  border-color: #ed8e00 !important;
 }
 
 [data-theme="orange"] .btn-outline-primary {
