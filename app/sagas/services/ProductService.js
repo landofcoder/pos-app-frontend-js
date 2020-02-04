@@ -623,9 +623,6 @@ async function syncAllProductsByCategory(categoryId) {
     categoryId,
     currentPage
   });
-
-  console.log('product by category:', categoryId, productsResult);
-
   // Let all parents categories of this category
   const defaultCategory = await getCategories();
   const allParentIds = await findAllParentCategories(

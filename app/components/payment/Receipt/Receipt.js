@@ -21,6 +21,23 @@ class Receipt extends Component<Props> {
     };
   }
 
+  componentDidMount(): void {
+    document.addEventListener('keydown', this.escFunction, false);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.escFunction, false);
+  }
+
+  escFunction = event => {
+    if (event.keyCode === 27) {
+      // Do whatever when esc is pressed
+      const { closeReceiptModal } = this.props;
+      // Hide any modal
+      closeReceiptModal();
+    }
+  };
+
   printReceipt = () => {
     const printContents = document.getElementById('wrap-main-receipt')
       .innerHTML;

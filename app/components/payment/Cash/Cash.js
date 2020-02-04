@@ -22,6 +22,23 @@ type Props = {
 class CashPayment extends Component<Props> {
   props: Props;
 
+  componentDidMount(): void {
+    document.addEventListener('keydown', this.escFunction, false);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.escFunction, false);
+  }
+
+  escFunction = event => {
+    if (event.keyCode === 27) {
+      // Do whatever when esc is pressed
+      const { updateShowCashModal } = this.props;
+      // Hide any modal
+      updateShowCashModal(false);
+    }
+  };
+
   toggleModalCalculator = () => {
     const { toggleModalCalculatorStatus, toggleModalCalculator } = this.props;
     toggleModalCalculator(!toggleModalCalculatorStatus);

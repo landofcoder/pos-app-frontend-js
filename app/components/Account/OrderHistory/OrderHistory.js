@@ -54,7 +54,6 @@ class OrderHistory extends Component<Props> {
             </thead>
             <tbody>
               {orderHistory.map((item, index) => {
-                console.log('log item:', item);
                 return (
                   <tr
                     key={index}
