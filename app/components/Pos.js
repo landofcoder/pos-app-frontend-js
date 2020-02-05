@@ -401,7 +401,6 @@ export default class Pos extends Component<Props, State> {
                       )}
                     </div>
                   </div>
-
                   {isShowHaveNoSearchResultFound ? (
                     <>
                       <p className="text-center text-muted">
@@ -485,7 +484,6 @@ export default class Pos extends Component<Props, State> {
                 </div>
               );
             })}
-
             <div className="col-md-2 pr-1 pl-0">
               <button
                 type="button"

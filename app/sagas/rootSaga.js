@@ -758,7 +758,7 @@ function* getOrderHistory() {
 
   // Get orders from local db
   const allOrders = yield getAllOrders();
-  console.log('all orders:', allOrders);
+  // console.log('all orders:', JSON.stringify(allOrders));
 
   yield put({
     type: types.RECEIVED_ORDER_HISTORY_ACTION,

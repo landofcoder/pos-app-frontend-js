@@ -31,6 +31,7 @@ class OrderHistory extends Component<Props> {
 
   render() {
     const { orderHistory, isLoading, isOpenDetailOrder } = this.props;
+    console.log('order history:', orderHistory);
     return (
       <>
         <div className="card">

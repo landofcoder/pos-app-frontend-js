@@ -59,6 +59,16 @@ async function querySearchProduct(searchValue, currentPage) {
           name
           sku
           type_id
+          special_price
+          special_from_date
+          special_to_date
+          tier_prices {
+            qty
+            value
+            customer_group_id
+            percentage_value
+            value
+          }
           media_gallery_entries {
              file
           }
@@ -92,6 +102,19 @@ async function querySearchProduct(searchValue, currentPage) {
                 id
                 name
                 sku
+                special_price
+                special_from_date
+                special_to_date
+                tier_prices {
+                  qty
+                  value
+                  customer_group_id
+                  percentage_value
+                  value
+                }
+                media_gallery_entries {
+                  file
+                }
                 attribute_set_id
                 ... on PhysicalProductInterface {
                   weight
@@ -174,6 +197,9 @@ export async function getDetailProductConfigurableService(payload) {
                 id
                 name
                 sku
+                special_price
+                special_from_date
+                special_to_date
                 attribute_set_id
                 ... on PhysicalProductInterface {
                   weight
@@ -261,6 +287,16 @@ export async function getDetailProductBundleService(payload) {
                       media_gallery_entries {
                         file
                       }
+                      special_price
+                      special_from_date
+                      special_to_date
+                      tier_prices {
+                        qty
+                        value
+                        customer_group_id
+                        percentage_value
+                        value
+                      }
                       price {
                       regularPrice {
                       amount  {
@@ -313,6 +349,16 @@ export async function getDetailProductGroupedService(payload) {
                     }
                     sku
                     name
+                    special_price
+                    special_from_date
+                    special_to_date
+                     tier_prices {
+                      qty
+                      value
+                      customer_group_id
+                      percentage_value
+                      value
+                    }
                     price {
                       regularPrice {
                         amount {
@@ -329,60 +375,6 @@ export async function getDetailProductGroupedService(payload) {
           }
         }
       }
-      `
-    })
-  });
-  const data = await response.json();
-  return data;
-}
-
-/**
- * Get products
- * @returns {Promise<any>}
- * @returns {Promise<any>}
- */
-export async function getDefaultProductsService() {
-  const response = await fetch(getGraphqlPath(), {
-    method: 'POST', // *GET, POST, PUT, DELETE, etc.
-    mode: 'cors', // no-cors, *cors, same-origin
-    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-    credentials: 'same-origin', // include, *same-origin, omit
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${window.liveToken}`
-      // 'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    redirect: 'follow', // manual, *follow, error
-    referrer: 'no-referrer', // no-referrer, *client
-    body: JSON.stringify({
-      query: `{
-           products(filter:
-            {sku: {in: ["24-WG085_Group", "24-MB01", "MT07", "24-WG080", "MS12", "MS08", "MS09", "MS10", "MS11", "MS12", "MSH12", "MS06", "MS07", "WJ12", "WJ11", "WJ10", "WJ09"]}}
-          )
-          {
-            items {
-              id
-              name
-              sku
-              media_gallery_entries {
-                file
-              }
-              type_id
-              price {
-                regularPrice {
-                  amount {
-                    value
-                    currency
-                  }
-                }
-              }
-            }
-            total_count
-            page_info {
-              page_size
-            }
-          }
-        }
       `
     })
   });
@@ -435,141 +427,186 @@ async function getProductsByCategory(payload) {
       referrer: 'no-referrer',
       body: JSON.stringify({
         query: `{
-      products(filter: {category_id: {eq: "${categoryId}"}}, pageSize: ${defaultPageSize}, currentPage: ${currentPage}) {
-        total_count
-        items {
+  products(
+    filter: { category_id: { eq: "${categoryId}" } }
+    pageSize: ${defaultPageSize}
+    currentPage: ${currentPage}
+  ) {
+    total_count
+    items {
+      id
+      attribute_set_id
+      name
+      sku
+      type_id
+      special_price
+      special_from_date
+      special_to_date
+      media_gallery_entries {
+        file
+      }
+      tier_prices {
+        qty
+        value
+        customer_group_id
+        percentage_value
+        value
+      }
+      price {
+        regularPrice {
+          amount {
+            value
+            currency
+          }
+        }
+      }
+      categories {
+        id
+      }
+      ... on ConfigurableProduct {
+        configurable_options {
           id
-          attribute_set_id
-          name
-          sku
-          type_id
-          media_gallery_entries {
-            file
+          attribute_id
+          label
+          position
+          use_default
+          attribute_code
+          values {
+            value_index
+            label
           }
-          price {
-            regularPrice {
-              amount {
-                value
-                currency
-              }
-            }
-          }
-          categories {
+          product_id
+        }
+        variants {
+          product {
             id
-          }
-          ... on ConfigurableProduct {
-            configurable_options {
-              id
-              attribute_id
-              label
-              position
-              use_default
-              attribute_code
-              values {
-                value_index
-                label
-              }
-              product_id
+            name
+            sku
+            special_price
+            special_from_date
+            special_to_date
+            tier_prices {
+              qty
+              value
+              customer_group_id
+              percentage_value
+              value
             }
-            variants {
-              product {
-                id
-                name
-                sku
-                media_gallery_entries {
-                  file
-                }
-                attribute_set_id
-                ... on PhysicalProductInterface {
-                  weight
-                }
-                price {
-                  regularPrice {
-                    amount {
-                      value
-                      currency
-                    }
-                  }
-                }
-              }
-              attributes {
-                label
-                code
-                value_index
-              }
-            }
-          }
-          ... on BundleProduct {
-            dynamic_sku
-            dynamic_price
-            dynamic_weight
-            price_view
             media_gallery_entries {
               file
             }
-            ship_bundle_items
-            items {
-              option_id
-              title
-              required
-              type
-              position
-              sku
-              options {
-                id
-                qty
-                position
-                is_default
-                price
-                price_type
-                can_change_quantity
-                label
-                product {
-                  id
-                  name
-                  sku
-                  type_id
-                  media_gallery_entries {
-                    file
-                  }
-                  price {
-                    regularPrice {
-                      amount {
-                        value
-                      }
-                    }
-                  }
+            attribute_set_id
+            ... on PhysicalProductInterface {
+              weight
+            }
+            price {
+              regularPrice {
+                amount {
+                  value
+                  currency
                 }
               }
             }
           }
-          ... on GroupedProduct {
-            items {
-              qty
-              position
-              product {
-                id
-                media_gallery_entries {
-                  file
-                }
-                sku
-                name
-                price {
-                  regularPrice {
-                    amount {
-                      value
-                      currency
-                    }
+          attributes {
+            label
+            code
+            value_index
+          }
+        }
+      }
+      ... on BundleProduct {
+        dynamic_sku
+        dynamic_price
+        dynamic_weight
+        price_view
+        media_gallery_entries {
+          file
+        }
+        ship_bundle_items
+        items {
+          option_id
+          title
+          required
+          type
+          position
+          sku
+          options {
+            id
+            qty
+            position
+            is_default
+            price
+            price_type
+            can_change_quantity
+            label
+            product {
+              id
+              name
+              sku
+              type_id
+              media_gallery_entries {
+                file
+              }
+              special_price
+              special_from_date
+              special_to_date
+              tier_prices {
+                qty
+                value
+                customer_group_id
+                percentage_value
+                value
+              }
+              price {
+                regularPrice {
+                  amount {
+                    value
                   }
                 }
-                type_id
-                url_key
               }
             }
           }
         }
       }
-    }`
+      ... on GroupedProduct {
+        items {
+          qty
+          position
+          product {
+            id
+            media_gallery_entries {
+              file
+            }
+            sku
+            name
+            special_price
+            special_from_date
+            special_to_date
+            tier_prices {
+              qty
+              value
+              customer_group_id
+              percentage_value
+              value
+            }
+            price {
+              regularPrice {
+                amount {
+                  value
+                  currency
+                }
+              }
+            }
+            type_id
+            url_key
+          }
+        }
+      }
+    }
+  }
+}
+`
       })
     });
     const data = await response.json();
