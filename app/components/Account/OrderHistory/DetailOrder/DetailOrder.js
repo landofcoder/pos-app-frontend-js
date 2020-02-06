@@ -18,6 +18,7 @@ type Props = {
 };
 class DetailOrder extends Component {
   props: Props;
+
   componentDidMount() {
     const {
       getOrderHistoryDetail,
@@ -26,6 +27,7 @@ class DetailOrder extends Component {
     } = this.props;
     getOrderHistoryDetail(order_id_history);
   }
+
   render() {
     const {
       isOpenDetailOrder,
@@ -77,7 +79,7 @@ class DetailOrder extends Component {
                           </div>
                         </div>
                       </div>
-                      <div className={`form-group`}>
+                      <div className="form-group">
                         <div>
                           <div
                             className={`border-bottom col ${Styles.wrapContent}`}
@@ -120,7 +122,7 @@ class DetailOrder extends Component {
                         </div>
                       </div>
 
-                      <div className={`form-group`}>
+                      <div className="form-group">
                         <div>
                           <div
                             className={`border-bottom col ${Styles.wrapContent}`}
@@ -164,7 +166,7 @@ class DetailOrder extends Component {
                       </div>
 
                       {/* {paymentMethod} */}
-                      <div className={`form-group`}>
+                      <div className="form-group">
                         <div>
                           <div
                             className={`border-bottom col ${Styles.wrapContent}`}
@@ -189,7 +191,7 @@ class DetailOrder extends Component {
                       </div>
 
                       {/* Shipping method */}
-                      <div className={`form-group`}>
+                      <div className="form-group">
                         <div>
                           <div
                             className={`border-bottom col ${Styles.wrapContent}`}
@@ -212,7 +214,7 @@ class DetailOrder extends Component {
 
                       {/* Billing Address */}
 
-                      <div className={`form-group`}>
+                      <div className="form-group">
                         <div>
                           <div
                             className={`border-bottom col ${Styles.wrapContent}`}
