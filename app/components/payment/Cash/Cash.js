@@ -8,7 +8,7 @@ import {
 import Calculator from '../Calculator/Calculator';
 import CashOffline from './CashOffline';
 import CashOnline from './CashOnline';
-
+import { formatCurrencyCode } from '../../../common/settings';
 type Props = {
   cashLoadingPreparingOrder: boolean,
   cashPlaceOrderAction: () => void,
@@ -16,12 +16,36 @@ type Props = {
   isLoadingCashPlaceOrder: boolean,
   posSystemConfig: Object,
   toggleModalCalculatorStatus: boolean,
-  toggleModalCalculator: (payload: boolean) => void
+  toggleModalCalculator: (payload: boolean) => void,
+  orderPreparingCheckout: Object,
+  currencyCode: string
 };
 
 class CashPayment extends Component<Props> {
   props: Props;
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      inputCustomerCash: ''
+    };
+  }
+
+  changeInputCustomerCash = event => {
+    console.log(event);
+    this.setState({ inputCustomerCash: event.target.value });
+  };
+
+  calculateNumberString = () => {
+    const { inputCustomerCash } = this.state;
+    const { orderPreparingCheckout, currencyCode } = this.props;
+    try {
+      const output = eval(
+        inputCustomerCash + '-' + orderPreparingCheckout.totals.grand_total
+      );
+      return formatCurrencyCode(output, currencyCode);
+    } catch (err) {
+      console.log('calculate error');
   componentDidMount(): void {
     document.addEventListener('keydown', this.escFunction, false);
   }
@@ -45,13 +69,16 @@ class CashPayment extends Component<Props> {
   };
 
   render() {
+    const { inputCustomerCash } = this.state;
     const {
       cashLoadingPreparingOrder,
       cashPlaceOrderAction,
       updateShowCashModal,
       isLoadingCashPlaceOrder,
       posSystemConfig,
-      toggleModalCalculatorStatus
+      toggleModalCalculatorStatus,
+      orderPreparingCheckout,
+      currencyCode
     } = this.props;
     const enableOfflineMode = Number(
       posSystemConfig.general_configuration.enable_offline_mode
@@ -78,6 +105,56 @@ class CashPayment extends Component<Props> {
           </div>
           <div className="modal-body">
             {enableOfflineMode === 1 ? <CashOffline /> : <CashOnline />}
+            <div className="form-group row">
+              <label
+                className="col-sm-12 pt-4 pb-2 col-form-label font-weight-bold"
+                htmlFor="inputValue"
+              >
+                Cash Transaction
+              </label>
+              <label
+                className="col-sm-4 pt-1 pr-0 col-form-label"
+                htmlFor="inputValue"
+              >
+                Customer's cash recieved
+              </label>
+              <div className="col-sm-8 pb-1">
+                <input
+                  ref={input => input && input.focus()}
+                  type="number"
+                  placeholder="Input Customer's Cash"
+                  className="form-control"
+                  onChange={this.changeInputCustomerCash}
+                  value={inputCustomerCash}
+                  id="inputValue"
+                />
+              </div>
+              {/* <div className={Styles.lineSubTotal} /> */}
+              {inputCustomerCash === '' ? null : (
+                <>
+                  <label htmlFor="inputValue" className="col-sm-4 pt-1">
+                    Change money
+                  </label>
+
+                  <div className="col-sm-8 pt-1">
+                    {cashLoadingPreparingOrder ? (
+                      <div
+                        className="spinner-border spinner-border-sm"
+                        role="status"
+                      >
+                        <span className="sr-only">Loading...</span>
+                      </div>
+                    ) : (
+                      <div className="font-weight-bold">
+                        <p className="font-weight-bold">
+                          {this.calculateNumberString()}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
           </div>
           <div className="modal-footer">
             <button
@@ -127,7 +204,9 @@ function mapStateToProps(state) {
     isLoadingCashPlaceOrder: state.mainRd.isLoadingCashPlaceOrder,
     currencyCode: state.mainRd.shopInfoConfig[0],
     posSystemConfig: state.mainRd.posSystemConfig,
-    toggleModalCalculatorStatus: state.mainRd.isOpenCalculator
+    toggleModalCalculatorStatus: state.mainRd.isOpenCalculator,
+    orderPreparingCheckout: state.mainRd.orderPreparingCheckout,
+    currencyCode: state.mainRd.shopInfoConfig[0]
   };
 }
 
