@@ -288,7 +288,6 @@ class DetailOrder extends Component {
 }
 function mapStateToProps(state) {
   return {
-    orderHistoryDetail: state.mainRd.orderHistoryDetail,
     order_id_history: state.mainRd.order_id_history,
     isOpenDetailOrder: state.mainRd.isOpenDetailOrder,
     isLoadingOrderHistoryDetail: state.mainRd.isLoadingOrderHistoryDetail,
