@@ -1,6 +1,14 @@
 import { BUNDLE, SIMPLE, DOWNLOADABLE } from '../constants/product-types';
 import { formatCurrencyCode } from './settings';
+import { getProductBySku } from '../reducers/db/products';
+import { format } from 'date-fns';
 
+/**
+ * Get price by product type
+ * @param product
+ * @param currencyCode
+ * @returns {any}
+ */
 export function calcPrice(product, currencyCode) {
   let productAssign = Object.assign({}, product);
   const typeId = productAssign.type_id;
@@ -8,9 +16,7 @@ export function calcPrice(product, currencyCode) {
     case SIMPLE:
     case DOWNLOADABLE:
     case undefined: {
-      const price = productAssign.price.regularPrice.amount.value;
-      const qty = productAssign.pos_qty;
-      const finalPrice = price * qty;
+      const finalPrice = priceByTierPrice(productAssign);
       productAssign.pos_totalPrice = finalPrice;
       productAssign.pos_totalPriceFormat = formatCurrencyCode(
         finalPrice,
@@ -28,6 +34,66 @@ export function calcPrice(product, currencyCode) {
       break;
   }
   return productAssign;
+}
+
+/**
+ * Get price by tier price or normal price
+ * @param item
+ * @returns {number}
+ */
+async function priceByTierPrice(item) {
+  const price = item.price.regularPrice.amount.value;
+  const qty = item.pos_qty;
+  const finalPrice = price * qty;
+  if (item.tier_prices || item.special_price) {
+    // Get tier price now
+    let priceByTierPrice;
+    if (item.tier_prices && item.tier_prices.length > 0) {
+      // Find iterItem match the qty condition & customer group
+      let tierItemMatch = null;
+
+      const specialPrice = item.special_price;
+      const specialPriceActive = false;
+
+      item.tier_prices.forEach(tierItem => {
+        const tierQty = tierItem.qty;
+        // todo check with customer here
+        if (qty >= tierQty) {
+          tierItemMatch = tierItem;
+        }
+      });
+
+      // Type fixed amount & percent => percent type auto calculator by api response
+      if (tierItemMatch && tierItemMatch.value) {
+        priceByTierPrice = tierItemMatch.value;
+      }
+
+      console.log('tier price:', priceByTierPrice);
+      console.log('special price:', specialPrice);
+
+      if (specialPrice) {
+        console.log('spec price:', item);
+        let specialFromDate = item.special_from_date;
+        let specialToDate = item.special_to_date;
+
+        const result = await getProductBySku('24-MB01');
+        console.log('result 1:', result);
+
+        // if (!specialFromDate) {
+        //   specialFromDate = format(new Date(), 'yyyy-MM-dd hh:m:s');
+        // }
+        //
+        // if (!specialToDate) {
+        //   specialToDate = format(new Date(), 'yyyy-MM-dd hh:m:s');
+        // }
+
+        console.log('from date:', specialFromDate);
+        console.log('to date:', specialToDate);
+      }
+    }
+    return 0;
+  }
+  return finalPrice;
 }
 
 /**

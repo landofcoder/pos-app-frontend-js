@@ -4,6 +4,12 @@ import { defaultPageSize } from '../../common/settings';
 
 const table = 'products';
 
+export async function getProductBySku(sku) {
+  const productTbl = db.table(table);
+  const result = await productTbl.where({sku}).toArray();
+  return result;
+}
+
 /**
  * Sync products to local database
  * @param productList

@@ -35,6 +35,7 @@ export function* searchProductService(payload) {
 
   if (offlineMode === 1) {
     const data = yield searchProductsLocal(searchValue, currentPage);
+    console.log('search products result:', data);
     return data;
   }
 
@@ -687,7 +688,6 @@ async function syncAllProductsByCategory(categoryId) {
     }
   }
 }
-
 // Find parents
 export async function findAllParentCategories(
   defaultCategory,
