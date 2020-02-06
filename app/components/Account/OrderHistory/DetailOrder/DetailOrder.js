@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ModalStyle from '../../../styles/modal.scss';
 import Styles from './detail-order.scss';
+import { formatCurrencyCode } from '../../../../common/settings';
 import {
   getOrderHistoryDetail,
   toggleModalOrderDetail
@@ -18,6 +19,7 @@ type Props = {
 };
 class DetailOrder extends Component {
   props: Props;
+
   componentDidMount() {
     const {
       getOrderHistoryDetail,
@@ -26,6 +28,7 @@ class DetailOrder extends Component {
     } = this.props;
     getOrderHistoryDetail(order_id_history);
   }
+
   render() {
     const {
       isOpenDetailOrder,
@@ -77,7 +80,7 @@ class DetailOrder extends Component {
                           </div>
                         </div>
                       </div>
-                      <div className={`form-group`}>
+                      <div className="form-group">
                         <div>
                           <div
                             className={`border-bottom col ${Styles.wrapContent}`}
@@ -112,7 +115,7 @@ class DetailOrder extends Component {
                                       </div>
                                     </div>
                                   </div>
-                                  <span>${item.price_incl_tax}</span>
+                                  <span>{formatCurrencyCode(item.price_incl_tax,orderHistoryDetail.store_currency_code)}</span>
                                 </div>
                               </div>
                             </>
@@ -120,7 +123,7 @@ class DetailOrder extends Component {
                         </div>
                       </div>
 
-                      <div className={`form-group`}>
+                      <div className="form-group">
                         <div>
                           <div
                             className={`border-bottom col ${Styles.wrapContent}`}
@@ -132,28 +135,28 @@ class DetailOrder extends Component {
                           <div className="d-flex justify-content-between pr-1">
                             <span>Subtotal: </span>
                             <span>
-                              ${orderHistoryDetail.base_subtotal_incl_tax}
+                              {formatCurrencyCode(orderHistoryDetail.base_subtotal_incl_tax,orderHistoryDetail.store_currency_code)}
                             </span>
                           </div>
                           <div className="d-flex justify-content-between pr-1">
                             <span>Discount</span>
                             <span>
-                              -${orderHistoryDetail.base_discount_amount}
+                              {formatCurrencyCode(orderHistoryDetail.base_discount_amount,orderHistoryDetail.store_currency_code)}
                             </span>
                           </div>
                           <div className="d-flex justify-content-between pr-1">
                             <span>Shipping</span>
                             <span>
-                              ${orderHistoryDetail.base_shipping_amount}
+                              {formatCurrencyCode(orderHistoryDetail.base_shipping_amount,orderHistoryDetail.store_currency_code)}
                             </span>
                           </div>
                           <div className="d-flex justify-content-between pr-1">
                             <span>Grand Total</span>
-                            <span>${orderHistoryDetail.grand_total}</span>
+                            <span>{formatCurrencyCode(orderHistoryDetail.grand_total,orderHistoryDetail.store_currency_code)}</span>
                           </div>
                           <div className="d-flex justify-content-between pr-1">
                             <span>Total Paid</span>
-                            <span>${orderHistoryDetail.total_paid}</span>
+                            <span>{formatCurrencyCode(orderHistoryDetail.total_paid,orderHistoryDetail.store_currency_code)}</span>
                           </div>
                           <div className="d-flex justify-content-between pr-1">
                             <span>Status</span>
@@ -164,7 +167,7 @@ class DetailOrder extends Component {
                       </div>
 
                       {/* {paymentMethod} */}
-                      <div className={`form-group`}>
+                      <div className="form-group">
                         <div>
                           <div
                             className={`border-bottom col ${Styles.wrapContent}`}
@@ -182,14 +185,14 @@ class DetailOrder extends Component {
                           <div className="d-flex justify-content-between pr-1">
                             <span>Amount</span>
                             <span>
-                              ${orderHistoryDetail.payment.amount_ordered}
+                              {formatCurrencyCode(orderHistoryDetail.payment.amount_ordered,orderHistoryDetail.store_currency_code)}
                             </span>
                           </div>
                         </div>
                       </div>
 
                       {/* Shipping method */}
-                      <div className={`form-group`}>
+                      <div className="form-group">
                         <div>
                           <div
                             className={`border-bottom col ${Styles.wrapContent}`}
@@ -205,14 +208,14 @@ class DetailOrder extends Component {
                             <span>
                               {orderHistoryDetail.shipping_description}
                             </span>
-                            <span>${orderHistoryDetail.shipping_incl_tax}</span>
+                            <span>{formatCurrencyCode(orderHistoryDetail.shipping_incl_tax,orderHistoryDetail.store_currency_code)}</span>
                           </div>
                         </div>
                       </div>
 
                       {/* Billing Address */}
 
-                      <div className={`form-group`}>
+                      <div className="form-group">
                         <div>
                           <div
                             className={`border-bottom col ${Styles.wrapContent}`}

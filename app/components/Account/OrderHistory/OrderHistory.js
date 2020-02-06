@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
   getOrderHistory,
-  toggleModalOrderDetail
+  toggleModalOrderDetail,
+  toggleModalOrderDetailOffline
 } from '../../../actions/accountAction';
 import DetailOrder from './DetailOrder/DetailOrder';
+import DetailOrderOffline from './DetailOrderOffline/DetailOrderOffline';
 import Styles from './order-history.scss';
 import { formatCurrencyCode } from '../../../common/settings';
 
@@ -13,7 +15,9 @@ type Props = {
   isLoading: boolean,
   orderHistory: [],
   isOpenDetailOrder: boolean,
-  toggleModalOrderDetail: () => void
+  isOpenDetailOrderOffline: boolean,
+  toggleModalOrderDetail: object => void,
+  toggleModalOrderDetailOffline: object => void
 };
 
 class OrderHistory extends Component<Props> {
@@ -25,12 +29,26 @@ class OrderHistory extends Component<Props> {
   }
 
   getOrderHistoryDetail = saleOrderId => {
+    console.log('hi online');
     const { toggleModalOrderDetail } = this.props;
     toggleModalOrderDetail({ isShow: true, order_id: saleOrderId });
   };
 
+  getOrderHistoryDetailOffline = dataOrderCheckoutOfflineItem => {
+    console.log('hi offline');
+    const { toggleModalOrderDetailOffline } = this.props;
+    toggleModalOrderDetailOffline({
+      isShow: true,
+      dataItem: dataOrderCheckoutOfflineItem
+    });
+  };
   render() {
-    const { orderHistory, isLoading, isOpenDetailOrder } = this.props;
+    const {
+      orderHistory,
+      isLoading,
+      isOpenDetailOrder,
+      isOpenDetailOrderOffline
+    } = this.props;
     console.log('order history:', orderHistory);
     return (
       <>
@@ -60,7 +78,9 @@ class OrderHistory extends Component<Props> {
                     key={index}
                     className={Styles.tableRowList}
                     onClick={() =>
-                      this.getOrderHistoryDetail(item.sales_order_id)
+                      item.local
+                        ? this.getOrderHistoryDetailOffline(item)
+                        : this.getOrderHistoryDetail(item.sales_order_id)
                     }
                   >
                     <th scope="row">{index + 1}</th>
@@ -82,6 +102,7 @@ class OrderHistory extends Component<Props> {
           </table>
         </div>
         {isOpenDetailOrder ? <DetailOrder /> : null}
+        {isOpenDetailOrderOffline ? <DetailOrderOffline /> : null}
       </>
     );
   }
@@ -90,6 +111,7 @@ class OrderHistory extends Component<Props> {
 function mapStateToProps(state) {
   return {
     isOpenDetailOrder: state.mainRd.isOpenDetailOrder,
+    isOpenDetailOrderOffline: state.mainRd.isOpenDetailOrderOffline,
     isLoading: state.mainRd.isLoadingOrderHistory,
     orderHistory: state.mainRd.orderHistory
   };
@@ -98,7 +120,10 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     getOrderHistory: () => dispatch(getOrderHistory()),
-    toggleModalOrderDetail: payload => dispatch(toggleModalOrderDetail(payload))
+    toggleModalOrderDetail: payload =>
+      dispatch(toggleModalOrderDetail(payload)),
+    toggleModalOrderDetailOffline: payload =>
+      dispatch(toggleModalOrderDetailOffline(payload))
   };
 }
 
