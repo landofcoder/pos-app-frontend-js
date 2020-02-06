@@ -23,7 +23,8 @@ function mapStateToProps(state) {
     isShowModalItemEditCart: state.mainRd.itemCartEditing.showModal,
     toggleModalCalculatorStatus: state.mainRd.isOpenCalculator,
     posCommandIsFetchingProduct:
-      state.mainRd.currentPosCommand.isFetchingProduct
+      state.mainRd.currentPosCommand.isFetchingProduct,
+    defaultColor: state.mainRd.posSystemConfig
   };
 }
 

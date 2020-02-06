@@ -5,7 +5,7 @@ export function syncCustomers(customers) {
     // Insert to database
     const customerTbl = db.table('customers');
 
-    customers.forEach(async (item) => {
+    customers.forEach(async item => {
       const customer = await customerTbl.get(item.id);
       // Check exists
       if (customer) {

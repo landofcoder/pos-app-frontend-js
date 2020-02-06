@@ -1,6 +1,7 @@
 import { BUNDLE } from '../../constants/product-types';
 import { getBundleOption } from '../../common/product';
 import { createOrders } from '../../reducers/db/sync_orders';
+import { format } from 'date-fns';
 
 /**
  * Add product to quote
@@ -329,6 +330,17 @@ export async function getDiscountForQuoteService(payload) {
  * @returns void
  */
 export async function createOrderLocal(payload) {
-  const res = await createOrders(payload);
+  const { cartCurrentResult, orderPreparingCheckoutResult } = payload;
+  console.log('dd1:', cartCurrentResult);
+  console.log('dd2:', orderPreparingCheckoutResult);
+  console.log('dd3-date:', format(new Date(), 'yyyy-MM-dd hh:m:s'));
+  const newOrder = {
+    id: Date.now(),
+    grand_total: orderPreparingCheckoutResult.totals.grand_total,
+    items: payload,
+    local: true,
+    created_at: format(new Date(), 'yyyy-MM-dd hh:m:s')
+  };
+  const res = await createOrders(newOrder);
   console.log('response:', res);
 }

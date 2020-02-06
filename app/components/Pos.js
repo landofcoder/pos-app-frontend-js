@@ -52,7 +52,8 @@ type Props = {
   isOpenSignUpCustomer: boolean,
   internetConnected: boolean,
   toggleModalCalculatorStatus: boolean,
-  posCommandIsFetchingProduct: boolean
+  posCommandIsFetchingProduct: boolean,
+  defaultColor: string
 };
 
 type State = {
@@ -288,7 +289,8 @@ export default class Pos extends Component<Props, State> {
       isShowCashPaymentModel,
       isOpenReceiptModal,
       toggleModalCalculatorStatus,
-      posCommandIsFetchingProduct
+      posCommandIsFetchingProduct,
+      defaultColor
     } = this.props;
     const { redirectToAccount, mainWrapProductPanel } = this.state;
     // Check Redirect To Layout Account
@@ -302,7 +304,14 @@ export default class Pos extends Component<Props, State> {
     const { isShowingProductOption } = productOption;
     return (
       <>
-        <div data-tid="container">
+        <div
+          data-tid="container"
+          data-theme={
+            defaultColor.general_configuration !== undefined
+              ? defaultColor.general_configuration.web_pos_color
+              : 'default'
+          }
+        >
           {/* OPTION MODEL (PRODUCT CONFIGURABLE, PRODUCT BUNDLE, PRODUCT GROUPED) */}
           <div
             id="modalProductOption"
@@ -401,7 +410,6 @@ export default class Pos extends Component<Props, State> {
                       )}
                     </div>
                   </div>
-
                   {isShowHaveNoSearchResultFound ? (
                     <>
                       <p className="text-center text-muted">
@@ -470,7 +478,14 @@ export default class Pos extends Component<Props, State> {
             </div>
           </div>
         </div>
-        <div className={Styles.wrapFooterAction}>
+        <div
+          data-theme={
+            defaultColor.general_configuration !== undefined
+              ? defaultColor.general_configuration.web_pos_color
+              : 'default'
+          }
+          className={Styles.wrapFooterAction}
+        >
           <div className={Styles.wrapActionFirstLine}>
             {cartHoldList.map((item, index) => {
               return (
@@ -485,7 +500,6 @@ export default class Pos extends Component<Props, State> {
                 </div>
               );
             })}
-
             <div className="col-md-2 pr-1 pl-0">
               <button
                 type="button"
@@ -540,7 +554,7 @@ export default class Pos extends Component<Props, State> {
               </button>
             </div>
           </div>
-          <div className={Styles.wrapFooterLine}>
+          <div className={`${Styles.wrapFooterLine} theme-line`}>
             <div className={Styles.wrapLeft}>&nbsp;</div>
             <div className={Styles.wrapRight}>
               <div className={Styles.wrapStatusOnline} />
@@ -548,7 +562,7 @@ export default class Pos extends Component<Props, State> {
                 <span>
                   {' '}
                   {internetConnected ? (
-                    <span className="text-success text-bold font-weight-bolder">
+                    <span className="text-success text-bold font-weight-bolder theme-line">
                       Online
                     </span>
                   ) : (

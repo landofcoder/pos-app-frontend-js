@@ -33,6 +33,23 @@ class CartCustomer extends Component<Props> {
     };
   }
 
+  componentDidMount(): void {
+    document.addEventListener('keydown', this.escFunction, false);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.escFunction, false);
+  }
+
+  escFunction = event => {
+    if (event.keyCode === 27) {
+      // Do whatever when esc is pressed
+      const { toggleModalCustomer } = this.props;
+      // Hide any modal
+      toggleModalCustomer(false);
+    }
+  };
+
   onSearchCustomer = e => {
     const { searchCustomer } = this.props;
     const { value } = e.target;
@@ -198,4 +215,7 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CartCustomer);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CartCustomer);

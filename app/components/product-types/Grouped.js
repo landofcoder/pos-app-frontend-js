@@ -18,6 +18,23 @@ type Props = {
 class Grouped extends Component<Props> {
   props: Props;
 
+  componentDidMount(): void {
+    document.addEventListener('keydown', this.escFunction, false);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.escFunction, false);
+  }
+
+  escFunction = event => {
+    if (event.keyCode === 27) {
+      // Do whatever when esc is pressed
+      const { updateIsShowingProductOption } = this.props;
+      // Hide any modal
+      updateIsShowingProductOption(false);
+    }
+  };
+
   addToCart = () => {
     const { optionValue, updateIsShowingProductOption } = this.props;
     const { items } = optionValue;

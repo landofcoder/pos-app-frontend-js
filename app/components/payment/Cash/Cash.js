@@ -46,6 +46,20 @@ class CashPayment extends Component<Props> {
       return formatCurrencyCode(output, currencyCode);
     } catch (err) {
       console.log('calculate error');
+  componentDidMount(): void {
+    document.addEventListener('keydown', this.escFunction, false);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.escFunction, false);
+  }
+
+  escFunction = event => {
+    if (event.keyCode === 27) {
+      // Do whatever when esc is pressed
+      const { updateShowCashModal } = this.props;
+      // Hide any modal
+      updateShowCashModal(false);
     }
   };
 
