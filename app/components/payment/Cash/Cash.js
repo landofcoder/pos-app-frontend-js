@@ -31,6 +31,14 @@ class CashPayment extends Component<Props> {
     };
   }
 
+  componentDidMount(): void {
+    document.addEventListener('keydown', this.escFunction, false);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.escFunction, false);
+  }
+
   changeInputCustomerCash = event => {
     console.log(event);
     this.setState({ inputCustomerCash: event.target.value });
@@ -46,12 +54,7 @@ class CashPayment extends Component<Props> {
       return formatCurrencyCode(output, currencyCode);
     } catch (err) {
       console.log('calculate error');
-  componentDidMount(): void {
-    document.addEventListener('keydown', this.escFunction, false);
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.escFunction, false);
+    }
   }
 
   escFunction = event => {
