@@ -1,7 +1,6 @@
+import { addSeconds, compareAsc } from 'date-fns';
 import { BUNDLE, SIMPLE, DOWNLOADABLE } from '../constants/product-types';
 import { formatCurrencyCode } from './settings';
-import { getProductBySku } from '../reducers/db/products';
-import { format } from 'date-fns';
 
 /**
  * Get price by product type
@@ -76,19 +75,43 @@ async function priceByTierPrice(item) {
         let specialFromDate = item.special_from_date;
         let specialToDate = item.special_to_date;
 
-        const result = await getProductBySku('24-MB01');
-        console.log('result 1:', result);
+        // Special from date
+        if (!specialFromDate) {
+          specialFromDate = new Date();
+        } else {
+          specialFromDate = new Date(specialFromDate);
+        }
 
-        // if (!specialFromDate) {
-        //   specialFromDate = format(new Date(), 'yyyy-MM-dd hh:m:s');
-        // }
-        //
-        // if (!specialToDate) {
-        //   specialToDate = format(new Date(), 'yyyy-MM-dd hh:m:s');
-        // }
+        // Special to date
+        if (!specialToDate) {
+          // Add 30 seconds to specialToDate
+          specialToDate = addSeconds(new Date(), 30);
+        } else {
+          specialToDate = new Date(specialToDate);
+        }
 
-        console.log('from date:', specialFromDate);
-        console.log('to date:', specialToDate);
+        const nowTime = new Date();
+        const dateFromCompareAsc = compareAsc(nowTime, specialFromDate);
+        const dateToCompareAsc = compareAsc(nowTime, specialToDate);
+        let dateFromMatched = false;
+        let dateToMatched = false;
+
+        // DateFrom have less than or equal specialFromDate
+        if (dateFromCompareAsc > 1 || dateFromCompareAsc === 0) {
+          dateFromMatched = true;
+        }
+
+        // DateTo have greater than or equal to dateToCompareAsc
+        if (dateToCompareAsc === -1 || dateToCompareAsc === 0) {
+          dateToMatched = true;
+        }
+
+        // If all conditions are meet
+        if (dateFromMatched && dateToMatched) {
+          console.log('Check tier price now');
+        } else {
+          console.log('Tier price is not satisfied');
+        }
       }
     }
     return 0;
