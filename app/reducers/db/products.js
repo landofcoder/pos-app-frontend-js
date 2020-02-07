@@ -73,6 +73,7 @@ export async function getDefaultProductLocal() {
   try {
     data = await db
       .table(table)
+      .offset(0)
       .limit(50)
       .toArray();
   } catch (e) {
@@ -117,12 +118,16 @@ export async function searchProductsLocal(payload, currentPage = 1) {
 
 export async function getProductsByCategoryLocal({ categoryId, currentPage }) {
   let data;
+  let offset = 0;
+  if (currentPage > 1) {
+    offset = currentPage * defaultPageSize;
+  }
   try {
     data = await db
       .table(table)
       .where('categoryIds')
       .anyOf(categoryId)
-      .offset(currentPage * defaultPageSize)
+      .offset(offset)
       .limit(defaultPageSize)
       .toArray();
   } catch (e) {
