@@ -6,7 +6,7 @@ const table = 'products';
 
 export async function getProductBySku(sku) {
   const productTbl = db.table(table);
-  const result = await productTbl.where({sku}).toArray();
+  const result = await productTbl.where({ sku }).toArray();
   return result;
 }
 
@@ -93,12 +93,29 @@ export async function searchProductsLocal(payload, currentPage = 1) {
     const data = await db
       .table(table)
       .filter(x => {
-        const isMatchSku = new RegExp(searchValue.toLowerCase()).test(
-          x.sku.toLowerCase()
-        );
-        if (!isMatchSku) {
-          return new RegExp(searchValue).test(x.name.toLowerCase());
+        let isMatchSku = false;
+        // const isMatchSku = new RegExp(searchValue.toLowerCase()).test(
+        //   x.sku.toLowerCase()
+        // );
+        // if (!isMatchSku) {
+        //   return new RegExp(searchValue).test(x.name.toLowerCase());
+        // }
+        // return isMatchSku;
+        const defaultString = '24-MG05';
+        const searchInput = '24-';
+        const regexValue = new RegExp(searchInput);
+        const resultSearch = defaultString.match(regexValue);
+
+        console.log('ss1:', searchInput);
+        console.log('ss2:', regexValue);
+        console.log('ss3:', resultSearch);
+
+        if (resultSearch === '' || resultSearch.length === 0) {
+          isMatchSku = false;
+        } else {
+          isMatchSku = true;
         }
+
         return isMatchSku;
       })
       .offset(currentPage * defaultPageSize)
