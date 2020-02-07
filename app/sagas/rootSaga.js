@@ -547,7 +547,6 @@ function* getSearchCustomer(payload) {
 function* addToCart(payload) {
   // Find sky if exits sku, then increment qty
   const listCartCurrent = yield select(cartCurrent);
-  const currencyCode = window.currency;
 
   const product = Object.assign({}, payload.payload);
   const productSku = product.sku;
@@ -577,20 +576,18 @@ function* addToCart(payload) {
     }
   }
 
-  // Update qty if exists
+  // Update qty
   if (found === 1) {
     foundItem = yield updateQtyProduct(foundItem);
-
-    const productAssign = yield calcPrice(foundItem, currencyCode);
+    const productAssign = yield calcPrice(foundItem);
+    console.log('after cal price:', productAssign);
     yield put({
       type: types.UPDATE_ITEM_CART,
       payload: { index: foundIndex, item: productAssign }
     });
   } else {
-    // Update product price
-    const productAssign = yield calcPrice(product, currencyCode);
-
-    // Add new
+    // Add new product
+    const productAssign = yield calcPrice(product);
     yield put({ type: types.ADD_ITEM_TO_CART, payload: productAssign });
   }
 }
@@ -1012,9 +1009,8 @@ function* updateQtyCartItemSaga(payload) {
 
   // Update qty
   product.pos_qty = qty;
-  const currencyCode = window.currency;
 
-  const productAssign = yield calcPrice(product, currencyCode);
+  const productAssign = yield calcPrice(product);
   yield put({
     type: types.UPDATE_ITEM_CART,
     payload: { index, item: productAssign }

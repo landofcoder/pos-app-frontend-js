@@ -1,22 +1,21 @@
+import { addSeconds, compareAsc } from 'date-fns';
 import { BUNDLE, SIMPLE, DOWNLOADABLE } from '../constants/product-types';
 import { formatCurrencyCode } from './settings';
-import { getProductBySku } from '../reducers/db/products';
-import { format } from 'date-fns';
 
 /**
  * Get price by product type
  * @param product
- * @param currencyCode
  * @returns {any}
  */
-export function calcPrice(product, currencyCode) {
+export async function calcPrice(product) {
+  const currencyCode = window.currency;
   let productAssign = Object.assign({}, product);
   const typeId = productAssign.type_id;
   switch (typeId) {
     case SIMPLE:
     case DOWNLOADABLE:
     case undefined: {
-      const finalPrice = priceByTierPrice(productAssign);
+      const finalPrice = await priceByTierPrice(productAssign);
       productAssign.pos_totalPrice = finalPrice;
       productAssign.pos_totalPriceFormat = formatCurrencyCode(
         finalPrice,
@@ -44,7 +43,8 @@ export function calcPrice(product, currencyCode) {
 async function priceByTierPrice(item) {
   const price = item.price.regularPrice.amount.value;
   const qty = item.pos_qty;
-  const finalPrice = price * qty;
+  let finalPrice = price;
+
   if (item.tier_prices || item.special_price) {
     // Get tier price now
     let priceByTierPrice;
@@ -53,47 +53,72 @@ async function priceByTierPrice(item) {
       let tierItemMatch = null;
 
       const specialPrice = item.special_price;
-      const specialPriceActive = false;
 
-      item.tier_prices.forEach(tierItem => {
+      // eslint-disable-next-line no-restricted-syntax
+      for (const tierItem of item.tier_prices) {
         const tierQty = tierItem.qty;
         // todo check with customer here
         if (qty >= tierQty) {
           tierItemMatch = tierItem;
         }
-      });
+      }
 
       // Type fixed amount & percent => percent type auto calculator by api response
       if (tierItemMatch && tierItemMatch.value) {
         priceByTierPrice = tierItemMatch.value;
+
+        // #CODE01 Update final price
+        finalPrice = priceByTierPrice;
+        console.info('got by tier price config');
       }
 
-      console.log('tier price:', priceByTierPrice);
-      console.log('special price:', specialPrice);
-
+      // Check specialPrice to compare with default price of product
       if (specialPrice) {
-        console.log('spec price:', item);
         let specialFromDate = item.special_from_date;
         let specialToDate = item.special_to_date;
 
-        const result = await getProductBySku('24-MB01');
-        console.log('result 1:', result);
+        // Special from date
+        if (!specialFromDate) {
+          specialFromDate = new Date();
+        } else {
+          specialFromDate = new Date(specialFromDate);
+        }
 
-        // if (!specialFromDate) {
-        //   specialFromDate = format(new Date(), 'yyyy-MM-dd hh:m:s');
-        // }
-        //
-        // if (!specialToDate) {
-        //   specialToDate = format(new Date(), 'yyyy-MM-dd hh:m:s');
-        // }
+        // Special to date
+        if (!specialToDate) {
+          // Add 30 seconds to specialToDate
+          specialToDate = addSeconds(new Date(), 30);
+        } else {
+          specialToDate = new Date(specialToDate);
+        }
 
-        console.log('from date:', specialFromDate);
-        console.log('to date:', specialToDate);
+        const nowTime = new Date();
+        const dateFromCompareAsc = compareAsc(nowTime, specialFromDate);
+        const dateToCompareAsc = compareAsc(nowTime, specialToDate);
+        let dateFromMatched = false;
+        let dateToMatched = false;
+
+        // DateFrom have less than or equal specialFromDate
+        if (dateFromCompareAsc >= 0) {
+          dateFromMatched = true;
+        }
+
+        // DateTo have greater than or equal to dateToCompareAsc
+        if (dateToCompareAsc <= 0) {
+          dateToMatched = true;
+        }
+
+        // If all conditions are meet
+        if (dateFromMatched && dateToMatched && specialPrice < finalPrice) {
+          // #CODE01 Update final price
+          finalPrice = specialPrice;
+        } else {
+          console.info('Not get by special price');
+        }
       }
     }
-    return 0;
   }
-  return finalPrice;
+  return finalPrice * qty;
 }
 
 /**
