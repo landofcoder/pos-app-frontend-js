@@ -9,6 +9,7 @@ import Calculator from '../Calculator/Calculator';
 import CashOffline from './CashOffline';
 import CashOnline from './CashOnline';
 import { formatCurrencyCode } from '../../../common/settings';
+
 type Props = {
   cashLoadingPreparingOrder: boolean,
   cashPlaceOrderAction: () => void,
@@ -49,13 +50,13 @@ class CashPayment extends Component<Props> {
     const { orderPreparingCheckout, currencyCode } = this.props;
     try {
       const output = eval(
-        inputCustomerCash + '-' + orderPreparingCheckout.totals.grand_total
+        `${inputCustomerCash}-${orderPreparingCheckout.totals.grand_total}`
       );
       return formatCurrencyCode(output, currencyCode);
     } catch (err) {
       console.log('calculate error');
     }
-  }
+  };
 
   escFunction = event => {
     if (event.keyCode === 27) {

@@ -94,16 +94,20 @@ const initialState = {
     tax_label: null
   },
   detailOutlet: {},
+  dataCheckoutDetailItemHistoryOffline: {},
   orderHistory: [],
   orderHistoryDetail: {},
+  orderHistoryDetailOffline: {},
   order_id_history: null,
   isOpenFindCustomer: false,
   isOpenSignUpCustomer: false,
   isOpenCalculator: false,
   isOpenDetailOrder: false,
+  isOpenDetailOrderOffline: false,
   isLoadingSearchCustomer: false,
   isLoadingOrderHistory: false,
   isLoadingOrderHistoryDetail: true,
+  isLoadingOrderHistoryDetailOffline: true,
   isLoadingSignUpCustomer: false,
   customerSearchResult: [],
   orderPreparingCheckout: {
@@ -340,9 +344,16 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.TURN_ON_LOADING_ORDER_HISTORY_DETAIL:
         draft.isLoadingOrderHistoryDetail = true;
         break;
+      case types.LOADING_ORDER_HISTORY_DETAIL_OFFLINE:
+        draft.isLoadingOrderHistoryDetailOffline = action.payload;
+        break;
       case types.TOGGLE_MODAL_ORDER_DETAIL:
         draft.isOpenDetailOrder = action.payload.isShow;
         draft.order_id_history = action.payload.order_id;
+        break;
+      case types.TOGGLE_MODAL_ORDER_DETAIL_OFFLINE:
+        draft.isOpenDetailOrderOffline = action.payload.isShow;
+        draft.dataCheckoutDetailItemHistoryOffline = action.payload.dataItem;
         break;
       case types.TOGGLE_MODAL_CALCULATOR:
         draft.isOpenCalculator = action.payload;
@@ -353,7 +364,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.RECEIVED_ORDER_HISTORY_ACTION:
         console.log('sync orders before:', action.syncOrders);
         // Add status not sync to syncOrders array
-        action.syncOrders.forEach(function (element) {
+        action.syncOrders.forEach(function(element) {
           element.from_local_db = 1;
         });
         const mainArray = action.payload.concat(action.syncOrders);
@@ -362,6 +373,9 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.RECEIVED_ORDER_HISTORY_DETAIL_ACTION:
         draft.orderHistoryDetail = action.payload;
+        break;
+      case types.RECEIVED_ORDER_HISTORY_DETAIL_OFFLINE_ACTION:
+        draft.orderHistoryDetailOffline = action.payload;
         break;
       case types.RECEIVED_CUSTOM_RECEIPT:
         draft.customReceipt = action.payload;
@@ -417,7 +431,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       }
       case types.RESET_ITEM_CART_EDITING: {
-        draft.itemCartEditing.index   = 0;
+        draft.itemCartEditing.index = 0;
         draft.itemCartEditing.showModal = false;
         draft.itemCartEditing.item = {};
         break;

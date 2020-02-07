@@ -1,32 +1,30 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ModalStyle from '../../../styles/modal.scss';
-import Styles from './detail-order.scss';
+import Styles from '../DetailOrder/detail-order.scss';
 import { formatCurrencyCode } from '../../../../common/settings';
 import {
-  getOrderHistoryDetail,
-  toggleModalOrderDetail
+  getOrderHistoryDetailOffline,
+  toggleModalOrderDetailOffline,
+  actionLoadingOrderDetailOffline
 } from '../../../../actions/accountAction';
 
 type Props = {
   orderHistoryDetail: {},
-  order_id_history: number,
+  // order_id_history: number,
   isOpenDetailOrder: boolean,
   isLoadingOrderHistoryDetail: boolean,
-  getOrderHistoryDetail: id => void,
+  // getOrderHistoryDetail: id => void,
   orderHistoryDetail: {},
-  toggleModalOrderDetail: payload => void
+  toggleModalOrderDetail: payload => void,
+  actionLoadingOrderDetailOffline: payload => void
 };
-class DetailOrder extends Component {
+class DetailOrderOffline extends Component {
   props: Props;
 
   componentDidMount() {
-    const {
-      getOrderHistoryDetail,
-      order_id_history,
-      toggleModalOrderDetail
-    } = this.props;
-    getOrderHistoryDetail(order_id_history);
+    const { actionLoadingOrderDetailOffline } = this.props;
+    actionLoadingOrderDetailOffline(false);
   }
 
   formatSymbolMoney = amount => {
@@ -76,8 +74,8 @@ class DetailOrder extends Component {
                               <div className="d-flex justify-content-between pr-1">
                                 <span>Customer: </span>
                                 <span>
-                                  {orderHistoryDetail.customer_firstname}{' '}
-                                  {orderHistoryDetail.customer_lastname}
+                                  {/* {orderHistoryDetail.customer_firstname}{' '}
+                                  {orderHistoryDetail.customer_lastname} */}
                                 </span>
                               </div>
                             </div>
@@ -95,39 +93,32 @@ class DetailOrder extends Component {
                           </div>
                         </div>
                         <div>
-                          {orderHistoryDetail.items.map(item => (
-                            <>
-                              <div
-                                className={`border-bottom col ${Styles.wrapContent}`}
-                              >
-                                <div className="d-flex justify-content-between pr-1">
-                                  <div>
-                                    <div className="d-flex justify-content-between pr-1">
-                                      <span>{item.name}</span>
-                                    </div>
-                                    <div className="d-flex justify-content-between pr-1">
-                                      <div>
-                                        <span>
-                                          Ordered: {item.qty_ordered}{' '}
-                                        </span>
-                                        <span>
-                                          Invoiced: {item.qty_invoiced}{' '}
-                                        </span>
-                                        <span>
-                                          Shipped: {item.qty_shipped}{' '}
-                                        </span>
+                          {orderHistoryDetail.items.cartCurrentResult.map(
+                            item => (
+                              <>
+                                <div
+                                  className={`border-bottom col ${Styles.wrapContent}`}
+                                >
+                                  <div className="d-flex justify-content-between pr-1">
+                                    <div>
+                                      <div className="d-flex justify-content-between pr-1">
+                                        <span>{item.name}</span>
+                                      </div>
+                                      <div className="d-flex justify-content-between pr-1">
+                                        <div>
+                                          <span>sku: {item.sku}, </span>
+                                          <span>ordered: {item.pos_qty} </span>
+                                        </div>
                                       </div>
                                     </div>
+                                    <span>
+                                      {this.formatSymbolMoney(item.pos_totalPrice)}
+                                    </span>
                                   </div>
-                                  <span>
-                                    {this.formatSymbolMoney(
-                                      item.price_incl_tax
-                                    )}
-                                  </span>
                                 </div>
-                              </div>
-                            </>
-                          ))}
+                              </>
+                            )
+                          )}
                         </div>
                       </div>
 
@@ -144,7 +135,9 @@ class DetailOrder extends Component {
                             <span>Subtotal: </span>
                             <span>
                               {this.formatSymbolMoney(
-                                orderHistoryDetail.base_subtotal_incl_tax
+                                orderHistoryDetail.items
+                                  .orderPreparingCheckoutResult.totals
+                                  .base_subtotal
                               )}
                             </span>
                           </div>
@@ -152,7 +145,9 @@ class DetailOrder extends Component {
                             <span>Discount</span>
                             <span>
                               {this.formatSymbolMoney(
-                                orderHistoryDetail.base_discount_amount
+                                orderHistoryDetail.items
+                                  .orderPreparingCheckoutResult.totals
+                                  .discount_amount
                               )}
                             </span>
                           </div>
@@ -160,7 +155,9 @@ class DetailOrder extends Component {
                             <span>Shipping</span>
                             <span>
                               {this.formatSymbolMoney(
-                                orderHistoryDetail.base_shipping_amount
+                                orderHistoryDetail.items
+                                  .orderPreparingCheckoutResult.totals
+                                  .base_shipping_amount
                               )}
                             </span>
                           </div>
@@ -168,21 +165,15 @@ class DetailOrder extends Component {
                             <span>Grand Total</span>
                             <span>
                               {this.formatSymbolMoney(
-                                orderHistoryDetail.grand_total
-                              )}
-                            </span>
-                          </div>
-                          <div className="d-flex justify-content-between pr-1">
-                            <span>Total Paid</span>
-                            <span>
-                              {this.formatSymbolMoney(
-                                orderHistoryDetail.total_paid
+                                orderHistoryDetail.items
+                                  .orderPreparingCheckoutResult.totals
+                                  .grand_total
                               )}
                             </span>
                           </div>
                           <div className="d-flex justify-content-between pr-1">
                             <span>Status</span>
-                            <span>{orderHistoryDetail.status}</span>
+                            <span>Not synced</span>
                             {}
                           </div>
                         </div>
@@ -202,13 +193,20 @@ class DetailOrder extends Component {
                         <div className={`col ${Styles.wrapContent}`}>
                           <div className="d-flex justify-content-between pr-1">
                             <span>Method</span>
-                            <span>{orderHistoryDetail.payment.method}</span>
+                            <span>
+                              {
+                                orderHistoryDetail.items
+                                  .orderPreparingCheckoutResult.payment_methods
+                              }
+                            </span>
                           </div>
                           <div className="d-flex justify-content-between pr-1">
                             <span>Amount</span>
                             <span>
                               {this.formatSymbolMoney(
-                                orderHistoryDetail.payment.amount_ordered
+                                orderHistoryDetail.items
+                                  .orderPreparingCheckoutResult.totals
+                                  .grand_total
                               )}
                             </span>
                           </div>
@@ -216,83 +214,9 @@ class DetailOrder extends Component {
                       </div>
 
                       {/* Shipping method */}
-                      <div className="form-group">
-                        <div>
-                          <div
-                            className={`border-bottom col ${Styles.wrapContent}`}
-                          >
-                            <div className="d-flex justify-content-between pr-1"></div>
-                            <span className="font-weight-bold">
-                              Shipping Method
-                            </span>
-                          </div>
-                        </div>
-                        <div className={`col ${Styles.wrapContent}`}>
-                          <div className="d-flex justify-content-between pr-1">
-                            <span>
-                              {orderHistoryDetail.shipping_description}
-                            </span>
-                            <span>
-                              {this.formatSymbolMoney(
-                                orderHistoryDetail.shipping_incl_tax
-                              )}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
 
                       {/* Billing Address */}
 
-                      <div className="form-group">
-                        <div>
-                          <div
-                            className={`border-bottom col ${Styles.wrapContent}`}
-                          >
-                            <span className="font-weight-bold">
-                              Billing Address
-                            </span>
-                          </div>
-                        </div>
-                        <div className={`col ${Styles.wrapContent}`}>
-                          <div className="d-flex justify-content-between pr-1">
-                            <span>Full name</span>
-                            <span>
-                              {orderHistoryDetail.billing_address.firstname}{' '}
-                              {orderHistoryDetail.billing_address.lastname}
-                            </span>
-                          </div>
-                          <div className="d-flex justify-content-between pr-1">
-                            <span>Email</span>
-                            <span>
-                              {orderHistoryDetail.billing_address.email}
-                            </span>
-                          </div>
-                          <div className="d-flex justify-content-between pr-1">
-                            <span>Telephone</span>
-                            <span>
-                              {orderHistoryDetail.billing_address.telephone}
-                            </span>
-                          </div>
-                          <div className="d-flex justify-content-between pr-1">
-                            <span>Address</span>
-                            <span>
-                              {orderHistoryDetail.billing_address.street}
-                            </span>
-                          </div>
-                          <div className="d-flex justify-content-between pr-1">
-                            <span>City</span>
-                            <span>
-                              {orderHistoryDetail.billing_address.city}
-                            </span>
-                          </div>
-                          <div className="d-flex justify-content-between pr-1">
-                            <span>Country</span>
-                            <span>
-                              {orderHistoryDetail.billing_address.country_id}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
                       <div className="modal-footer">
                         <div className="col-md-2 p-0">
                           <button
@@ -319,19 +243,23 @@ class DetailOrder extends Component {
 }
 function mapStateToProps(state) {
   return {
-    order_id_history: state.mainRd.order_id_history,
-    isOpenDetailOrder: state.mainRd.isOpenDetailOrder,
-    isLoadingOrderHistoryDetail: state.mainRd.isLoadingOrderHistoryDetail,
-    orderHistoryDetail: state.mainRd.orderHistoryDetail
+    // order_id_history: state.mainRd.order_id_historyOffline,
+    isOpenDetailOrder: state.mainRd.isOpenDetailOrderOffline,
+    isLoadingOrderHistoryDetail:
+      state.mainRd.isLoadingOrderHistoryDetailOffline,
+    orderHistoryDetail: state.mainRd.dataCheckoutDetailItemHistoryOffline
   };
 }
 function mapDispatchToProps(dispatch) {
   return {
-    getOrderHistoryDetail: id => dispatch(getOrderHistoryDetail(id)),
-    toggleModalOrderDetail: payload => dispatch(toggleModalOrderDetail(payload))
+    getOrderHistoryDetail: id => dispatch(getOrderHistoryDetailOffline(id)),
+    toggleModalOrderDetail: payload =>
+      dispatch(toggleModalOrderDetailOffline(payload)),
+    actionLoadingOrderDetailOffline: payload =>
+      dispatch(actionLoadingOrderDetailOffline(payload))
   };
 }
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(DetailOrder);
+)(DetailOrderOffline);

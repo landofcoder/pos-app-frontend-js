@@ -13,9 +13,30 @@ export function getOrderHistoryDetail(payload) {
   };
 }
 
+export function getOrderHistoryDetailOffline(payload) {
+  return {
+    type: type.GET_ORDER_HISTORY_DETAIL_OFFLINE_ACTION,
+    payload
+  };
+}
+
 export function toggleModalOrderDetail(payload) {
   return {
     type: type.TOGGLE_MODAL_ORDER_DETAIL,
+    payload
+  };
+}
+
+export function toggleModalOrderDetailOffline(payload) {
+  return {
+    type: type.TOGGLE_MODAL_ORDER_DETAIL_OFFLINE,
+    payload
+  };
+}
+
+export function actionLoadingOrderDetailOffline(payload) {
+  return {
+    type: type.LOADING_ORDER_HISTORY_DETAIL_OFFLINE,
     payload
   };
 }
