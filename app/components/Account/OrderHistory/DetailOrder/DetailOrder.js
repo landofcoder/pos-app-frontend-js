@@ -29,6 +29,10 @@ class DetailOrder extends Component {
     getOrderHistoryDetail(order_id_history);
   }
 
+  formatSymbolMoney = amount => {
+    return formatCurrencyCode(amount);
+  };
+
   render() {
     const {
       isOpenDetailOrder,
@@ -115,7 +119,11 @@ class DetailOrder extends Component {
                                       </div>
                                     </div>
                                   </div>
-                                  <span>{formatCurrencyCode(item.price_incl_tax,orderHistoryDetail.store_currency_code)}</span>
+                                  <span>
+                                    {this.formatSymbolMoney(
+                                      item.price_incl_tax
+                                    )}
+                                  </span>
                                 </div>
                               </div>
                             </>
@@ -135,28 +143,42 @@ class DetailOrder extends Component {
                           <div className="d-flex justify-content-between pr-1">
                             <span>Subtotal: </span>
                             <span>
-                              {formatCurrencyCode(orderHistoryDetail.base_subtotal_incl_tax,orderHistoryDetail.store_currency_code)}
+                              {this.formatSymbolMoney(
+                                orderHistoryDetail.base_subtotal_incl_tax
+                              )}
                             </span>
                           </div>
                           <div className="d-flex justify-content-between pr-1">
                             <span>Discount</span>
                             <span>
-                              {formatCurrencyCode(orderHistoryDetail.base_discount_amount,orderHistoryDetail.store_currency_code)}
+                              {this.formatSymbolMoney(
+                                orderHistoryDetail.base_discount_amount
+                              )}
                             </span>
                           </div>
                           <div className="d-flex justify-content-between pr-1">
                             <span>Shipping</span>
                             <span>
-                              {formatCurrencyCode(orderHistoryDetail.base_shipping_amount,orderHistoryDetail.store_currency_code)}
+                              {this.formatSymbolMoney(
+                                orderHistoryDetail.base_shipping_amount
+                              )}
                             </span>
                           </div>
                           <div className="d-flex justify-content-between pr-1">
                             <span>Grand Total</span>
-                            <span>{formatCurrencyCode(orderHistoryDetail.grand_total,orderHistoryDetail.store_currency_code)}</span>
+                            <span>
+                              {this.formatSymbolMoney(
+                                orderHistoryDetail.grand_total
+                              )}
+                            </span>
                           </div>
                           <div className="d-flex justify-content-between pr-1">
                             <span>Total Paid</span>
-                            <span>{formatCurrencyCode(orderHistoryDetail.total_paid,orderHistoryDetail.store_currency_code)}</span>
+                            <span>
+                              {this.formatSymbolMoney(
+                                orderHistoryDetail.total_paid
+                              )}
+                            </span>
                           </div>
                           <div className="d-flex justify-content-between pr-1">
                             <span>Status</span>
@@ -185,7 +207,9 @@ class DetailOrder extends Component {
                           <div className="d-flex justify-content-between pr-1">
                             <span>Amount</span>
                             <span>
-                              {formatCurrencyCode(orderHistoryDetail.payment.amount_ordered,orderHistoryDetail.store_currency_code)}
+                              {this.formatSymbolMoney(
+                                orderHistoryDetail.payment.amount_ordered
+                              )}
                             </span>
                           </div>
                         </div>
@@ -208,7 +232,11 @@ class DetailOrder extends Component {
                             <span>
                               {orderHistoryDetail.shipping_description}
                             </span>
-                            <span>{formatCurrencyCode(orderHistoryDetail.shipping_incl_tax,orderHistoryDetail.store_currency_code)}</span>
+                            <span>
+                              {this.formatSymbolMoney(
+                                orderHistoryDetail.shipping_incl_tax
+                              )}
+                            </span>
                           </div>
                         </div>
                       </div>

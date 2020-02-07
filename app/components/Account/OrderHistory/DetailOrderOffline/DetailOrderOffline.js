@@ -27,6 +27,10 @@ class DetailOrderOffline extends Component {
     actionLoadingOrderDetailOffline(false);
   }
 
+  formatSymbolMoney = amount => {
+    return formatCurrencyCode(amount);
+  };
+
   render() {
     const {
       isOpenDetailOrder,
@@ -108,7 +112,7 @@ class DetailOrderOffline extends Component {
                                       </div>
                                     </div>
                                     <span>
-                                      {formatCurrencyCode(item.pos_totalPrice)}
+                                      {this.formatSymbolMoney(item.pos_totalPrice)}
                                     </span>
                                   </div>
                                 </div>
@@ -130,7 +134,7 @@ class DetailOrderOffline extends Component {
                           <div className="d-flex justify-content-between pr-1">
                             <span>Subtotal: </span>
                             <span>
-                              {formatCurrencyCode(
+                              {this.formatSymbolMoney(
                                 orderHistoryDetail.items
                                   .orderPreparingCheckoutResult.totals
                                   .base_subtotal
@@ -140,7 +144,7 @@ class DetailOrderOffline extends Component {
                           <div className="d-flex justify-content-between pr-1">
                             <span>Discount</span>
                             <span>
-                              {formatCurrencyCode(
+                              {this.formatSymbolMoney(
                                 orderHistoryDetail.items
                                   .orderPreparingCheckoutResult.totals
                                   .discount_amount
@@ -150,7 +154,7 @@ class DetailOrderOffline extends Component {
                           <div className="d-flex justify-content-between pr-1">
                             <span>Shipping</span>
                             <span>
-                              {formatCurrencyCode(
+                              {this.formatSymbolMoney(
                                 orderHistoryDetail.items
                                   .orderPreparingCheckoutResult.totals
                                   .base_shipping_amount
@@ -160,7 +164,7 @@ class DetailOrderOffline extends Component {
                           <div className="d-flex justify-content-between pr-1">
                             <span>Grand Total</span>
                             <span>
-                              {formatCurrencyCode(
+                              {this.formatSymbolMoney(
                                 orderHistoryDetail.items
                                   .orderPreparingCheckoutResult.totals
                                   .grand_total
@@ -199,7 +203,7 @@ class DetailOrderOffline extends Component {
                           <div className="d-flex justify-content-between pr-1">
                             <span>Amount</span>
                             <span>
-                              {formatCurrencyCode(
+                              {this.formatSymbolMoney(
                                 orderHistoryDetail.items
                                   .orderPreparingCheckoutResult.totals
                                   .grand_total
