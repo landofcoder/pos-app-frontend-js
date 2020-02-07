@@ -89,36 +89,24 @@ export async function getDefaultProductLocal() {
  */
 export async function searchProductsLocal(payload, currentPage = 1) {
   const searchValue = payload;
+  let offset = 0;
+  // If current page == 0 offer must be 0: eg 0 -> 20(defaultPageSize)
+  if (currentPage > 1) {
+    offset = currentPage * defaultPageSize;
+  }
   try {
     const data = await db
       .table(table)
       .filter(x => {
-        let isMatchSku = false;
-        // const isMatchSku = new RegExp(searchValue.toLowerCase()).test(
-        //   x.sku.toLowerCase()
-        // );
-        // if (!isMatchSku) {
-        //   return new RegExp(searchValue).test(x.name.toLowerCase());
-        // }
-        // return isMatchSku;
-        const defaultString = '24-MG05';
-        const searchInput = '24-';
-        const regexValue = new RegExp(searchInput);
-        const resultSearch = defaultString.match(regexValue);
-
-        console.log('ss1:', searchInput);
-        console.log('ss2:', regexValue);
-        console.log('ss3:', resultSearch);
-
-        if (resultSearch === '' || resultSearch.length === 0) {
-          isMatchSku = false;
-        } else {
-          isMatchSku = true;
+        const isMatchSku = new RegExp(searchValue.toLowerCase()).test(
+          x.sku.toLowerCase()
+        );
+        if (!isMatchSku) {
+          return new RegExp(searchValue).test(x.name.toLowerCase());
         }
-
         return isMatchSku;
       })
-      .offset(currentPage * defaultPageSize)
+      .offset(offset)
       .limit(defaultPageSize)
       .toArray();
     return data;
