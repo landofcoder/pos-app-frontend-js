@@ -50,17 +50,9 @@ class Grouped extends Component<Props> {
       tax,
       note,
       pos_qty: quantity,
-      price: { regularPrice: { amount: price, currency: 'USD' } }
+      price: { regularPrice: { amount: { value: price, currency: 'USD' } } }
     };
     this.preAddToCart(product, quantity);
-    // for (let i = 0; i < items.length; i += 1) {
-    //   const { product, qty } = items[i];
-    //   if (qty > 0) {
-    //     this.preAddToCart(product, qty);
-    //   }
-    // }
-
-    // Hide modal
     updateIsShowingProductOption(false);
   };
 
@@ -107,6 +99,13 @@ class Grouped extends Component<Props> {
     const price = item.product.price.regularPrice.amount.value;
     const { currencyCode } = this.props;
     return formatCurrencyCode(price, currencyCode);
+  };
+
+  additionalAddToCard = () => {
+    const { quantity, name, price, tax } = this.state;
+    if (quantity === '' || name === '' || price === '' || tax === '')
+      return false;
+    return true;
   };
 
   render() {
@@ -240,6 +239,7 @@ class Grouped extends Component<Props> {
                 onClick={this.addToCart}
                 type="button"
                 className="btn btn-primary btn-lg btn-block"
+                disabled={!this.additionalAddToCard()}
               >
                 ADD TO CART
               </button>
