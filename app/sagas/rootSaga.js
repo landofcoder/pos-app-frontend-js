@@ -88,7 +88,8 @@ const posSystemConfig = state => state.mainRd.posSystemConfig;
 const cashierInfo = state => state.authenRd.cashierInfo;
 const itemCartEditing = state => state.mainRd.itemCartEditing;
 const currentPosCommand = state => state.mainRd.currentPosCommand;
-const orderPreparingCheckout = state => state.mainRd.orderPreparingCheckout;
+const orderPreparingCheckout = state =>
+  state.mainRd.checkout.orderPreparingCheckout;
 
 /**
  * Create quote and show cash model

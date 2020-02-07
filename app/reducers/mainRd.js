@@ -52,7 +52,16 @@ const initialState = {
         quote_id: 0,
         shipping_and_tax_amount: 0
       }
-    }
+    },
+    orderPreparingCheckout: {
+      totals: {
+        discount_amount: 0,
+        base_subtotal: 0,
+        grand_total: 0,
+        tax_amount: 0,
+        base_shipping_amount: 0
+      }
+    } // Detail order for preparing to checkout
   },
   cartHoldList: [],
   itemCartEditing: {
@@ -110,15 +119,6 @@ const initialState = {
   isLoadingOrderHistoryDetailOffline: true,
   isLoadingSignUpCustomer: false,
   customerSearchResult: [],
-  orderPreparingCheckout: {
-    totals: {
-      discount_amount: 0,
-      base_subtotal: 0,
-      grand_total: 0,
-      tax_amount: 0,
-      base_shipping_amount: 0
-    }
-  }, // Detail order for preparing to checkout
   cashLoadingPreparingOrder: false, // Status cash loading for preparing to show cash payment form
   isShowCashPaymentModel: false,
   isLoadingCashPlaceOrder: false,
@@ -135,7 +135,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
   produce(state, draft => {
     switch (action.type) {
       case types.RECEIVED_ORDER_PREPARING_CHECKOUT:
-        draft.orderPreparingCheckout = action.payload;
+        draft.checkout.orderPreparingCheckout = action.payload;
         break;
       case types.RECEIVED_PRODUCT_RESULT:
         draft.productList = action.payload;
@@ -405,7 +405,17 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.checkout.offline.isLoadingDiscount = action.payload;
         break;
       case types.RECEIVED_CHECKOUT_OFFLINE_CART_INFO:
+        const ordersInfo = action.payload[0];
         draft.checkout.offline.cartInfo = action.payload[0];
+        // Update to preparing checkout
+        const baseDiscountAmount = ordersInfo.base_discount_amount;
+        const baseGrandTotal = ordersInfo.base_grand_total;
+        const baseSubTotal = ordersInfo.base_sub_total;
+        const shippingAndTaxAmount = ordersInfo.shipping_and_tax_amount;
+        draft.checkout.orderPreparingCheckout.totals.discount_amount = baseDiscountAmount;
+        draft.checkout.orderPreparingCheckout.totals.base_subtotal = baseSubTotal;
+        draft.checkout.orderPreparingCheckout.totals.grand_total = baseGrandTotal;
+        draft.checkout.orderPreparingCheckout.totals.tax_amount = shippingAndTaxAmount;
         break;
       case types.UPDATE_SWITCHING_MODE:
         draft.switchingMode = action.payload;
