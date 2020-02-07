@@ -43,7 +43,15 @@ class Grouped extends Component<Props> {
   addToCart = () => {
     const { updateIsShowingProductOption } = this.props;
     const { name, tax, price, quantity, note } = this.state;
-    const product = { name, tax, price, note };
+    const product = {
+      id: Date.now(),
+      type_id: 'custom',
+      name,
+      tax,
+      note,
+      pos_qty: quantity,
+      price: { regularPrice: { amount: price, currency: 'USD' } }
+    };
     this.preAddToCart(product, quantity);
     // for (let i = 0; i < items.length; i += 1) {
     //   const { product, qty } = items[i];
