@@ -81,6 +81,13 @@ export function getDetailProductGrouped(payload) {
   };
 }
 
+export function getDetailProductCustom(payload) {
+  return {
+    type: types.GET_DETAIL_PRODUCT_CUSTOM,
+    payload
+  };
+}
+
 export function updateIsShowingProductOption(payload) {
   return {
     type: types.UPDATE_IS_SHOWING_PRODUCT_OPTION,

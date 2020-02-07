@@ -122,6 +122,7 @@ const initialState = {
     // State product option for all product type configurable, bundle, grouped product
     isLoadingProductOption: false, // Show a loading in screen for product option loading
     isShowingProductOption: false, // Show model for choose product type option
+    isShowingProductCustom: false,
     optionValue: null // Keep detail product clicked
   }
 };

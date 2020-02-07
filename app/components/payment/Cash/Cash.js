@@ -208,8 +208,7 @@ function mapStateToProps(state) {
     currencyCode: state.mainRd.shopInfoConfig[0],
     posSystemConfig: state.mainRd.posSystemConfig,
     toggleModalCalculatorStatus: state.mainRd.isOpenCalculator,
-    orderPreparingCheckout: state.mainRd.orderPreparingCheckout,
-    currencyCode: state.mainRd.shopInfoConfig[0]
+    orderPreparingCheckout: state.mainRd.orderPreparingCheckout
   };
 }
 
