@@ -4,6 +4,12 @@ import { defaultPageSize } from '../../common/settings';
 
 const table = 'products';
 
+export async function getProductBySku(sku) {
+  const productTbl = db.table(table);
+  const result = await productTbl.where({ sku }).toArray();
+  return result;
+}
+
 /**
  * Sync products to local database
  * @param productList
@@ -67,6 +73,7 @@ export async function getDefaultProductLocal() {
   try {
     data = await db
       .table(table)
+      .offset(0)
       .limit(50)
       .toArray();
   } catch (e) {
@@ -83,6 +90,11 @@ export async function getDefaultProductLocal() {
  */
 export async function searchProductsLocal(payload, currentPage = 1) {
   const searchValue = payload;
+  let offset = 0;
+  // If current page == 0 offer must be 0: eg 0 -> 20(defaultPageSize)
+  if (currentPage > 1) {
+    offset = currentPage * defaultPageSize;
+  }
   try {
     const data = await db
       .table(table)
@@ -95,7 +107,7 @@ export async function searchProductsLocal(payload, currentPage = 1) {
         }
         return isMatchSku;
       })
-      .offset(currentPage * defaultPageSize)
+      .offset(offset)
       .limit(defaultPageSize)
       .toArray();
     return data;
@@ -106,12 +118,16 @@ export async function searchProductsLocal(payload, currentPage = 1) {
 
 export async function getProductsByCategoryLocal({ categoryId, currentPage }) {
   let data;
+  let offset = 0;
+  if (currentPage > 1) {
+    offset = currentPage * defaultPageSize;
+  }
   try {
     data = await db
       .table(table)
       .where('categoryIds')
       .anyOf(categoryId)
-      .offset(currentPage * defaultPageSize)
+      .offset(offset)
       .limit(defaultPageSize)
       .toArray();
   } catch (e) {

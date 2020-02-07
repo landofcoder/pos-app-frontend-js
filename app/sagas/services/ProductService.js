@@ -687,7 +687,6 @@ async function syncAllProductsByCategory(categoryId) {
     }
   }
 }
-
 // Find parents
 export async function findAllParentCategories(
   defaultCategory,

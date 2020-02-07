@@ -44,13 +44,13 @@ class EditCart extends Component<Props, State> {
 
   counterUpQty = () => {
     const { posQty } = this.state;
-    this.setState({ posQty: posQty + 1 });
+    this.setState({ posQty: Number(posQty) + 1 });
   };
 
   counterDownQty = () => {
     const { posQty } = this.state;
     if (posQty > 1) {
-      this.setState({ posQty: posQty - 1 });
+      this.setState({ posQty: Number(posQty) - 1 });
     }
   };
 
