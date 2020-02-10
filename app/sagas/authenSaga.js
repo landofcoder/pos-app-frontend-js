@@ -20,10 +20,12 @@ import { updateLoggedToken } from '../reducers/db/settings';
 const senseUrl = state => state.authenRd.senseUrl;
 
 function* loginAction(payload) {
+  console.log('login action authen saga');
   // Start loading
   yield put({ type: types.START_LOADING });
   try {
     const data = yield call(loginService, payload);
+    console.log('data login res:', data);
     if (data !== '') {
       yield createLoggedDb({ info: payload.payload, token: data });
       yield put({ type: UPDATE_FLAG_SWITCHING_MODE }); // Update flag login to make App reload and background check
@@ -106,23 +108,27 @@ function* getModuleInstalled() {
  */
 function* autoLoginToGetNewTokenSaga() {
   const logged = yield getLoggedDb();
-  const lastTimeLogin = logged.update_at ? logged.update_at : logged.created_at;
-  const minute = differenceInMinutes(new Date(), lastTimeLogin);
-  // Auto get login if minute > 120 minutes equivalent 2 hours
-  const { username, password } = logged.value.info;
-  if (minute > 120) {
-    const payload = {
-      payload: {
-        username,
-        password
+  if (logged) {
+    const lastTimeLogin = logged.update_at
+      ? logged.update_at
+      : logged.created_at;
+    const minute = differenceInMinutes(new Date(), lastTimeLogin);
+    // Auto get login if minute > 120 minutes equivalent 2 hours
+    const { username, password } = logged.value.info;
+    if (minute > 120) {
+      const payload = {
+        payload: {
+          username,
+          password
+        }
+      };
+      const newToken = yield getNewTokenFromApi(payload);
+      if (newToken) {
+        // Update to new token & indexed db
+        window.liveToken = newToken;
+        logged.value.token = newToken; // Update before pass to function update
+        yield updateLoggedToken(logged);
       }
-    };
-    const newToken = yield getNewTokenFromApi(payload);
-    if (newToken) {
-      // Update to new token & indexed db
-      window.liveToken = newToken;
-      logged.value.token = newToken; // Update before pass to function update
-      yield updateLoggedToken(logged);
     }
   }
 }
