@@ -57,7 +57,6 @@ export async function getCustomerCartTokenService(customerId) {
  * @returns void
  */
 export async function signUpCustomerService(payload) {
-  console.log(payload);
   const response = await fetch(getGraphqlPath(), {
     method: 'POST', // *GET, POST, PUT, DELETE, etc.
     headers: {

@@ -15,7 +15,8 @@ import {
   deleteLoggedDb,
   getLoggedDb
 } from './services/LoginService';
-import { customerSyncAccount } from './services/CustomerService';
+import { getAllTbl, deleteByKey } from '../reducers/db/sync_customers';
+import { signUpCustomerService } from './services/CustomerService';
 import { updateLoggedToken } from '../reducers/db/settings';
 
 const senseUrl = state => state.authenRd.senseUrl;
@@ -128,8 +129,14 @@ function* getNewToken() {
   }
 }
 function* syncCustomer() {
-  // const data = yield callgetAllTbl
-  // yield call(customerSyncAccount());
+  const data = yield getAllTbl();
+  for (let i = 0; i < data.length; i += 1) {
+    console.log(data[i]);
+    const result = yield call(signUpCustomerService, data[i]);
+    if (result.ok === true) {
+      yield deleteByKey(data[i].id);
+    }
+  }
 }
 function* updateClientData() {
   yield getNewToken();
