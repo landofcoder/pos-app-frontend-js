@@ -548,6 +548,7 @@ function* getSearchCustomer(payload) {
 function* addToCart(payload) {
   // Find sky if exits sku, then increment qty
   const listCartCurrent = yield select(cartCurrent);
+  const cartCustomerResult = yield select(customer);
 
   const product = Object.assign({}, payload.payload);
   const productSku = product.sku;
@@ -580,7 +581,7 @@ function* addToCart(payload) {
   // Update qty
   if (found === 1) {
     foundItem = yield updateQtyProduct(foundItem);
-    const productAssign = yield calcPrice(foundItem);
+    const productAssign = yield calcPrice(foundItem, cartCustomerResult);
     console.log('after cal price:', productAssign);
     yield put({
       type: types.UPDATE_ITEM_CART,
@@ -588,7 +589,7 @@ function* addToCart(payload) {
     });
   } else {
     // Add new product
-    const productAssign = yield calcPrice(product);
+    const productAssign = yield calcPrice(product, cartCustomerResult);
     yield put({ type: types.ADD_ITEM_TO_CART, payload: productAssign });
   }
 }
@@ -1004,6 +1005,7 @@ function* loadProductPagingSaga() {
 function* updateQtyCartItemSaga(payload) {
   const qty = payload.payload;
   const cartEditingResult = yield select(itemCartEditing);
+  const cartCustomerResult = yield select(customer);
   const { index } = cartEditingResult;
 
   const product = Object.assign({}, cartEditingResult.item);
@@ -1011,7 +1013,7 @@ function* updateQtyCartItemSaga(payload) {
   // Update qty
   product.pos_qty = qty;
 
-  const productAssign = yield calcPrice(product);
+  const productAssign = yield calcPrice(product, cartCustomerResult);
   yield put({
     type: types.UPDATE_ITEM_CART,
     payload: { index, item: productAssign }

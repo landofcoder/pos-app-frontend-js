@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
@@ -88,7 +87,7 @@ class CartCustomer extends Component<Props> {
             <div className={ModalStyle.modalContent}>
               <div className="modal-content">
                 <div className="modal-header">
-                  <h5 className="modal-title">Find customer</h5>
+                  <h5 className="modal-title">Choose customer</h5>
                   <div className="col-md-3 p-0">
                     <button
                       type="button"

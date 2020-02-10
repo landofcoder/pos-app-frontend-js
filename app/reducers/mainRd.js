@@ -361,13 +361,11 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.isLoadingOrderHistory = false;
         break;
       case types.RECEIVED_ORDER_HISTORY_ACTION:
-        console.log('sync orders before:', action.syncOrders);
         // Add status not sync to syncOrders array
         action.syncOrders.forEach(function(element) {
           element.from_local_db = 1;
         });
         const mainArray = action.payload.concat(action.syncOrders);
-        console.log('main array:', mainArray);
         draft.orderHistory = mainArray;
         break;
       case types.RECEIVED_ORDER_HISTORY_DETAIL_ACTION:

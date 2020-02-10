@@ -5,9 +5,10 @@ import { formatCurrencyCode } from './settings';
 /**
  * Get price by product type
  * @param product
+ * @param cartCustomer
  * @returns {any}
  */
-export async function calcPrice(product) {
+export async function calcPrice(product, cartCustomer = null) {
   const currencyCode = window.currency;
   let productAssign = Object.assign({}, product);
   const typeId = productAssign.type_id;
@@ -15,7 +16,7 @@ export async function calcPrice(product) {
     case SIMPLE:
     case DOWNLOADABLE:
     case undefined: {
-      const finalPrice = await priceByTierPrice(productAssign);
+      const finalPrice = await priceByTierPrice(productAssign, cartCustomer);
       productAssign.pos_totalPrice = finalPrice;
       productAssign.pos_totalPriceFormat = formatCurrencyCode(
         finalPrice,
@@ -38,12 +39,18 @@ export async function calcPrice(product) {
 /**
  * Get price by tier price or normal price
  * @param item
+ * @param cartCustomer
  * @returns {number}
  */
-async function priceByTierPrice(item) {
+async function priceByTierPrice(item, cartCustomer) {
   const price = item.price.regularPrice.amount.value;
   const qty = item.pos_qty;
   let finalPrice = price;
+  let cartCustomerGroupId = 0;
+
+  if (cartCustomer) {
+    cartCustomerGroupId = cartCustomer.group_id;
+  }
 
   if (item.tier_prices || item.special_price) {
     // Get tier price now
@@ -53,12 +60,20 @@ async function priceByTierPrice(item) {
       let tierItemMatch = null;
 
       const specialPrice = item.special_price;
+      const allCustomerId = 32000;
+      const notLoggedCustomer = 0;
 
       // eslint-disable-next-line no-restricted-syntax
       for (const tierItem of item.tier_prices) {
         const tierQty = tierItem.qty;
-        // todo check with customer here
-        if (qty >= tierQty) {
+        const customerGroupId = Number(tierItem.customer_group_id);
+        // Validate qty & customer_group_id
+        if (
+          qty >= tierQty &&
+          (cartCustomerGroupId === allCustomerId ||
+            cartCustomerGroupId === notLoggedCustomer ||
+            cartCustomerGroupId === customerGroupId)
+        ) {
           tierItemMatch = tierItem;
         }
       }

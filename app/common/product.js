@@ -1,4 +1,3 @@
-import LocaleCurrency from 'locale-currency';
 import { CONFIGURABLE, BUNDLE } from '../constants/product-types';
 
 /**
