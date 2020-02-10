@@ -2,6 +2,8 @@
  * Create guest cart service
  * @returns {Promise<any>}
  */
+import { getGraphqlPath } from '../../common/settings';
+
 export async function searchCustomer(payload) {
   const searchValue = payload.payload;
   const response = await fetch(
@@ -14,7 +16,7 @@ export async function searchCustomer(payload) {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${window.liveToken}`
-        // 'Content-Type': 'application/x-www-form-urlencoded',
+        // 'Content-Type': 'application/x-www-form-urlencoded'
       },
       redirect: 'follow', // manual, *follow, error
       referrer: 'no-referrer' // no-referrer, *client
@@ -55,24 +57,37 @@ export async function getCustomerCartTokenService(customerId) {
  * @returns void
  */
 export async function signUpCustomerService(payload) {
-  const response = await fetch(`${window.mainUrl}rest/V1/customers/?`, {
+  console.log(payload);
+  const response = await fetch(getGraphqlPath(), {
     method: 'POST', // *GET, POST, PUT, DELETE, etc.
-    mode: 'cors', // no-cors, *cors, same-origin
-    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-    credentials: 'same-origin', // include, *same-origin, omit
     headers: {
       'Content-Type': 'application/json'
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
-    redirect: 'follow', // manual, *follow, error
-    referrer: 'no-referrer', // no-referrer, *client
     body: JSON.stringify({
-      customer: payload.payload.customer,
-      password: payload.payload.password
+      query: `mutation {
+        createCustomer(
+          input: {
+            firstname: "${payload.payload.customer.firstname}"
+            lastname: "${payload.payload.customer.lastname}"
+            email: "${payload.payload.customer.email}"
+            password: "${payload.payload.password}"
+            is_subscribed: true
+          }
+        ) {
+          customer {
+            id
+            firstname
+            lastname
+            email
+            is_subscribed
+          }
+        }
+      }`
     }) // body data type must match "Content-Type" header
   });
   const data = await response.json(); // parses JSON response into native JavaScript objects
-  if (response.ok) {
+  if (data.message === undefined && data.errors === undefined) {
     return { data, ok: true };
   }
   return { data, ok: false };

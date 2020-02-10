@@ -15,6 +15,7 @@ import {
   deleteLoggedDb,
   getLoggedDb
 } from './services/LoginService';
+import { customerSyncAccount } from './services/CustomerService';
 import { updateLoggedToken } from '../reducers/db/settings';
 
 const senseUrl = state => state.authenRd.senseUrl;
@@ -104,7 +105,7 @@ function* getModuleInstalled() {
  * Auto login to get new token
  * @returns void
  */
-function* autoLoginToGetNewTokenSaga() {
+function* getNewToken() {
   const logged = yield getLoggedDb();
   const lastTimeLogin = logged.update_at ? logged.update_at : logged.created_at;
   const minute = differenceInMinutes(new Date(), lastTimeLogin);
@@ -126,6 +127,16 @@ function* autoLoginToGetNewTokenSaga() {
     }
   }
 }
+function* syncCustomer() {
+  // const data = yield callgetAllTbl
+  // yield call(customerSyncAccount());
+}
+function* updateClientData() {
+  yield getNewToken();
+  yield syncCustomer();
+  // update tokenLogin
+  // update customer
+}
 
 function* authenSaga() {
   yield takeEvery(types.LOGIN_ACTION, loginAction);
@@ -134,10 +145,7 @@ function* authenSaga() {
   yield takeEvery(types.GET_MAIN_URL, getMainUrl);
   yield takeEvery(types.CLEAN_URL_WORKPLACE, cleanUrlWorkplace);
   yield takeLatest(types.GET_MODULE_INSTALLED, getModuleInstalled);
-  yield takeEvery(
-    types.AUTO_LOGIN_TO_GET_NEW_TOKEN,
-    autoLoginToGetNewTokenSaga
-  );
+  yield takeEvery(types.UPDATE_CLIENT_DATA, updateClientData);
 }
 
 export default authenSaga;

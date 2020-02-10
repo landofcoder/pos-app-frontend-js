@@ -772,15 +772,17 @@ function* signUpAction(payload) {
   const offlineMode = yield getOfflineMode();
   if (offlineMode === 1) {
     yield call(signUpCustomer, payload);
+  } else {
+    const res = yield call(signUpCustomerService, payload);
+    yield put({
+      type: types.MESSAGE_SIGN_UP_CUSTOMER,
+      payload: res.data.message
+    });
+    if (res.ok) {
+      yield put({ type: types.TOGGLE_MODAL_SIGN_UP_CUSTOMER, payload: false });
+    }
   }
-  const res = yield call(signUpCustomerService, payload);
-  yield put({
-    type: types.MESSAGE_SIGN_UP_CUSTOMER,
-    payload: res.data.message
-  });
-  if (res.ok) {
-    yield put({ type: types.TOGGLE_MODAL_SIGN_UP_CUSTOMER, payload: false });
-  }
+
   yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: false });
 }
 

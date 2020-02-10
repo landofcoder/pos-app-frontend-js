@@ -293,6 +293,6 @@ export function loadProductPaging() {
 
 export function autoLoginToGetNewToken() {
   return {
-    type: typesAuthen.AUTO_LOGIN_TO_GET_NEW_TOKEN
+    type: typesAuthen.UPDATE_CLIENT_DATA
   };
 }
