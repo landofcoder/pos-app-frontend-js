@@ -389,7 +389,7 @@ export default class Pos extends Component<Props, State> {
                 <div className="col-md-2">
                   <Categories />
                 </div>
-                <div className="col-sm-1 pt-1 pl-5 pr-0 mx-auto">
+                <div className="col-sm-1 pt-2 pl-5 pr-0 mx-auto">
                   <a
                     onClick={() => {
                       this.addCustomProduct();
