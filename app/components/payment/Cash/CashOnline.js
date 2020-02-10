@@ -95,7 +95,7 @@ class CashOnline extends Component<Props> {
 function mapStateToProps(state) {
   return {
     cashLoadingPreparingOrder: state.mainRd.cashLoadingPreparingOrder,
-    orderPreparingCheckout: state.mainRd.orderPreparingCheckout,
+    orderPreparingCheckout: state.mainRd.checkout.orderPreparingCheckout,
     currencyCode: state.mainRd.shopInfoConfig[0]
   };
 }

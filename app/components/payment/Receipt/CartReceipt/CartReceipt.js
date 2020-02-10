@@ -7,7 +7,6 @@ import { formatCurrencyCode } from '../../../../common/settings';
 type Props = {
   cartForReceipt: Array,
   orderPreparingCheckout: Object,
-  currencyCode: string,
   customReceipt: Object,
   cashierInfo: Object
 };
@@ -19,7 +18,6 @@ class CartReceipt extends Component<Props> {
     const {
       cartForReceipt,
       orderPreparingCheckout,
-      currencyCode,
       customReceipt,
       cashierInfo
     } = this.props;
@@ -28,16 +26,11 @@ class CartReceipt extends Component<Props> {
     const { subtotal_display, subtotal_label, discount_display, discount_label, cashier_name_display, cashier_label, grand_total_label } = customReceipt;
 
     const { totals } = orderPreparingCheckout;
-    const subTotal = formatCurrencyCode(totals.base_subtotal, currencyCode);
-    const discountAmount = formatCurrencyCode(
-      totals.discount_amount,
-      currencyCode
-    );
-    const shippingAmount = formatCurrencyCode(
-      totals.base_shipping_amount,
-      currencyCode
-    );
-    const grandTotal = formatCurrencyCode(totals.grand_total, currencyCode);
+    console.log('totals:', totals);
+    const subTotal = formatCurrencyCode(totals.base_subtotal);
+    const discountAmount = formatCurrencyCode(totals.discount_amount);
+    const shippingAmount = formatCurrencyCode(totals.base_shipping_amount);
+    const grandTotal = formatCurrencyCode(totals.grand_total);
     // eslint-disable-next-line no-lone-blocks
     /*eslint-disable*/
 
@@ -145,8 +138,7 @@ class CartReceipt extends Component<Props> {
 
 const mapStateToProps = state => ({
   cartForReceipt: state.mainRd.receipt.cartForReceipt.data,
-  orderPreparingCheckout: state.mainRd.orderPreparingCheckout,
-  currencyCode: state.mainRd.shopInfoConfig[0],
+  orderPreparingCheckout: state.mainRd.checkout.orderPreparingCheckout,
   customReceipt: state.mainRd.customReceipt,
   cashierInfo: state.authenRd.cashierInfo
 });
