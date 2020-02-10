@@ -802,9 +802,9 @@ function* getDiscountForOfflineCheckoutSaga() {
     config: posSystemConfigResult
   });
   const typeOfResult = typeof result;
-
+  console.log(result);
   // If json type returned, that mean get discount success
-  if (typeOfResult !== 'string') {
+  if (typeOfResult !== 'string' && result.message === undefined) {
     yield put({
       type: types.RECEIVED_CHECKOUT_OFFLINE_CART_INFO,
       payload: result

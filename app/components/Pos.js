@@ -88,7 +88,7 @@ export default class Pos extends Component<Props, State> {
   }
 
   addCustomProduct = () => {
-    const item = { type_id: 'customizable' };
+    const item = { type_id: 'CUSTOM' };
     this.preAddToCart(item);
   };
 
@@ -139,7 +139,6 @@ export default class Pos extends Component<Props, State> {
       const { updateIsShowingProductOption } = this.props;
       updateIsShowingProductOption(true);
     }
-    console.log(item);
     switch (item.type_id) {
       case CONFIGURABLE:
         {

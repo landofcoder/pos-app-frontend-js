@@ -45,11 +45,10 @@ class Grouped extends Component<Props> {
     const { name, tax, price, quantity, note } = this.state;
     const product = {
       id: Date.now(),
-      type_id: 'custom',
+      type_id: 'CUSTOM',
       name,
       tax,
       note,
-      pos_qty: quantity,
       price: { regularPrice: { amount: { value: price, currency: 'USD' } } }
     };
     this.preAddToCart(product, quantity);
