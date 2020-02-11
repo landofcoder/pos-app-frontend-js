@@ -120,7 +120,7 @@ class CashPayment extends Component<Props> {
                 className="col-sm-4 pt-1 pr-0 col-form-label"
                 htmlFor="inputValue"
               >
-                Customer's cash recieved
+                Customer&apos;s cash recieved
               </label>
               <div className="col-sm-8 pb-1">
                 <input

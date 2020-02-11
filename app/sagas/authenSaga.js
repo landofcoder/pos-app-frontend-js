@@ -1,4 +1,3 @@
-// @flow
 import { takeEvery, call, put, takeLatest, select } from 'redux-saga/effects';
 import { differenceInMinutes } from 'date-fns';
 import * as types from '../constants/authen';
