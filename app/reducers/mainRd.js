@@ -54,6 +54,24 @@ const initialState = {
       }
     },
     orderPreparingCheckout: {
+      currency_id: 'USD',
+      email: 'quynh8897@gmail.com',
+      shipping_address: {
+        firstname: 'Quynh',
+        lastname: 'Nguyen',
+        street: 'Main Street',
+        city: 'Ha Noi',
+        country_id: 'US',
+        region: 'Florida',
+        region_id: 18,
+        postcode: '85001',
+        telephone: '823322565',
+        fax: '3245845623',
+        shipping_method: 'flatrate_flatrate',
+        shipping_description: 'Flat Rate - Fixed',
+        method: 'checkmo',
+        save_in_address_book: 1
+      },
       totals: {
         discount_amount: 0,
         base_subtotal: 0,
@@ -61,7 +79,8 @@ const initialState = {
         tax_amount: 0,
         base_shipping_amount: 0
       }
-    } // Detail order for preparing to checkout
+      // Detail order for preparing to checkout
+    }
   },
   cartHoldList: [],
   itemCartEditing: {

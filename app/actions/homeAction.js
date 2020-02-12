@@ -291,7 +291,7 @@ export function loadProductPaging() {
   };
 }
 
-export function autoLoginToGetNewToken() {
+export function autoUpdateClientData() {
   return {
     type: typesAuthen.UPDATE_CLIENT_DATA
   };

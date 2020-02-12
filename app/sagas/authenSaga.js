@@ -16,8 +16,11 @@ import {
   getLoggedDb
 } from './services/LoginService';
 import { getAllTbl, deleteByKey } from '../reducers/db/sync_customers';
+import { getAllOrders, deteleAllOrders } from '../reducers/db/sync_orders';
 import { signUpCustomerService } from './services/CustomerService';
 import { updateLoggedToken } from '../reducers/db/settings';
+import { syncOrderService } from './services/CartService';
+import { limitLoop } from '../common/settings';
 
 const senseUrl = state => state.authenRd.senseUrl;
 
@@ -107,6 +110,7 @@ function* getModuleInstalled() {
  * @returns void
  */
 function* getNewToken() {
+  console.log('get new token');
   const logged = yield getLoggedDb();
   const lastTimeLogin = logged.update_at ? logged.update_at : logged.created_at;
   const minute = differenceInMinutes(new Date(), lastTimeLogin);
@@ -128,6 +132,7 @@ function* getNewToken() {
     }
   }
 }
+
 function* syncCustomer() {
   const data = yield getAllTbl();
   for (let i = 0; i < data.length; i += 1) {
@@ -138,11 +143,34 @@ function* syncCustomer() {
     }
   }
 }
+
+function* syncCustomProduct() {
+  console.log('sync custom product');
+}
+
+function* syncOrder() {
+  console.log('sync order');
+  const data = yield getAllOrders();
+  if (data.length > 0) {
+    const dataResult = yield call(syncOrderService, data);
+    if (dataResult === true) {
+      yield deteleAllOrders();
+    } else {
+      console.log(dataResult);
+    }
+  }
+}
+
+function* syncGroupCheckout() {
+  yield syncCustomProduct();
+  yield syncCustomer();
+  yield syncOrder();
+}
+
 function* updateClientData() {
   yield getNewToken();
-  yield syncCustomer();
-  // update tokenLogin
-  // update customer
+  console.log('1');
+  limitLoop(syncGroupCheckout, 30, 100);
 }
 
 function* authenSaga() {

@@ -112,9 +112,26 @@ function* cashCheckout() {
       currencyCode,
       false
     );
-
     const fakeResponse = {
       payment_methods: [],
+      currency_id: 'USD',
+      email: 'quynh8897@gmail.com',
+      shipping_address: {
+        firstname: 'Quynh',
+        lastname: 'Nguyen',
+        street: 'Main Street',
+        city: 'Ha Noi',
+        country_id: 'US',
+        region: 'Florida',
+        region_id: 18,
+        postcode: '85001',
+        telephone: '823322565',
+        fax: '3245845623',
+        shipping_method: 'flatrate_flatrate',
+        shipping_description: 'Flat Rate - Fixed',
+        method: 'checkmo',
+        save_in_address_book: 1
+      },
       totals: {
         base_subtotal: totalPrice,
         discount_amount: 0,
