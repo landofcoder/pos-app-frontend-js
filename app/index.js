@@ -1,10 +1,14 @@
 import React, { Fragment } from 'react';
 import { render } from 'react-dom';
+import HID from 'node-hid';
 import { AppContainer as ReactHotAppContainer } from 'react-hot-loader';
 import Root from './containers/Root';
 import { configureStore, history } from './store/configureStore';
 import './app.global.css';
 import db from './reducers/db/db';
+
+const devices = HID.devices();
+console.log('devices:', devices);
 
 // Open database
 db.open();
