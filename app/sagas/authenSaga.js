@@ -19,22 +19,21 @@ import { updateLoggedToken } from '../reducers/db/settings';
 const senseUrl = state => state.authenRd.senseUrl;
 
 function* loginAction(payload) {
-  console.log('login action authen saga');
   // Start loading
   yield put({ type: types.START_LOADING });
   try {
     const data = yield call(loginService, payload);
-    console.log('data login res:', data);
     if (data !== '') {
       yield createLoggedDb({ info: payload.payload, token: data });
       yield put({ type: UPDATE_FLAG_SWITCHING_MODE }); // Update flag login to make App reload and background check
     } else {
       yield put({ type: types.ERROR_LOGIN });
+      // Set login button loading to false
+      yield put({ type: types.STOP_LOADING });
     }
   } catch (err) {
     console.log(err);
   }
-  yield put({ type: types.STOP_LOADING });
 }
 
 function* getNewTokenFromApi(payload) {

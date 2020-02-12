@@ -58,7 +58,8 @@ import { BUNDLE, CONFIGURABLE, GROUPED } from '../constants/product-types';
 import {
   CHECK_LOGIN_BACKGROUND,
   RECEIVED_TOKEN,
-  RECEIVED_MAIN_URL
+  RECEIVED_MAIN_URL,
+  STOP_LOADING
 } from '../constants/authen';
 import { syncCategories } from '../reducers/db/categories';
 import { syncCustomers } from '../reducers/db/customers';
@@ -886,6 +887,9 @@ function* checkLoginBackgroundSaga() {
         yield put({ type: types.UPDATE_SWITCHING_MODE, payload: CHILDREN });
         yield syncData();
       }
+
+      // Stop login loading
+      yield put({ type: STOP_LOADING });
     }
   } else {
     // Not login yet =
