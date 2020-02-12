@@ -42,6 +42,7 @@ class OrderHistory extends Component<Props> {
       dataItem: dataOrderCheckoutOfflineItem
     });
   };
+
   render() {
     const {
       orderHistory,
@@ -49,7 +50,6 @@ class OrderHistory extends Component<Props> {
       isOpenDetailOrder,
       isOpenDetailOrderOffline
     } = this.props;
-    console.log('order history:', orderHistory);
     return (
       <>
         <div className="card">
