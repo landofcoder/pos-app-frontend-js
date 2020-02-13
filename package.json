@@ -216,6 +216,7 @@
     "eslint-plugin-prettier": "^3.0.1",
     "eslint-plugin-promise": "^4.1.1",
     "eslint-plugin-react": "^7.12.4",
+    "eslint-plugin-react-hooks": "^2.3.0",
     "eslint-plugin-redux-saga": "^1.1.3",
     "eslint-plugin-testcafe": "^0.2.1",
     "fbjs-scripts": "^1.2.0",
@@ -253,8 +254,7 @@
     "webpack-cli": "^3.3.0",
     "webpack-dev-server": "^3.2.1",
     "webpack-merge": "^4.2.1",
-    "yarn": "^1.15.2",
-    "eslint-plugin-react-hooks": "^2.3.0"
+    "yarn": "^1.15.2"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.8.1",
@@ -271,6 +271,7 @@
     "immer": "^5.1.0",
     "locale-currency": "^0.0.2",
     "lodash": "^4.17.15",
+    "node-hid": "^1.1.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
@@ -283,7 +284,7 @@
     "redux-thunk": "^2.3.0",
     "relay-runtime": "^7.1.0",
     "source-map-support": "^0.5.11",
-    "node-hid": "^1.1.0"
+    "usb-barcode-scanner": "^1.0.2"
   },
   "devEngines": {
     "node": ">=7.x",
