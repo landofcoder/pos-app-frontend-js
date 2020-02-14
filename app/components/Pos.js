@@ -86,7 +86,6 @@ export default class Pos extends Component<Props, State> {
   componentDidMount(): void {
     const { autoLoginToGetNewToken, autoSyncGroupCheckout } = this.props;
     const loopStep = 5000;
-    console.log('re render component did mount pos auto login');
     limitLoop(
       () => {
         autoLoginToGetNewToken();

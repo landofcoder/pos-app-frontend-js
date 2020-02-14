@@ -40,7 +40,6 @@ export default class Account extends Component {
 
   render() {
     const { viewSelected } = this.state;
-    console.log(viewSelected);
     return (
       <>
         <div data-tid="container" className="pr-0 pl-0 pt-2">

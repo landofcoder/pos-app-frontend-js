@@ -114,7 +114,6 @@ function* getModuleInstalled() {
  * @returns void
  */
 function* getNewToken() {
-  console.log('get new token');
   const logged = yield getLoggedDb();
   if (logged) {
     const lastTimeLogin = logged.update_at
@@ -153,12 +152,10 @@ function* syncCustomer() {
 }
 
 function* syncCustomProduct() {
-  console.log('sync custom product');
   yield call(syncCustomProductService);
 }
 
 function* syncOrder() {
-  console.log('sync order');
   const data = yield getAllOrders();
   if (data.length > 0) {
     const dataResult = yield call(syncOrderService, data);
@@ -179,9 +176,6 @@ function* syncClientData() {
     yield syncCustomProduct();
     yield syncCustomer();
     yield syncOrder();
-  } else {
-    console.log('time remaining let sync group checkout');
-    console.log(1200000 - nowTime + dbTime);
   }
 }
 
