@@ -38,6 +38,10 @@ export default class Account extends Component {
     }
   };
 
+  connectDevicesAction = e => {
+
+  };
+
   render() {
     const { viewSelected } = this.state;
     return (
@@ -67,7 +71,7 @@ export default class Account extends Component {
                     } ${Styles.radiusButton}`}
                     id="v-pills-profile-tab"
                     data-toggle="pill"
-                    href="#v-pills-profile"
+                    href="#"
                     role="tab"
                     aria-controls="v-pills-profile"
                     onClick={e => {
@@ -83,8 +87,8 @@ export default class Account extends Component {
                     } ${Styles.radiusButton}`}
                     id="v-pills-home-tab"
                     data-toggle="pill"
-                    href="#v-pills-home"
                     role="tab"
+                    href="#"
                     aria-controls="v-pills-home"
                     onClick={e => {
                       e.preventDefault();
@@ -93,6 +97,7 @@ export default class Account extends Component {
                   >
                     Account Setting
                   </a>
+                  <a className="nav-link">Connect Devices</a>
                 </div>
               </div>
               <div className={`col-9 ${Styles.wrapFullHeightList}`}>

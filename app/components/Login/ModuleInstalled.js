@@ -100,7 +100,7 @@ class ModuleInstalled extends Component {
                   <div className="card">
                     <div className="card-body">
                       <h5 className="card-title">
-                        Please install all modules below:
+                        All modules require:
                       </h5>
                       {Object.keys(moduleInstalled).map(key => {
                         return this.showModuleInstalled(
