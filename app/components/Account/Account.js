@@ -8,21 +8,39 @@ import Styles from './Account.scss';
 export default class Account extends Component {
   constructor(props) {
     super(props);
-    this.state = { cashierSelect: '', orderHistorySelect: 'active' };
+    this.state = {
+      viewSelected: 'ordersHistory'
+    };
   }
 
-  cashierAction = e => {
-    e.preventDefault();
-    this.setState({ cashierSelect: 'active', orderHistorySelect: '' });
+  viewSelectedAction = payload => {
+    switch (payload) {
+      case 'ordersHistory':
+        this.setState({ viewSelected: 'ordersHistory' });
+        break;
+      case 'CashierInfo':
+        this.setState({ viewSelected: 'CashierInfo' });
+        break;
+      default:
+        break;
+    }
   };
 
-  orderHistoryAction = e => {
-    e.preventDefault();
-    this.setState({ orderHistorySelect: 'active', cashierSelect: '' });
+  renderShowUp = () => {
+    const { viewSelected } = this.state;
+    switch (viewSelected) {
+      case 'ordersHistory':
+        return <OrderHistory />;
+      case 'CashierInfo':
+        return <CashierInfo />;
+      default:
+        return null;
+    }
   };
 
   render() {
-    const { cashierSelect, orderHistorySelect } = this.state;
+    const { viewSelected } = this.state;
+    console.log(viewSelected);
     return (
       <>
         <div data-tid="container" className="pr-0 pl-0 pt-2">
@@ -45,32 +63,41 @@ export default class Account extends Component {
                   aria-orientation="vertical"
                 >
                   <a
-                    className={`nav-link ${orderHistorySelect} ${Styles.radiusButton}`}
+                    className={`nav-link ${
+                      viewSelected === 'ordersHistory' ? 'active' : ''
+                    } ${Styles.radiusButton}`}
                     id="v-pills-profile-tab"
                     data-toggle="pill"
                     href="#v-pills-profile"
                     role="tab"
                     aria-controls="v-pills-profile"
-                    onClick={this.orderHistoryAction}
+                    onClick={e => {
+                      e.preventDefault();
+                      this.viewSelectedAction('ordersHistory');
+                    }}
                   >
                     Order History
                   </a>
                   <a
-                    className={`nav-link ${cashierSelect} ${Styles.radiusButton}`}
+                    className={`nav-link ${
+                      viewSelected === 'CashierInfo' ? 'active' : ''
+                    } ${Styles.radiusButton}`}
                     id="v-pills-home-tab"
                     data-toggle="pill"
                     href="#v-pills-home"
                     role="tab"
                     aria-controls="v-pills-home"
-                    onClick={this.cashierAction}
+                    onClick={e => {
+                      e.preventDefault();
+                      this.viewSelectedAction('CashierInfo');
+                    }}
                   >
                     Account Setting
                   </a>
                 </div>
               </div>
               <div className={`col-9 ${Styles.wrapFullHeightList}`}>
-                {orderHistorySelect ? <OrderHistory /> : null}
-                {cashierSelect ? <CashierInfo /> : null}
+                {this.renderShowUp()}
               </div>
             </div>
           </div>
