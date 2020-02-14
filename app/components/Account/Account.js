@@ -21,6 +21,10 @@ export default class Account extends Component {
     this.setState({ orderHistorySelect: 'active', cashierSelect: '' });
   };
 
+  connectDevicesAction = e => {
+
+  };
+
   render() {
     const { cashierSelect, orderHistorySelect } = this.state;
     return (
@@ -48,7 +52,7 @@ export default class Account extends Component {
                     className={`nav-link ${orderHistorySelect} ${Styles.radiusButton}`}
                     id="v-pills-profile-tab"
                     data-toggle="pill"
-                    href="#v-pills-profile"
+                    href="#"
                     role="tab"
                     aria-controls="v-pills-profile"
                     onClick={this.orderHistoryAction}
@@ -59,13 +63,14 @@ export default class Account extends Component {
                     className={`nav-link ${cashierSelect} ${Styles.radiusButton}`}
                     id="v-pills-home-tab"
                     data-toggle="pill"
-                    href="#v-pills-home"
                     role="tab"
+                    href="#"
                     aria-controls="v-pills-home"
                     onClick={this.cashierAction}
                   >
                     Account Setting
                   </a>
+                  <a className="nav-link">Connect Devices</a>
                 </div>
               </div>
               <div className={`col-9 ${Styles.wrapFullHeightList}`}>
