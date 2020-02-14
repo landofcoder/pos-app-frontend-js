@@ -297,8 +297,9 @@ export function autoUpdateClientData() {
   };
 }
 
-export function autoSyncGroupCheckout() {
+export function autoSyncGroupCheckout(payload) {
   return {
-    type: types.SYNC_CLIENT_DATA
+    type: types.SYNC_CLIENT_DATA,
+    payload
   };
 }

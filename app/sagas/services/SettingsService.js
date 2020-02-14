@@ -10,7 +10,7 @@ const systemConfigLabel = 'system_config';
 const shopInfoKey = 'shop_info_config';
 const cashierInfoLabel = 'cashier_info';
 const receiptInfoLabel = 'receipt_info';
-
+const timeSyncConstant = 'time_sync_constant';
 export async function haveToSyncAllData() {
   const data = await getByKey(syncAllDataLabel);
   return data;
@@ -94,4 +94,19 @@ export async function cashierInfoSync(data) {
 export async function getCashierInfoLocal() {
   const cashierInfo = await getByKey(cashierInfoLabel);
   return cashierInfo;
+}
+
+export async function getTimeSyncConstant() {
+  const timeConstantValue = await getByKey(timeSyncConstant);
+  console.log('time constant');
+  console.log(timeConstantValue);
+  if (timeConstantValue.length === 0) {
+    const value = {
+      light: { hour: 12, minute: 0 },
+      dark: { hour: 18, minute: 0 }
+    };
+    await createKey(timeSyncConstant, value);
+    return value;
+  }
+  return timeConstantValue[0].value;
 }

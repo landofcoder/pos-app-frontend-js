@@ -10,18 +10,18 @@ import {
 import {
   loginService,
   createLoggedDb,
-  setMainUrlKey,
   getMainUrlKey,
+  setMainUrlKey,
   getModuleInstalledService,
   deleteLoggedDb,
   getLoggedDb
 } from './services/LoginService';
+import { getTimeSyncConstant } from './services/SettingsService';
 import { getAllTbl, deleteByKey } from '../reducers/db/sync_customers';
 import { getAllOrders, deteleAllOrders } from '../reducers/db/sync_orders';
 import { signUpCustomerService } from './services/CustomerService';
 import { updateLoggedToken } from '../reducers/db/settings';
 import { syncOrderService } from './services/CartService';
-import { limitLoop } from '../common/settings';
 
 const senseUrl = state => state.authenRd.senseUrl;
 
@@ -162,10 +162,32 @@ function* syncOrder() {
   }
 }
 
-function* syncClientData() {
-  yield syncCustomProduct();
-  yield syncCustomer();
-  yield syncOrder();
+function* syncClientData(payload) {
+  const date = new Date();
+  const hour = +60000 * +60;
+  const minute = +60000;
+  const second = +1000;
+  const miniSecondNowInDay =
+    date.getHours() * hour +
+    date.getMinutes() * minute +
+    date.getSeconds() * second;
+  const timeStep = payload.payload;
+  const timeToUpdate = yield call(getTimeSyncConstant);
+  const miniSecondLight =
+    timeToUpdate.light.hour * hour + timeToUpdate.light.minute * minute;
+  const miniSecondDark =
+    timeToUpdate.dark.hour * hour + timeToUpdate.dark.minute * minute;
+  if (
+    (miniSecondLight - miniSecondNowInDay < timeStep + 1 &&
+      miniSecondLight - miniSecondNowInDay >= 0) ||
+    (miniSecondDark - miniSecondNowInDay < timeStep + 1 &&
+      miniSecondDark - miniSecondNowInDay >= 0)
+  ) {
+    console.log('time up ! let sync group checkout');
+    yield syncCustomProduct();
+    yield syncCustomer();
+    yield syncOrder();
+  }
 }
 
 function* autoLoginToGetNewTokenSaga() {
