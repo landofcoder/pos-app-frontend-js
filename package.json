@@ -284,7 +284,8 @@
     "redux-thunk": "^2.3.0",
     "relay-runtime": "^7.1.0",
     "source-map-support": "^0.5.11",
-    "usb-barcode-scanner": "^1.0.2"
+    "usb-barcode-scanner": "^1.0.2",
+    "electron-sudo":  "^4.0.12"
   },
   "devEngines": {
     "node": ">=7.x",
