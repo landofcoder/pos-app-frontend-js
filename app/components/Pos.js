@@ -9,7 +9,8 @@ import {
   SIMPLE,
   CONFIGURABLE,
   BUNDLE,
-  GROUPED
+  GROUPED,
+  CUSTOM
 } from '../constants/product-types';
 import Configuration from './product-types/Configuration';
 import Bundle from './product-types/Bundle';
@@ -23,6 +24,7 @@ import { sumCartTotalPrice } from '../common/cart';
 import Categories from './commons/Categories/Categories';
 import routers from '../constants/routes';
 import { limitLoop } from '../common/settings';
+import Custom from './product-types/Custom';
 
 type Props = {
   productList: Array<Object>,
@@ -35,6 +37,7 @@ type Props = {
   getDetailProductConfigurable: (payload: Object) => void,
   getDetailProductBundle: (payload: Object) => void,
   getDetailProductGrouped: (payload: Object) => void,
+  getDetailProductCustom: (payload: Object) => void,
   loadProductPaging: () => void,
   productOption: Object,
   isShowCashPaymentModel: boolean,
@@ -94,6 +97,11 @@ export default class Pos extends Component<Props, State> {
     );
   }
 
+  addCustomProduct = () => {
+    const item = { type_id: 'CUSTOM' };
+    this.preAddToCart(item);
+  };
+
   getFirstMedia = (item: Object) => {
     const gallery = item.media_gallery_entries
       ? item.media_gallery_entries
@@ -135,13 +143,12 @@ export default class Pos extends Component<Props, State> {
     } = this.props;
     // Set type_id to state for switchingProductSettings render settings form
     this.setState({ typeId: item.type_id });
-
+    console.log(item.type_id);
     if (item.type_id !== 'simple' && item.type_id !== 'downloadable') {
       // Show product option
       const { updateIsShowingProductOption } = this.props;
       updateIsShowingProductOption(true);
     }
-
     switch (item.type_id) {
       case CONFIGURABLE:
         {
@@ -164,6 +171,8 @@ export default class Pos extends Component<Props, State> {
           getDetailProductGrouped({ item, sku });
         }
         break;
+      case CUSTOM:
+        break;
       default:
         addToCart(item);
         break;
@@ -183,6 +192,8 @@ export default class Pos extends Component<Props, State> {
         return <Bundle />;
       case GROUPED:
         return <Grouped />;
+      case CUSTOM:
+        return <Custom />;
       default:
         break;
     }
@@ -388,7 +399,16 @@ export default class Pos extends Component<Props, State> {
                 <div className="col-md-2">
                   <Categories />
                 </div>
-                <div className="col-md-10 mb-0 pr-0">
+                <div className="col-sm-1 pt-2 pl-5 pr-0 mx-auto">
+                  <a
+                    onClick={() => {
+                      this.addCustomProduct();
+                    }}
+                  >
+                    <i className="fas fa-plus-circle fa-lg"></i>
+                  </a>
+                </div>
+                <div className="col-md-9 mb-0 pr-0">
                   <div className="input-group flex-nowrap">
                     <div className="input-group mb-3">
                       <div className="input-group-prepend">
