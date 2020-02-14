@@ -67,6 +67,7 @@ import { signUpCustomer } from '../reducers/db/sync_customers';
 import { getAllOrders } from '../reducers/db/sync_orders';
 import { counterProduct } from '../reducers/db/products';
 import { getOfflineMode } from '../common/settings';
+import { createProduct } from '../reducers/db/sync_custom_product';
 import {
   CHILDREN,
   LOGIN_FORM,
@@ -1061,6 +1062,18 @@ function* bootstrapApplicationSaga() {
   document.title = posTitle;
 }
 
+function* createCustomizeProduct(payload) {
+  const offlineMode = yield getOfflineMode();
+  if (offlineMode === 1) {
+    const status = yield call(createProduct, payload.payload);
+    if (status)
+      yield put({ type: types.ADD_TO_CART, payload: payload.payload });
+  } else {
+    // create custom product to magento with graphql
+    yield put({ type: types.ADD_TO_CART, payload: payload.payload });
+  }
+  console.log(payload);
+}
 /**
  * Default root saga
  * @returns void
@@ -1100,6 +1113,7 @@ function* rootSaga() {
   );
   yield takeEvery(types.RE_CHECK_REQUIRE_STEP, reCheckRequireStepSaga);
   yield takeEvery(types.LOAD_PRODUCT_PAGING, loadProductPagingSaga);
+  yield takeEvery(types.CREATE_CUSTOMIZE_PRODUCT, createCustomizeProduct);
 }
 
 export default rootSaga;

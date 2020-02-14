@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import {
   updateIsShowingProductOption,
   onGroupedChangeQty,
-  addToCart
+  addToCart,
+  createCustomizeProduct
 } from '../../actions/homeAction';
 import { formatCurrencyCode } from '../../common/settings';
 
@@ -12,10 +13,11 @@ type Props = {
   updateIsShowingProductOption: (payload: string) => void,
   onGroupedChangeQty: (payload: string) => void,
   addToCart: (payload: Object) => void,
-  currencyCode: string
+  currencyCode: string,
+  createCustomizeProduct: payload => void
 };
 
-class Grouped extends Component<Props> {
+class CustomizeProduct extends Component<Props> {
   props: Props;
 
   constructor(props) {
@@ -51,6 +53,9 @@ class Grouped extends Component<Props> {
       note,
       price: { regularPrice: { amount: { value: price, currency: 'USD' } } }
     };
+    // move it into saga
+    // this.preAddToCart(product, quantity);
+    // updateIsShowingProductOption(false);
     this.preAddToCart(product, quantity);
     updateIsShowingProductOption(false);
   };
@@ -62,10 +67,13 @@ class Grouped extends Component<Props> {
    */
   preAddToCart = (product, qty) => {
     const productReAssign = Object.assign({}, product);
-    const { addToCart } = this.props;
+    const { addToCart, createCustomizeProduct } = this.props;
     productReAssign.qty = qty;
     console.log(productReAssign);
-    addToCart(productReAssign);
+    // move it into saga
+    // addToCart(productReAssign);
+    createCustomizeProduct(productReAssign);
+    // addToCart(productReAssign);
   };
 
   qtyOnChange = (index, evt) => {
@@ -262,10 +270,11 @@ function mapDispatchToProps(dispatch) {
     updateIsShowingProductOption: payload =>
       dispatch(updateIsShowingProductOption(payload)),
     onGroupedChangeQty: payload => dispatch(onGroupedChangeQty(payload)),
-    addToCart: payload => dispatch(addToCart(payload))
+    addToCart: payload => dispatch(addToCart(payload)),
+    createCustomizeProduct: payload => dispatch(createCustomizeProduct(payload))
   };
 }
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Grouped);
+)(CustomizeProduct);

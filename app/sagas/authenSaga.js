@@ -151,6 +151,7 @@ function* syncCustomer() {
 
 function* syncCustomProduct() {
   console.log('sync custom product');
+  yield call(syncCustomProductService);
 }
 
 function* syncOrder() {

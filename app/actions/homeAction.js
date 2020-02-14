@@ -310,3 +310,10 @@ export function autoSyncGroupCheckout(payload) {
     payload
   };
 }
+
+export function createCustomizeProduct(payload) {
+  return {
+    type: types.CREATE_CUSTOMIZE_PRODUCT,
+    payload
+  };
+}

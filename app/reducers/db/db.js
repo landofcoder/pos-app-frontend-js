@@ -8,6 +8,7 @@ db.version(version).stores({
   customers: '++id',
   sync_customers: '++id,*email',
   sync_orders: '++id',
+  sync_custom_product: '++id, *name',
   settings: '++id, *key, created_at, updated_at'
 });
 
