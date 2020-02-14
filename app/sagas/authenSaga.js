@@ -4,7 +4,8 @@ import { differenceInMinutes } from 'date-fns';
 import * as types from '../constants/authen';
 import {
   LOGOUT_POS_ACTION,
-  UPDATE_FLAG_SWITCHING_MODE
+  UPDATE_FLAG_SWITCHING_MODE,
+  SYNC_CLIENT_DATA
 } from '../constants/root.json';
 import {
   loginService,
@@ -161,16 +162,14 @@ function* syncOrder() {
   }
 }
 
-function* syncGroupCheckout() {
+function* syncClientData() {
   yield syncCustomProduct();
   yield syncCustomer();
   yield syncOrder();
 }
 
-function* updateClientData() {
+function* autoLoginToGetNewTokenSaga() {
   yield getNewToken();
-  console.log('1');
-  limitLoop(syncGroupCheckout, 30, 100);
 }
 
 function* authenSaga() {
@@ -180,7 +179,11 @@ function* authenSaga() {
   yield takeEvery(types.GET_MAIN_URL, getMainUrl);
   yield takeEvery(types.CLEAN_URL_WORKPLACE, cleanUrlWorkplace);
   yield takeLatest(types.GET_MODULE_INSTALLED, getModuleInstalled);
-  yield takeEvery(types.UPDATE_CLIENT_DATA, updateClientData);
+  yield takeEvery(
+    types.AUTO_LOGIN_TO_GET_NEW_TOKEN,
+    autoLoginToGetNewTokenSaga
+  );
+  yield takeEvery(SYNC_CLIENT_DATA, syncClientData);
 }
 
 export default authenSaga;

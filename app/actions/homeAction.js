@@ -293,6 +293,12 @@ export function loadProductPaging() {
 
 export function autoUpdateClientData() {
   return {
-    type: typesAuthen.UPDATE_CLIENT_DATA
+    type: typesAuthen.AUTO_LOGIN_TO_GET_NEW_TOKEN
+  };
+}
+
+export function autoSyncGroupCheckout() {
+  return {
+    type: types.SYNC_CLIENT_DATA
   };
 }

@@ -40,6 +40,7 @@ type Props = {
   isShowCashPaymentModel: boolean,
   updateIsShowingProductOption: (payload: boolean) => void,
   autoUpdateClientData: () => void,
+  autoSyncGroupCheckout: () => void,
   mainProductListLoading: boolean,
   isOpenReceiptModal: boolean,
   isShowModalItemEditCart: boolean,
@@ -80,9 +81,16 @@ export default class Pos extends Component<Props, State> {
   }
 
   componentDidMount(): void {
-    const { autoUpdateClientData } = this.props;
+    const { autoUpdateClientData, autoSyncGroupCheckout } = this.props;
     console.log('re render component did mount pos auto login');
-    limitLoop(autoUpdateClientData, 30, 10000);
+    limitLoop(
+      () => {
+        autoUpdateClientData();
+        autoSyncGroupCheckout();
+      },
+      30,
+      1000
+    );
   }
 
   getFirstMedia = (item: Object) => {

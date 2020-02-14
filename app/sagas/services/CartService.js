@@ -348,17 +348,21 @@ export async function createOrderLocal(payload) {
 export async function syncOrderService(payload) {
   console.log('payload in sync order service ');
   console.log(payload);
-  const response = await fetch(
-    `${window.mainUrl}index.php/rest/V1/lof-sync-orders/`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${window.liveToken}`
-      },
-      body: JSON.stringify(payload)
-    }
-  );
-  const data = await response.json();
-  return data;
+  try {
+    const response = await fetch(
+      `${window.mainUrl}index.php/rest/V1/lof-sync-orders/`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${window.liveToken}`
+        },
+        body: JSON.stringify(payload)
+      }
+    );
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    return [];
+  }
 }
