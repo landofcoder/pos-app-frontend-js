@@ -1,4 +1,3 @@
-// @flow
 import { takeEvery, call, put, takeLatest, select } from 'redux-saga/effects';
 import { differenceInMinutes } from 'date-fns';
 import * as types from '../constants/authen';
@@ -35,11 +34,12 @@ function* loginAction(payload) {
       yield put({ type: UPDATE_FLAG_SWITCHING_MODE }); // Update flag login to make App reload and background check
     } else {
       yield put({ type: types.ERROR_LOGIN });
+      // Set login button loading to false
+      yield put({ type: types.STOP_LOADING });
     }
   } catch (err) {
     console.log(err);
   }
-  yield put({ type: types.STOP_LOADING });
 }
 
 function* getNewTokenFromApi(payload) {
@@ -113,23 +113,27 @@ function* getModuleInstalled() {
 function* getNewToken() {
   console.log('get new token');
   const logged = yield getLoggedDb();
-  const lastTimeLogin = logged.update_at ? logged.update_at : logged.created_at;
-  const minute = differenceInMinutes(new Date(), lastTimeLogin);
-  // Auto get login if minute > 120 minutes equivalent 2 hours
-  const { username, password } = logged.value.info;
-  if (minute > 120) {
-    const payload = {
-      payload: {
-        username,
-        password
+  if (logged) {
+    const lastTimeLogin = logged.update_at
+      ? logged.update_at
+      : logged.created_at;
+    const minute = differenceInMinutes(new Date(), lastTimeLogin);
+    // Auto get login if minute > 120 minutes equivalent 2 hours
+    const { username, password } = logged.value.info;
+    if (minute > 120) {
+      const payload = {
+        payload: {
+          username,
+          password
+        }
+      };
+      const newToken = yield getNewTokenFromApi(payload);
+      if (newToken) {
+        // Update to new token & indexed db
+        window.liveToken = newToken;
+        logged.value.token = newToken; // Update before pass to function update
+        yield updateLoggedToken(logged);
       }
-    };
-    const newToken = yield getNewTokenFromApi(payload);
-    if (newToken) {
-      // Update to new token & indexed db
-      window.liveToken = newToken;
-      logged.value.token = newToken; // Update before pass to function update
-      yield updateLoggedToken(logged);
     }
   }
 }

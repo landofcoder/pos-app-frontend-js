@@ -42,8 +42,16 @@ export function* searchProductService(payload) {
   return data;
 }
 
+/**
+ * Search product
+ * @param searchValue
+ * @param currentPage
+ * @returns void
+ */
 async function querySearchProduct(searchValue, currentPage) {
   try {
+    let itemResult = [];
+    // Full text search by product name
     const response = await fetch(getGraphqlPath(), {
       method: 'POST',
       headers: {
@@ -52,96 +60,199 @@ async function querySearchProduct(searchValue, currentPage) {
       },
       body: JSON.stringify({
         query: `{
-      products(filter: { sku: { like: "%${searchValue}%" }}, pageSize: ${defaultPageSize}, currentPage: ${currentPage}) {
-        items {
-          id
-          attribute_set_id
-          name
-          sku
-          type_id
-          special_price
-          special_from_date
-          special_to_date
-          tier_prices {
-            qty
-            value
-            customer_group_id
-            percentage_value
-            value
-          }
-          media_gallery_entries {
-             file
-          }
-          price {
-            regularPrice {
-              amount {
-                value
-                currency
-              }
-            }
-          }
-          categories {
-            id
-          }
-          ... on ConfigurableProduct {
-            configurable_options {
+          products(search: "%${searchValue}%", pageSize: ${defaultPageSize}, currentPage: ${currentPage}) {
+            items {
               id
-              attribute_id
-              label
-              position
-              use_default
-              attribute_code
-              values {
-                value_index
-                label
+              attribute_set_id
+              name
+              sku
+              type_id
+              special_price
+              special_from_date
+              special_to_date
+              tier_prices {
+                qty
+                value
+                customer_group_id
+                percentage_value
+                value
               }
-              product_id
-            }
-            variants {
-              product {
-                id
-                name
-                sku
-                special_price
-                special_from_date
-                special_to_date
-                tier_prices {
-                  qty
-                  value
-                  customer_group_id
-                  percentage_value
-                  value
-                }
-                media_gallery_entries {
-                  file
-                }
-                attribute_set_id
-                ... on PhysicalProductInterface {
-                  weight
-                }
-                price {
-                  regularPrice {
-                    amount {
-                      value
-                      currency
-                    }
+              media_gallery_entries {
+                 file
+              }
+              price {
+                regularPrice {
+                  amount {
+                    value
+                    currency
                   }
                 }
               }
-              attributes {
-                label
-                code
-                value_index
+              categories {
+                id
+              }
+              ... on ConfigurableProduct {
+                configurable_options {
+                  id
+                  attribute_id
+                  label
+                  position
+                  use_default
+                  attribute_code
+                  values {
+                    value_index
+                    label
+                  }
+                  product_id
+                }
+                variants {
+                  product {
+                    id
+                    name
+                    sku
+                    special_price
+                    special_from_date
+                    special_to_date
+                    tier_prices {
+                      qty
+                      value
+                      customer_group_id
+                      percentage_value
+                      value
+                    }
+                    media_gallery_entries {
+                      file
+                    }
+                    attribute_set_id
+                    ... on PhysicalProductInterface {
+                      weight
+                    }
+                    price {
+                      regularPrice {
+                        amount {
+                          value
+                          currency
+                        }
+                      }
+                    }
+                  }
+                  attributes {
+                    label
+                    code
+                    value_index
+                  }
+                }
               }
             }
           }
-        }
-      }
-    }`
+        }`
       })
     });
     const data = await response.json();
-    return data.data.products.items;
+    itemResult = data.data.products.items;
+
+    if (!itemResult || itemResult.length === 0) {
+      const response = await fetch(getGraphqlPath(), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${window.liveToken}`
+        },
+        body: JSON.stringify({
+          query: `{
+          products(filter: { sku: { like: "%${searchValue}%" }}, pageSize: ${defaultPageSize}, currentPage: ${currentPage}) {
+            items {
+              id
+              attribute_set_id
+              name
+              sku
+              type_id
+              special_price
+              special_from_date
+              special_to_date
+              tier_prices {
+                qty
+                value
+                customer_group_id
+                percentage_value
+                value
+              }
+              media_gallery_entries {
+                 file
+              }
+              price {
+                regularPrice {
+                  amount {
+                    value
+                    currency
+                  }
+                }
+              }
+              categories {
+                id
+              }
+              ... on ConfigurableProduct {
+                configurable_options {
+                  id
+                  attribute_id
+                  label
+                  position
+                  use_default
+                  attribute_code
+                  values {
+                    value_index
+                    label
+                  }
+                  product_id
+                }
+                variants {
+                  product {
+                    id
+                    name
+                    sku
+                    special_price
+                    special_from_date
+                    special_to_date
+                    tier_prices {
+                      qty
+                      value
+                      customer_group_id
+                      percentage_value
+                      value
+                    }
+                    media_gallery_entries {
+                      file
+                    }
+                    attribute_set_id
+                    ... on PhysicalProductInterface {
+                      weight
+                    }
+                    price {
+                      regularPrice {
+                        amount {
+                          value
+                          currency
+                        }
+                      }
+                    }
+                  }
+                  attributes {
+                    label
+                    code
+                    value_index
+                  }
+                }
+              }
+            }
+          }
+        }`
+        })
+      });
+      const data = await response.json();
+      itemResult = data.data.products.items;
+    }
+
+    return itemResult;
   } catch (e) {
     return [];
   }

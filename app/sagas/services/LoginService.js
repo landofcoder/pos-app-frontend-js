@@ -56,6 +56,11 @@ export async function loginService(payload) {
   } catch (e) {
     response = '';
   }
+
+  if (response.status !== 200) {
+    return '';
+  }
+
   if (response.ok) {
     const data = await response.json();
     return data;

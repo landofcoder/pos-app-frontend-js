@@ -1,6 +1,6 @@
 {
-  "name": "electron-react-boilerplate",
-  "productName": "ElectronReact",
+  "name": "POS",
+  "productName": "POS",
   "version": "0.17.1",
   "description": "Electron application boilerplate based on React, React Router, Webpack, React Hot Loader for rapid application development",
   "scripts": {
@@ -56,7 +56,7 @@
   },
   "main": "./app/main.prod.js",
   "build": {
-    "productName": "ElectronReact",
+    "productName": "POS",
     "appId": "org.develar.ElectronReact",
     "files": [
       "app/dist/",
@@ -110,9 +110,9 @@
     "url": "git+https://github.com/electron-react-boilerplate/electron-react-boilerplate.git"
   },
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://electron-react-boilerplate.js.org"
+    "name": "Land of coder",
+    "email": "info@landofcoder.com",
+    "url": "https://www.landofcoder.com/"
   },
   "contributors": [
     {
@@ -216,6 +216,7 @@
     "eslint-plugin-prettier": "^3.0.1",
     "eslint-plugin-promise": "^4.1.1",
     "eslint-plugin-react": "^7.12.4",
+    "eslint-plugin-react-hooks": "^2.3.0",
     "eslint-plugin-redux-saga": "^1.1.3",
     "eslint-plugin-testcafe": "^0.2.1",
     "fbjs-scripts": "^1.2.0",
@@ -266,11 +267,11 @@
     "electron-debug": "^2.1.0",
     "electron-log": "^3.0.4",
     "electron-updater": "^4.0.6",
-    "eslint-plugin-react-hooks": "^2.3.0",
     "history": "^4.9.0",
     "immer": "^5.1.0",
     "locale-currency": "^0.0.2",
     "lodash": "^4.17.15",
+    "node-hid": "^1.1.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
@@ -282,7 +283,8 @@
     "redux-saga": "^1.1.1",
     "redux-thunk": "^2.3.0",
     "relay-runtime": "^7.1.0",
-    "source-map-support": "^0.5.11"
+    "source-map-support": "^0.5.11",
+    "usb-barcode-scanner": "^1.0.2"
   },
   "devEngines": {
     "node": ">=7.x",

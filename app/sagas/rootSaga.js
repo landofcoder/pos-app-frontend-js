@@ -58,7 +58,8 @@ import { BUNDLE, CONFIGURABLE, GROUPED } from '../constants/product-types';
 import {
   CHECK_LOGIN_BACKGROUND,
   RECEIVED_TOKEN,
-  RECEIVED_MAIN_URL
+  RECEIVED_MAIN_URL,
+  STOP_LOADING
 } from '../constants/authen';
 import { syncCategories } from '../reducers/db/categories';
 import { syncCustomers } from '../reducers/db/customers';
@@ -565,6 +566,7 @@ function* getSearchCustomer(payload) {
 function* addToCart(payload) {
   // Find sky if exits sku, then increment qty
   const listCartCurrent = yield select(cartCurrent);
+  const cartCustomerResult = yield select(customer);
 
   const product = Object.assign({}, payload.payload);
   const productSku = product.sku;
@@ -597,7 +599,7 @@ function* addToCart(payload) {
   // Update qty
   if (found === 1) {
     foundItem = yield updateQtyProduct(foundItem);
-    const productAssign = yield calcPrice(foundItem);
+    const productAssign = yield calcPrice(foundItem, cartCustomerResult);
     console.log('after cal price:', productAssign);
     yield put({
       type: types.UPDATE_ITEM_CART,
@@ -605,7 +607,7 @@ function* addToCart(payload) {
     });
   } else {
     // Add new product
-    const productAssign = yield calcPrice(product);
+    const productAssign = yield calcPrice(product, cartCustomerResult);
     yield put({ type: types.ADD_ITEM_TO_CART, payload: productAssign });
   }
 }
@@ -904,6 +906,9 @@ function* checkLoginBackgroundSaga() {
         yield put({ type: types.UPDATE_SWITCHING_MODE, payload: CHILDREN });
         yield syncData();
       }
+
+      // Stop login loading
+      yield put({ type: STOP_LOADING });
     }
   } else {
     // Not login yet =
@@ -1023,6 +1028,7 @@ function* loadProductPagingSaga() {
 function* updateQtyCartItemSaga(payload) {
   const qty = payload.payload;
   const cartEditingResult = yield select(itemCartEditing);
+  const cartCustomerResult = yield select(customer);
   const { index } = cartEditingResult;
 
   const product = Object.assign({}, cartEditingResult.item);
@@ -1030,7 +1036,7 @@ function* updateQtyCartItemSaga(payload) {
   // Update qty
   product.pos_qty = qty;
 
-  const productAssign = yield calcPrice(product);
+  const productAssign = yield calcPrice(product, cartCustomerResult);
   yield put({
     type: types.UPDATE_ITEM_CART,
     payload: { index, item: productAssign }
