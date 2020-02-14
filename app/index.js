@@ -1,28 +1,39 @@
 import React, { Fragment } from 'react';
 import { render } from 'react-dom';
+import { UsbScanner, getDevices } from 'usb-barcode-scanner';
 import { AppContainer as ReactHotAppContainer } from 'react-hot-loader';
 import Root from './containers/Root';
 import { configureStore, history } from './store/configureStore';
 import './app.global.css';
 import db from './reducers/db/db';
-// eslint-disable-next-line import/order
-import { UsbScanner, getDevices } from 'usb-barcode-scanner';
+import Sudoer from 'electron-sudo';
 
-console.log('get devices:', getDevices());
+// const options = { name: 'electron sudo application' };
+// const sudoer = new Sudoer(options);
+// sudoer.spawn('echo 12121212121', ['$PARAM'], { env: { PARAM: 'VALUE' } })
+//   .then(function(cp) {
+//     console.log('hello world:', cp);
+//     /*
+//     cp.output.stdout (Buffer)
+//     cp.output.stderr (Buffer)
+//   */
+//   });
 
-const scanner = new UsbScanner({
-  vendorId: 7851,
-  productId: 3075
-  /** You could also initialize the scanner by giving entering the path variable:
-   *  path: 'IOService:/AppleACPI etc...'
-   * */
-});
+// console.log('get devices:', getDevices());
 
-scanner.on('data', data => {
-  console.log(data);
-});
+// const scanner = new UsbScanner({
+//   vendorId: 7851,
+//   productId: 3075
+//   /** You could also initialize the scanner by giving entering the path variable:
+//    *  path: 'IOService:/AppleACPI etc...'
+//    * */
+// });
+//
+// scanner.on('data', data => {
+//   console.log(data);
+// });
 
-scanner.startScanning();
+// scanner.startScanning();
 
 // const devices = HID.devices();
 // console.log('devices:', devices);
