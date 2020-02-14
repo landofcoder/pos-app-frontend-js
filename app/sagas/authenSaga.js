@@ -15,7 +15,10 @@ import {
   deleteLoggedDb,
   getLoggedDb
 } from './services/LoginService';
-import { getTimeSyncConstant } from './services/SettingsService';
+import {
+  getTimeSyncConstant,
+  resetTimeSyncConstant
+} from './services/SettingsService';
 import { getAllTbl, deleteByKey } from '../reducers/db/sync_customers';
 import { getAllOrders, deteleAllOrders } from '../reducers/db/sync_orders';
 import { signUpCustomerService } from './services/CustomerService';
@@ -167,31 +170,18 @@ function* syncOrder() {
   }
 }
 
-function* syncClientData(payload) {
-  const date = new Date();
-  const hour = +60000 * +60;
-  const minute = +60000;
-  const second = +1000;
-  const miniSecondNowInDay =
-    date.getHours() * hour +
-    date.getMinutes() * minute +
-    date.getSeconds() * second;
-  const timeStep = payload.payload;
-  const timeToUpdate = yield call(getTimeSyncConstant);
-  const miniSecondLight =
-    timeToUpdate.light.hour * hour + timeToUpdate.light.minute * minute;
-  const miniSecondDark =
-    timeToUpdate.dark.hour * hour + timeToUpdate.dark.minute * minute;
-  if (
-    (miniSecondLight - miniSecondNowInDay < timeStep + 1 &&
-      miniSecondLight - miniSecondNowInDay >= 0) ||
-    (miniSecondDark - miniSecondNowInDay < timeStep + 1 &&
-      miniSecondDark - miniSecondNowInDay >= 0)
-  ) {
+function* syncClientData() {
+  const dbTime = yield getTimeSyncConstant();
+  const nowTime = Date.now();
+  if (nowTime - dbTime > 1200000) {
     console.log('time up ! let sync group checkout');
+    yield resetTimeSyncConstant();
     yield syncCustomProduct();
     yield syncCustomer();
     yield syncOrder();
+  } else {
+    console.log('time remaining let sync group checkout');
+    console.log(1200000 - nowTime + dbTime);
   }
 }
 

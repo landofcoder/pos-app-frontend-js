@@ -98,15 +98,15 @@ export async function getCashierInfoLocal() {
 
 export async function getTimeSyncConstant() {
   const timeConstantValue = await getByKey(timeSyncConstant);
-  console.log('time constant');
-  console.log(timeConstantValue);
   if (timeConstantValue.length === 0) {
-    const value = {
-      light: { hour: 12, minute: 0 },
-      dark: { hour: 18, minute: 0 }
-    };
+    const value = Date.now();
     await createKey(timeSyncConstant, value);
     return value;
   }
   return timeConstantValue[0].value;
+}
+
+export async function resetTimeSyncConstant() {
+  const timeConstantValue = await getByKey(timeSyncConstant);
+  await updateById(timeConstantValue[0].id, Date.now());
 }
