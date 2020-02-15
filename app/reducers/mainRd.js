@@ -34,6 +34,7 @@ const initialState = {
   mainPanelType: HOME_DEFAULT_PRODUCT_LIST, // Main panel type for switching all main panel
   mainProductListLoading: false, // Main product list loading
   messageSignUpCustomer: null,
+  messageOrderError: '',
   productList: [],
   cartCurrent: cartCurrentDefaultData,
   receipt: {
@@ -315,6 +316,11 @@ const mainRd = (state: Object = initialState, action: Object) =>
           break;
         }
       }
+      case types.PLACE_ORDER_ERROR:
+          const { message } =  action.payload;
+          console.log(message);
+          draft.messageOrderError = message;
+          break;
       case types.COPY_CART_CURRENT_TO_RECEIPT:
         draft.receipt.cartForReceipt = draft.cartCurrent;
         break;

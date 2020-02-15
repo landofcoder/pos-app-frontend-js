@@ -19,7 +19,8 @@ type Props = {
   toggleModalCalculatorStatus: boolean,
   toggleModalCalculator: (payload: boolean) => void,
   orderPreparingCheckout: Object,
-  currencyCode: string
+  currencyCode: string,
+  messageOrderError: string
 };
 
 class CashPayment extends Component<Props> {
@@ -81,8 +82,7 @@ class CashPayment extends Component<Props> {
       isLoadingCashPlaceOrder,
       posSystemConfig,
       toggleModalCalculatorStatus,
-      orderPreparingCheckout,
-      currencyCode
+      messageOrderError
     } = this.props;
     const enableOfflineMode = Number(
       posSystemConfig.general_configuration.enable_offline_mode
@@ -159,6 +159,7 @@ class CashPayment extends Component<Props> {
                 </>
               )}
             </div>
+            <span>{messageOrderError}</span>
           </div>
           <div className="modal-footer">
             <button
@@ -190,9 +191,8 @@ class CashPayment extends Component<Props> {
                   aria-hidden="true"
                 />
               ) : (
-                <></>
+                <>PLACE ORDER</>
               )}
-              PLACE ORDER
             </button>
           </div>
         </div>
@@ -209,7 +209,8 @@ function mapStateToProps(state) {
     currencyCode: state.mainRd.shopInfoConfig[0],
     posSystemConfig: state.mainRd.posSystemConfig,
     toggleModalCalculatorStatus: state.mainRd.isOpenCalculator,
-    orderPreparingCheckout: state.mainRd.checkout.orderPreparingCheckout
+    orderPreparingCheckout: state.mainRd.checkout.orderPreparingCheckout,
+    messageOrderError: state.mainRd.messageOrderError
   };
 }
 
