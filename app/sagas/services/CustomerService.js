@@ -5,7 +5,7 @@
 export async function searchCustomer(payload) {
   const searchValue = payload.payload;
   const response = await fetch(
-    `${window.mainUrl}index.php/rest/V1/customers/search?searchCriteria[filterGroups][0][filters][0][field]=entity_id&searchCriteria[filterGroups][0][filters][0][value]=${searchValue}&searchCriteria[filterGroups][0][filters][0][condition_type]=like&searchCriteria[filterGroups][0][filters][1][field]=email&searchCriteria[filterGroups][0][filters][1][value]=${searchValue}&searchCriteria[filterGroups][0][filters][1][condition_type]=like`,
+    `${window.mainUrl}index.php/rest/V1/customers/search?searchCriteria[filter_groups][0][filters][0][field]=firstname&searchCriteria[filter_groups][0][filters][0][value]=${searchValue}&searchCriteria[filter_groups][0][filters][0][condition_type]=like`,
     {
       method: 'GET', // *GET, POST, PUT, DELETE, etc.
       mode: 'cors', // no-cors, *cors, same-origin
