@@ -159,7 +159,7 @@ class CashPayment extends Component<Props> {
                 </>
               )}
             </div>
-            <span>{messageOrderError}</span>
+            <span className="text-danger">{messageOrderError}</span>
           </div>
           <div className="modal-footer">
             <button
