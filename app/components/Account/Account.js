@@ -3,30 +3,32 @@ import { Link } from 'react-router-dom';
 import * as routes from '../../constants/routes.json';
 import OrderHistory from './OrderHistory/OrderHistory';
 import CashierInfo from './CashierInfo/CashierInfo';
+import ConnectDevices from './ConnectDevices/ConnectDevices';
 import Styles from './Account.scss';
 
 export default class Account extends Component {
   constructor(props) {
     super(props);
-    this.state = { cashierSelect: '', orderHistorySelect: 'active' };
+    this.state = { viewSelected: 'orderHistory' };
   }
 
   cashierAction = e => {
     e.preventDefault();
-    this.setState({ cashierSelect: 'active', orderHistorySelect: '' });
+    this.setState({ viewSelected: 'cashierInfo' });
   };
 
   orderHistoryAction = e => {
     e.preventDefault();
-    this.setState({ orderHistorySelect: 'active', cashierSelect: '' });
+    this.setState({ viewSelected: 'orderHistory' });
   };
 
   connectDevicesAction = e => {
-
+    e.preventDefault();
+    this.setState({ viewSelected: 'connectDevices' });
   };
 
   render() {
-    const { cashierSelect, orderHistorySelect } = this.state;
+    const { cashierSelect, orderHistorySelect, viewSelected } = this.state;
     return (
       <>
         <div data-tid="container" className="pr-0 pl-0 pt-2">
@@ -70,12 +72,29 @@ export default class Account extends Component {
                   >
                     Account Setting
                   </a>
-                  <a className="nav-link">Connect Devices</a>
+                  <a
+                    className="nav-link"
+                    role="tab"
+                    href="#"
+                    onClick={this.connectDevicesAction}
+                  >
+                    Connect Devices
+                  </a>
                 </div>
               </div>
               <div className={`col-9 ${Styles.wrapFullHeightList}`}>
-                {orderHistorySelect ? <OrderHistory /> : null}
-                {cashierSelect ? <CashierInfo /> : null}
+                {(() => {
+                  switch (viewSelected) {
+                    case 'orderHistory':
+                      return <OrderHistory />;
+                    case 'cashierInfo':
+                      return <CashierInfo />;
+                    case 'connectDevices':
+                      return <ConnectDevices />;
+                    default:
+                      return null;
+                  }
+                })()}
               </div>
             </div>
           </div>

@@ -1,5 +1,6 @@
 import { all, call, put, select, takeEvery } from 'redux-saga/effects';
 import { differenceInMinutes } from 'date-fns';
+import { getDevices, UsbScanner } from 'usb-barcode-scanner';
 import * as types from '../constants/root';
 import {
   addProductToQuote,
@@ -1042,6 +1043,36 @@ function* bootstrapApplicationSaga() {
   document.title = posTitle;
 }
 
+function* showAllDevicesSaga() {
+  const allDevices = yield getDevices();
+  yield put({ type: types.RECEIVED_ALL_DEVICES, payload: allDevices });
+}
+
+function* connectToDeviceSaga(payload) {
+  const { productId, vendorId } = payload.payload;
+  // Reset error when connect to new device
+  yield put({ type: types.UPDATE_ERROR_CONNECT, payload: false });
+
+  try {
+    const scanner = new UsbScanner({
+      vendorId,
+      productId
+    });
+
+    scanner.on('data', data => {
+      console.log('on data:', data);
+    });
+
+    scanner.startScanning();
+
+    // Update connected succeeded
+    yield put({ type: types.CONNECT_DEVICE_SUCCESS, payload: payload.payload });
+  } catch (e) {
+    console.error('error when connect scanner device:', e);
+    yield put({ type: types.UPDATE_ERROR_CONNECT, payload: true });
+  }
+}
+
 /**
  * Default root saga
  * @returns void
@@ -1081,6 +1112,8 @@ function* rootSaga() {
   );
   yield takeEvery(types.RE_CHECK_REQUIRE_STEP, reCheckRequireStepSaga);
   yield takeEvery(types.LOAD_PRODUCT_PAGING, loadProductPagingSaga);
+  yield takeEvery(types.SHOW_ALL_DEVICES, showAllDevicesSaga);
+  yield takeEvery(types.CONNECT_TO_DEVICE, connectToDeviceSaga);
 }
 
 export default rootSaga;

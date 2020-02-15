@@ -296,3 +296,16 @@ export function autoLoginToGetNewToken() {
     type: typesAuthen.AUTO_LOGIN_TO_GET_NEW_TOKEN
   };
 }
+
+export function getShowAllDevices() {
+  return {
+    type: types.SHOW_ALL_DEVICES
+  };
+}
+
+export function connectToDevice(payload) {
+  return {
+    type: types.CONNECT_TO_DEVICE,
+    payload
+  };
+}

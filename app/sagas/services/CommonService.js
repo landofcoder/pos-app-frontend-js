@@ -169,7 +169,7 @@ export async function getDetailOutletService(payload) {
 
 /**
  * Get all categories service
- * @returns {Promise<any>}
+ * @returns void
  */
 export async function getAllCategoriesService() {
   let data;

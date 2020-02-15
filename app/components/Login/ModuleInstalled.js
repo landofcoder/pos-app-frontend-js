@@ -74,7 +74,7 @@ class ModuleInstalled extends Component {
     console.log('module installed:', moduleInstalled);
     return (
       <>
-        <div className={`${commonStyles.contentColumn} ${styles.wrapPage}`}>
+        <div className={`${commonStyles.contentColumn} ${styles.wrapPage} pl-0 pr-0`}>
           <div className="col-sm-6 col-md-5 col-lg-4">
             <div className="form-group">
               <button

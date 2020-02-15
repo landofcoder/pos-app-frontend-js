@@ -127,6 +127,12 @@ const initialState = {
     isLoadingProductOption: false, // Show a loading in screen for product option loading
     isShowingProductOption: false, // Show model for choose product type option
     optionValue: null // Keep detail product clicked
+  },
+  hidDevice: {
+    allDevices: [], // All devices HID
+    errorConnect: false,
+    connectedDeviceStatus: false,
+    connectedDeviceItem: {}
   }
 };
 
@@ -469,6 +475,16 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.UPDATE_REACHED_LIMIT:
         draft.currentPosCommand.reachedLimit = action.payload;
+        break;
+      case types.RECEIVED_ALL_DEVICES:
+        draft.hidDevice.allDevices = action.payload;
+        break;
+      case types.UPDATE_ERROR_CONNECT:
+        draft.hidDevice.errorConnect = action.payload;
+        break;
+      case types.CONNECT_DEVICE_SUCCESS:
+        draft.hidDevice.connectedDeviceStatus = true;
+        draft.hidDevice.connectedDeviceItem = action.payload;
         break;
       default:
         return draft;

@@ -82,7 +82,6 @@ export default class Pos extends Component<Props, State> {
   componentDidMount(): void {
     const { autoLoginToGetNewToken } = this.props;
     limitLoop(autoLoginToGetNewToken, 30, 3000);
-
   }
 
   getFirstMedia = (item: Object) => {
