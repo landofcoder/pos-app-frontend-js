@@ -19,6 +19,7 @@ import {
   getTimeSyncConstant,
   resetTimeSyncConstant
 } from './services/SettingsService';
+import { syncCustomProductService } from './services/ProductService';
 import { getAllTbl, deleteByKey } from '../reducers/db/sync_customers';
 import { getAllOrders, deteleAllOrders } from '../reducers/db/sync_orders';
 import { signUpCustomerService } from './services/CustomerService';
