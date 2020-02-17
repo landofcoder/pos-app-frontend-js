@@ -9,6 +9,7 @@ import {
 } from './SettingsService';
 import { getCategories } from '../../reducers/db/categories';
 import { UPDATE_CURRENT_POS_COMMAND } from '../../constants/root';
+import { getOfflineMode } from '../../common/settings';
 
 /**
  * Data from systemConfig will always get latest settings from api,
@@ -194,10 +195,12 @@ export async function getAllCategoriesService() {
     error = true;
   }
   if (error || response.status === 401) {
-    // Get from local
-    data = await getCategories();
-    // eslint-disable-next-line prefer-destructuring
-    data = data[0];
+    if (getOfflineMode() === 1) {
+      // Get from local
+      data = await getCategories();
+      // eslint-disable-next-line prefer-destructuring
+      data = data[0];
+    }
   }
   return data;
 }
