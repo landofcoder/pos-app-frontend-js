@@ -52,7 +52,9 @@ class ConnectDevices extends Component<Props> {
                       {connectedDeviceItem.product}
                     </span>
                     <div className="mt-3 pull-right text-right">
-                      <button type="button" className="btn btn-secondary">Change</button>
+                      <button type="button" className="btn btn-secondary">
+                        Change
+                      </button>
                     </div>
                   </>
                 ) : (
