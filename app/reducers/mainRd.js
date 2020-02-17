@@ -486,6 +486,10 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.hidDevice.connectedDeviceStatus = true;
         draft.hidDevice.connectedDeviceItem = action.payload;
         break;
+      case types.CHANGE_SCANNER_DEVICE:
+        draft.hidDevice.connectedDeviceStatus = false;
+        draft.hidDevice.connectedDeviceItem = {};
+        break;
       default:
         return draft;
     }

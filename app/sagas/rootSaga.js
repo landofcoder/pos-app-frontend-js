@@ -36,8 +36,10 @@ import {
   getSystemConfigService
 } from './services/CommonService';
 import {
+  createConnectedDeviceSettings,
   createSyncAllDataFlag,
-  haveToSyncAllData
+  haveToSyncAllData,
+  getConnectedDeviceSettings
 } from './services/SettingsService';
 import {
   getInfoCashierService,
@@ -92,6 +94,7 @@ const itemCartEditing = state => state.mainRd.itemCartEditing;
 const currentPosCommand = state => state.mainRd.currentPosCommand;
 const orderPreparingCheckout = state =>
   state.mainRd.checkout.orderPreparingCheckout;
+const allDevices = state => state.mainRd.hidDevice.allDevices;
 
 /**
  * Create quote and show cash model
@@ -1036,6 +1039,9 @@ function* bootstrapApplicationSaga() {
   // Get all config
   yield getPostConfigGeneralConfig();
 
+  // Auto connect scanner device
+  yield autoConnectScannerDevice();
+
   // Apply all main settings
   const posSystemConfigResult = yield select(posSystemConfig);
   const generalConfig = posSystemConfigResult.general_configuration;
@@ -1045,14 +1051,42 @@ function* bootstrapApplicationSaga() {
 
 function* showAllDevicesSaga() {
   const allDevices = yield getDevices();
+
+  // Add default select
+  allDevices.unshift({ product: '--Please select--' });
   yield put({ type: types.RECEIVED_ALL_DEVICES, payload: allDevices });
 }
 
-function* connectToDeviceSaga(payload) {
-  const { productId, vendorId } = payload.payload;
+function* autoConnectScannerDevice() {
+  const scannerConnectedSettings = yield getConnectedDeviceSettings();
+  if (scannerConnectedSettings) {
+    const { vendorId, productId } = scannerConnectedSettings;
+    console.log('obj result:', scannerConnectedSettings);
+    yield connectHIDScanner(vendorId, productId, scannerConnectedSettings);
+  }
+}
+
+/**
+ * Scanner HID connecting
+ * @param payload
+ * @returns void
+ */
+function* connectToScannerDeviceSaga(payload) {
   // Reset error when connect to new device
   yield put({ type: types.UPDATE_ERROR_CONNECT, payload: false });
 
+  const index = payload.payload;
+  const allDevicesResult = yield select(allDevices);
+  const deviceSelected = allDevicesResult[index];
+
+  console.log('device selected:', deviceSelected);
+
+  const { vendorId, productId } = deviceSelected;
+
+  yield connectHIDScanner(vendorId, productId, deviceSelected);
+}
+
+function* connectHIDScanner(vendorId, productId, deviceSelected) {
   try {
     const scanner = new UsbScanner({
       vendorId,
@@ -1064,12 +1098,36 @@ function* connectToDeviceSaga(payload) {
     });
 
     scanner.startScanning();
+    window.scanner = scanner;
 
     // Update connected succeeded
-    yield put({ type: types.CONNECT_DEVICE_SUCCESS, payload: payload.payload });
+    yield put({ type: types.CONNECT_DEVICE_SUCCESS, payload: deviceSelected });
+
+    // Create to local storage
+    yield createConnectedDeviceSettings(deviceSelected);
   } catch (e) {
     console.error('error when connect scanner device:', e);
     yield put({ type: types.UPDATE_ERROR_CONNECT, payload: true });
+  }
+}
+
+function* changeScannerDeviceSaga() {
+  try {
+    const scannerConnectedSettings = yield getConnectedDeviceSettings();
+    console.log('scanner1:', window.scanner);
+    console.log('scanner2:', window.scanner.hid.getDeviceInfo());
+    if (scannerConnectedSettings) {
+      // const { vendorId, productId } = scannerConnectedSettings;
+      // // Close if exists connected
+      // const scanner = new UsbScanner({
+      //   vendorId,
+      //   productId
+      // });
+      //
+      // console.log('scanner change:', scanner);
+    }
+  } catch (e) {
+    console.error('change scanner device error:', e);
   }
 }
 
@@ -1113,7 +1171,8 @@ function* rootSaga() {
   yield takeEvery(types.RE_CHECK_REQUIRE_STEP, reCheckRequireStepSaga);
   yield takeEvery(types.LOAD_PRODUCT_PAGING, loadProductPagingSaga);
   yield takeEvery(types.SHOW_ALL_DEVICES, showAllDevicesSaga);
-  yield takeEvery(types.CONNECT_TO_DEVICE, connectToDeviceSaga);
+  yield takeEvery(types.CONNECT_TO_SCANNER_DEVICE, connectToScannerDeviceSaga);
+  yield takeEvery(types.CHANGE_SCANNER_DEVICE, changeScannerDeviceSaga);
 }
 
 export default rootSaga;

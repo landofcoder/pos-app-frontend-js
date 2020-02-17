@@ -303,9 +303,15 @@ export function getShowAllDevices() {
   };
 }
 
-export function connectToDevice(payload) {
+export function connectToScannerDevice(payload) {
   return {
-    type: types.CONNECT_TO_DEVICE,
+    type: types.CONNECT_TO_SCANNER_DEVICE,
     payload
+  };
+}
+
+export function changeScannerDevice() {
+  return {
+    type: types.CHANGE_SCANNER_DEVICE
   };
 }

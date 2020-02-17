@@ -2,14 +2,15 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
   getShowAllDevices,
-  connectToDevice
+  connectToScannerDevice,
+  changeScannerDevice
 } from '../../../actions/homeAction';
 
 class ConnectDevices extends Component<Props> {
   props: Props;
 
   state = {
-    deviceSelected: {}
+    deviceSelected: 0 // index of array
   };
 
   componentDidMount(): void {
@@ -18,13 +19,13 @@ class ConnectDevices extends Component<Props> {
   }
 
   connectDevice = () => {
-    const { connectToDevice } = this.props;
+    const { connectToScannerDevice } = this.props;
     const { deviceSelected } = this.state;
-    connectToDevice(deviceSelected);
+    connectToScannerDevice(deviceSelected);
   };
 
   handleChangeDevice = e => {
-    const device = JSON.parse(e.target.value);
+    const device = e.target.value;
     this.setState({ deviceSelected: device });
   };
 
@@ -33,13 +34,20 @@ class ConnectDevices extends Component<Props> {
       allDevices,
       errorConnect,
       connectedDeviceStatus,
-      connectedDeviceItem
+      connectedDeviceItem,
+      changeScannerDevice
     } = this.props;
-    console.log('connected device:', connectedDeviceItem);
+    const { deviceSelected } = this.state;
+
+    let connectDisabled = false;
+
+    if (Number(deviceSelected) === 0) {
+      connectDisabled = true;
+    }
     return (
       <div>
         <div className="row">
-          <div className="col-md-3"></div>
+          <div className="col-md-3" />
           <div className="col-md-6">
             <div className="card">
               <div className="card-body">
@@ -52,7 +60,11 @@ class ConnectDevices extends Component<Props> {
                       {connectedDeviceItem.product}
                     </span>
                     <div className="mt-3 pull-right text-right">
-                      <button type="button" className="btn btn-secondary">
+                      <button
+                        onClick={changeScannerDevice}
+                        type="button"
+                        className="btn btn-secondary"
+                      >
                         Change
                       </button>
                     </div>
@@ -61,14 +73,16 @@ class ConnectDevices extends Component<Props> {
                   <>
                     <div className="list-group">
                       <div className="form-group">
-                        <select onChange={this.handleChangeDevice}>
+                        <select
+                          onChange={this.handleChangeDevice}
+                          value={deviceSelected}
+                        >
                           {allDevices.map((device, index) => {
                             return (
-                              <option
-                                key={index}
-                                value={JSON.stringify(device)}
-                              >
-                                {device.product}
+                              <option key={index} value={index}>
+                                {device.product === ''
+                                  ? 'Unknown device'
+                                  : device.product}
                               </option>
                             );
                           })}
@@ -88,6 +102,7 @@ class ConnectDevices extends Component<Props> {
                         <button
                           type="button"
                           className="btn btn-primary"
+                          disabled={connectDisabled}
                           onClick={this.connectDevice}
                         >
                           Connect
@@ -118,7 +133,9 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     getShowAllDevices: () => dispatch(getShowAllDevices()),
-    connectToDevice: payload => dispatch(connectToDevice(payload))
+    connectToScannerDevice: payload =>
+      dispatch(connectToScannerDevice(payload)),
+    changeScannerDevice: payload => dispatch(changeScannerDevice(payload))
   };
 }
 
