@@ -90,9 +90,13 @@ const posSystemConfig = state => state.mainRd.posSystemConfig;
 const cashierInfo = state => state.authenRd.cashierInfo;
 const itemCartEditing = state => state.mainRd.itemCartEditing;
 const currentPosCommand = state => state.mainRd.currentPosCommand;
-const orderPreparingCheckout = state =>
+const orderPreparingCheckoutState = state =>
   state.mainRd.checkout.orderPreparingCheckout;
-
+const defaultOutletShippingAddress = state =>
+  state.mainRd.defaultOutletShippingAddress;
+const guestInfo = state => state.mainRd.posSystemConfig.default_guest_checkout;
+const shippingMethod = state => state.mainRd.posSystemConfig.shipping_method;
+const methodPayment = state => state.mainRd.posSystemConfig.payment_for_pos;
 /**
  * Create quote and show cash model
  */
@@ -105,6 +109,11 @@ function* cashCheckout() {
 
   const offlineMode = yield getOfflineMode();
   const cartCurrentResultObj = yield select(cartCurrentObj);
+  const defaultOutletShippingAddressResult = yield select(
+    defaultOutletShippingAddress
+  );
+  const shippingMethodResult = yield select(shippingMethod);
+  const methodPaymentResult = yield select(methodPayment);
 
   if (offlineMode === 1) {
     // eslint-disable-next-line prefer-destructuring
@@ -114,32 +123,56 @@ function* cashCheckout() {
       currencyCode,
       false
     );
-    const fakeResponse = {
-      payment_methods: [],
-      currency_id: 'USD',
-      email: 'quynh8897@gmail.com',
-      shipping_address: {
-        "firstname": "Quynh",
-        "lastname" : "Nguyen",
-        "street": "Main Street",
-        "city" : "Ha Noi",
-        "country_id": "US",
-        "region_id" : 18,
-        "postcode" : "85001",
-        "telephone" : "823322565",
-        "shipping_method" : "flatrate_flatrate",
-        "method" : "checkmo",
-      },
-      totals: {
-        base_subtotal: totalPrice,
-        discount_amount: 0,
-        base_shipping_amount: 0,
-        grand_total: totalPrice
-      }
-    };
+    // check guestCheckout or Customer
+    let orderPreparingCheckout = {};
+    if (cartCurrentResultObj.isGuestCustomer === true) {
+      const guestInfoResult = yield select(guestInfo);
+      console.log(guestInfoResult);
+      orderPreparingCheckout = {
+        payment_methods: [],
+        currency_id: currencyCode,
+        email: guestInfoResult.email,
+        shipping_address: {
+          firstname: guestInfoResult.first_name,
+          lastname: guestInfoResult.last_name,
+          street: guestInfoResult.street,
+          city: guestInfoResult.city,
+          country_id: guestInfoResult.country,
+          region_id: guestInfoResult.region_id,
+          postcode: guestInfoResult.zip_code, // cho nay lay du lieu o dau a ?
+          telephone: guestInfoResult.telephone,
+          shipping_method: shippingMethodResult.specific_shipping_methods,
+          method: methodPaymentResult.default_payment_method
+        },
+        totals: {
+          base_subtotal: totalPrice,
+          discount_amount: 0,
+          base_shipping_amount: 0,
+          grand_total: totalPrice
+        }
+      };
+    } else {
+      orderPreparingCheckout = {
+        payment_methods: [],
+        currency_id: currencyCode,
+        email: cartCurrentResultObj.customer.email,
+        shipping_address: {
+          defaultOutletShippingAddressResult,
+          shipping_method: shippingMethodResult.default_shipping_method,
+          method: methodPaymentResult.default_payment_method
+        },
+        totals: {
+          base_subtotal: totalPrice,
+          discount_amount: 0,
+          base_shipping_amount: 0,
+          grand_total: totalPrice
+        }
+      };
+    }
+    console.log(orderPreparingCheckout);
     yield put({
       type: types.RECEIVED_ORDER_PREPARING_CHECKOUT,
-      payload: fakeResponse
+      payload: orderPreparingCheckout
     });
   } else {
     // Handles for online mode
@@ -280,7 +313,9 @@ function* cashCheckoutPlaceOrder() {
 
   if (offlineMode === 1) {
     const cartCurrentResult = yield select(cartCurrent);
-    const orderPreparingCheckoutResult = yield select(orderPreparingCheckout);
+    const orderPreparingCheckoutResult = yield select(
+      orderPreparingCheckoutState
+    );
     yield createOrderLocal({ cartCurrentResult, orderPreparingCheckoutResult });
 
     // Copy cart current to cart in receipt
