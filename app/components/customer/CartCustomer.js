@@ -72,9 +72,13 @@ class CartCustomer extends Component<Props> {
       selectCustomerForCurrentCart,
       unSelectCustomerForCurrentCart
     } = this.props;
-    let firstName = '';
+    let email = '';
+    let firstname = '';
+    let lastname = '';
     if (customer) {
-      firstName = customer.firstname;
+      email = customer.email;
+      firstname = customer.firstname;
+      lastname = customer.lastname;
     }
 
     return (
@@ -105,7 +109,7 @@ class CartCustomer extends Component<Props> {
                         <div className="row">
                           <div className="col-md-6">
                             <button type="button" className="btn btn-primary">
-                              {firstName}
+                              {email}
                             </button>
                             <span className={Styles.wrapCloseIcon}>
                               <i
@@ -124,7 +128,7 @@ class CartCustomer extends Component<Props> {
                       <input
                         type="text by email or id customer's"
                         className="form-control"
-                        placeholder="Search by id or email customer's"
+                        placeholder="Search by id, email or first name of customer"
                         aria-label="Recipient's username"
                         onChange={this.onSearchCustomer}
                         aria-describedby="button-addon2"
@@ -151,7 +155,12 @@ class CartCustomer extends Component<Props> {
                             type="button"
                             className="list-group-item list-group-item-action"
                           >
-                            {item.firstname} {item.lastname}
+                            <div className="row">
+                              <div className="col-6">
+                                {item.firstname} {item.lastname}
+                              </div>
+                              <div className="col-6">{item.email}</div>
+                            </div>
                           </button>
                         );
                       })}
