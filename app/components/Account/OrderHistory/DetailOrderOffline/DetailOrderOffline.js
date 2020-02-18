@@ -38,7 +38,6 @@ class DetailOrderOffline extends Component {
       orderHistoryDetail,
       toggleModalOrderDetail
     } = this.props;
-    console.log(orderHistoryDetail);
     return (
       <>
         <div className={Styles.wrapDetailOrder}>

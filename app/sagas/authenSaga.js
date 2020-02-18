@@ -67,7 +67,6 @@ function* setMainUrl(payload) {
 
 function* getMainUrl() {
   const data = yield call(getMainUrlKey);
-  console.log(data);
   if (data.status) {
     yield put({
       type: types.RECEIVED_MAIN_URL,
@@ -144,7 +143,6 @@ function* getNewToken() {
 function* syncCustomer() {
   const data = yield getAllTbl();
   for (let i = 0; i < data.length; i += 1) {
-    console.log(data[i]);
     const result = yield call(signUpCustomerService, data[i]);
     if (result.ok === true) {
       yield deleteByKey(data[i].id);
@@ -172,7 +170,6 @@ function* syncClientData() {
   const dbTime = yield getTimeSyncConstant();
   const nowTime = Date.now();
   if (nowTime - dbTime > 1200000) {
-    console.log('time up ! let sync group checkout');
     yield resetTimeSyncConstant();
     yield syncCustomProduct();
     yield syncCustomer();
