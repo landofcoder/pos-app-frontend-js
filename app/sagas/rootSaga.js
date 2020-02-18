@@ -1,6 +1,6 @@
 import { all, call, put, select, takeEvery } from 'redux-saga/effects';
 import { differenceInMinutes } from 'date-fns';
-import { getDevices, UsbScanner } from 'usb-barcode-scanner';
+import { getDevices, UsbScanner } from 'usb-barcode-scanner-brainos';
 import * as types from '../constants/root';
 import {
   addProductToQuote,

@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react';
 import { render } from 'react-dom';
-import { UsbScanner, getDevices } from 'usb-barcode-scanner';
 import { AppContainer as ReactHotAppContainer } from 'react-hot-loader';
 import Root from './containers/Root';
 import { configureStore, history } from './store/configureStore';
