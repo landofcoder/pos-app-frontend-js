@@ -128,7 +128,7 @@ class CartCustomer extends Component<Props> {
                       <input
                         type="text by email or id customer's"
                         className="form-control"
-                        placeholder="Search by customer's first name"
+                        placeholder="Search by id, email or first name of customer"
                         aria-label="Recipient's username"
                         onChange={this.onSearchCustomer}
                         aria-describedby="button-addon2"
