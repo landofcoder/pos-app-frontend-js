@@ -121,7 +121,6 @@ const initialState = {
     tax_display: '0',
     tax_label: null
   },
-  defaultOutletShippingAddress: {},
   detailOutlet: {},
   dataCheckoutDetailItemHistoryOffline: {},
   orderHistory: [],

@@ -92,8 +92,7 @@ const itemCartEditing = state => state.mainRd.itemCartEditing;
 const currentPosCommand = state => state.mainRd.currentPosCommand;
 const orderPreparingCheckoutState = state =>
   state.mainRd.checkout.orderPreparingCheckout;
-const defaultOutletShippingAddress = state =>
-  state.mainRd.defaultOutletShippingAddress;
+const defaultOutletShippingAddress = state => state.mainRd.detailOutlet;
 const guestInfo = state => state.mainRd.posSystemConfig.default_guest_checkout;
 const shippingMethod = state => state.mainRd.posSystemConfig.shipping_method;
 const methodPayment = state => state.mainRd.posSystemConfig.payment_for_pos;
@@ -157,7 +156,8 @@ function* cashCheckout() {
         currency_id: currencyCode,
         email: cartCurrentResultObj.customer.email,
         shipping_address: {
-          defaultOutletShippingAddressResult,
+          // waiting defaultOutletShippingAddress
+          // defaultOutletShippingAddressResult,
           shipping_method: shippingMethodResult.default_shipping_method,
           method: methodPaymentResult.default_payment_method
         },
@@ -168,6 +168,11 @@ function* cashCheckout() {
           grand_total: totalPrice
         }
       };
+      orderPreparingCheckout.shipping_address = Object.assign(
+        {},
+        orderPreparingCheckout.shipping_address,
+        defaultOutletShippingAddressResult
+      );
     }
     console.log(orderPreparingCheckout);
     yield put({
