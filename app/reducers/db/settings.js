@@ -37,3 +37,11 @@ export async function updateLoggedToken(payload) {
   const tbl = db.table(table);
   await tbl.update(id, { value: payload.value, update_at: new Date() });
 }
+
+export async function deleteByKeyV2(key) {
+  const tbl = db.table(table);
+  await tbl
+    .where('key')
+    .equals(key)
+    .delete();
+}

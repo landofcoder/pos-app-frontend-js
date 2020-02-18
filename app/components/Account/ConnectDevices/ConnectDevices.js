@@ -90,10 +90,15 @@ class ConnectDevices extends Component<Props> {
                       </div>
                       <div className="form-group">
                         {errorConnect ? (
-                          <p className="text-danger">
-                            Error connect to device, please run this application
-                            with root permission
-                          </p>
+                          <>
+                            <p className="text-danger">
+                              Error connect to device, please try the following:
+                            </p>
+                            <ul>
+                              <li>Run app with root permission</li>
+                              <li>Remove and re-plug the device</li>
+                            </ul>
+                          </>
                         ) : (
                           <p></p>
                         )}

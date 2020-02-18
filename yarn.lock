@@ -13794,10 +13794,10 @@ url@^0.11.0, url@~0.11.0:
     punycode "1.3.2"
     querystring "0.2.0"
 
-usb-barcode-scanner-brainos@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/usb-barcode-scanner-brainos/-/usb-barcode-scanner-brainos-1.0.3.tgz#aab61cc631eed30e3aa9cf5a10167800c07115bc"
-  integrity sha512-HnyYdX1c/UWmegGPZTJhMMih6GDgnuAe7DBc6ExWPpNhRpi6Igy2lczefL0A5lo/67tRsroofUD+fFmbgY6D3g==
+usb-barcode-scanner-brainos@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/usb-barcode-scanner-brainos/-/usb-barcode-scanner-brainos-1.0.6.tgz#22646416de997825da42ef97555063461ae3f678"
+  integrity sha512-sQcxI+u6pAXNZpn88O9nZzyCZJvUQDtNVwiij1+ko+CQYc2aqM4Wqu1vA7rMs7bbspzvjYAyZzJk9hPOIw78fQ==
   dependencies:
     "@types/lodash" "^4.14.108"
     "@types/node-hid" "^1.2.0"

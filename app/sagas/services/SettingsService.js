@@ -2,7 +2,8 @@ import {
   createKey,
   getByKey,
   getByKeyV2,
-  updateById
+  updateById,
+  deleteByKeyV2
 } from '../../reducers/db/settings';
 
 const syncAllDataLabel = 'sync_all_data';
@@ -112,4 +113,8 @@ export async function createConnectedDeviceSettings(payload) {
 export async function getConnectedDeviceSettings() {
   const data = await getByKeyV2(connectedScannerDeviceLabel);
   return data ? data.value : '';
+}
+
+export async function removeScannerDeviceConnected() {
+  await deleteByKeyV2(connectedScannerDeviceLabel);
 }

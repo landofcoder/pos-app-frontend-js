@@ -40,7 +40,8 @@ import {
   createConnectedDeviceSettings,
   createSyncAllDataFlag,
   haveToSyncAllData,
-  getConnectedDeviceSettings
+  getConnectedDeviceSettings,
+  removeScannerDeviceConnected
 } from './services/SettingsService';
 import {
   getInfoCashierService,
@@ -1082,8 +1083,6 @@ function* connectToScannerDeviceSaga(payload) {
   const allDevicesResult = yield select(allDevices);
   const deviceSelected = allDevicesResult[index];
 
-  console.log('device selected:', deviceSelected);
-
   const { vendorId, productId } = deviceSelected;
 
   yield connectHIDScanner(vendorId, productId, deviceSelected);
@@ -1116,19 +1115,8 @@ function* connectHIDScanner(vendorId, productId, deviceSelected) {
 
 function* changeScannerDeviceSaga() {
   try {
-    const scannerConnectedSettings = yield getConnectedDeviceSettings();
-    console.log('scanner1:', window.scanner);
-    console.log('scanner2:', window.scanner.hid.getDeviceInfo());
-    if (scannerConnectedSettings) {
-      // const { vendorId, productId } = scannerConnectedSettings;
-      // // Close if exists connected
-      // const scanner = new UsbScanner({
-      //   vendorId,
-      //   productId
-      // });
-      //
-      // console.log('scanner change:', scanner);
-    }
+    // Remove scanner device
+    yield removeScannerDeviceConnected();
   } catch (e) {
     console.error('change scanner device error:', e);
   }
