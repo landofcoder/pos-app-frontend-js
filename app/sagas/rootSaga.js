@@ -126,7 +126,6 @@ function* cashCheckout() {
     let orderPreparingCheckout = {};
     if (cartCurrentResultObj.isGuestCustomer === true) {
       const guestInfoResult = yield select(guestInfo);
-      console.log(guestInfoResult);
       orderPreparingCheckout = {
         payment_methods: [],
         currency_id: currencyCode,
@@ -174,7 +173,6 @@ function* cashCheckout() {
         defaultOutletShippingAddressResult
       );
     }
-    console.log(orderPreparingCheckout);
     yield put({
       type: types.RECEIVED_ORDER_PREPARING_CHECKOUT,
       payload: orderPreparingCheckout
@@ -861,7 +859,6 @@ function* getDiscountForOfflineCheckoutSaga() {
     config: posSystemConfigResult
   });
   const typeOfResult = typeof result;
-  console.log(result);
   // If json type returned, that mean get discount success
   if (typeOfResult !== 'string' && result.message === undefined) {
     yield put({
@@ -1108,7 +1105,6 @@ function* createCustomizeProduct(payload) {
     // create custom product to magento with graphql
     yield put({ type: types.ADD_TO_CART, payload: payload.payload });
   }
-  console.log(payload);
 }
 /**
  * Default root saga

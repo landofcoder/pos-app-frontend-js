@@ -838,7 +838,6 @@ export async function findAllParentCategories(
 }
 
 export async function syncCustomProductAPI(payload) {
-  console.log('api sync custom');
   console.log(payload);
 }
 export async function syncCustomProductService() {
