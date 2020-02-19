@@ -315,3 +315,10 @@ export function changeScannerDevice() {
     type: types.CHANGE_SCANNER_DEVICE
   };
 }
+
+export function getProductBySkuFromScanner(payload) {
+  return {
+    type: types.GET_PRODUCT_BY_SKU_FROM_SCANNER,
+    payload
+  };
+}

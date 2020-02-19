@@ -18,7 +18,8 @@ import {
   getDetailProductGroupedService,
   getProductByCategoryService,
   searchProductService,
-  syncAllProducts
+  syncAllProducts,
+  getProductBySkuFromScanner
 } from './services/ProductService';
 import {
   getCustomerCartTokenService,
@@ -70,7 +71,7 @@ import { syncCategories } from '../reducers/db/categories';
 import { syncCustomers } from '../reducers/db/customers';
 import { signUpCustomer } from '../reducers/db/sync_customers';
 import { getAllOrders } from '../reducers/db/sync_orders';
-import { counterProduct } from '../reducers/db/products';
+import { counterProduct, getProductBySku } from '../reducers/db/products';
 import { getOfflineMode } from '../common/settings';
 import {
   CHILDREN,
@@ -1095,12 +1096,13 @@ function* connectHIDScanner(vendorId, productId, deviceSelected) {
       productId
     });
 
-    scanner.on('data', data => {
-      console.log('on data:', data);
-    });
-
-    scanner.startScanning();
     window.scanner = scanner;
+
+    // Push data to reducers for POS listen detection
+    yield put({
+      type: types.SCANNER_WAITING_FOR_CONNECT_LISTENING,
+      payload: { vendorId, productId }
+    });
 
     // Update connected succeeded
     yield put({ type: types.CONNECT_DEVICE_SUCCESS, payload: deviceSelected });
@@ -1120,6 +1122,16 @@ function* changeScannerDeviceSaga() {
   } catch (e) {
     console.error('change scanner device error:', e);
   }
+}
+
+/**
+ * Get product by sku from scanner
+ * @param payload
+ * @returns void
+ */
+function* getProductBySkuFromScannerSaga(payload) {
+  const productResult = yield getProductBySkuFromScanner(payload.payload);
+  console.log('product result:', productResult);
 }
 
 /**
@@ -1164,6 +1176,10 @@ function* rootSaga() {
   yield takeEvery(types.SHOW_ALL_DEVICES, showAllDevicesSaga);
   yield takeEvery(types.CONNECT_TO_SCANNER_DEVICE, connectToScannerDeviceSaga);
   yield takeEvery(types.CHANGE_SCANNER_DEVICE, changeScannerDeviceSaga);
+  yield takeEvery(
+    types.GET_PRODUCT_BY_SKU_FROM_SCANNER,
+    getProductBySkuFromScannerSaga
+  );
 }
 
 export default rootSaga;

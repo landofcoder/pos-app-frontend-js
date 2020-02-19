@@ -24,7 +24,8 @@ function mapStateToProps(state) {
     toggleModalCalculatorStatus: state.mainRd.isOpenCalculator,
     posCommandIsFetchingProduct:
       state.mainRd.currentPosCommand.isFetchingProduct,
-    defaultColor: state.mainRd.posSystemConfig
+    defaultColor: state.mainRd.posSystemConfig,
+    hidDevice: state.mainRd.hidDevice
   };
 }
 

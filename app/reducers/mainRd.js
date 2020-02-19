@@ -128,11 +128,15 @@ const initialState = {
     isShowingProductOption: false, // Show model for choose product type option
     optionValue: null // Keep detail product clicked
   },
+  // For scanner device
   hidDevice: {
     allDevices: [], // All devices HID
     errorConnect: false,
     connectedDeviceStatus: false,
-    connectedDeviceItem: {}
+    connectedDeviceItem: {},
+    waitForConnect: {
+      isWaitingForListingDataEvent: false
+    }
   }
 };
 
@@ -489,6 +493,9 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.CHANGE_SCANNER_DEVICE:
         draft.hidDevice.connectedDeviceStatus = false;
         draft.hidDevice.connectedDeviceItem = {};
+        break;
+      case types.SCANNER_WAITING_FOR_CONNECT_LISTENING:
+        draft.hidDevice.waitForConnect.isWaitingForListingDataEvent = true;
         break;
       default:
         return draft;
