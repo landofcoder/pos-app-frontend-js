@@ -146,7 +146,13 @@ function* cashCheckout() {
           region_id: guestInfoResult.region_id,
           postcode: guestInfoResult.zip_code, // cho nay lay du lieu o dau a ?
           telephone: guestInfoResult.telephone,
-          shipping_method: shippingMethodResult.default_shipping_method,
+          shipping_method:
+            shippingMethodResult.specific_shipping_methods === 'flatrate'
+              ? 'flatrate_flatrate'
+              : shippingMethodResult.specific_shipping_methods ===
+                'freeshipping'
+              ? 'freeshipping_freeshipping'
+              : shippingMethodResult.specific_shipping_methods,
           method: methodPaymentResult.default_payment_method
         },
         totals: {
