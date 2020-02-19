@@ -34,8 +34,8 @@ export default class Account extends Component {
         return <OrderHistory />;
       case 'CashierInfo':
         return <CashierInfo />;
-        case 'connectDevices':
-                      return <ConnectDevices />;
+      case 'connectDevices':
+        return <ConnectDevices />;
       default:
         return null;
     }
@@ -47,7 +47,7 @@ export default class Account extends Component {
   };
 
   render() {
-    const { cashierSelect, orderHistorySelect, viewSelected } = this.state;
+    const { viewSelected } = this.state;
     return (
       <>
         <div data-tid="container" className="pr-0 pl-0 pt-2">
@@ -102,7 +102,9 @@ export default class Account extends Component {
                     Account Setting
                   </a>
                   <a
-                    className="nav-link"
+                    className={`nav-link ${
+                      viewSelected === 'connectDevices' ? 'active' : ''
+                    } ${Styles.radiusButton}`}
                     role="tab"
                     href="#"
                     onClick={this.connectDevicesAction}

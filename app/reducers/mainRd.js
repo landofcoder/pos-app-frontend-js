@@ -278,9 +278,11 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.SELECT_CUSTOMER_FOR_CURRENT_CART:
         draft.cartCurrent.customer = action.payload;
+        draft.cartCurrent.isGuestCustomer = false;
         break;
       case types.UN_SELECT_CUSTOMER_FOR_CURRENT_CART:
         draft.cartCurrent.customer = null;
+        draft.cartCurrent.isGuestCustomer = true;
         break;
       case types.UPDATE_IS_GUEST_CUSTOMER_CURRENT_CART:
         draft.cartCurrent.isGuestCustomer = action.payload;
