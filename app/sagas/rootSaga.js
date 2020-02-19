@@ -144,7 +144,7 @@ function* cashCheckout() {
           city: guestInfoResult.city,
           country_id: guestInfoResult.country,
           region_id: guestInfoResult.region_id,
-          postcode: guestInfoResult.zip_code, // cho nay lay du lieu o dau a ?
+          postcode: guestInfoResult.zip_code,
           telephone: guestInfoResult.telephone,
           shipping_method:
             shippingMethodResult.specific_shipping_methods === 'flatrate'
@@ -168,10 +168,15 @@ function* cashCheckout() {
         currency_id: currencyCode,
         email: cartCurrentResultObj.customer.email,
         shipping_address: {
-          // waiting defaultOutletShippingAddress
-          // defaultOutletShippingAddressResult,
-          shipping_method: shippingMethodResult.default_shipping_method,
-          method: methodPaymentResult.default_payment_method
+          shipping_method:
+            shippingMethodResult.specific_shipping_methods === 'flatrate'
+              ? 'flatrate_flatrate'
+              : shippingMethodResult.specific_shipping_methods ===
+                'freeshipping'
+              ? 'freeshipping_freeshipping'
+              : shippingMethodResult.specific_shipping_methods,
+          method: methodPaymentResult.default_payment_method,
+          postcode: defaultOutletShippingAddressResult[0].data.post_code
         },
         totals: {
           base_subtotal: totalPrice,
@@ -183,7 +188,7 @@ function* cashCheckout() {
       orderPreparingCheckout.shipping_address = Object.assign(
         {},
         orderPreparingCheckout.shipping_address,
-        defaultOutletShippingAddressResult
+        defaultOutletShippingAddressResult[0].data
       );
     }
     yield put({
