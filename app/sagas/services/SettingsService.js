@@ -112,6 +112,7 @@ export async function getTimeSyncConstant() {
 export async function resetTimeSyncConstant() {
   const timeConstantValue = await getByKey(timeSyncConstant);
   await updateById(timeConstantValue[0].id, Date.now());
+}
 export async function createConnectedDeviceSettings(payload) {
   const connectedDevice = await getByKeyV2(connectedScannerDeviceLabel);
   if (!connectedDevice) {
