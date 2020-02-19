@@ -317,3 +317,21 @@ export function createCustomizeProduct(payload) {
     payload
   };
 }
+export function getShowAllDevices() {
+  return {
+    type: types.SHOW_ALL_DEVICES
+  };
+}
+
+export function connectToScannerDevice(payload) {
+  return {
+    type: types.CONNECT_TO_SCANNER_DEVICE,
+    payload
+  };
+}
+
+export function changeScannerDevice() {
+  return {
+    type: types.CHANGE_SCANNER_DEVICE
+  };
+}

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import * as routes from '../../constants/routes.json';
 import OrderHistory from './OrderHistory/OrderHistory';
 import CashierInfo from './CashierInfo/CashierInfo';
+import ConnectDevices from './ConnectDevices/ConnectDevices';
 import Styles from './Account.scss';
 
 export default class Account extends Component {
@@ -33,17 +34,20 @@ export default class Account extends Component {
         return <OrderHistory />;
       case 'CashierInfo':
         return <CashierInfo />;
+        case 'connectDevices':
+                      return <ConnectDevices />;
       default:
         return null;
     }
   };
 
   connectDevicesAction = e => {
-
+    e.preventDefault();
+    this.setState({ viewSelected: 'connectDevices' });
   };
 
   render() {
-    const { viewSelected } = this.state;
+    const { cashierSelect, orderHistorySelect, viewSelected } = this.state;
     return (
       <>
         <div data-tid="container" className="pr-0 pl-0 pt-2">
@@ -97,7 +101,14 @@ export default class Account extends Component {
                   >
                     Account Setting
                   </a>
-                  <a className="nav-link">Connect Devices</a>
+                  <a
+                    className="nav-link"
+                    role="tab"
+                    href="#"
+                    onClick={this.connectDevicesAction}
+                  >
+                    Connect Devices
+                  </a>
                 </div>
               </div>
               <div className={`col-9 ${Styles.wrapFullHeightList}`}>

@@ -1,4 +1,4 @@
-import { UsbScanner, getDevices } from 'usb-barcode-scanner';
+import { UsbScanner, getDevices } from 'usb-barcode-scanner-brainos';
 
 const scanner = new UsbScanner({
   vendorId: 7851,

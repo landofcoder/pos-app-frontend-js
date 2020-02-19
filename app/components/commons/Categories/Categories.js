@@ -73,7 +73,7 @@ class Categories extends Component<Props> {
     const { allCategories } = this.props;
     const { openNavigation } = this.state;
     /* eslint-disable */
-    const children_data = allCategories.children_data ? allCategories.children_data : [];
+    const children_data = (allCategories && allCategories.children_data) ? allCategories.children_data : [];
     /* eslint-enable */
     return (
       <div>

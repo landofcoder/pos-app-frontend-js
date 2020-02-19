@@ -1,7 +1,7 @@
 {
   "name": "POS",
   "productName": "POS",
-  "version": "0.17.1",
+  "version": "0.17.2",
   "description": "Electron application boilerplate based on React, React Router, Webpack, React Hot Loader for rapid application development",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
@@ -271,7 +271,7 @@
     "immer": "^5.1.0",
     "locale-currency": "^0.0.2",
     "lodash": "^4.17.15",
-    "node-hid": "^1.1.0",
+    "usb-barcode-scanner-brainos": "^1.0.6",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
@@ -283,9 +283,7 @@
     "redux-saga": "^1.1.1",
     "redux-thunk": "^2.3.0",
     "relay-runtime": "^7.1.0",
-    "source-map-support": "^0.5.11",
-    "usb-barcode-scanner": "^1.0.2",
-    "electron-sudo":  "^4.0.12"
+    "source-map-support": "^0.5.11"
   },
   "devEngines": {
     "node": ">=7.x",

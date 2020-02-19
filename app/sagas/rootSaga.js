@@ -1,5 +1,6 @@
 import { all, call, put, select, takeEvery } from 'redux-saga/effects';
 import { differenceInMinutes } from 'date-fns';
+import { getDevices, UsbScanner } from 'usb-barcode-scanner-brainos';
 import * as types from '../constants/root';
 import {
   addProductToQuote,
@@ -22,6 +23,7 @@ import {
 import {
   getCustomerCartTokenService,
   searchCustomer,
+  searchCustomerByName,
   signUpCustomerService
 } from './services/CustomerService';
 import { createCustomerCartService } from './services/CustomerCartService';
@@ -35,8 +37,11 @@ import {
   getSystemConfigService
 } from './services/CommonService';
 import {
+  createConnectedDeviceSettings,
   createSyncAllDataFlag,
-  haveToSyncAllData
+  haveToSyncAllData,
+  getConnectedDeviceSettings,
+  removeScannerDeviceConnected
 } from './services/SettingsService';
 import {
   getInfoCashierService,
@@ -96,6 +101,8 @@ const defaultOutletShippingAddress = state => state.mainRd.detailOutlet;
 const guestInfo = state => state.mainRd.posSystemConfig.default_guest_checkout;
 const shippingMethod = state => state.mainRd.posSystemConfig.shipping_method;
 const methodPayment = state => state.mainRd.posSystemConfig.payment_for_pos;
+const allDevices = state => state.mainRd.hidDevice.allDevices;
+
 /**
  * Create quote and show cash model
  */
@@ -578,9 +585,11 @@ function* receivedProductOptionValue(productDetailReFormat) {
 function* getSearchCustomer(payload) {
   // Start search loading
   yield put({ type: types.UPDATE_IS_LOADING_SEARCH_CUSTOMER, payload: true });
-
+  console.log(payload);
   const searchResult = yield call(searchCustomer, payload);
-
+  const searchResultByName = yield call(searchCustomerByName, payload);
+  const mergeArray = searchResult.items.concat(searchResultByName.items);
+  searchResult.items = mergeArray;
   yield put({
     type: types.RECEIVED_CUSTOMER_SEARCH_RESULT,
     searchResult
@@ -1088,6 +1097,9 @@ function* bootstrapApplicationSaga() {
   // Get all config
   yield getPostConfigGeneralConfig();
 
+  // Auto connect scanner device
+  yield autoConnectScannerDevice();
+
   // Apply all main settings
   const posSystemConfigResult = yield select(posSystemConfig);
   const generalConfig = posSystemConfigResult.general_configuration;
@@ -1106,6 +1118,75 @@ function* createCustomizeProduct(payload) {
     yield put({ type: types.ADD_TO_CART, payload: payload.payload });
   }
 }
+function* showAllDevicesSaga() {
+  const allDevices = yield getDevices();
+
+  // Add default select
+  allDevices.unshift({ product: '--Please select--' });
+  yield put({ type: types.RECEIVED_ALL_DEVICES, payload: allDevices });
+}
+
+function* autoConnectScannerDevice() {
+  const scannerConnectedSettings = yield getConnectedDeviceSettings();
+  if (scannerConnectedSettings) {
+    const { vendorId, productId } = scannerConnectedSettings;
+    console.log('obj result:', scannerConnectedSettings);
+    yield connectHIDScanner(vendorId, productId, scannerConnectedSettings);
+  }
+}
+
+/**
+ * Scanner HID connecting
+ * @param payload
+ * @returns void
+ */
+function* connectToScannerDeviceSaga(payload) {
+  // Reset error when connect to new device
+  yield put({ type: types.UPDATE_ERROR_CONNECT, payload: false });
+
+  const index = payload.payload;
+  const allDevicesResult = yield select(allDevices);
+  const deviceSelected = allDevicesResult[index];
+
+  const { vendorId, productId } = deviceSelected;
+
+  yield connectHIDScanner(vendorId, productId, deviceSelected);
+}
+
+function* connectHIDScanner(vendorId, productId, deviceSelected) {
+  try {
+    const scanner = new UsbScanner({
+      vendorId,
+      productId
+    });
+
+    scanner.on('data', data => {
+      console.log('on data:', data);
+    });
+
+    scanner.startScanning();
+    window.scanner = scanner;
+
+    // Update connected succeeded
+    yield put({ type: types.CONNECT_DEVICE_SUCCESS, payload: deviceSelected });
+
+    // Create to local storage
+    yield createConnectedDeviceSettings(deviceSelected);
+  } catch (e) {
+    console.error('error when connect scanner device:', e);
+    yield put({ type: types.UPDATE_ERROR_CONNECT, payload: true });
+  }
+}
+
+function* changeScannerDeviceSaga() {
+  try {
+    // Remove scanner device
+    yield removeScannerDeviceConnected();
+  } catch (e) {
+    console.error('change scanner device error:', e);
+  }
+}
+
 /**
  * Default root saga
  * @returns void
@@ -1146,6 +1227,9 @@ function* rootSaga() {
   yield takeEvery(types.RE_CHECK_REQUIRE_STEP, reCheckRequireStepSaga);
   yield takeEvery(types.LOAD_PRODUCT_PAGING, loadProductPagingSaga);
   yield takeEvery(types.CREATE_CUSTOMIZE_PRODUCT, createCustomizeProduct);
+  yield takeEvery(types.SHOW_ALL_DEVICES, showAllDevicesSaga);
+  yield takeEvery(types.CONNECT_TO_SCANNER_DEVICE, connectToScannerDeviceSaga);
+  yield takeEvery(types.CHANGE_SCANNER_DEVICE, changeScannerDeviceSaga);
 }
 
 export default rootSaga;
