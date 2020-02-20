@@ -128,6 +128,16 @@ const initialState = {
     isLoadingProductOption: false, // Show a loading in screen for product option loading
     isShowingProductOption: false, // Show model for choose product type option
     optionValue: null // Keep detail product clicked
+  },
+  // For scanner device
+  hidDevice: {
+    allDevices: [], // All devices HID
+    errorConnect: false,
+    connectedDeviceStatus: false,
+    connectedDeviceItem: {},
+    waitForConnect: {
+      isWaitingForListingDataEvent: false
+    }
   }
 };
 
@@ -475,6 +485,23 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.UPDATE_REACHED_LIMIT:
         draft.currentPosCommand.reachedLimit = action.payload;
+        break;
+      case types.RECEIVED_ALL_DEVICES:
+        draft.hidDevice.allDevices = action.payload;
+        break;
+      case types.UPDATE_ERROR_CONNECT:
+        draft.hidDevice.errorConnect = action.payload;
+        break;
+      case types.CONNECT_DEVICE_SUCCESS:
+        draft.hidDevice.connectedDeviceStatus = true;
+        draft.hidDevice.connectedDeviceItem = action.payload;
+        break;
+      case types.CHANGE_SCANNER_DEVICE:
+        draft.hidDevice.connectedDeviceStatus = false;
+        draft.hidDevice.connectedDeviceItem = {};
+        break;
+      case types.SCANNER_WAITING_FOR_CONNECT_LISTENING:
+        draft.hidDevice.waitForConnect.isWaitingForListingDataEvent = true;
         break;
       default:
         return draft;

@@ -33,6 +33,7 @@ type Props = {
   mainPanelType: string,
   cashCheckoutAction: () => void,
   getDetailProductConfigurable: (payload: Object) => void,
+  getProductBySkuFromScanner: (payload: string) => void,
   getDetailProductBundle: (payload: Object) => void,
   getDetailProductGrouped: (payload: Object) => void,
   loadProductPaging: () => void,
@@ -53,7 +54,8 @@ type Props = {
   internetConnected: boolean,
   toggleModalCalculatorStatus: boolean,
   posCommandIsFetchingProduct: boolean,
-  defaultColor: string
+  defaultColor: string,
+  hidDevice: Object
 };
 
 type State = {
@@ -80,9 +82,21 @@ export default class Pos extends Component<Props, State> {
   }
 
   componentDidMount(): void {
-    const { autoLoginToGetNewToken } = this.props;
+    const { autoLoginToGetNewToken, hidDevice } = this.props;
     limitLoop(autoLoginToGetNewToken, 30, 3000);
 
+    const { isWaitingForListingDataEvent } = hidDevice.waitForConnect;
+
+    // Uncomment below code for testing scanner device working
+    // const { getProductBySkuFromScanner } = this.props;
+    // getProductBySkuFromScanner('24-MG04');
+    if (isWaitingForListingDataEvent) {
+      window.scanner.on('data', data => {
+        const { getProductBySkuFromScanner } = this.props;
+        getProductBySkuFromScanner(data);
+      });
+      window.scanner.startScanning();
+    }
   }
 
   getFirstMedia = (item: Object) => {

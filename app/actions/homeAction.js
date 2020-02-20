@@ -296,3 +296,29 @@ export function autoLoginToGetNewToken() {
     type: typesAuthen.AUTO_LOGIN_TO_GET_NEW_TOKEN
   };
 }
+
+export function getShowAllDevices() {
+  return {
+    type: types.SHOW_ALL_DEVICES
+  };
+}
+
+export function connectToScannerDevice(payload) {
+  return {
+    type: types.CONNECT_TO_SCANNER_DEVICE,
+    payload
+  };
+}
+
+export function changeScannerDevice() {
+  return {
+    type: types.CHANGE_SCANNER_DEVICE
+  };
+}
+
+export function getProductBySkuFromScanner(payload) {
+  return {
+    type: types.GET_PRODUCT_BY_SKU_FROM_SCANNER,
+    payload
+  };
+}

@@ -1,5 +1,6 @@
 import { all, call, put, select, takeEvery } from 'redux-saga/effects';
 import { differenceInMinutes } from 'date-fns';
+import { getDevices, UsbScanner } from 'usb-barcode-scanner-brainos';
 import * as types from '../constants/root';
 import {
   addProductToQuote,
@@ -17,11 +18,13 @@ import {
   getDetailProductGroupedService,
   getProductByCategoryService,
   searchProductService,
-  syncAllProducts
+  syncAllProducts,
+  getProductBySkuFromScanner
 } from './services/ProductService';
 import {
   getCustomerCartTokenService,
   searchCustomer,
+  searchCustomerByName,
   signUpCustomerService
 } from './services/CustomerService';
 import { createCustomerCartService } from './services/CustomerCartService';
@@ -35,8 +38,11 @@ import {
   getSystemConfigService
 } from './services/CommonService';
 import {
+  createConnectedDeviceSettings,
   createSyncAllDataFlag,
-  haveToSyncAllData
+  haveToSyncAllData,
+  getConnectedDeviceSettings,
+  removeScannerDeviceConnected
 } from './services/SettingsService';
 import {
   getInfoCashierService,
@@ -65,7 +71,7 @@ import { syncCategories } from '../reducers/db/categories';
 import { syncCustomers } from '../reducers/db/customers';
 import { signUpCustomer } from '../reducers/db/sync_customers';
 import { getAllOrders } from '../reducers/db/sync_orders';
-import { counterProduct } from '../reducers/db/products';
+import { counterProduct, getProductBySku } from '../reducers/db/products';
 import { getOfflineMode } from '../common/settings';
 import {
   CHILDREN,
@@ -91,6 +97,7 @@ const itemCartEditing = state => state.mainRd.itemCartEditing;
 const currentPosCommand = state => state.mainRd.currentPosCommand;
 const orderPreparingCheckout = state =>
   state.mainRd.checkout.orderPreparingCheckout;
+const allDevices = state => state.mainRd.hidDevice.allDevices;
 
 /**
  * Create quote and show cash model
@@ -537,9 +544,11 @@ function* receivedProductOptionValue(productDetailReFormat) {
 function* getSearchCustomer(payload) {
   // Start search loading
   yield put({ type: types.UPDATE_IS_LOADING_SEARCH_CUSTOMER, payload: true });
-
+  console.log(payload);
   const searchResult = yield call(searchCustomer, payload);
-
+  const searchResultByName = yield call(searchCustomerByName, payload);
+  const mergeArray = searchResult.items.concat(searchResultByName.items);
+  searchResult.items = mergeArray;
   yield put({
     type: types.RECEIVED_CUSTOMER_SEARCH_RESULT,
     searchResult
@@ -1046,11 +1055,94 @@ function* bootstrapApplicationSaga() {
   // Get all config
   yield getPostConfigGeneralConfig();
 
+  // Auto connect scanner device
+  yield autoConnectScannerDevice();
+
   // Apply all main settings
   const posSystemConfigResult = yield select(posSystemConfig);
   const generalConfig = posSystemConfigResult.general_configuration;
   const posTitle = generalConfig.pos_title;
   document.title = posTitle;
+}
+
+function* showAllDevicesSaga() {
+  const allDevices = yield getDevices();
+
+  // Add default select
+  allDevices.unshift({ product: '--Please select--' });
+  yield put({ type: types.RECEIVED_ALL_DEVICES, payload: allDevices });
+}
+
+function* autoConnectScannerDevice() {
+  const scannerConnectedSettings = yield getConnectedDeviceSettings();
+  if (scannerConnectedSettings) {
+    const { vendorId, productId } = scannerConnectedSettings;
+    console.log('obj result:', scannerConnectedSettings);
+    yield connectHIDScanner(vendorId, productId, scannerConnectedSettings);
+  }
+}
+
+/**
+ * Scanner HID connecting
+ * @param payload
+ * @returns void
+ */
+function* connectToScannerDeviceSaga(payload) {
+  // Reset error when connect to new device
+  yield put({ type: types.UPDATE_ERROR_CONNECT, payload: false });
+
+  const index = payload.payload;
+  const allDevicesResult = yield select(allDevices);
+  const deviceSelected = allDevicesResult[index];
+
+  const { vendorId, productId } = deviceSelected;
+
+  yield connectHIDScanner(vendorId, productId, deviceSelected);
+}
+
+function* connectHIDScanner(vendorId, productId, deviceSelected) {
+  try {
+    const scanner = new UsbScanner({
+      vendorId,
+      productId
+    });
+
+    window.scanner = scanner;
+
+    // Push data to reducers for POS listen detection
+    yield put({
+      type: types.SCANNER_WAITING_FOR_CONNECT_LISTENING,
+      payload: { vendorId, productId }
+    });
+
+    // Update connected succeeded
+    yield put({ type: types.CONNECT_DEVICE_SUCCESS, payload: deviceSelected });
+
+    // Create to local storage
+    yield createConnectedDeviceSettings(deviceSelected);
+  } catch (e) {
+    console.error('error when connect scanner device:', e);
+    yield put({ type: types.UPDATE_ERROR_CONNECT, payload: true });
+  }
+}
+
+function* changeScannerDeviceSaga() {
+  try {
+    // Remove scanner device
+    yield removeScannerDeviceConnected();
+  } catch (e) {
+    console.error('change scanner device error:', e);
+  }
+}
+
+/**
+ * Get product by sku from scanner
+ * @param payload
+ * @returns void
+ */
+function* getProductBySkuFromScannerSaga(payload) {
+  const productResult = yield getProductBySkuFromScanner(payload.payload);
+  console.log('product result:', productResult);
 }
 
 /**
@@ -1092,6 +1184,13 @@ function* rootSaga() {
   );
   yield takeEvery(types.RE_CHECK_REQUIRE_STEP, reCheckRequireStepSaga);
   yield takeEvery(types.LOAD_PRODUCT_PAGING, loadProductPagingSaga);
+  yield takeEvery(types.SHOW_ALL_DEVICES, showAllDevicesSaga);
+  yield takeEvery(types.CONNECT_TO_SCANNER_DEVICE, connectToScannerDeviceSaga);
+  yield takeEvery(types.CHANGE_SCANNER_DEVICE, changeScannerDeviceSaga);
+  yield takeEvery(
+    types.GET_PRODUCT_BY_SKU_FROM_SCANNER,
+    getProductBySkuFromScannerSaga
+  );
 }
 
 export default rootSaga;

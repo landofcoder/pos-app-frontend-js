@@ -2,7 +2,8 @@ import {
   createKey,
   getByKey,
   getByKeyV2,
-  updateById
+  updateById,
+  deleteByKeyV2
 } from '../../reducers/db/settings';
 
 const syncAllDataLabel = 'sync_all_data';
@@ -10,6 +11,7 @@ const systemConfigLabel = 'system_config';
 const shopInfoKey = 'shop_info_config';
 const cashierInfoLabel = 'cashier_info';
 const receiptInfoLabel = 'receipt_info';
+const connectedScannerDeviceLabel = 'connected_scanner_device';
 
 export async function haveToSyncAllData() {
   const data = await getByKey(syncAllDataLabel);
@@ -94,4 +96,25 @@ export async function cashierInfoSync(data) {
 export async function getCashierInfoLocal() {
   const cashierInfo = await getByKey(cashierInfoLabel);
   return cashierInfo;
+}
+
+export async function createConnectedDeviceSettings(payload) {
+  const connectedDevice = await getByKeyV2(connectedScannerDeviceLabel);
+  if (!connectedDevice) {
+    // Create new
+    await createKey(connectedScannerDeviceLabel, payload);
+  } else {
+    // Update
+    // Update by key
+    await updateById(connectedDevice.id, payload);
+  }
+}
+
+export async function getConnectedDeviceSettings() {
+  const data = await getByKeyV2(connectedScannerDeviceLabel);
+  return data ? data.value : '';
+}
+
+export async function removeScannerDeviceConnected() {
+  await deleteByKeyV2(connectedScannerDeviceLabel);
 }

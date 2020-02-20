@@ -6,7 +6,7 @@ const table = 'products';
 
 export async function getProductBySku(sku) {
   const productTbl = db.table(table);
-  const result = await productTbl.where({ sku }).toArray();
+  const result = await productTbl.get({ sku });
   return result;
 }
 
@@ -80,6 +80,10 @@ export async function getDefaultProductLocal() {
     data = [];
   }
   return data;
+}
+
+export async function getProductBySkuLocal(payload) {
+  await db.table(table).where({ sku: payload });
 }
 
 /**
