@@ -399,13 +399,13 @@ export default class Pos extends Component<Props, State> {
                   <Categories />
                 </div>
                 <div className="col-sm-1 pt-2 pl-5 pr-0 mx-auto">
-                  {/*<a*/}
-                  {/*  onClick={() => {*/}
-                  {/*    this.addCustomProduct();*/}
-                  {/*  }}*/}
-                  {/*>*/}
-                  {/*  <i className="fas fa-plus-circle fa-lg"></i>*/}
-                  {/*</a>*/}
+                  <a
+                    onClick={() => {
+                      this.addCustomProduct();
+                    }}
+                  >
+                    <i className="fas fa-plus-circle fa-lg"></i>
+                  </a>
                 </div>
                 <div className="col-md-9 mb-0 pr-0">
                   <div className="input-group flex-nowrap">
