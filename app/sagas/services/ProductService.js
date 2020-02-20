@@ -82,7 +82,7 @@ async function querySearchProduct(searchValue, currentPage) {
         query: `{
           products(${
             searchValue.length > 0 ? `search: "${searchValue}",` : ''
-          } pageSize: ${defaultPageSize}, currentPage: ${currentPage}) {
+          } filter: {}, pageSize: ${defaultPageSize}, currentPage: ${currentPage}) {
             items {
               id
               attribute_set_id
