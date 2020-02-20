@@ -311,17 +311,16 @@ function* cashCheckoutPlaceOrder() {
         payload: false
       });
       yield put({ type: types.PLACE_ORDER_ERROR, payload: orderId });
+    } else {
+      // Step 2: Create invoice
+      yield call(createInvoiceService, orderId);
 
-      return;
+      // Step 3: Create shipment
+      yield call(createShipmentService, orderId);
+
+      // Place order success, let show receipt and copy current cart to cartForReceipt
+      yield put({ type: types.PLACE_ORDER_SUCCESS, orderId });
     }
-    // Step 2: Create invoice
-    yield call(createInvoiceService, orderId);
-
-    // Step 3: Create shipment
-    yield call(createShipmentService, orderId);
-
-    // Place order success, let show receipt and copy current cart to cartForReceipt
-    yield put({ type: types.PLACE_ORDER_SUCCESS, orderId });
   }
 
   // Stop cash loading order loading
