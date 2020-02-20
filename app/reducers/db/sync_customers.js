@@ -6,6 +6,7 @@ export async function signUpCustomer(customers) {
   const { payload } = customers;
   const data = {
     email: payload.customer.email,
+    first_name: payload.customer.firstname,
     payload
   };
   const signUpCustomerTbl = db.table(table);
