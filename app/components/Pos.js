@@ -46,6 +46,7 @@ type Props = {
   isShowModalItemEditCart: boolean,
   cartHoldList: Array<Object>,
   switchToHoldItemCart: (payload: number) => void,
+  updateTriggerScannerBarcodeTrigger: (payload: boolean) => void,
   emptyCart: () => void,
   currencyCode: string,
   isLoadingSearchHandle: boolean,
@@ -85,11 +86,12 @@ export default class Pos extends Component<Props, State> {
     const { autoLoginToGetNewToken, hidDevice } = this.props;
     limitLoop(autoLoginToGetNewToken, 30, 3000);
 
-    const { isWaitingForListingDataEvent } = hidDevice.waitForConnect;
-
     // Uncomment below code for testing scanner device working
     // const { getProductBySkuFromScanner } = this.props;
     // getProductBySkuFromScanner('24-MG04');
+
+    const { isWaitingForListingDataEvent } = hidDevice;
+
     if (isWaitingForListingDataEvent) {
       window.scanner.on('data', data => {
         const { getProductBySkuFromScanner } = this.props;
@@ -98,6 +100,28 @@ export default class Pos extends Component<Props, State> {
       window.scanner.startScanning();
     }
   }
+
+  componentDidUpdate(prevProps) {
+    console.log('run here right');
+    const { status } = prevProps.hidDevice.triggerProduct;
+    // eslint-disable-next-line react/destructuring-assignment
+    const { product } = this.props.hidDevice.triggerProduct;
+    console.log('dd1:', status);
+    console.log('dd2:', product);
+
+    if (status === false) {
+      // Update trigger product status to false
+      const { updateTriggerScannerBarcodeTrigger } = this.props;
+      updateTriggerScannerBarcodeTrigger(false);
+      // Trigger add to cart now
+      this.preAddToCart(product);
+    }
+  }
+
+  testAction = () => {
+    const { getProductBySkuFromScanner } = this.props;
+    getProductBySkuFromScanner('24-MG04');
+  };
 
   getFirstMedia = (item: Object) => {
     const gallery = item.media_gallery_entries
@@ -516,6 +540,9 @@ export default class Pos extends Component<Props, State> {
               );
             })}
             <div className="col-md-2 pr-1 pl-0">
+              <button type="button" onClick={this.testAction}>
+                TEST
+              </button>
               <button
                 type="button"
                 onClick={holdAction}

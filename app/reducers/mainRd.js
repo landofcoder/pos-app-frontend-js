@@ -136,6 +136,10 @@ const initialState = {
     connectedDeviceItem: {},
     waitForConnect: {
       isWaitingForListingDataEvent: false
+    },
+    triggerProduct: {
+      status: false,
+      product: {}
     }
   }
 };
@@ -496,6 +500,13 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.SCANNER_WAITING_FOR_CONNECT_LISTENING:
         draft.hidDevice.waitForConnect.isWaitingForListingDataEvent = true;
+        break;
+      case types.TRIGGER_ADD_ITEM_TO_CART_FROM_SCANNER_BAR_CODE:
+        draft.hidDevice.triggerProduct.status = true;
+        draft.hidDevice.triggerProduct.product = action.payload;
+        break;
+      case types.UPDATE_TRIGGER_SCANNER_PRODUCT_TO_FALSE:
+        draft.hidDevice.triggerProduct.status = false;
         break;
       default:
         return draft;

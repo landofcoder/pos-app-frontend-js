@@ -322,3 +322,10 @@ export function getProductBySkuFromScanner(payload) {
     payload
   };
 }
+
+export function updateTriggerScannerBarcodeTrigger(payload) {
+  return {
+    type: types.UPDATE_TRIGGER_SCANNER_PRODUCT_TO_FALSE,
+    payload
+  };
+}

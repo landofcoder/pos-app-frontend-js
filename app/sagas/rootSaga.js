@@ -71,7 +71,7 @@ import { syncCategories } from '../reducers/db/categories';
 import { syncCustomers } from '../reducers/db/customers';
 import { signUpCustomer } from '../reducers/db/sync_customers';
 import { getAllOrders } from '../reducers/db/sync_orders';
-import { counterProduct, getProductBySku } from '../reducers/db/products';
+import { counterProduct } from '../reducers/db/products';
 import { getOfflineMode } from '../common/settings';
 import {
   CHILDREN,
@@ -1131,7 +1131,11 @@ function* changeScannerDeviceSaga() {
  */
 function* getProductBySkuFromScannerSaga(payload) {
   const productResult = yield getProductBySkuFromScanner(payload.payload);
-  console.log('product result:', productResult);
+  // Pass this product to POS component
+  yield put({
+    type: types.TRIGGER_ADD_ITEM_TO_CART_FROM_SCANNER_BAR_CODE,
+    payload: productResult
+  });
 }
 
 /**
