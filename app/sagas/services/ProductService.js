@@ -1,6 +1,7 @@
 import { call } from 'redux-saga/effects';
 import {
   searchProductsLocal,
+  getProductBySku,
   getProductsByCategoryLocal,
   syncProducts,
   counterProduct
@@ -41,6 +42,24 @@ export function* searchProductService(payload) {
 
   const data = yield querySearchProduct(searchValue, currentPage);
   return data;
+}
+
+/**
+ * Get product by sku for scanner
+ * @param payload
+ * @returns void
+ */
+export function* getProductBySkuFromScanner(payload) {
+  const offlineMode = yield getOfflineMode();
+  const sku = payload;
+  if (offlineMode === 1) {
+    return yield getProductBySku(sku);
+  }
+  // Call filter by sku
+  const result = yield querySearchProduct(sku, 1);
+  if (result && result.length > 0) {
+    return result[0];
+  }
 }
 
 /**
