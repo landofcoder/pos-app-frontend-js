@@ -7,6 +7,7 @@ import {
   counterProduct
 } from '../../reducers/db/products';
 import { getCategories } from '../../reducers/db/categories';
+import { getAllTbl, deleteByKey } from '../../reducers/db/sync_custom_product';
 import {
   getGraphqlPath,
   getOfflineMode,
@@ -853,4 +854,22 @@ export async function findAllParentCategories(
   }
 
   return parentIds;
+}
+
+export async function syncCustomProductAPI(payload) {
+  console.log(payload);
+}
+export async function syncCustomProductService() {
+  const data = await getAllTbl();
+  console.log('sync custom product');
+  console.log(data);
+  for (let i = 0; i < data.length; i += 1) {
+    // eslint-disable-next-line no-await-in-loop
+    const status = await syncCustomProductAPI(data[i]);
+    if (status) {
+      // delete db
+      // eslint-disable-next-line no-await-in-loop
+      await deleteByKey({ name: data[i].name });
+    }
+  }
 }

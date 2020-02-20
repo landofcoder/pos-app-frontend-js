@@ -3,18 +3,28 @@ import { differenceInMinutes } from 'date-fns';
 import * as types from '../constants/authen';
 import {
   LOGOUT_POS_ACTION,
-  UPDATE_FLAG_SWITCHING_MODE
+  UPDATE_FLAG_SWITCHING_MODE,
+  SYNC_CLIENT_DATA
 } from '../constants/root.json';
 import {
   loginService,
   createLoggedDb,
-  setMainUrlKey,
   getMainUrlKey,
+  setMainUrlKey,
   getModuleInstalledService,
   deleteLoggedDb,
   getLoggedDb
 } from './services/LoginService';
+import {
+  getTimeSyncConstant,
+  resetTimeSyncConstant
+} from './services/SettingsService';
+import { syncCustomProductService } from './services/ProductService';
+import { getAllTbl, deleteByKey } from '../reducers/db/sync_customers';
+import { getAllOrders, deteleAllOrders } from '../reducers/db/sync_orders';
+import { signUpCustomerService } from './services/CustomerService';
 import { updateLoggedToken } from '../reducers/db/settings';
+import { syncOrderService } from './services/CartService';
 
 const senseUrl = state => state.authenRd.senseUrl;
 
@@ -57,7 +67,6 @@ function* setMainUrl(payload) {
 
 function* getMainUrl() {
   const data = yield call(getMainUrlKey);
-  console.log(data);
   if (data.status) {
     yield put({
       type: types.RECEIVED_MAIN_URL,
@@ -104,7 +113,7 @@ function* getModuleInstalled() {
  * Auto login to get new token
  * @returns void
  */
-function* autoLoginToGetNewTokenSaga() {
+function* getNewToken() {
   const logged = yield getLoggedDb();
   if (logged) {
     const lastTimeLogin = logged.update_at
@@ -131,6 +140,47 @@ function* autoLoginToGetNewTokenSaga() {
   }
 }
 
+function* syncCustomer() {
+  const data = yield getAllTbl();
+  for (let i = 0; i < data.length; i += 1) {
+    const result = yield call(signUpCustomerService, data[i]);
+    if (result.ok === true) {
+      yield deleteByKey(data[i].id);
+    }
+  }
+}
+
+function* syncCustomProduct() {
+  yield call(syncCustomProductService);
+}
+
+function* syncOrder() {
+  const data = yield getAllOrders();
+  if (data.length > 0) {
+    const dataResult = yield call(syncOrderService, data);
+    if (dataResult === true) {
+      yield deteleAllOrders();
+    } else {
+      console.log(dataResult);
+    }
+  }
+}
+
+function* syncClientData() {
+  const dbTime = yield getTimeSyncConstant();
+  const nowTime = Date.now();
+  if (nowTime - dbTime > 1200000) {
+    yield resetTimeSyncConstant();
+    yield syncCustomProduct();
+    yield syncCustomer();
+    yield syncOrder();
+  }
+}
+
+function* autoLoginToGetNewTokenSaga() {
+  yield getNewToken();
+}
+
 function* authenSaga() {
   yield takeEvery(types.LOGIN_ACTION, loginAction);
   yield takeEvery(types.LOGOUT_ACTION, logoutAction);
@@ -142,6 +192,7 @@ function* authenSaga() {
     types.AUTO_LOGIN_TO_GET_NEW_TOKEN,
     autoLoginToGetNewTokenSaga
   );
+  yield takeEvery(SYNC_CLIENT_DATA, syncClientData);
 }
 
 export default authenSaga;

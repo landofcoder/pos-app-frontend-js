@@ -81,6 +81,13 @@ export function getDetailProductGrouped(payload) {
   };
 }
 
+export function getDetailProductCustom(payload) {
+  return {
+    type: types.GET_DETAIL_PRODUCT_CUSTOM,
+    payload
+  };
+}
+
 export function updateIsShowingProductOption(payload) {
   return {
     type: types.UPDATE_IS_SHOWING_PRODUCT_OPTION,
@@ -297,6 +304,19 @@ export function autoLoginToGetNewToken() {
   };
 }
 
+export function autoSyncGroupCheckout(payload) {
+  return {
+    type: types.SYNC_CLIENT_DATA,
+    payload
+  };
+}
+
+export function createCustomizeProduct(payload) {
+  return {
+    type: types.CREATE_CUSTOMIZE_PRODUCT,
+    payload
+  };
+}
 export function getShowAllDevices() {
   return {
     type: types.SHOW_ALL_DEVICES

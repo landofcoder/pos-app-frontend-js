@@ -29,13 +29,11 @@ class OrderHistory extends Component<Props> {
   }
 
   getOrderHistoryDetail = saleOrderId => {
-    console.log('hi online');
     const { toggleModalOrderDetail } = this.props;
     toggleModalOrderDetail({ isShow: true, order_id: saleOrderId });
   };
 
   getOrderHistoryDetailOffline = dataOrderCheckoutOfflineItem => {
-    console.log('hi offline');
     const { toggleModalOrderDetailOffline } = this.props;
     toggleModalOrderDetailOffline({
       isShow: true,

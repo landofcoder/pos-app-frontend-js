@@ -13,3 +13,8 @@ export async function createOrders(orders) {
   const data = await tbl.add(orders);
   return data;
 }
+
+export async function deteleAllOrders() {
+  const tbl = db.table(table);
+  await tbl.clear();
+}

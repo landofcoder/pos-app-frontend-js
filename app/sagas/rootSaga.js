@@ -73,6 +73,7 @@ import { signUpCustomer } from '../reducers/db/sync_customers';
 import { getAllOrders } from '../reducers/db/sync_orders';
 import { counterProduct } from '../reducers/db/products';
 import { getOfflineMode } from '../common/settings';
+import { createProduct } from '../reducers/db/sync_custom_product';
 import {
   CHILDREN,
   LOGIN_FORM,
@@ -95,8 +96,12 @@ const posSystemConfig = state => state.mainRd.posSystemConfig;
 const cashierInfo = state => state.authenRd.cashierInfo;
 const itemCartEditing = state => state.mainRd.itemCartEditing;
 const currentPosCommand = state => state.mainRd.currentPosCommand;
-const orderPreparingCheckout = state =>
+const orderPreparingCheckoutState = state =>
   state.mainRd.checkout.orderPreparingCheckout;
+const defaultOutletShippingAddress = state => state.mainRd.detailOutlet;
+const guestInfo = state => state.mainRd.posSystemConfig.default_guest_checkout;
+const shippingMethod = state => state.mainRd.posSystemConfig.shipping_method;
+const methodPayment = state => state.mainRd.posSystemConfig.payment_for_pos;
 const allDevices = state => state.mainRd.hidDevice.allDevices;
 
 /**
@@ -111,6 +116,11 @@ function* cashCheckout() {
 
   const offlineMode = yield getOfflineMode();
   const cartCurrentResultObj = yield select(cartCurrentObj);
+  const defaultOutletShippingAddressResult = yield select(
+    defaultOutletShippingAddress
+  );
+  const shippingMethodResult = yield select(shippingMethod);
+  const methodPaymentResult = yield select(methodPayment);
 
   if (offlineMode === 1) {
     // eslint-disable-next-line prefer-destructuring
@@ -120,19 +130,71 @@ function* cashCheckout() {
       currencyCode,
       false
     );
-
-    const fakeResponse = {
-      payment_methods: [],
-      totals: {
-        base_subtotal: totalPrice,
-        discount_amount: 0,
-        base_shipping_amount: 0,
-        grand_total: totalPrice
-      }
-    };
+    // check guestCheckout or Customer
+    let orderPreparingCheckout = {};
+    if (cartCurrentResultObj.isGuestCustomer === true) {
+      const guestInfoResult = yield select(guestInfo);
+      orderPreparingCheckout = {
+        payment_methods: [],
+        currency_id: currencyCode,
+        email: guestInfoResult.email,
+        shipping_address: {
+          firstname: guestInfoResult.first_name,
+          lastname: guestInfoResult.last_name,
+          street: guestInfoResult.street,
+          city: guestInfoResult.city,
+          country_id: guestInfoResult.country,
+          region_id: guestInfoResult.region_id,
+          postcode: guestInfoResult.zip_code,
+          telephone: guestInfoResult.telephone,
+          shipping_method:
+            shippingMethodResult.specific_shipping_methods === 'flatrate'
+              ? 'flatrate_flatrate'
+              : shippingMethodResult.specific_shipping_methods ===
+                'freeshipping'
+              ? 'freeshipping_freeshipping'
+              : shippingMethodResult.specific_shipping_methods,
+          method: methodPaymentResult.default_payment_method
+        },
+        totals: {
+          base_subtotal: totalPrice,
+          discount_amount: 0,
+          base_shipping_amount: 0,
+          grand_total: totalPrice
+        }
+      };
+    } else {
+      orderPreparingCheckout = {
+        payment_methods: [],
+        currency_id: currencyCode,
+        email: cartCurrentResultObj.customer.email,
+        shipping_address: {
+          shipping_method:
+            shippingMethodResult.specific_shipping_methods === 'flatrate'
+              ? 'flatrate_flatrate'
+              : shippingMethodResult.specific_shipping_methods ===
+                'freeshipping'
+              ? 'freeshipping_freeshipping'
+              : shippingMethodResult.specific_shipping_methods,
+          method: methodPaymentResult.default_payment_method,
+          postcode: defaultOutletShippingAddressResult[0].data.post_code
+        },
+        totals: {
+          base_subtotal: totalPrice,
+          discount_amount: 0,
+          base_shipping_amount: 0,
+          grand_total: totalPrice
+        }
+      };
+      orderPreparingCheckout.shipping_address = Object.assign(
+        {},
+        orderPreparingCheckout.shipping_address,
+        defaultOutletShippingAddressResult[0].data
+      );
+    }
     yield put({
       type: types.RECEIVED_ORDER_PREPARING_CHECKOUT,
-      payload: fakeResponse
+      payload: orderPreparingCheckout
     });
   } else {
     // Handles for online mode
@@ -273,7 +335,9 @@ function* cashCheckoutPlaceOrder() {
 
   if (offlineMode === 1) {
     const cartCurrentResult = yield select(cartCurrent);
-    const orderPreparingCheckoutResult = yield select(orderPreparingCheckout);
+    const orderPreparingCheckoutResult = yield select(
+      orderPreparingCheckoutState
+    );
     yield createOrderLocal({ cartCurrentResult, orderPreparingCheckoutResult });
 
     // Copy cart current to cart in receipt
@@ -293,24 +357,36 @@ function* cashCheckoutPlaceOrder() {
     const cashierInfoResult = yield select(cashierInfo);
 
     // Step 1: Create order
-    const orderId = yield call(placeCashOrderService, cartCurrentTokenResult, {
-      cartIdResult,
-      isGuestCustomer,
-      customerToken: cartCurrentTokenResult,
-      defaultShippingMethod,
-      defaultPaymentMethod,
-      posSystemConfigCustomer,
-      cashierInfo: cashierInfoResult
-    });
+    const placeOrderResult = yield call(
+      placeCashOrderService,
+      cartCurrentTokenResult,
+      {
+        cartIdResult,
+        isGuestCustomer,
+        customerToken: cartCurrentTokenResult,
+        defaultShippingMethod,
+        defaultPaymentMethod,
+        posSystemConfigCustomer,
+        cashierInfo: cashierInfoResult
+      }
+    );
+    if (placeOrderResult.message !== undefined) {
+      // Stop cash loading order loading
+      yield put({
+        type: types.UPDATE_CASH_PLACE_ORDER_LOADING,
+        payload: false
+      });
+      yield put({ type: types.PLACE_ORDER_ERROR, payload: placeOrderResult });
+    } else {
+      // Step 2: Create invoice
+      yield call(createInvoiceService, placeOrderResult);
 
-    // Step 2: Create invoice
-    yield call(createInvoiceService, orderId);
+      // Step 3: Create shipment
+      yield call(createShipmentService, placeOrderResult);
 
-    // Step 3: Create shipment
-    yield call(createShipmentService, orderId);
-
-    // Place order success, let show receipt and copy current cart to cartForReceipt
-    yield put({ type: types.PLACE_ORDER_SUCCESS, orderId });
+      // Place order success, let show receipt and copy current cart to cartForReceipt
+      yield put({ type: types.PLACE_ORDER_SUCCESS, placeOrderResult });
+    }
   }
 
   // Stop cash loading order loading
@@ -783,15 +859,17 @@ function* signUpAction(payload) {
   const offlineMode = yield getOfflineMode();
   if (offlineMode === 1) {
     yield call(signUpCustomer, payload);
+  } else {
+    const res = yield call(signUpCustomerService, payload);
+    yield put({
+      type: types.MESSAGE_SIGN_UP_CUSTOMER,
+      payload: res.data.message
+    });
+    if (res.ok) {
+      yield put({ type: types.TOGGLE_MODAL_SIGN_UP_CUSTOMER, payload: false });
+    }
   }
-  const res = yield call(signUpCustomerService, payload);
-  yield put({
-    type: types.MESSAGE_SIGN_UP_CUSTOMER,
-    payload: res.data.message
-  });
-  if (res.ok) {
-    yield put({ type: types.TOGGLE_MODAL_SIGN_UP_CUSTOMER, payload: false });
-  }
+
   yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: false });
 }
 
@@ -814,9 +892,8 @@ function* getDiscountForOfflineCheckoutSaga() {
     config: posSystemConfigResult
   });
   const typeOfResult = typeof result;
-
   // If json type returned, that mean get discount success
-  if (typeOfResult !== 'string') {
+  if (typeOfResult !== 'string' && result.message === undefined) {
     yield put({
       type: types.RECEIVED_CHECKOUT_OFFLINE_CART_INFO,
       payload: result
@@ -1054,6 +1131,17 @@ function* bootstrapApplicationSaga() {
   document.title = posTitle;
 }
 
+function* createCustomizeProduct(payload) {
+  const offlineMode = yield getOfflineMode();
+  if (offlineMode === 1) {
+    const status = yield call(createProduct, payload.payload);
+    if (status)
+      yield put({ type: types.ADD_TO_CART, payload: payload.payload });
+  } else {
+    // create custom product to magento with graphql
+    yield put({ type: types.ADD_TO_CART, payload: payload.payload });
+  }
+}
 function* showAllDevicesSaga() {
   const allDevices = yield getDevices();
 
@@ -1177,6 +1265,7 @@ function* rootSaga() {
   );
   yield takeEvery(types.RE_CHECK_REQUIRE_STEP, reCheckRequireStepSaga);
   yield takeEvery(types.LOAD_PRODUCT_PAGING, loadProductPagingSaga);
+  yield takeEvery(types.CREATE_CUSTOMIZE_PRODUCT, createCustomizeProduct);
   yield takeEvery(types.SHOW_ALL_DEVICES, showAllDevicesSaga);
   yield takeEvery(types.CONNECT_TO_SCANNER_DEVICE, connectToScannerDeviceSaga);
   yield takeEvery(types.CHANGE_SCANNER_DEVICE, changeScannerDeviceSaga);

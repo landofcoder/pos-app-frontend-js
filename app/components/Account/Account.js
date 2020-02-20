@@ -9,17 +9,36 @@ import Styles from './Account.scss';
 export default class Account extends Component {
   constructor(props) {
     super(props);
-    this.state = { viewSelected: 'orderHistory' };
+    this.state = {
+      viewSelected: 'ordersHistory'
+    };
   }
 
-  cashierAction = e => {
-    e.preventDefault();
-    this.setState({ viewSelected: 'cashierInfo' });
+  viewSelectedAction = payload => {
+    switch (payload) {
+      case 'ordersHistory':
+        this.setState({ viewSelected: 'ordersHistory' });
+        break;
+      case 'CashierInfo':
+        this.setState({ viewSelected: 'CashierInfo' });
+        break;
+      default:
+        break;
+    }
   };
 
-  orderHistoryAction = e => {
-    e.preventDefault();
-    this.setState({ viewSelected: 'orderHistory' });
+  renderShowUp = () => {
+    const { viewSelected } = this.state;
+    switch (viewSelected) {
+      case 'ordersHistory':
+        return <OrderHistory />;
+      case 'CashierInfo':
+        return <CashierInfo />;
+      case 'connectDevices':
+        return <ConnectDevices />;
+      default:
+        return null;
+    }
   };
 
   connectDevicesAction = e => {
@@ -28,7 +47,7 @@ export default class Account extends Component {
   };
 
   render() {
-    const { cashierSelect, orderHistorySelect, viewSelected } = this.state;
+    const { viewSelected } = this.state;
     return (
       <>
         <div data-tid="container" className="pr-0 pl-0 pt-2">
@@ -51,29 +70,41 @@ export default class Account extends Component {
                   aria-orientation="vertical"
                 >
                   <a
-                    className={`nav-link ${orderHistorySelect} ${Styles.radiusButton}`}
+                    className={`nav-link ${
+                      viewSelected === 'ordersHistory' ? 'active' : ''
+                    } ${Styles.radiusButton}`}
                     id="v-pills-profile-tab"
                     data-toggle="pill"
                     href="#"
                     role="tab"
                     aria-controls="v-pills-profile"
-                    onClick={this.orderHistoryAction}
+                    onClick={e => {
+                      e.preventDefault();
+                      this.viewSelectedAction('ordersHistory');
+                    }}
                   >
                     Order History
                   </a>
                   <a
-                    className={`nav-link ${cashierSelect} ${Styles.radiusButton}`}
+                    className={`nav-link ${
+                      viewSelected === 'CashierInfo' ? 'active' : ''
+                    } ${Styles.radiusButton}`}
                     id="v-pills-home-tab"
                     data-toggle="pill"
                     role="tab"
                     href="#"
                     aria-controls="v-pills-home"
-                    onClick={this.cashierAction}
+                    onClick={e => {
+                      e.preventDefault();
+                      this.viewSelectedAction('CashierInfo');
+                    }}
                   >
                     Account Setting
                   </a>
                   <a
-                    className="nav-link"
+                    className={`nav-link ${
+                      viewSelected === 'connectDevices' ? 'active' : ''
+                    } ${Styles.radiusButton}`}
                     role="tab"
                     href="#"
                     onClick={this.connectDevicesAction}
@@ -83,18 +114,7 @@ export default class Account extends Component {
                 </div>
               </div>
               <div className={`col-9 ${Styles.wrapFullHeightList}`}>
-                {(() => {
-                  switch (viewSelected) {
-                    case 'orderHistory':
-                      return <OrderHistory />;
-                    case 'cashierInfo':
-                      return <CashierInfo />;
-                    case 'connectDevices':
-                      return <ConnectDevices />;
-                    default:
-                      return null;
-                  }
-                })()}
+                {this.renderShowUp()}
               </div>
             </div>
           </div>
