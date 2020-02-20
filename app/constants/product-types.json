@@ -3,5 +3,6 @@
   "CONFIGURABLE": "configurable",
   "BUNDLE": "bundle",
   "GROUPED": "grouped",
-  "DOWNLOADABLE": "downloadable"
+  "DOWNLOADABLE": "downloadable",
+  "CUSTOM": "CUSTOM"
 }

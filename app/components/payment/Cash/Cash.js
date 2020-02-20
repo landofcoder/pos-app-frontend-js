@@ -41,7 +41,6 @@ class CashPayment extends Component<Props> {
   }
 
   changeInputCustomerCash = event => {
-    console.log(event);
     this.setState({ inputCustomerCash: event.target.value });
   };
 

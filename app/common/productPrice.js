@@ -1,5 +1,10 @@
 import { addSeconds, compareAsc } from 'date-fns';
-import { BUNDLE, SIMPLE, DOWNLOADABLE } from '../constants/product-types';
+import {
+  BUNDLE,
+  SIMPLE,
+  DOWNLOADABLE,
+  CUSTOM
+} from '../constants/product-types';
 import { formatCurrencyCode } from './settings';
 
 /**
@@ -27,6 +32,10 @@ export async function calcPrice(product, cartCustomer = null) {
     case BUNDLE: {
       // Calculator price for bundle product
       productAssign = sumBundlePrice(productAssign, currencyCode);
+      break;
+    }
+    case CUSTOM: {
+      productAssign = sumCustomPrice(productAssign, currencyCode);
       break;
     }
     default:
@@ -165,6 +174,15 @@ export function sumBundlePrice(product, currencyCode) {
   return productAssign;
 }
 
+export function sumCustomPrice(product, currencyCode) {
+  const productAssign = Object.assign({}, product);
+  // Calculator price for bundle product
+  const price =
+    +productAssign.price.regularPrice.amount.value * +productAssign.pos_qty;
+  productAssign.pos_totalPrice = price;
+  productAssign.pos_totalPriceFormat = formatCurrencyCode(price, currencyCode);
+  return productAssign;
+}
 /**
  * Find option selected
  * @param optionSelected

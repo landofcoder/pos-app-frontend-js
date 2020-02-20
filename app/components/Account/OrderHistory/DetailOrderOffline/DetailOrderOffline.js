@@ -38,7 +38,6 @@ class DetailOrderOffline extends Component {
       orderHistoryDetail,
       toggleModalOrderDetail
     } = this.props;
-    console.log(orderHistoryDetail);
     return (
       <>
         <div className={Styles.wrapDetailOrder}>
@@ -112,7 +111,9 @@ class DetailOrderOffline extends Component {
                                       </div>
                                     </div>
                                     <span>
-                                      {this.formatSymbolMoney(item.pos_totalPrice)}
+                                      {this.formatSymbolMoney(
+                                        item.pos_totalPrice
+                                      )}
                                     </span>
                                   </div>
                                 </div>
@@ -214,8 +215,107 @@ class DetailOrderOffline extends Component {
                       </div>
 
                       {/* Shipping method */}
-
+                      <div className="form-group">
+                        <div>
+                          <div
+                            className={`border-bottom col ${Styles.wrapContent}`}
+                          >
+                            <div className="d-flex justify-content-between pr-1"></div>
+                            <span className="font-weight-bold">
+                              Shipping Method
+                            </span>
+                          </div>
+                        </div>
+                        <div className={`col ${Styles.wrapContent}`}>
+                          <div className="d-flex justify-content-between pr-1">
+                            <span>
+                              {
+                                orderHistoryDetail.items
+                                  .orderPreparingCheckoutResult.shipping_address
+                                  .shipping_method
+                              }
+                            </span>
+                          </div>
+                        </div>
+                      </div>
                       {/* Billing Address */}
+                      <div className="form-group">
+                        <div>
+                          <div
+                            className={`border-bottom col ${Styles.wrapContent}`}
+                          >
+                            <span className="font-weight-bold">
+                              Billing Address
+                            </span>
+                          </div>
+                        </div>
+                        <div className={`col ${Styles.wrapContent}`}>
+                          <div className="d-flex justify-content-between pr-1">
+                            <span>Full name</span>
+                            <span>
+                              {
+                                orderHistoryDetail.items
+                                  .orderPreparingCheckoutResult.shipping_address
+                                  .firstname
+                              }{' '}
+                              {
+                                orderHistoryDetail.items
+                                  .orderPreparingCheckoutResult.shipping_address
+                                  .lastname
+                              }
+                            </span>
+                          </div>
+                          <div className="d-flex justify-content-between pr-1">
+                            <span>Email</span>
+                            <span>
+                              {
+                                orderHistoryDetail.items
+                                  .orderPreparingCheckoutResult.email
+                              }
+                            </span>
+                          </div>
+                          <div className="d-flex justify-content-between pr-1">
+                            <span>Telephone</span>
+                            <span>
+                              {
+                                orderHistoryDetail.items
+                                  .orderPreparingCheckoutResult.shipping_address
+                                  .telephone
+                              }
+                            </span>
+                          </div>
+                          <div className="d-flex justify-content-between pr-1">
+                            <span>Address</span>
+                            <span>
+                              {
+                                orderHistoryDetail.items
+                                  .orderPreparingCheckoutResult.shipping_address
+                                  .street
+                              }
+                            </span>
+                          </div>
+                          <div className="d-flex justify-content-between pr-1">
+                            <span>City</span>
+                            <span>
+                              {
+                                orderHistoryDetail.items
+                                  .orderPreparingCheckoutResult.shipping_address
+                                  .city
+                              }
+                            </span>
+                          </div>
+                          <div className="d-flex justify-content-between pr-1">
+                            <span>Country</span>
+                            <span>
+                              {
+                                orderHistoryDetail.items
+                                  .orderPreparingCheckoutResult.shipping_address
+                                  .country_id
+                              }
+                            </span>
+                          </div>
+                        </div>
+                      </div>
 
                       <div className="modal-footer">
                         <div className="col-md-2 p-0">

@@ -54,6 +54,9 @@ const initialState = {
       }
     },
     orderPreparingCheckout: {
+      currency_id: '',
+      email: '',
+      shipping_address: {},
       totals: {
         discount_amount: 0,
         base_subtotal: 0,
@@ -61,7 +64,8 @@ const initialState = {
         tax_amount: 0,
         base_shipping_amount: 0
       }
-    } // Detail order for preparing to checkout
+      // Detail order for preparing to checkout
+    }
   },
   cartHoldList: [],
   itemCartEditing: {
@@ -126,6 +130,7 @@ const initialState = {
     // State product option for all product type configurable, bundle, grouped product
     isLoadingProductOption: false, // Show a loading in screen for product option loading
     isShowingProductOption: false, // Show model for choose product type option
+    isShowingProductCustom: false,
     optionValue: null // Keep detail product clicked
   },
   // For scanner device
@@ -262,9 +267,11 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.SELECT_CUSTOMER_FOR_CURRENT_CART:
         draft.cartCurrent.customer = action.payload;
+        draft.cartCurrent.isGuestCustomer = false;
         break;
       case types.UN_SELECT_CUSTOMER_FOR_CURRENT_CART:
         draft.cartCurrent.customer = null;
+        draft.cartCurrent.isGuestCustomer = true;
         break;
       case types.UPDATE_IS_GUEST_CUSTOMER_CURRENT_CART:
         draft.cartCurrent.isGuestCustomer = action.payload;
