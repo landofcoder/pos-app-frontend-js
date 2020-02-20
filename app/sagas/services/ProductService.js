@@ -80,7 +80,9 @@ async function querySearchProduct(searchValue, currentPage) {
       },
       body: JSON.stringify({
         query: `{
-          products(search: "%${searchValue}%", pageSize: ${defaultPageSize}, currentPage: ${currentPage}) {
+          products(${
+            searchValue.length > 0 ? `search: "${searchValue}",` : ''
+          } pageSize: ${defaultPageSize}, currentPage: ${currentPage}) {
             items {
               id
               attribute_set_id
@@ -169,8 +171,8 @@ async function querySearchProduct(searchValue, currentPage) {
       })
     });
     const data = await response.json();
-    itemResult = data.data.products.items;
-
+    if (data.errors !== undefined) itemResult = [];
+    else itemResult = data.data.products.items;
     if (!itemResult || itemResult.length === 0) {
       const response = await fetch(getGraphqlPath(), {
         method: 'POST',
@@ -180,7 +182,7 @@ async function querySearchProduct(searchValue, currentPage) {
         },
         body: JSON.stringify({
           query: `{
-          products(filter: { sku: { like: "%${searchValue}%" }}, pageSize: ${defaultPageSize}, currentPage: ${currentPage}) {
+          products(filter: { sku: { eq: "${searchValue}" }}, pageSize: ${defaultPageSize}, currentPage: ${currentPage}) {
             items {
               id
               attribute_set_id
