@@ -357,24 +357,36 @@ function* cashCheckoutPlaceOrder() {
     const cashierInfoResult = yield select(cashierInfo);
 
     // Step 1: Create order
-    const orderId = yield call(placeCashOrderService, cartCurrentTokenResult, {
-      cartIdResult,
-      isGuestCustomer,
-      customerToken: cartCurrentTokenResult,
-      defaultShippingMethod,
-      defaultPaymentMethod,
-      posSystemConfigCustomer,
-      cashierInfo: cashierInfoResult
-    });
+    const placeOrderResult = yield call(
+      placeCashOrderService,
+      cartCurrentTokenResult,
+      {
+        cartIdResult,
+        isGuestCustomer,
+        customerToken: cartCurrentTokenResult,
+        defaultShippingMethod,
+        defaultPaymentMethod,
+        posSystemConfigCustomer,
+        cashierInfo: cashierInfoResult
+      }
+    );
+    if (placeOrderResult.message !== undefined) {
+      // Stop cash loading order loading
+      yield put({
+        type: types.UPDATE_CASH_PLACE_ORDER_LOADING,
+        payload: false
+      });
+      yield put({ type: types.PLACE_ORDER_ERROR, payload: placeOrderResult });
+    } else {
+      // Step 2: Create invoice
+      yield call(createInvoiceService, placeOrderResult);
 
-    // Step 2: Create invoice
-    yield call(createInvoiceService, orderId);
+      // Step 3: Create shipment
+      yield call(createShipmentService, placeOrderResult);
 
-    // Step 3: Create shipment
-    yield call(createShipmentService, orderId);
-
-    // Place order success, let show receipt and copy current cart to cartForReceipt
-    yield put({ type: types.PLACE_ORDER_SUCCESS, orderId });
+      // Place order success, let show receipt and copy current cart to cartForReceipt
+      yield put({ type: types.PLACE_ORDER_SUCCESS, placeOrderResult });
+    }
   }
 
   // Stop cash loading order loading
