@@ -132,10 +132,10 @@ export default class Pos extends Component<Props, State> {
 
     if (status === false) {
       // Update trigger product status to false
-      const { updateTriggerScannerBarcodeTrigger } = this.props;
-      updateTriggerScannerBarcodeTrigger(false);
+      // const { updateTriggerScannerBarcodeTrigger } = this.props;
+      // updateTriggerScannerBarcodeTrigger(false);
       // Trigger add to cart now
-      this.preAddToCart(product);
+      // this.preAddToCart(product);
     }
   }
 
@@ -441,15 +441,15 @@ export default class Pos extends Component<Props, State> {
                 <div className="col-md-2">
                   <Categories />
                 </div>
-                <div className="col-sm-1 pt-2 pl-5 pr-0 mx-auto">
-                  <a
-                    onClick={() => {
-                      this.addCustomProduct();
-                    }}
-                  >
-                    <i className="fas fa-plus-circle fa-lg"></i>
-                  </a>
-                </div>
+                {/*<div className="col-sm-1 pt-2 pl-5 pr-0 mx-auto">*/}
+                {/*  <a*/}
+                {/*    onClick={() => {*/}
+                {/*      this.addCustomProduct();*/}
+                {/*    }}*/}
+                {/*  >*/}
+                {/*    <i style={{color: '#888'}} className="fas fa-plus-circle fa-lg"></i>*/}
+                {/*  </a>*/}
+                {/*</div>*/}
                 <div className="col-md-9 mb-0 pr-0">
                   <div className="input-group flex-nowrap">
                     <div className="input-group mb-3">
@@ -573,9 +573,9 @@ export default class Pos extends Component<Props, State> {
               );
             })}
             <div className="col-md-2 pr-1 pl-0">
-              <button type="button" onClick={this.testAction}>
-                TEST
-              </button>
+              {/*<button type="button" onClick={this.testAction}>*/}
+              {/*  TEST*/}
+              {/*</button>*/}
               <button
                 type="button"
                 onClick={holdAction}
