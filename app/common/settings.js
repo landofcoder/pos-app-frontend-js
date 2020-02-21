@@ -445,3 +445,14 @@ export const onScan = {
  * @type {number}
  */
 export const defaultPageSize = 20;
+
+export function shippingMethod(methodShipping) {
+  switch (methodShipping) {
+    case 'flatrate':
+      return 'flatrate_flatrate';
+    case 'freeshipping':
+      return 'freeshipping_freeshipping';
+    default:
+      return shippingMethod;
+  }
+}
