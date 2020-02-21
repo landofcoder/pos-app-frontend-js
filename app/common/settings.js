@@ -446,13 +446,14 @@ export const onScan = {
  */
 export const defaultPageSize = 20;
 
-export function shippingMethod(methodShipping) {
+export function shippingMethodDefault(methodShipping) {
+  console.log(methodShipping);
   switch (methodShipping) {
     case 'flatrate':
       return 'flatrate_flatrate';
     case 'freeshipping':
       return 'freeshipping_freeshipping';
     default:
-      return shippingMethod;
+      return methodShipping;
   }
 }

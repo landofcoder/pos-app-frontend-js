@@ -72,7 +72,7 @@ import { syncCustomers } from '../reducers/db/customers';
 import { signUpCustomer } from '../reducers/db/sync_customers';
 import { getAllOrders } from '../reducers/db/sync_orders';
 import { counterProduct } from '../reducers/db/products';
-import { getOfflineMode } from '../common/settings';
+import { getOfflineMode, shippingMethodDefault } from '../common/settings';
 import { createProduct } from '../reducers/db/sync_custom_product';
 import {
   CHILDREN,
@@ -84,7 +84,7 @@ import {
   QUERY_GET_PRODUCT_BY_CATEGORY,
   QUERY_SEARCH_PRODUCT
 } from '../constants/product-query';
-import { shippingMethod } from '../common/settings'
+
 const cartCurrent = state => state.mainRd.cartCurrent.data;
 const cartCurrentObj = state => state.mainRd.cartCurrent;
 const cartCurrentToken = state => state.mainRd.cartCurrent.customerToken;
@@ -121,7 +121,7 @@ function* cashCheckout() {
   );
   const shippingMethodResult = yield select(shippingMethod);
   const methodPaymentResult = yield select(methodPayment);
-
+  console.log(shippingMethodResult);
   if (offlineMode === 1) {
     // eslint-disable-next-line prefer-destructuring
     const currencyCode = window.currency;
@@ -147,7 +147,9 @@ function* cashCheckout() {
           region_id: guestInfoResult.region_id,
           postcode: guestInfoResult.zip_code,
           telephone: guestInfoResult.telephone,
-          shipping_method: shippingMethod(shippingMethodResult.specific_shipping_methods),
+          shipping_method: shippingMethodDefault(
+            shippingMethodResult.default_shipping_method
+          ),
           method: methodPaymentResult.default_payment_method
         },
         totals: {
@@ -163,7 +165,9 @@ function* cashCheckout() {
         currency_id: currencyCode,
         email: cartCurrentResultObj.customer.email,
         shipping_address: {
-          shipping_method: shippingMethod(shippingMethodResult.specific_shipping_methods),
+          shipping_method: shippingMethodDefault(
+            shippingMethodResult.default_shipping_method
+          ),
           method: methodPaymentResult.default_payment_method,
           postcode: defaultOutletShippingAddressResult[0].data.post_code
         },
