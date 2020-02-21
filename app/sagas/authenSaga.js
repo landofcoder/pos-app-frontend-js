@@ -113,7 +113,7 @@ function* getModuleInstalled() {
  * Auto login to get new token
  * @returns void
  */
-function* getNewToken() {
+export function* getNewToken() {
   const logged = yield getLoggedDb();
   if (logged) {
     const lastTimeLogin = logged.update_at

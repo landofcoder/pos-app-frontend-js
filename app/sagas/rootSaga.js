@@ -84,6 +84,7 @@ import {
   QUERY_GET_PRODUCT_BY_CATEGORY,
   QUERY_SEARCH_PRODUCT
 } from '../constants/product-query';
+import { getNewToken } from './authenSaga';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
 const cartCurrentObj = state => state.mainRd.cartCurrent;
@@ -668,7 +669,6 @@ function* addToCart(payload) {
   if (found === 1) {
     foundItem = yield updateQtyProduct(foundItem);
     const productAssign = yield calcPrice(foundItem, cartCustomerResult);
-    console.log('after cal price:', productAssign);
     yield put({
       type: types.UPDATE_ITEM_CART,
       payload: { index: foundIndex, item: productAssign }
@@ -1118,6 +1118,10 @@ function* updateQtyCartItemSaga(payload) {
  * @returns void
  */
 function* bootstrapApplicationSaga() {
+
+  // Reload new token first
+  yield getNewToken();
+
   // Get all config
   yield getPostConfigGeneralConfig();
 

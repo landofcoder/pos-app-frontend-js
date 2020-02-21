@@ -298,7 +298,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.ADD_ITEM_TO_CART: {
         const product = Object.assign({}, action.payload);
-        draft.cartCurrent.data.push(product);
+        draft.cartCurrent.data.unshift(product);
         break;
       }
       case types.UPDATE_MAIN_PRODUCT_LOADING:
