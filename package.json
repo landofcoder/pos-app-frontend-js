@@ -272,6 +272,7 @@
     "locale-currency": "^0.0.2",
     "lodash": "^4.17.15",
     "usb-barcode-scanner-brainos": "^1.0.6",
+    "node-hid": "^1.2.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",

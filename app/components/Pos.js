@@ -50,7 +50,7 @@ type Props = {
   isShowModalItemEditCart: boolean,
   cartHoldList: Array<Object>,
   switchToHoldItemCart: (payload: number) => void,
-  updateTriggerScannerBarcodeTrigger: (payload: boolean) => void,
+  updateTriggerScannerBarcodeTriggerToFalse: (payload: boolean) => void,
   emptyCart: () => void,
   currencyCode: string,
   isLoadingSearchHandle: boolean,
@@ -104,9 +104,9 @@ export default class Pos extends Component<Props, State> {
 
     // Uncomment below code for testing scanner device working
     // const { getProductBySkuFromScanner } = this.props;
-    // getProductBySkuFromScanner('24-MG04');
+    // getProductBySkuFromScanner('MH11');
 
-    const { isWaitingForListingDataEvent } = hidDevice;
+    const { isWaitingForListingDataEvent } = hidDevice.waitForConnect;
 
     if (isWaitingForListingDataEvent) {
       window.scanner.on('data', data => {
@@ -117,27 +117,21 @@ export default class Pos extends Component<Props, State> {
     }
   }
 
+  componentDidUpdate() {
+    // eslint-disable-next-line react/destructuring-assignment
+    const { product, status } = this.props.hidDevice.triggerProduct;
+    if (status) {
+      // Update trigger product status to false
+      const { updateTriggerScannerBarcodeTriggerToFalse } = this.props;
+      updateTriggerScannerBarcodeTriggerToFalse(false);
+      this.preAddToCart(product);
+    }
+  }
+
   addCustomProduct = () => {
     const item = { type_id: 'CUSTOM' };
     this.preAddToCart(item);
   };
-
-  componentDidUpdate(prevProps) {
-    console.log('run here right');
-    const { status } = prevProps.hidDevice.triggerProduct;
-    // eslint-disable-next-line react/destructuring-assignment
-    const { product } = this.props.hidDevice.triggerProduct;
-    console.log('dd1:', status);
-    console.log('dd2:', product);
-
-    if (status === false) {
-      // Update trigger product status to false
-      // const { updateTriggerScannerBarcodeTrigger } = this.props;
-      // updateTriggerScannerBarcodeTrigger(false);
-      // Trigger add to cart now
-      // this.preAddToCart(product);
-    }
-  }
 
   testAction = () => {
     const { getProductBySkuFromScanner } = this.props;
@@ -441,15 +435,15 @@ export default class Pos extends Component<Props, State> {
                 <div className="col-md-2">
                   <Categories />
                 </div>
-                {/*<div className="col-sm-1 pt-2 pl-5 pr-0 mx-auto">*/}
-                {/*  <a*/}
-                {/*    onClick={() => {*/}
-                {/*      this.addCustomProduct();*/}
-                {/*    }}*/}
-                {/*  >*/}
-                {/*    <i style={{color: '#888'}} className="fas fa-plus-circle fa-lg"></i>*/}
-                {/*  </a>*/}
-                {/*</div>*/}
+                {/* <div className="col-sm-1 pt-2 pl-5 pr-0 mx-auto"> */}
+                {/*  <a */}
+                {/*    onClick={() => { */}
+                {/*      this.addCustomProduct(); */}
+                {/*    }} */}
+                {/*  > */}
+                {/*    <i style={{color: '#888'}} className="fas fa-plus-circle fa-lg"></i> */}
+                {/*  </a> */}
+                {/* </div> */}
                 <div className="col-md-9 mb-0 pr-0">
                   <div className="input-group flex-nowrap">
                     <div className="input-group mb-3">
@@ -573,9 +567,9 @@ export default class Pos extends Component<Props, State> {
               );
             })}
             <div className="col-md-2 pr-1 pl-0">
-              {/*<button type="button" onClick={this.testAction}>*/}
-              {/*  TEST*/}
-              {/*</button>*/}
+              {/* <button type="button" onClick={this.testAction}> */}
+              {/*  TEST */}
+              {/* </button> */}
               <button
                 type="button"
                 onClick={holdAction}

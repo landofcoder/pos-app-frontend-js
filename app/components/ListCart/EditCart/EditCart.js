@@ -27,6 +27,13 @@ class EditCart extends Component<Props, State> {
     const qty = itemCartEditing.pos_qty;
     this.setState({ posQty: qty });
     document.addEventListener('keydown', this.escFunction, false);
+
+    // Auto focus & auto select qty for update new value
+    this.qtyInput.focus();
+    // Needed run in setTimeout because posQty will change when value map to state in first times
+    setTimeout(() => {
+      this.qtyInput.select();
+    }, 100);
   }
 
   componentWillUnmount() {
@@ -70,63 +77,68 @@ class EditCart extends Component<Props, State> {
     return (
       <div>
         <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title">{itemCartEditing.name}</h5>
-          </div>
-          <div className="modal-body">
-            <div className="row">
-              <div className="col-md-4 text-right pull-right">
+          <form onSubmit={() => updateQtyEditCart(posQty)}>
+            <div className="modal-header">
+              <h5 className="modal-title">{itemCartEditing.name}</h5>
+            </div>
+            <div className="modal-body">
+              <div className="row">
+                <div className="col-md-4 text-right pull-right">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={this.counterDownQty}
+                  >
+                    -
+                  </button>
+                </div>
+                <div className="col-md-4">
+                  <input
+                    ref={input => {
+                      this.qtyInput = input;
+                    }}
+                    type="text"
+                    className="form-control"
+                    placeholder="0"
+                    onChange={this.onQtyOnChange}
+                    value={posQty}
+                    aria-describedby="basic-addon2"
+                  />
+                </div>
+                <div className="col-md-4 text-left pull-left">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={this.counterUpQty}
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <div className="col-md-6 p-0">
                 <button
                   type="button"
-                  className="btn btn-secondary"
-                  onClick={this.counterDownQty}
+                  className="btn btn-outline-secondary btn-lg btn-block"
+                  onClick={() =>
+                    updateIsShowModelEditingCartItem({ open: false })
+                  }
                 >
-                  -
+                  CANCEL
                 </button>
               </div>
-              <div className="col-md-4">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="0"
-                  onChange={this.onQtyOnChange}
-                  value={posQty}
-                  aria-describedby="basic-addon2"
-                />
-              </div>
-              <div className="col-md-4 text-left pull-left">
+              <div className="col-md-6 p-0">
                 <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={this.counterUpQty}
+                  type="submit"
+                  className="btn btn-primary btn-lg btn-block"
+                  onClick={() => updateQtyEditCart(posQty)}
                 >
-                  +
+                  UPDATE
                 </button>
               </div>
             </div>
-          </div>
-          <div className="modal-footer">
-            <div className="col-md-6 p-0">
-              <button
-                type="button"
-                className="btn btn-outline-secondary btn-lg btn-block"
-                onClick={() =>
-                  updateIsShowModelEditingCartItem({ open: false })
-                }
-              >
-                CANCEL
-              </button>
-            </div>
-            <div className="col-md-6 p-0">
-              <button
-                type="button"
-                className="btn btn-primary btn-lg btn-block"
-                onClick={() => updateQtyEditCart(posQty)}
-              >
-                UPDATE
-              </button>
-            </div>
-          </div>
+          </form>
         </div>
       </div>
     );
