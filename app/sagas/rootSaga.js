@@ -1118,7 +1118,6 @@ function* updateQtyCartItemSaga(payload) {
  * @returns void
  */
 function* bootstrapApplicationSaga() {
-
   // Reload new token first
   yield getNewToken();
 
