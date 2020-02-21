@@ -251,7 +251,7 @@ export default class Pos extends Component<Props, State> {
 
     if (mainPanelType === HOME_DEFAULT_PRODUCT_LIST) {
       return productList.map(item => {
-        if (item === undefined || item === null) return null;
+        if (!item) return null;
         return (
           <div
             className={`col-md-3 mb-3 pr-0 ${Styles.wrapProductItem} ${Styles.itemSameHeight}`}
