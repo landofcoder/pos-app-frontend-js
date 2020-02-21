@@ -250,32 +250,35 @@ export default class Pos extends Component<Props, State> {
     const { mainPanelType } = this.props;
 
     if (mainPanelType === HOME_DEFAULT_PRODUCT_LIST) {
-      return productList.map(item => (
-        <div
-          className={`col-md-3 mb-3 pr-0 ${Styles.wrapProductItem} ${Styles.itemSameHeight}`}
-          key={item.id}
-        >
-          <div className={`card ${Styles.itemCart}`}>
-            <div className="card-body">
-              <a
-                role="presentation"
-                className={CommonStyle.pointer}
-                onClick={() => this.preAddToCart(item)}
-              >
-                <div className={Styles.wrapProductImage}>
-                  <div className={Styles.inside}>
-                    <img alt="name" src={this.getFirstMedia(item)} />
+      return productList.map(item => {
+        if (item === undefined || item === null) return null;
+        return (
+          <div
+            className={`col-md-3 mb-3 pr-0 ${Styles.wrapProductItem} ${Styles.itemSameHeight}`}
+            key={item.id}
+          >
+            <div className={`card ${Styles.itemCart}`}>
+              <div className="card-body">
+                <a
+                  role="presentation"
+                  className={CommonStyle.pointer}
+                  onClick={() => this.preAddToCart(item)}
+                >
+                  <div className={Styles.wrapProductImage}>
+                    <div className={Styles.inside}>
+                      <img alt="name" src={this.getFirstMedia(item)} />
+                    </div>
                   </div>
-                </div>
-                <div className={Styles.wrapProductInfo}>
-                  <span className={Styles.wrapProductName}>{item.name}</span>
-                  <span className={Styles.wrapSku}>{item.sku}</span>
-                </div>
-              </a>
+                  <div className={Styles.wrapProductInfo}>
+                    <span className={Styles.wrapProductName}>{item.name}</span>
+                    <span className={Styles.wrapSku}>{item.sku}</span>
+                  </div>
+                </a>
+              </div>
             </div>
           </div>
-        </div>
-      ));
+        );
+      });
     }
 
     return <></>;
