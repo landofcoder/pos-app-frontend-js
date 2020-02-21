@@ -171,7 +171,7 @@ async function querySearchProduct(searchValue, currentPage) {
       })
     });
     const data = await response.json();
-    if (data.errors !== undefined) itemResult = [];
+    if (!data.data.products.items) itemResult = [];
     else itemResult = data.data.products.items;
     if (!itemResult || itemResult.length === 0) {
       const response = await fetch(getGraphqlPath(), {
