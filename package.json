@@ -271,8 +271,8 @@
     "immer": "^5.1.0",
     "locale-currency": "^0.0.2",
     "lodash": "^4.17.15",
-    "usb-barcode-scanner-brainos": "^1.0.6",
     "node-hid": "^1.2.0",
+    "printer": "^0.4.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
@@ -284,7 +284,8 @@
     "redux-saga": "^1.1.1",
     "redux-thunk": "^2.3.0",
     "relay-runtime": "^7.1.0",
-    "source-map-support": "^0.5.11"
+    "source-map-support": "^0.5.11",
+    "usb-barcode-scanner-brainos": "^1.0.6"
   },
   "devEngines": {
     "node": ">=7.x",

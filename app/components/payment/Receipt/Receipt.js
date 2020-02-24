@@ -68,13 +68,14 @@ class Receipt extends Component<Props> {
     return `${day} ${monthNames[monthIndex]} ${year}`;
   };
 
+  closeReceiptModal = () => {
+    console.log('run to close here');
+    const { closeReceiptModal } = this.props;
+    closeReceiptModal();
+  };
+
   render() {
-    const {
-      receipt,
-      closeReceiptModal,
-      customReceipt,
-      detailOutlet
-    } = this.props;
+    const { receipt, customReceipt, detailOutlet } = this.props;
     const { dateTime } = this.state;
     const { orderId, cartForReceipt } = receipt;
     const customerReceipt = cartForReceipt.customer;
@@ -155,7 +156,7 @@ class Receipt extends Component<Props> {
             <div className="col-md-6 p-0">
               <button
                 type="button"
-                onClick={closeReceiptModal}
+                onClick={this.closeReceiptModal}
                 className="btn btn-outline-secondary btn-lg btn-block"
               >
                 CLOSE
