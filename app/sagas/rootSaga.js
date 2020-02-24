@@ -1,5 +1,5 @@
 import { all, call, put, select, takeEvery } from 'redux-saga/effects';
-import { differenceInMinutes } from 'date-fns';
+import { differenceInMinutes, compareAsc, formatDistanceToNow } from 'date-fns';
 import { getDevices, UsbScanner } from 'usb-barcode-scanner-brainos';
 import * as types from '../constants/root';
 import {
@@ -42,7 +42,8 @@ import {
   createSyncAllDataFlag,
   haveToSyncAllData,
   getConnectedDeviceSettings,
-  removeScannerDeviceConnected
+  removeScannerDeviceConnected,
+  getTrialTimeEnding
 } from './services/SettingsService';
 import {
   getInfoCashierService,
@@ -65,7 +66,8 @@ import {
   CHECK_LOGIN_BACKGROUND,
   RECEIVED_TOKEN,
   RECEIVED_MAIN_URL,
-  STOP_LOADING
+  STOP_LOADING,
+  UPDATE_TRIAL_INFO
 } from '../constants/authen';
 import { syncCategories } from '../reducers/db/categories';
 import { syncCustomers } from '../reducers/db/customers';
@@ -1157,7 +1159,6 @@ function* autoConnectScannerDevice() {
   const scannerConnectedSettings = yield getConnectedDeviceSettings();
   if (scannerConnectedSettings) {
     const { vendorId, productId } = scannerConnectedSettings;
-    console.log('obj result:', scannerConnectedSettings);
     yield connectHIDScanner(vendorId, productId, scannerConnectedSettings);
   }
 }
@@ -1230,6 +1231,30 @@ function* getProductBySkuFromScannerSaga(payload) {
 }
 
 /**
+ * Checking trial
+ * @returns void
+ */
+function* trialCheckingSaga() {
+  const trialTimeEnding = yield getTrialTimeEnding();
+  const { time } = trialTimeEnding.value;
+  const result = compareAsc(new Date(time), new Date());
+  if (result === -1) {
+    // Is expired
+    yield put({
+      type: UPDATE_TRIAL_INFO,
+      payload: { isExpired: true, daysRemaining: '' }
+    });
+  } else {
+    // Cal times left
+    const timeDistanceForNow = formatDistanceToNow(new Date(time));
+    yield put({
+      type: UPDATE_TRIAL_INFO,
+      payload: { isExpired: false, daysRemaining: timeDistanceForNow }
+    });
+  }
+}
+
+/**
  * Default root saga
  * @returns void
  */
@@ -1276,6 +1301,7 @@ function* rootSaga() {
     types.GET_PRODUCT_BY_SKU_FROM_SCANNER,
     getProductBySkuFromScannerSaga
   );
+  yield takeEvery(types.TRIAL_CHECKING, trialCheckingSaga);
 }
 
 export default rootSaga;

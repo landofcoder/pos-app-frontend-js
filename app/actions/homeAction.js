@@ -317,6 +317,7 @@ export function createCustomizeProduct(payload) {
     payload
   };
 }
+
 export function getShowAllDevices() {
   return {
     type: types.SHOW_ALL_DEVICES
@@ -347,5 +348,11 @@ export function updateTriggerScannerBarcodeTriggerToFalse(payload) {
   return {
     type: types.UPDATE_TRIGGER_SCANNER_PRODUCT_TO_FALSE,
     payload
+  };
+}
+
+export function trialChecking() {
+  return {
+    type: types.TRIAL_CHECKING
   };
 }

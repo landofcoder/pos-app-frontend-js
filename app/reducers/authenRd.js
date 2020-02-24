@@ -17,7 +17,11 @@ const initialState = {
   moduleInstalled: {},
   errorServiceModuleInstalled: false,
   senseUrl: '',
-  toModuleInstalled: false
+  toModuleInstalled: false,
+  trialInfo: {
+    isExpired: 0, // 0 = default, true = is expired, false = in trial time
+    daysRemaining: '' // Days remaining text
+  }
 };
 
 /*  eslint no-param-reassign: "error" */
@@ -84,6 +88,10 @@ const authenRd = (state = initialState, action) =>
         break;
       case typesAuthen.CHANGE_STATUS_TO_MODULE_INSTALLED:
         draft.toModuleInstalled = action.payload;
+        break;
+      case typesAuthen.UPDATE_TRIAL_INFO:
+        draft.trialInfo.isExpired = action.payload.isExpired;
+        draft.trialInfo.daysRemaining = action.payload.daysRemaining;
         break;
       default:
     }

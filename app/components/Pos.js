@@ -51,6 +51,7 @@ type Props = {
   cartHoldList: Array<Object>,
   switchToHoldItemCart: (payload: number) => void,
   updateTriggerScannerBarcodeTriggerToFalse: (payload: boolean) => void,
+  trialChecking: (payload: string) => void,
   emptyCart: () => void,
   currencyCode: string,
   isLoadingSearchHandle: boolean,
@@ -90,7 +91,8 @@ export default class Pos extends Component<Props, State> {
     const {
       autoLoginToGetNewToken,
       autoSyncGroupCheckout,
-      hidDevice
+      hidDevice,
+      trialChecking
     } = this.props;
     const loopStep = 5000;
     limitLoop(
@@ -101,6 +103,9 @@ export default class Pos extends Component<Props, State> {
       30,
       loopStep
     );
+
+    // Trial checking
+    trialChecking();
 
     // Uncomment below code for testing scanner device working
     // const { getProductBySkuFromScanner } = this.props;

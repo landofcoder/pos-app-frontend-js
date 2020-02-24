@@ -5,6 +5,7 @@ import {
   updateById,
   deleteByKeyV2
 } from '../../reducers/db/settings';
+import { addDays } from 'date-fns';
 
 const syncAllDataLabel = 'sync_all_data';
 const systemConfigLabel = 'system_config';
@@ -13,6 +14,7 @@ const cashierInfoLabel = 'cashier_info';
 const receiptInfoLabel = 'receipt_info';
 const timeSyncConstant = 'time_sync_constant';
 const connectedScannerDeviceLabel = 'connected_scanner_device';
+const trialLabel = 'trial_ending_time';
 
 export async function haveToSyncAllData() {
   const data = await getByKey(syncAllDataLabel);
@@ -42,6 +44,16 @@ export async function systemConfigSync(systemConfig) {
 
 export async function getSystemConfigLocal() {
   const data = await getByKeyV2(systemConfigLabel);
+  return data;
+}
+
+export async function getTrialTimeEnding() {
+  let data = await getByKeyV2(trialLabel);
+  if (!data) {
+    // Create new
+    await createKey(trialLabel, { time: addDays(new Date(), 30) });
+    data = await getByKeyV2(trialLabel);
+  }
   return data;
 }
 
