@@ -169,7 +169,8 @@ function* syncOrder() {
 function* syncClientData() {
   const dbTime = yield getTimeSyncConstant();
   const nowTime = Date.now();
-  if (nowTime - dbTime > 1200000) {
+  if (nowTime - dbTime > 5000) {
+    console.log("go sync order ")
     yield resetTimeSyncConstant();
     yield syncCustomProduct();
     yield syncCustomer();
