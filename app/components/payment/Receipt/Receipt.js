@@ -107,7 +107,7 @@ class Receipt extends Component<Props> {
               {
                 Number(logo_display) === 1 ?
                   <div className={Style.wrapReceiptLogo}>
-                    <img src={icon}/>
+                    <img src={window.mainUrl + '/pub/' + icon}/>
                   </div> : <></>
               }
               <div className={Style.wrapReceiptTitle}>
