@@ -95,8 +95,10 @@ class CartReceipt extends Component<Props> {
         {Number(subtotal_display) !== 1 ? (
           <table style={{ width: '100%' }}>
             <tbody>
-              <td>{subtotal_label}</td>
-              <td style={{ textAlign: 'right' }}>{subTotal}</td>
+              <tr>
+                <td>{subtotal_label}</td>
+                <td style={{ textAlign: 'right' }}>{subTotal}</td>
+              </tr>
             </tbody>
           </table>
         ) : (

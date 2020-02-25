@@ -81,33 +81,95 @@ class Receipt extends Component<Props> {
     const customerReceipt = cartForReceipt.customer;
     /* eslint-disable */
     const { outlet_name } = detailOutlet;
-    const {
-      receipt_title,
-      outlet_name_display,
-      date_display,
-      order_id_display,
-      order_id_label,
-      customer_display,
-      logo_display,
-      icon,
-      image,
-      logo_width,
-      logo_height,
-      logo_alt,
-      header_content,
-      footer_content
-    } = customReceipt;
+    //fake
+
+    let receipt_title = '123',
+      outlet_name_display = '123',
+      date_display = '123',
+      order_id_display = '123',
+      order_id_label = '123',
+      customer_display = '123',
+      logo_display = '123',
+      icon = '123',
+      image = '123',
+      logo_width = '123',
+      logo_height = '123',
+      logo_alt = '123',
+      header_content = '123',
+      footer_content = '123';
+    // const {
+    //   receipt_title,
+    //   outlet_name_display,
+    //   date_display,
+    //   order_id_display,
+    //   order_id_label,
+    //   customer_display,
+    //   logo_display,
+    //   icon,
+    //   image,
+    //   logo_width,
+    //   logo_height,
+    //   logo_alt,
+    //   header_content,
+    //   footer_content
+    // } = customReceipt;
     /* eslint-enable */
     /* eslint-disable */
     return (
       <>
         <iframe
           id="ifmcontentstoprint"
-          style={{ height: '500px', width: '500px', backgroundColor: "white" }}
+          style={{ height: '500px', width: '500px', backgroundColor: 'white' }}
         ></iframe>
         <div style={{ color: '#666' }} className={Style.wrapMainReceipt}>
           <div className="modal-content">
             <div id="wrap-main-receipt">
+              <table
+                style={{
+                  width: '100%',
+                  paddingTop: '20px',
+                  textAlign: 'center'
+                }}
+              >
+                <tbody>
+                  <tr>
+                    <td style={{ margin: ' 0 auto', textAlign: 'center' }}>
+                      <img
+                        style={{
+                          width: '160px',
+                          height: '160px',
+                          display: 'block'
+                        }}
+                      ></img>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      style={{
+                        borderBottom: '1px solid #dedede',
+                        marginBottom: '10px',
+                        textAlign: 'center',
+                        fontSize: '20px',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      {receipt_title}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{ textAlign: 'center' }}>
+                      {/*{detailOutlet.outlet_name}*/}
+                      outletname
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{ marginTop: '25px', textAlign: "left" }}>{dateTime}</td>
+                    <td>
+                      {order_id_label}&nbsp;{orderId}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
               <div
                 style={{
                   paddingLeft: '20px',
@@ -117,13 +179,7 @@ class Receipt extends Component<Props> {
                 }}
                 className={Style.wrapHeader}
               >
-                {Number(logo_display) === 1 ? (
-                  <div className={Style.wrapReceiptLogo}>
-                    <img style={{ width: '160px' }} src={icon} />
-                  </div>
-                ) : (
-                  <></>
-                )}
+                {Number(logo_display) !== 1 ? <></> : <></>}
                 <div
                   style={{
                     borderBottom: '1px solid #dedede',
@@ -134,7 +190,7 @@ class Receipt extends Component<Props> {
                   }}
                   className={Style.wrapReceiptTitle}
                 >
-                  <p>{receipt_title}</p>
+                  {/*<p>{receipt_title}</p>*/}
                 </div>
                 <div className={Style.wraOutletAddress}>
                   <p style={{ textAlign: 'center' }}>
@@ -146,12 +202,13 @@ class Receipt extends Component<Props> {
                     {outlet_name_display ? outlet_name : ''}
                   </h5>
                 </div>
+
                 <div
                   style={{ display: 'flex', marginTop: '25px' }}
                   className={Style.wrapHeadInfo}
                 >
                   <div style={{ width: '50%' }} className={Style.wrapTime}>
-                    {date_display === '1' ? <span>{dateTime}</span> : <></>}
+                    {date_display !== '1' ? <span>{dateTime}</span> : <></>}
                   </div>
                   {order_id_display ? (
                     <div
@@ -169,7 +226,7 @@ class Receipt extends Component<Props> {
                     <></>
                   )}
                 </div>
-                {customerReceipt && Number(customer_display) === 1 ? (
+                {customerReceipt && Number(customer_display) !== 1 ? (
                   <div
                     style={{ display: 'block', textAlign: 'left' }}
                     className={Style.wrapCustomerInfo}
