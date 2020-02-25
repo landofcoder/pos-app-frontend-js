@@ -25,6 +25,7 @@ import Categories from './commons/Categories/Categories';
 import routers from '../constants/routes';
 import { limitLoop } from '../common/settings';
 import Custom from './product-types/Custom';
+import IsExpired from './IsExpired/IsExpired';
 
 type Props = {
   productList: Array<Object>,
@@ -38,7 +39,6 @@ type Props = {
   getProductBySkuFromScanner: (payload: string) => void,
   getDetailProductBundle: (payload: Object) => void,
   getDetailProductGrouped: (payload: Object) => void,
-  getDetailProductCustom: (payload: Object) => void,
   loadProductPaging: () => void,
   productOption: Object,
   isShowCashPaymentModel: boolean,
@@ -61,7 +61,8 @@ type Props = {
   toggleModalCalculatorStatus: boolean,
   posCommandIsFetchingProduct: boolean,
   defaultColor: string,
-  hidDevice: Object
+  hidDevice: Object,
+  trialInfo: Object
 };
 
 type State = {
@@ -355,7 +356,8 @@ export default class Pos extends Component<Props, State> {
       isOpenReceiptModal,
       toggleModalCalculatorStatus,
       posCommandIsFetchingProduct,
-      defaultColor
+      defaultColor,
+      trialInfo
     } = this.props;
     const { redirectToAccount, mainWrapProductPanel } = this.state;
     // Check Redirect To Layout Account
@@ -367,6 +369,13 @@ export default class Pos extends Component<Props, State> {
     // Enable checkout button or disable
     const disableCheckout = cartCurrent.data.length <= 0;
     const { isShowingProductOption } = productOption;
+
+    const { isExpired, daysRemaining } = trialInfo;
+    if (isExpired === true) {
+      // Return to other view
+      return <IsExpired />;
+    }
+
     return (
       <>
         <div
@@ -443,16 +452,7 @@ export default class Pos extends Component<Props, State> {
                 <div className="col-md-2">
                   <Categories />
                 </div>
-                {/* <div className="col-sm-1 pt-2 pl-5 pr-0 mx-auto"> */}
-                {/*  <a */}
-                {/*    onClick={() => { */}
-                {/*      this.addCustomProduct(); */}
-                {/*    }} */}
-                {/*  > */}
-                {/*    <i style={{color: '#888'}} className="fas fa-plus-circle fa-lg"></i> */}
-                {/*  </a> */}
-                {/* </div> */}
-                <div className="col-md-9 mb-0 pr-0">
+                <div className="col-md-8 mb-0 pr-0">
                   <div className="input-group flex-nowrap">
                     <div className="input-group mb-3">
                       <div className="input-group-prepend">
@@ -494,6 +494,13 @@ export default class Pos extends Component<Props, State> {
                     <></>
                   )}
                 </div>
+                {isExpired === false ? (
+                  <div className="col-md-2" id={Styles.wrapTrialButton}>
+                    <span>{daysRemaining} trial</span>
+                  </div>
+                ) : (
+                  <></>
+                )}
                 {mainProductListLoading ? (
                   <div className="col-md-12">
                     <div className="d-flex justify-content-center">
