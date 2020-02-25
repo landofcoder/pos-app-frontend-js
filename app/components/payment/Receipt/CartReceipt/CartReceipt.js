@@ -36,21 +36,21 @@ class CartReceipt extends Component<Props> {
 
     return (
       <div className={style.wrapCartReceipt}>
-        <table>
+        <table style={{"width":"100%"}}>
           <thead>
           <tr>
-            <th>Product</th>
-            <th>Quantity</th>
-            <th>Price</th>
+            <th style={{"color":"#444"}}>Product</th>
+            <th style={{"color":"#444"}}>Quantity</th>
+            <th style={{"color":"#444"}}>Price</th>
           </tr>
           </thead>
           <tbody>
           {cartForReceipt.map((item, index) => {
             return (
               <tr key={index}>
-                <td>{item.name}</td>
-                <td>{item.pos_qty}</td>
-                <td>{item.pos_totalPriceFormat}</td>
+                <td style={{"paddingTop":"6px","paddingBottom":"6px"}}>{item.name}</td>
+                <td style={{"paddingTop":"6px","paddingBottom":"6px"}}>{item.pos_qty}</td>
+                <td style={{"paddingTop":"6px","paddingBottom":"6px"}}>{item.pos_totalPriceFormat}</td>
               </tr>
             );
           })}

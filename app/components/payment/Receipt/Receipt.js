@@ -39,12 +39,13 @@ class Receipt extends Component<Props> {
   };
 
   printReceipt = () => {
-    const printContents = document.getElementById('wrap-main-receipt')
-      .innerHTML;
-    const originalContents = document.body.innerHTML;
-    document.body.innerHTML = printContents;
-    window.print();
-    document.body.innerHTML = originalContents;
+    const content = document.getElementById('wrap-main-receipt');
+    const pri = document.getElementById('ifmcontentstoprint').contentWindow;
+    pri.document.open();
+    pri.document.write(content.innerHTML);
+    pri.document.close();
+    pri.focus();
+    pri.print();
   };
 
   formatDate = date => {
@@ -99,80 +100,120 @@ class Receipt extends Component<Props> {
     /* eslint-enable */
     /* eslint-disable */
     return (
-      <div className={Style.wrapMainReceipt}>
-        <div className="modal-content">
-          <div id="wrap-main-receipt">
-            <div className={Style.wrapHeader}>
-              {
-                Number(logo_display) === 1 ?
+      <>
+        <iframe
+          id="ifmcontentstoprint"
+          style={{ height: '0px', width: '0px' }}
+        ></iframe>
+        <div style={{ color: '#666' }} className={Style.wrapMainReceipt}>
+          <div className="modal-content">
+            <div id="wrap-main-receipt">
+              <div
+                style={{
+                  paddingLeft: '20px',
+                  paddingRight: '20px',
+                  paddingTop: '20px',
+                  textAlign: 'center'
+                }}
+                className={Style.wrapHeader}
+              >
+                {Number(logo_display) === 1 ? (
                   <div className={Style.wrapReceiptLogo}>
-                    <img src={icon}/>
-                  </div> : <></>
-              }
-              <div className={Style.wrapReceiptTitle}>
-                <p>{receipt_title}</p>
-              </div>
-              <div className={Style.wraOutletAddress}>
-                <p>{detailOutlet.outlet_name}</p>
-              </div>
-              <div className={Style.wrapHeadLogo}>
-                <h5 className="modal-title" id="modalReceipt">
-                  {outlet_name_display ? outlet_name : ''}
-                </h5>
-              </div>
-              <div className={Style.wrapHeadInfo}>
-                <div className={Style.wrapTime}>
-                  {date_display === '1' ? <span>{dateTime}</span> : <></>}
+                    <img style={{ width: '160px' }} src={icon} />
+                  </div>
+                ) : (
+                  <></>
+                )}
+                <div
+                  style={{
+                    borderBottom: '1px solid #dedede',
+                    marginBottom: '10px',
+                    textAlign: 'center',
+                    fontSize: '20px',
+                    fontWeight: 'bold'
+                  }}
+                  className={Style.wrapReceiptTitle}
+                >
+                  <p>{receipt_title}</p>
                 </div>
-                {order_id_display ? (
-                  <div className={Style.wrapOrderId}>
-                    <span>{order_id_label}&nbsp;</span>
-                    <span>{orderId}</span>
+                <div className={Style.wraOutletAddress}>
+                  <p style={{ textAlign: 'center' }}>
+                    {detailOutlet.outlet_name}
+                  </p>
+                </div>
+                <div style={{ display: 'flex' }} className={Style.wrapHeadLogo}>
+                  <h5 className="modal-title" id="modalReceipt">
+                    {outlet_name_display ? outlet_name : ''}
+                  </h5>
+                </div>
+                <div
+                  style={{ display: 'flex', marginTop: '25px' }}
+                  className={Style.wrapHeadInfo}
+                >
+                  <div style={{ width: '50%' }} className={Style.wrapTime}>
+                    {date_display === '1' ? <span>{dateTime}</span> : <></>}
+                  </div>
+                  {order_id_display ? (
+                    <div
+                      style={{
+                        width: '50%',
+                        display: 'flex',
+                        justifyContent: 'flex-end'
+                      }}
+                      className={Style.wrapOrderId}
+                    >
+                      <span>{order_id_label}&nbsp;</span>
+                      <span>{orderId}</span>
+                    </div>
+                  ) : (
+                    <></>
+                  )}
+                </div>
+                {customerReceipt && Number(customer_display) === 1 ? (
+                  <div
+                    style={{ display: 'block', textAlign: 'left' }}
+                    className={Style.wrapCustomerInfo}
+                  >
+                    <span>Customer:&nbsp;</span>
+                    <span>{customerReceipt.firstname}</span>
                   </div>
                 ) : (
                   <></>
                 )}
               </div>
-              {
-                customerReceipt && Number(customer_display) === 1 ?
-                  <div className={Style.wrapCustomerInfo}>
-                    <span>Customer:&nbsp;</span>
-                    <span>{customerReceipt.firstname}</span>
-                  </div> : <></>
-              }
+              <div className="col-md-12">
+                <div dangerouslySetInnerHTML={{ __html: header_content }} />
+              </div>
+              <div className="modal-body">
+                <div>
+                  <CartReceipt />
+                  <div dangerouslySetInnerHTML={{ __html: footer_content }} />
+                </div>
+              </div>
             </div>
-            <div className="col-md-12">
-             <div dangerouslySetInnerHTML={{__html: header_content}} />
-            </div>
-            <div className="modal-body">
-              <div>
-                <CartReceipt/>
-                <div dangerouslySetInnerHTML={{__html: footer_content}} />
+            <div className="modal-footer">
+              <div className="col-md-6 p-0">
+                <button
+                  type="button"
+                  onClick={closeReceiptModal}
+                  className="btn btn-outline-secondary btn-lg btn-block"
+                >
+                  CLOSE
+                </button>
+              </div>
+              <div className="col-md-6 p-0">
+                <button
+                  type="button"
+                  onClick={this.printReceipt}
+                  className="btn btn-primary btn-lg btn-block"
+                >
+                  PRINT
+                </button>
               </div>
             </div>
           </div>
-          <div className="modal-footer">
-            <div className="col-md-6 p-0">
-              <button
-                type="button"
-                onClick={closeReceiptModal}
-                className="btn btn-outline-secondary btn-lg btn-block"
-              >
-                CLOSE
-              </button>
-            </div>
-            <div className="col-md-6 p-0">
-              <button
-                type="button"
-                onClick={this.printReceipt}
-                className="btn btn-primary btn-lg btn-block"
-              >
-                PRINT
-              </button>
-            </div>
-          </div>
         </div>
-      </div>
+      </>
     );
     /* eslint-enable */
   }
