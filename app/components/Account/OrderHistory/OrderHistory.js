@@ -52,9 +52,11 @@ class OrderHistory extends Component<Props> {
       <>
         <div className="card">
           {isLoading ? (
-            <div className="text-center">
-              <div className="spinner-border text-secondary" role="status">
-                <span className="sr-only">Loading...</span>
+            <div className="form-group mt-3">
+              <div className="text-center">
+                <div className="spinner-border text-secondary" role="status">
+                  <span className="sr-only">Loading...</span>
+                </div>
               </div>
             </div>
           ) : null}
