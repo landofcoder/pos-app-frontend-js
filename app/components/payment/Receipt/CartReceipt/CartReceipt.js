@@ -99,88 +99,24 @@ class CartReceipt extends Component<Props> {
                 <td>{subtotal_label}</td>
                 <td style={{ textAlign: 'right' }}>{subTotal}</td>
               </tr>
+              <tr>
+                <td>{discount_label}</td>
+                <td>{discountAmount}</td>
+              </tr>
+              <tr>
+                <td>{grand_total_label}</td>
+                <td>{grandTotal}</td>
+              </tr>
+              <tr>
+                <td>{cashier_label}&nbsp;</td>
+                <td>{cashierInfo.first_name}</td>
+              </tr>
             </tbody>
           </table>
         ) : (
           <></>
         )}
-        {/*<div className="form-group row">*/}
-        {/*  {Number(subtotal_display) !== 1 ? (*/}
-        {/*    <>*/}
-        {/*      <label*/}
-        {/*        htmlFor="receiptLblGrandTotal"*/}
-        {/*        className="col-sm-4 col-form-label"*/}
-        {/*      >*/}
-        {/*        {subtotal_label}*/}
-        {/*      </label>*/}
-        {/*      <div className="col-sm-8 text-right">*/}
-        {/*        <p id="receiptLblGrandTotal" className="font-weight-bold">*/}
-        {/*          {subTotal}*/}
-        {/*        </p>*/}
-        {/*      </div>*/}
-        {/*    </>*/}
-        {/*  ) : (*/}
-        {/*    <></>*/}
-        {/*  )}*/}
-
-        {/*  <label*/}
-        {/*    htmlFor="receiptLblGrandTotal"*/}
-        {/*    className="col-sm-4 col-form-label"*/}
-        {/*  >*/}
-        {/*    Shipping & Handling*/}
-        {/*  </label>*/}
-        {/*  <div className="col-sm-8 text-right">*/}
-        {/*    <p id="receiptLblGrandTotal" className="font-weight-bold">*/}
-        {/*      {shippingAmount}*/}
-        {/*    </p>*/}
-        {/*  </div>*/}
-
-        {/*  {Number(discount_display) === 1 ? (*/}
-        {/*    <>*/}
-        {/*      <label*/}
-        {/*        htmlFor="receiptLblDiscountAmount"*/}
-        {/*        className="col-sm-4 col-form-label"*/}
-        {/*      >*/}
-        {/*        {discount_label}*/}
-        {/*      </label>*/}
-        {/*      <div className="col-sm-8 text-right">*/}
-        {/*        <p id="receiptLblDiscountAmount" className="font-weight-bold">*/}
-        {/*          {discountAmount}*/}
-        {/*        </p>*/}
-        {/*      </div>*/}
-        {/*    </>*/}
-        {/*  ) : (*/}
-        {/*    <></>*/}
-        {/*  )}*/}
-        {/*  <label*/}
-        {/*    htmlFor="receiptLblOrderTotal"*/}
-        {/*    className="col-sm-4 col-form-label"*/}
-        {/*  >*/}
-        {/*    {grand_total_label}*/}
-        {/*  </label>*/}
-        {/*  <div className="col-sm-8 text-right">*/}
-        {/*    <p id="receiptLblOrderTotal" className="font-weight-bold">*/}
-        {/*      {grandTotal}*/}
-        {/*    </p>*/}
-        {/*  </div>*/}
-        {/*</div>*/}
         <hr />
-        {/*{Number(cashier_name_display) === 1 ? (*/}
-        {/*  <>*/}
-        {/*    <div className="form-group row">*/}
-        {/*      <label*/}
-        {/*        htmlFor="receiptLblCashierName"*/}
-        {/*        className="col-sm-12 col-form-label"*/}
-        {/*      >*/}
-        {/*        <span id="receiptLblCashierName">{cashier_label}&nbsp;</span>*/}
-        {/*        <span>{cashierInfo.first_name}</span>*/}
-        {/*      </label>*/}
-        {/*    </div>*/}
-        {/*    <hr />*/}
-        {/*  </>*/}
-        {/*) : (*/}
-        {/*  <></>*/}
-        {/*)}*/}
       </div>
     );
   }
