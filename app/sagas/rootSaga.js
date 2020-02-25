@@ -72,7 +72,7 @@ import { syncCustomers } from '../reducers/db/customers';
 import { signUpCustomer } from '../reducers/db/sync_customers';
 import { getAllOrders } from '../reducers/db/sync_orders';
 import { counterProduct } from '../reducers/db/products';
-import { getOfflineMode } from '../common/settings';
+import { getOfflineMode, shippingMethodDefault } from '../common/settings';
 import { createProduct } from '../reducers/db/sync_custom_product';
 import {
   CHILDREN,
@@ -122,7 +122,7 @@ function* cashCheckout() {
   );
   const shippingMethodResult = yield select(shippingMethod);
   const methodPaymentResult = yield select(methodPayment);
-
+  console.log(shippingMethodResult);
   if (offlineMode === 1) {
     // eslint-disable-next-line prefer-destructuring
     const currencyCode = window.currency;
@@ -148,13 +148,9 @@ function* cashCheckout() {
           region_id: guestInfoResult.region_id,
           postcode: guestInfoResult.zip_code,
           telephone: guestInfoResult.telephone,
-          shipping_method:
-            shippingMethodResult.specific_shipping_methods === 'flatrate'
-              ? 'flatrate_flatrate'
-              : shippingMethodResult.specific_shipping_methods ===
-                'freeshipping'
-              ? 'freeshipping_freeshipping'
-              : shippingMethodResult.specific_shipping_methods,
+          shipping_method: shippingMethodDefault(
+            shippingMethodResult.default_shipping_method
+          ),
           method: methodPaymentResult.default_payment_method
         },
         totals: {
@@ -170,13 +166,9 @@ function* cashCheckout() {
         currency_id: currencyCode,
         email: cartCurrentResultObj.customer.email,
         shipping_address: {
-          shipping_method:
-            shippingMethodResult.specific_shipping_methods === 'flatrate'
-              ? 'flatrate_flatrate'
-              : shippingMethodResult.specific_shipping_methods ===
-                'freeshipping'
-              ? 'freeshipping_freeshipping'
-              : shippingMethodResult.specific_shipping_methods,
+          shipping_method: shippingMethodDefault(
+            shippingMethodResult.default_shipping_method
+          ),
           method: methodPaymentResult.default_payment_method,
           postcode: defaultOutletShippingAddressResult[0].data.post_code
         },
