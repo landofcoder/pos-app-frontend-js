@@ -18,6 +18,7 @@ import Grouped from './product-types/Grouped';
 import CartCustomer from './customer/CartCustomer';
 import SignUpCustomer from './customer/SignUpCustomer/SignUpCustomer';
 import CashPanel from './payment/Cash/Cash';
+import CardPayment from './payment/CardPayment/CardPayment';
 import Receipt from './payment/Receipt/Receipt';
 import EditCart from './ListCart/EditCart/EditCart';
 import { sumCartTotalPrice } from '../common/cart';
@@ -31,6 +32,7 @@ type Props = {
   addToCart: (payload: Object) => void,
   holdAction: () => void,
   searchProductAction: (payload: string) => void,
+  updateIsShowCardPaymentModel: (payload: string) => void,
   cartCurrent: Object,
   mainPanelType: string,
   cashCheckoutAction: () => void,
@@ -38,10 +40,10 @@ type Props = {
   getProductBySkuFromScanner: (payload: string) => void,
   getDetailProductBundle: (payload: Object) => void,
   getDetailProductGrouped: (payload: Object) => void,
-  getDetailProductCustom: (payload: Object) => void,
   loadProductPaging: () => void,
   productOption: Object,
   isShowCashPaymentModel: boolean,
+  isShowCardPaymentModal: boolean,
   updateIsShowingProductOption: (payload: boolean) => void,
   autoLoginToGetNewToken: () => void,
   autoSyncGroupCheckout: () => void,
@@ -107,7 +109,6 @@ export default class Pos extends Component<Props, State> {
     // getProductBySkuFromScanner('MH11');
 
     const { isWaitingForListingDataEvent } = hidDevice.waitForConnect;
-
     if (isWaitingForListingDataEvent) {
       window.scanner.on('data', data => {
         const { getProductBySkuFromScanner } = this.props;
@@ -330,6 +331,11 @@ export default class Pos extends Component<Props, State> {
     }
   };
 
+  gotoPayView = () => {
+    const { updateIsShowCardPaymentModel } = this.props;
+    updateIsShowCardPaymentModel(true);
+  };
+
   render() {
     const {
       mainProductListLoading,
@@ -347,6 +353,7 @@ export default class Pos extends Component<Props, State> {
       isShowModalItemEditCart,
       productOption,
       isShowCashPaymentModel,
+      isShowCardPaymentModal,
       isOpenReceiptModal,
       toggleModalCalculatorStatus,
       posCommandIsFetchingProduct,
@@ -362,6 +369,9 @@ export default class Pos extends Component<Props, State> {
     // Enable checkout button or disable
     const disableCheckout = cartCurrent.data.length <= 0;
     const { isShowingProductOption } = productOption;
+
+    console.log('is show card payment:', isShowCardPaymentModal);
+
     return (
       <>
         <div
@@ -398,6 +408,15 @@ export default class Pos extends Component<Props, State> {
               {isShowCashPaymentModel ? <CashPanel /> : <></>}
             </div>
           </div>
+          {/* PAYMENT MODAL */}
+          <div
+            className={ModalStyle.modal}
+            id="payModal"
+            style={{ display: isShowCardPaymentModal ? 'block' : 'none' }}
+          >
+            <div className={ModalStyle.modalContentLg}>{isShowCardPaymentModal ? <CardPayment /> : <></>}</div>
+          </div>
+
           {/* RECEIPT MODAL */}
           <div
             id="receiptModal"
@@ -438,15 +457,6 @@ export default class Pos extends Component<Props, State> {
                 <div className="col-md-2">
                   <Categories />
                 </div>
-                {/* <div className="col-sm-1 pt-2 pl-5 pr-0 mx-auto"> */}
-                {/*  <a */}
-                {/*    onClick={() => { */}
-                {/*      this.addCustomProduct(); */}
-                {/*    }} */}
-                {/*  > */}
-                {/*    <i style={{color: '#888'}} className="fas fa-plus-circle fa-lg"></i> */}
-                {/*  </a> */}
-                {/* </div> */}
                 <div className="col-md-9 mb-0 pr-0">
                   <div className="input-group flex-nowrap">
                     <div className="input-group mb-3">
@@ -570,9 +580,6 @@ export default class Pos extends Component<Props, State> {
               );
             })}
             <div className="col-md-2 pr-1 pl-0">
-              {/* <button type="button" onClick={this.testAction}> */}
-              {/*  TEST */}
-              {/* </button> */}
               <button
                 type="button"
                 onClick={holdAction}
@@ -620,9 +627,10 @@ export default class Pos extends Component<Props, State> {
             <div className="col-md-2 pl-1 pr-0">
               <button
                 type="button"
+                onClick={this.gotoPayView}
                 className="btn btn-outline-primary btn-lg btn-block"
               >
-                Card
+                Pay
               </button>
             </div>
           </div>

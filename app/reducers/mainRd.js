@@ -43,6 +43,8 @@ const initialState = {
     cartForReceipt: testCartCurrentForDefaultReceipt // When customer checkout succeed, copy current cart to this
   },
   checkout: {
+    isShowCashPaymentModel: false,
+    isShowCardPaymentModal: false,
     // All checkout variables
     offline: {
       isLoadingDiscount: false,
@@ -125,7 +127,6 @@ const initialState = {
   isLoadingSignUpCustomer: false,
   customerSearchResult: [],
   cashLoadingPreparingOrder: false, // Status cash loading for preparing to show cash payment form
-  isShowCashPaymentModel: false,
   isLoadingCashPlaceOrder: false,
   productOption: {
     // State product option for all product type configurable, bundle, grouped product
@@ -156,6 +157,9 @@ const mainRd = (state: Object = initialState, action: Object) =>
     switch (action.type) {
       case types.RECEIVED_ORDER_PREPARING_CHECKOUT:
         draft.checkout.orderPreparingCheckout = action.payload;
+        break;
+      case types.UPDATE_IS_SHOW_CARD_PAYMENT_MODAL:
+        draft.checkout.isShowCardPaymentModal = action.payload;
         break;
       case types.RECEIVED_PRODUCT_RESULT:
         draft.productList = action.payload;
@@ -285,7 +289,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.cartCurrent.cartId = action.payload;
         break;
       case types.UPDATE_SHOW_CASH_MODAL:
-        draft.isShowCashPaymentModel = action.payload;
+        draft.checkout.isShowCashPaymentModel = action.payload;
         break;
       case types.UPDATE_CASH_PLACE_ORDER_LOADING:
         draft.isLoadingCashPlaceOrder = action.payload;

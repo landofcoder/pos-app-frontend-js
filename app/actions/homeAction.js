@@ -349,3 +349,10 @@ export function updateTriggerScannerBarcodeTriggerToFalse(payload) {
     payload
   };
 }
+
+export function updateIsShowCardPaymentModel(payload) {
+  return {
+    type: types.UPDATE_IS_SHOW_CARD_PAYMENT_MODAL,
+    payload
+  };
+}

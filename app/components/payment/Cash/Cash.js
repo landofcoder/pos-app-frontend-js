@@ -49,6 +49,7 @@ class CashPayment extends Component<Props> {
     const { inputCustomerCash } = this.state;
     const { orderPreparingCheckout, currencyCode } = this.props;
     try {
+      // eslint-disable-next-line no-eval
       const output = eval(
         `${inputCustomerCash}-${orderPreparingCheckout.totals.grand_total}`
       );
