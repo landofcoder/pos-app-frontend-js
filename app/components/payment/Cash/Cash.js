@@ -233,7 +233,9 @@ function mapStateToProps(state) {
     posSystemConfig: state.mainRd.posSystemConfig,
     toggleModalCalculatorStatus: state.mainRd.isOpenCalculator,
     orderPreparingCheckout: state.mainRd.checkout.orderPreparingCheckout,
-    messageOrderError: state.mainRd.messageOrderError
+    messageOrderError: state.mainRd.messageOrderError,
+    isLoadingDiscountCheckoutOffline:
+      state.mainRd.checkout.offline.isLoadingDiscount
   };
 }
 
