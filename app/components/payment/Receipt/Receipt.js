@@ -81,40 +81,22 @@ class Receipt extends Component<Props> {
     const customerReceipt = cartForReceipt.customer;
     /* eslint-disable */
     const { outlet_name } = detailOutlet;
-    //fake
-
-    let receipt_title = '123',
-      outlet_name_display = '123',
-      date_display = '123',
-      order_id_display = '123',
-      order_id_label = '123',
-      customer_display = '123',
-      logo_display = '123',
-      icon = '123',
-      image = '123',
-      logo_width = '123',
-      logo_height = '123',
-      logo_alt = '123',
-      header_content = '123',
-      footer_content = '123';
-    // const {
-    //   receipt_title,
-    //   outlet_name_display,
-    //   date_display,
-    //   order_id_display,
-    //   order_id_label,
-    //   customer_display,
-    //   logo_display,
-    //   icon,
-    //   image,
-    //   logo_width,
-    //   logo_height,
-    //   logo_alt,
-    //   header_content,
-    //   footer_content
-    // } = customReceipt;
-    /* eslint-enable */
-    /* eslint-disable */
+    const {
+      receipt_title,
+      outlet_name_display,
+      date_display,
+      order_id_display,
+      order_id_label,
+      customer_display,
+      logo_display,
+      icon,
+      image,
+      logo_width,
+      logo_height,
+      logo_alt,
+      header_content,
+      footer_content
+    } = customReceipt;
     return (
       <>
         <iframe
@@ -132,18 +114,19 @@ class Receipt extends Component<Props> {
                 }}
               >
                 <tbody>
-                  <tr>
-                    <td colSpan="2">
-                      <img
-                        style={{
-                          width: '160px',
-                          height: '160px',
-                          display: 'block',
-                          margin: '0 auto'
-                        }}
-                      ></img>
-                    </td>
-                  </tr>
+                  {Number(logo_display) === 1 ? (
+                    <tr>
+                      <td colSpan="2">
+                        <img
+                          style={{
+                            display: 'block',
+                            margin: '0 auto'
+                          }}
+                          src={icon}
+                        ></img>
+                      </td>
+                    </tr>
+                  ) : null}
                   <tr>
                     <td
                       colSpan="2"
@@ -160,30 +143,41 @@ class Receipt extends Component<Props> {
                   </tr>
                   <tr>
                     <td colSpan="2" style={{ textAlign: 'center' }}>
-                      {/*{detailOutlet.outlet_name}*/}
-                      outletname
+                      {detailOutlet.outlet_name}
                     </td>
                   </tr>
+                  {outlet_name_display ? (
+                    <tr>
+                      <td style={{ textAlign: 'left' }}>outlet_name</td>
+                    </tr>
+                  ) : null}
                   <tr>
-                    <td
-                      style={{
-                        marginTop: '25px',
-                        textAlign: 'left',
-                        width: '50%'
-                      }}
-                    >
-                      {dateTime}
-                    </td>
-                    <td style={{ textAlign: 'right' }}>
-                      <span>{order_id_label}&nbsp;</span>
-                      <span>{orderId}</span>
-                    </td>
+                    {date_display === '1' ? (
+                      <td
+                        style={{
+                          marginTop: '25px',
+                          textAlign: 'left',
+                          width: '50%'
+                        }}
+                      >
+                        {dateTime}
+                      </td>
+                    ) : null}
+                    {order_id_display ? (
+                      <td style={{ textAlign: 'right' }}>
+                        <span>{order_id_label}&nbsp;</span>
+                        <span>{orderId}</span>
+                      </td>
+                    ) : null}
                   </tr>
-                  <tr>
-                    <td style={{ textAlign: 'left' }}>Customer:&nbsp;</td>
-                    {/*<td>{customerReceipt.firstname}</td>*/}
-                    <td style={{ textAlign: 'right' }}>123</td>
-                  </tr>
+                  {customerReceipt && Number(customer_display) === 1 ? (
+                    <tr>
+                      <td style={{ textAlign: 'left' }}>Customer:&nbsp;</td>
+                      <td style={{ textAlign: 'right' }}>
+                        {customerReceipt.firstname}
+                      </td>
+                    </tr>
+                  ) : null}
                   <tr>
                     <td colSpan="2">
                       <div

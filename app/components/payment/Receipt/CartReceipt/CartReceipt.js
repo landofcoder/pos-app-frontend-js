@@ -83,14 +83,6 @@ class CartReceipt extends Component<Props> {
           </tbody>
         </table>
         <hr />
-        <table style={{ width: '100%' }}>
-          <tbody>
-            <tr>
-              <td style={{ textAlign: 'left' }}>Shipping & Handling</td>
-              <td style={{ textAlign: 'right' }}>{shippingAmount}</td>
-            </tr>
-          </tbody>
-        </table>
 
         {Number(subtotal_display) !== 1 ? (
           <table style={{ width: '100%' }}>
@@ -113,10 +105,25 @@ class CartReceipt extends Component<Props> {
               </tr>
             </tbody>
           </table>
-        ) : (
-          <></>
-        )}
+        ) : null}
+        <table style={{ width: '100%' }}>
+          <tbody>
+            <tr>
+              <td style={{ textAlign: 'left' }}>Shipping & Handling</td>
+              <td style={{ textAlign: 'right' }}>{shippingAmount}</td>
+            </tr>
+          </tbody>
+        </table>
         <hr />
+        {Number(cashier_name_display) === 1 ? (
+          <>
+            <table style={{ width: '100%' }}>
+              <td style={{ textAlign: 'left' }}>{cashier_label}&nbsp;</td>
+              <td style={{ textAlign: 'right' }}>{cashierInfo.first_name}</td>
+            </table>
+            <hr />
+          </>
+        ) : null}
       </div>
     );
   }
