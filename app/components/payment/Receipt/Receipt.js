@@ -122,7 +122,7 @@ class Receipt extends Component<Props> {
                             display: 'block',
                             margin: '0 auto'
                           }}
-                          src={icon}
+                          src={window.mainUrl + '/pub/' + icon}
                         ></img>
                       </td>
                     </tr>

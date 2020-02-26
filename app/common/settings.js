@@ -76,3 +76,15 @@ export function formatCurrencyCode(value: number) {
  * @type {number}
  */
 export const defaultPageSize = 20;
+
+export function shippingMethodDefault(methodShipping) {
+  console.log(methodShipping);
+  switch (methodShipping) {
+    case 'flatrate':
+      return 'flatrate_flatrate';
+    case 'freeshipping':
+      return 'freeshipping_freeshipping';
+    default:
+      return methodShipping;
+  }
+}
