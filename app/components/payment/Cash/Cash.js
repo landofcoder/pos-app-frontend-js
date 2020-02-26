@@ -20,7 +20,8 @@ type Props = {
   toggleModalCalculator: (payload: boolean) => void,
   orderPreparingCheckout: Object,
   currencyCode: string,
-  messageOrderError: string
+  messageOrderError: string,
+  isLoadingDiscountCheckoutOffline: boolean
 };
 
 class CashPayment extends Component<Props> {
@@ -58,6 +59,78 @@ class CashPayment extends Component<Props> {
     }
   };
 
+  considerOrder = () => {
+    const {
+      cashLoadingPreparingOrder,
+      posSystemConfig,
+      isLoadingDiscountCheckoutOffline
+    } = this.props;
+    const enableOfflineMode = Number(
+      posSystemConfig.general_configuration.enable_offline_mode
+    );
+    // in offline check discount check discount
+    if (enableOfflineMode === 1 && isLoadingDiscountCheckoutOffline === false)
+      return true;
+    // in offlinemode != 1 check value order
+    if (cashLoadingPreparingOrder === false && enableOfflineMode !== 1)
+      return true;
+    return false;
+  };
+
+  transtractionCustomer = () => {
+    const { inputCustomerCash } = this.state;
+    const { cashLoadingPreparingOrder } = this.props;
+    return (
+      <div className="form-group row">
+        <label
+          className="col-sm-12 pt-4 pb-2 col-form-label font-weight-bold"
+          htmlFor="inputValue"
+        >
+          Cash Transaction
+        </label>
+        <label
+          className="col-sm-4 pt-1 pr-0 col-form-label"
+          htmlFor="inputValue"
+        >
+          Customer&apos;s cash recieved
+        </label>
+        <div className="col-sm-8 pb-1">
+          <input
+            ref={input => input && input.focus()}
+            type="number"
+            placeholder="Input Customer's Cash"
+            className="form-control"
+            onChange={this.changeInputCustomerCash}
+            value={inputCustomerCash}
+            id="inputValue"
+          />
+        </div>
+        {/* <div className={Styles.lineSubTotal} /> */}
+        {inputCustomerCash === '' ? null : (
+          <>
+            <label htmlFor="inputValue" className="col-sm-4 pt-1">
+              Change money
+            </label>
+
+            <div className="col-sm-8 pt-1">
+              {cashLoadingPreparingOrder ? (
+                <div className="spinner-border spinner-border-sm" role="status">
+                  <span className="sr-only">Loading...</span>
+                </div>
+              ) : (
+                <div className="font-weight-bold">
+                  <p className="font-weight-bold">
+                    {this.calculateNumberString()}
+                  </p>
+                </div>
+              )}
+            </div>
+          </>
+        )}
+      </div>
+    );
+  };
+
   escFunction = event => {
     if (event.keyCode === 27) {
       // Do whatever when esc is pressed
@@ -73,7 +146,6 @@ class CashPayment extends Component<Props> {
   };
 
   render() {
-    const { inputCustomerCash } = this.state;
     const {
       cashLoadingPreparingOrder,
       cashPlaceOrderAction,
@@ -86,6 +158,7 @@ class CashPayment extends Component<Props> {
     const enableOfflineMode = Number(
       posSystemConfig.general_configuration.enable_offline_mode
     );
+    console.log(this.props);
     return (
       <div className="row">
         <div
@@ -108,56 +181,7 @@ class CashPayment extends Component<Props> {
           </div>
           <div className="modal-body">
             {enableOfflineMode === 1 ? <CashOffline /> : <CashOnline />}
-            <div className="form-group row">
-              <label
-                className="col-sm-12 pt-4 pb-2 col-form-label font-weight-bold"
-                htmlFor="inputValue"
-              >
-                Cash Transaction
-              </label>
-              <label
-                className="col-sm-4 pt-1 pr-0 col-form-label"
-                htmlFor="inputValue"
-              >
-                Customer&apos;s cash recieved
-              </label>
-              <div className="col-sm-8 pb-1">
-                <input
-                  ref={input => input && input.focus()}
-                  type="number"
-                  placeholder="Input Customer's Cash"
-                  className="form-control"
-                  onChange={this.changeInputCustomerCash}
-                  value={inputCustomerCash}
-                  id="inputValue"
-                />
-              </div>
-              {/* <div className={Styles.lineSubTotal} /> */}
-              {inputCustomerCash === '' ? null : (
-                <>
-                  <label htmlFor="inputValue" className="col-sm-4 pt-1">
-                    Change money
-                  </label>
-
-                  <div className="col-sm-8 pt-1">
-                    {cashLoadingPreparingOrder ? (
-                      <div
-                        className="spinner-border spinner-border-sm"
-                        role="status"
-                      >
-                        <span className="sr-only">Loading...</span>
-                      </div>
-                    ) : (
-                      <div className="font-weight-bold">
-                        <p className="font-weight-bold">
-                          {this.calculateNumberString()}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </>
-              )}
-            </div>
+            {this.considerOrder() ? this.transtractionCustomer() : null}
             <span className="text-danger">{messageOrderError}</span>
           </div>
           <div className="modal-footer">
@@ -179,7 +203,7 @@ class CashPayment extends Component<Props> {
           <div className="modal-footer">
             <button
               onClick={cashPlaceOrderAction}
-              disabled={cashLoadingPreparingOrder || isLoadingCashPlaceOrder}
+              disabled={!this.considerOrder() || isLoadingCashPlaceOrder}
               type="button"
               className="btn btn-primary btn-lg btn-block"
             >
