@@ -25,9 +25,9 @@ class CardPayment extends Component {
   render() {
     return (
       <div className="row">
-        <div className="modal-content">
+        <div className="modal-content" style={{ minHeight: '300px' }}>
           <div className="modal-header">
-            <h5 className="modal-title">Checkout</h5>
+            <h5 className="modal-title">Payment</h5>
             <button
               type="button"
               className="close"
@@ -35,7 +35,39 @@ class CardPayment extends Component {
               aria-label="Close"
             />
           </div>
-          <div className="modal-body">Modal body</div>
+          <div className="modal-body">
+            <div className="row">
+              <div className="col-12">
+                <div className="row">
+                  <div className="col-md-4">
+                    <button
+                      type="button"
+                      className="btn btn-outline-primary btn-lg btn-block"
+                    >
+                      CASH
+                    </button>
+                  </div>
+                  <div className="col-md-4">
+                    <button
+                      type="button"
+                      className="btn btn-outline-primary btn-lg btn-block"
+                    >
+                      Stripe
+                    </button>
+                  </div>
+                  <div className="col-md-4">
+                    <button
+                      type="button"
+                      className="btn btn-outline-primary btn-lg btn-block"
+                    >
+                      {' '}
+                      Authorize.net
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );

@@ -414,7 +414,9 @@ export default class Pos extends Component<Props, State> {
             id="payModal"
             style={{ display: isShowCardPaymentModal ? 'block' : 'none' }}
           >
-            <div className={ModalStyle.modalContentLg}>{isShowCardPaymentModal ? <CardPayment /> : <></>}</div>
+            <div className={ModalStyle.modalContent}>
+              {isShowCardPaymentModal ? <CardPayment /> : <></>}
+            </div>
           </div>
 
           {/* RECEIPT MODAL */}
