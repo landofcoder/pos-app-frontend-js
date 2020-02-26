@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { updateIsShowCardPaymentModel } from '../../../actions/homeAction';
+import InputCard from './InputCard';
 
 class CardPayment extends Component {
   props: Props;
@@ -65,6 +66,9 @@ class CardPayment extends Component {
                     </button>
                   </div>
                 </div>
+              </div>
+              <div className="col-md-12">
+                <InputCard />
               </div>
             </div>
           </div>
