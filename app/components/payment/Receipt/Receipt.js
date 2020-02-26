@@ -101,7 +101,7 @@ class Receipt extends Component<Props> {
       <>
         <iframe
           id="ifmcontentstoprint"
-          style={{ height: '500px', width: '500px', backgroundColor: 'white' }}
+          style={{ height: '0px', width: '0px', postition: 'absolute' }}
         ></iframe>
         <div style={{ color: '#666' }} className={Style.wrapMainReceipt}>
           <div className="modal-content">

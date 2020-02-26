@@ -98,17 +98,17 @@ class CartReceipt extends Component<Props> {
           <tbody>
             <tr>
               <td style={{ textAlign: 'left' }}>Shipping & Handling</td>
-              <td style={{ textAlign: 'right' }}>{shippingAmount}</td>
+              <td style={{ textAlign: 'right',fontWeight: "bold" }}>{shippingAmount}</td>
             </tr>
             {Number(discount_display) === 1 ? (
               <tr>
                 <td style={{ textAlign: 'left' }}>{discount_label}</td>
-                <td style={{ textAlign: 'right' }}>{discountAmount}</td>
+                <td style={{ textAlign: 'right',fontWeight: "bold" }}>{discountAmount}</td>
               </tr>
             ) : null}
             <tr>
               <td style={{ textAlign: 'left' }}>{grand_total_label}</td>
-              <td style={{ textAlign: 'right' }}>{grandTotal}</td>
+              <td style={{ textAlign: 'right', fontWeight: "bold" }}>{grandTotal}</td>
             </tr>
           </tbody>
         </table>
