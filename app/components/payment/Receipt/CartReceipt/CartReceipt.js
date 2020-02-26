@@ -84,7 +84,7 @@ class CartReceipt extends Component<Props> {
         </table>
         <hr />
 
-        {Number(subtotal_display) !== 1 ? (
+        {Number(subtotal_display) === 1 ? (
           <table style={{ width: '100%' }}>
             <tbody>
               <tr>
