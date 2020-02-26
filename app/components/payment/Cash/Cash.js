@@ -77,7 +77,7 @@ class CashPayment extends Component<Props> {
     return false;
   };
 
-  transtractionCustomer = () => {
+  transactionCustomer = () => {
     const { inputCustomerCash } = this.state;
     const { cashLoadingPreparingOrder } = this.props;
     return (
@@ -181,7 +181,7 @@ class CashPayment extends Component<Props> {
           </div>
           <div className="modal-body">
             {enableOfflineMode === 1 ? <CashOffline /> : <CashOnline />}
-            {this.considerOrder() ? this.transtractionCustomer() : null}
+            {this.considerOrder() ? this.transactionCustomer() : null}
             <span className="text-danger">{messageOrderError}</span>
           </div>
           <div className="modal-footer">
