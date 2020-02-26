@@ -88,20 +88,8 @@ class CartReceipt extends Component<Props> {
           <table style={{ width: '100%' }}>
             <tbody>
               <tr>
-                <td>{subtotal_label}</td>
+                <td style={{ textAlign: 'left' }}>{subtotal_label}</td>
                 <td style={{ textAlign: 'right' }}>{subTotal}</td>
-              </tr>
-              <tr>
-                <td>{discount_label}</td>
-                <td>{discountAmount}</td>
-              </tr>
-              <tr>
-                <td>{grand_total_label}</td>
-                <td>{grandTotal}</td>
-              </tr>
-              <tr>
-                <td>{cashier_label}&nbsp;</td>
-                <td>{cashierInfo.first_name}</td>
               </tr>
             </tbody>
           </table>
@@ -112,9 +100,18 @@ class CartReceipt extends Component<Props> {
               <td style={{ textAlign: 'left' }}>Shipping & Handling</td>
               <td style={{ textAlign: 'right' }}>{shippingAmount}</td>
             </tr>
+            {Number(discount_display) === 1 ? (
+              <tr>
+                <td style={{ textAlign: 'left' }}>{discount_label}</td>
+                <td style={{ textAlign: 'right' }}>{discountAmount}</td>
+              </tr>
+            ) : null}
+            <tr>
+              <td style={{ textAlign: 'left' }}>{grand_total_label}</td>
+              <td style={{ textAlign: 'right' }}>{grandTotal}</td>
+            </tr>
           </tbody>
         </table>
-        <hr />
         {Number(cashier_name_display) === 1 ? (
           <>
             <table style={{ width: '100%' }}>
