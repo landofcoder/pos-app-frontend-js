@@ -1,3 +1,4 @@
+$heightOrder: calc(100vh - 200px);
 .fixBorderTop {
   th {
     border-top: 0px !important;
@@ -9,6 +10,15 @@
   color: #666;
 }
 
-.tableRowList{
+.tableRowList {
   cursor: pointer;
+}
+
+.wrapOrderHistory {
+  height: 100%;
+}
+
+.wrapListOrder {
+  height: $heightOrder;
+  overflow-y: auto;
 }

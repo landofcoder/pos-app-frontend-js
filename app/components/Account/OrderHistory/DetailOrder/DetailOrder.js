@@ -44,10 +44,7 @@ class DetailOrder extends Component {
     return (
       <>
         <div className={Styles.wrapDetailOrder}>
-          <div
-            className={ModalStyle.modal}
-            style={{ display: isOpenDetailOrder ? 'block' : 'none' }}
-          >
+          <div style={{ display: isOpenDetailOrder ? 'block' : 'none' }}>
             <div className={Styles.contentSize}>
               <div className={`${Styles.colorBg} modal-content`}>
                 {isLoadingOrderHistoryDetail ? (

@@ -1,19 +1,24 @@
-.contentSize{
-  margin:auto;
-  width: 700px;
-}
-.colorBg{
-  background-color: #EFEFEF !important;
-}
-.colorWhite{
+@import '../order-history';
+.wrapDetailOrder {
+  height: $heightOrder;
+  overflow-y: auto;
   background-color: white;
 }
-.row{
-  display: flex;
-  flex-direction: row;
+
+.wrapOrderAction {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding-right: 20px;
+  height: auto !important;
+  margin-left: 0;
 }
-.wrapContent{
-   display: flex;
-   flex-direction: column;
-   padding: 16px;
+.fixMarginRow {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+.wrapContent {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
 }

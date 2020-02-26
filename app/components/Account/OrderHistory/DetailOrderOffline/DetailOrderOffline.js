@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import ModalStyle from '../../../styles/modal.scss';
 import Styles from '../DetailOrder/detail-order.scss';
+import StylesPos from '../../../pos.scss';
 import { formatCurrencyCode } from '../../../../common/settings';
 import {
   getOrderHistoryDetailOffline,
   toggleModalOrderDetailOffline,
   actionLoadingOrderDetailOffline
 } from '../../../../actions/accountAction';
+import CartCustomer from '../../../customer/CartCustomer';
+import SignUpCustomer from '../../../customer/SignUpCustomer/SignUpCustomer';
 
 type Props = {
   orderHistoryDetail: {},
@@ -35,18 +37,18 @@ class DetailOrderOffline extends Component {
     const {
       isOpenDetailOrder,
       isLoadingOrderHistoryDetail,
-      orderHistoryDetail,
-      toggleModalOrderDetail
+      orderHistoryDetail
     } = this.props;
     return (
       <>
-        <div className={Styles.wrapDetailOrder}>
+        <div className={`${Styles.wrapDetailOrder}`}>
           <div
-            className={ModalStyle.modal}
-            style={{ display: isOpenDetailOrder ? 'block' : 'none' }}
+            style={{
+              display: isOpenDetailOrder ? 'block' : 'none'
+            }}
           >
             <div className={Styles.contentSize}>
-              <div className={`${Styles.colorBg} modal-content`}>
+              <div className={`${Styles.colorBg}`}>
                 {isLoadingOrderHistoryDetail ? (
                   <div className="d-flex justify-content-center mt-5 mb-5">
                     <div
@@ -316,26 +318,114 @@ class DetailOrderOffline extends Component {
                           </div>
                         </div>
                       </div>
-
-                      <div className="modal-footer">
-                        <div className="col-md-2 p-0">
-                          <button
-                            type="button"
-                            className="btn btn-secondary btn-block"
-                            onClick={() =>
-                              toggleModalOrderDetail({ isShow: false })
-                            }
-                          >
-                            CLOSE
-                          </button>
-                        </div>
-                      </div>
                     </div>
                   </>
                 )}
               </div>
             </div>
           </div>
+        </div>
+        <div
+          className={`${Styles.wrapOrderAction} ${StylesPos.wrapFooterAction} `}
+        >
+          <div
+            className={`${StylesPos.wrapActionFirstLine} ${Styles.fixMarginRow} row`}
+          >
+            <div className="col-2 pl-0 pr-1">
+              <button
+                type="button"
+                className="btn btn-outline-secondary btn-lg btn-block"
+              >
+                Account
+              </button>
+            </div>
+            <div className="col-4 pl-0 pr-1">
+              <button
+                type="button"
+                className="btn btn-outline-danger btn-lg btn-block"
+              >
+                Empty cart
+              </button>
+            </div>
+            <div className="col-3 pl-0 pr-0">
+              <button
+                type="button"
+                className="btn btn-primary btn-lg btn-block"
+              >
+                CASH
+              </button>
+            </div>
+            <div className="col-3 pl-1 pr-0">
+              <button
+                type="button"
+                className="btn btn-outline-primary btn-lg btn-block"
+              >
+                Pay
+              </button>
+            </div>
+          </div>
+          <div
+            className={`${StylesPos.wrapActionSecondLine} ${Styles.fixMarginRow} row`}
+          >
+            <div className="col-2 pl-0 pr-1">
+              <button
+                type="button"
+                className="btn btn-outline-secondary btn-lg btn-block"
+              >
+                Account
+              </button>
+            </div>
+            <div className="col-4 pl-0 pr-1">
+              <button
+                type="button"
+                className="btn btn-outline-danger btn-lg btn-block"
+              >
+                Empty cart
+              </button>
+            </div>
+            <div className="col-3 pl-0 pr-0">
+              <button
+                type="button"
+                className="btn btn-primary btn-lg btn-block"
+              >
+                CASH
+              </button>
+            </div>
+            <div className="col-3 pl-1 pr-0">
+              <button
+                type="button"
+                className="btn btn-outline-primary btn-lg btn-block"
+              >
+                Pay
+              </button>
+            </div>
+          </div>
+          {/* <div className="row mr-0 ml-0"> */}
+          {/*  <button type="button" className="btn btn-primary"> */}
+          {/*    Primary */}
+          {/*  </button> */}
+          {/*  <button type="button" className="btn btn-secondary"> */}
+          {/*    Secondary */}
+          {/*  </button> */}
+          {/*  <button type="button" className="btn btn-success"> */}
+          {/*    Success */}
+          {/*  </button> */}
+          {/*  <button type="button" className="btn btn-danger"> */}
+          {/*    Danger */}
+          {/*  </button> */}
+          {/*  <button type="button" className="btn btn-warning"> */}
+          {/*    Warning */}
+          {/*  </button> */}
+          {/*  <button type="button" className="btn btn-info"> */}
+          {/*    Info */}
+          {/*  </button> */}
+          {/*  <button type="button" className="btn btn-light"> */}
+          {/*    Light */}
+          {/*  </button> */}
+          {/*  <button type="button" className="btn btn-dark"> */}
+          {/*    Dark */}
+          {/*  </button> */}
+          {/* </div> */}
         </div>
       </>
     );
