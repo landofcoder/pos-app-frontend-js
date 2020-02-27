@@ -424,7 +424,7 @@ export default class Pos extends Component<Props, State> {
             style={{ display: isOpenReceiptModal ? 'block' : 'none' }}
           >
             <div className={ModalStyle.modalContent} style={{ width: '450px' }}>
-              <Receipt />
+              {isOpenReceiptModal ? <Receipt /> : <></>}
             </div>
           </div>
           {/* Edit cart item model */}

@@ -31,7 +31,8 @@ class CardPayment extends Component {
     const {
       updateCardPaymentType,
       cardPayment,
-      acceptPaymentCard
+      acceptPaymentCard,
+      updateIsShowCardPaymentModel
     } = this.props;
     const cardPaymentType = cardPayment.type;
     return (
@@ -97,10 +98,15 @@ class CardPayment extends Component {
             </div>
           </div>
           <div className="modal-footer">
-            <button type="button" className="btn btn-secondary btn-lg">
+            <button
+              type="button"
+              className="btn btn-secondary btn-lg"
+              onClick={() => updateIsShowCardPaymentModel(false)}
+            >
               Close
             </button>
             <button
+              disabled={cardPaymentType === ''}
               type="button"
               className="btn btn-primary btn-lg"
               onClick={acceptPaymentCard}
