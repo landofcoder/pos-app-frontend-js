@@ -85,7 +85,6 @@ class CashOnline extends Component<Props> {
               </div>
             )}
           </div>
-          <div className={Styles.lineSubTotal} />
         </div>
       </>
     );
