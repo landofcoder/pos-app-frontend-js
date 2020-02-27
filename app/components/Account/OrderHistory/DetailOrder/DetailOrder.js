@@ -72,32 +72,29 @@ class DetailOrder extends Component {
                         </div>
                       </div>
                       <div>
-                        {orderHistoryDetail.items.map(item => (
-                          <>
-                            <div
-                              className={`border-bottom col ${Styles.wrapContent}`}
-                            >
-                              <div className="d-flex justify-content-between pr-1">
-                                <div>
-                                  <div className="d-flex justify-content-between pr-1">
-                                    <span>{item.name}</span>
-                                  </div>
-                                  <div className="d-flex justify-content-between pr-1">
-                                    <div>
-                                      <span>Ordered: {item.qty_ordered} </span>
-                                      <span>
-                                        Invoiced: {item.qty_invoiced}{' '}
-                                      </span>
-                                      <span>Shipped: {item.qty_shipped} </span>
-                                    </div>
+                        {orderHistoryDetail.items.map((item, index) => (
+                          <div
+                            key={index}
+                            className={`border-bottom col ${Styles.wrapContent}`}
+                          >
+                            <div className="d-flex justify-content-between pr-1">
+                              <div>
+                                <div className="d-flex justify-content-between pr-1">
+                                  <span>{item.name}</span>
+                                </div>
+                                <div className="d-flex justify-content-between pr-1">
+                                  <div>
+                                    <span>Ordered: {item.qty_ordered} </span>
+                                    <span>Invoiced: {item.qty_invoiced} </span>
+                                    <span>Shipped: {item.qty_shipped} </span>
                                   </div>
                                 </div>
-                                <span>
-                                  {this.formatSymbolMoney(item.price_incl_tax)}
-                                </span>
                               </div>
+                              <span>
+                                {this.formatSymbolMoney(item.price_incl_tax)}
+                              </span>
                             </div>
-                          </>
+                          </div>
                         ))}
                       </div>
                     </div>

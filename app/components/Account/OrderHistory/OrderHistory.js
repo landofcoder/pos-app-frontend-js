@@ -201,7 +201,7 @@ class OrderHistory extends Component<Props> {
           <div className="col-3 p-0">
             <div className={`card ${Styles.wrapListOrder}`}>
               {isLoading ? (
-                <div className="form-group">
+                <div className="form-group mt-3">
                   <div className="text-center">
                     <div
                       className="spinner-border text-secondary"

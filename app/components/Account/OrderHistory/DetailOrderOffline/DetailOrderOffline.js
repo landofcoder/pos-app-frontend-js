@@ -92,31 +92,30 @@ class DetailOrderOffline extends Component {
                         </div>
                         <div>
                           {orderHistoryDetail.items.cartCurrentResult.map(
-                            item => (
-                              <>
-                                <div
-                                  className={`border-bottom col ${Styles.wrapContent}`}
-                                >
-                                  <div className="d-flex justify-content-between pr-1">
-                                    <div>
-                                      <div className="d-flex justify-content-between pr-1">
-                                        <span>{item.name}</span>
-                                      </div>
-                                      <div className="d-flex justify-content-between pr-1">
-                                        <div>
-                                          <span>sku: {item.sku}, </span>
-                                          <span>ordered: {item.pos_qty} </span>
-                                        </div>
+                            (item, index) => (
+                              <div
+                                key={index}
+                                className={`border-bottom col ${Styles.wrapContent}`}
+                              >
+                                <div className="d-flex justify-content-between pr-1">
+                                  <div>
+                                    <div className="d-flex justify-content-between pr-1">
+                                      <span>{item.name}</span>
+                                    </div>
+                                    <div className="d-flex justify-content-between pr-1">
+                                      <div>
+                                        <span>sku: {item.sku}, </span>
+                                        <span>ordered: {item.pos_qty} </span>
                                       </div>
                                     </div>
-                                    <span>
-                                      {this.formatSymbolMoney(
-                                        item.pos_totalPrice
-                                      )}
-                                    </span>
                                   </div>
+                                  <span>
+                                    {this.formatSymbolMoney(
+                                      item.pos_totalPrice
+                                    )}
+                                  </span>
                                 </div>
-                              </>
+                              </div>
                             )
                           )}
                         </div>
