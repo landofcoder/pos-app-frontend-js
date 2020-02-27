@@ -6,7 +6,7 @@ import {
   getShopInfoLocal,
   receiptInfoSync,
   getReceiptInfoLocal
-} from './SettingsService';
+} from './settings-service';
 import { getCategories } from '../../reducers/db/categories';
 import { UPDATE_CURRENT_POS_COMMAND } from '../../constants/root';
 import { getOfflineMode } from '../../common/settings';

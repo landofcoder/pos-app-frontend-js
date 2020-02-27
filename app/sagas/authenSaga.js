@@ -14,17 +14,17 @@ import {
   getModuleInstalledService,
   deleteLoggedDb,
   getLoggedDb
-} from './services/LoginService';
+} from './services/login-service';
 import {
   getTimeSyncConstant,
   resetTimeSyncConstant
-} from './services/SettingsService';
-import { syncCustomProductService } from './services/ProductService';
+} from './services/settings-service';
+import { syncCustomProductService } from './services/product-service';
 import { getAllTbl, deleteByKey } from '../reducers/db/sync_customers';
 import { getAllOrders, deteleAllOrders } from '../reducers/db/sync_orders';
-import { signUpCustomerService } from './services/CustomerService';
+import { signUpCustomerService } from './services/customer-service';
 import { updateLoggedToken } from '../reducers/db/settings';
-import { syncOrderService } from './services/CartService';
+import { syncOrderService } from './services/cart-service';
 
 const senseUrl = state => state.authenRd.senseUrl;
 

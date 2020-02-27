@@ -11,8 +11,8 @@ import {
   getDiscountForQuoteService,
   placeCashOrderService,
   createOrderLocal
-} from './services/CartService';
-import { stripeMakePayment } from './services/PaymentService';
+} from './services/cart-service';
+import { stripeMakePayment } from './services/payments/stripe-payment';
 import {
   getDetailProductBundleService,
   getDetailProductConfigurableService,
@@ -21,14 +21,14 @@ import {
   searchProductService,
   syncAllProducts,
   getProductBySkuFromScanner
-} from './services/ProductService';
+} from './services/product-service';
 import {
   getCustomerCartTokenService,
   searchCustomer,
   searchCustomerByName,
   signUpCustomerService
-} from './services/CustomerService';
-import { createCustomerCartService } from './services/CustomerCartService';
+} from './services/customer-service';
+import { createCustomerCartService } from './services/customer-cart-service';
 import {
   getAllCategoriesService,
   getCustomReceiptService,
@@ -37,19 +37,19 @@ import {
   getOrderHistoryServiceDetails,
   getShopInfoService,
   getSystemConfigService
-} from './services/CommonService';
+} from './services/common-service';
 import {
   createConnectedDeviceSettings,
   createSyncAllDataFlag,
   haveToSyncAllData,
   getConnectedDeviceSettings,
   removeScannerDeviceConnected
-} from './services/SettingsService';
+} from './services/settings-service';
 import {
   getInfoCashierService,
   getLoggedDb,
   getMainUrlKey
-} from './services/LoginService';
+} from './services/login-service';
 import { sumCartTotalPrice } from '../common/cart';
 
 import {
