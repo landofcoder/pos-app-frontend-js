@@ -356,3 +356,16 @@ export function updateIsShowCardPaymentModel(payload) {
     payload
   };
 }
+
+export function updateCardPaymentType(payload) {
+  return {
+    type: types.UPDATE_CARD_PAYMENT_TYPE,
+    payload
+  };
+}
+
+export function acceptPaymentCard() {
+  return {
+    type: types.ACCEPT_PAYMENT_CART
+  };
+}

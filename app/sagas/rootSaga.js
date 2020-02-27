@@ -12,6 +12,7 @@ import {
   placeCashOrderService,
   createOrderLocal
 } from './services/CartService';
+import { stripeCreateToken } from './services/PaymentService';
 import {
   getDetailProductBundleService,
   getDetailProductConfigurableService,
@@ -104,6 +105,7 @@ const guestInfo = state => state.mainRd.posSystemConfig.default_guest_checkout;
 const shippingMethod = state => state.mainRd.posSystemConfig.shipping_method;
 const methodPayment = state => state.mainRd.posSystemConfig.payment_for_pos;
 const allDevices = state => state.mainRd.hidDevice.allDevices;
+const cardPayment = state => state.mainRd.checkout.cardPayment;
 
 /**
  * Create quote and show cash model
@@ -1221,6 +1223,22 @@ function* getProductBySkuFromScannerSaga(payload) {
   });
 }
 
+function* acceptPaymentCardSaga() {
+  const cardPaymentResult = yield select(cardPayment);
+  const cardType = cardPaymentResult.type;
+  switch (cardType) {
+    case 'stripe':
+      yield call(stripeCreateToken);
+      break;
+    case 'authorize':
+      console.log('run to authorize');
+      break;
+    default:
+      break;
+  }
+  console.log('card payment result:', cardPaymentResult);
+}
+
 /**
  * Default root saga
  * @returns void
@@ -1268,6 +1286,7 @@ function* rootSaga() {
     types.GET_PRODUCT_BY_SKU_FROM_SCANNER,
     getProductBySkuFromScannerSaga
   );
+  yield takeEvery(types.ACCEPT_PAYMENT_CART, acceptPaymentCardSaga);
 }
 
 export default rootSaga;

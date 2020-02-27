@@ -370,8 +370,6 @@ export default class Pos extends Component<Props, State> {
     const disableCheckout = cartCurrent.data.length <= 0;
     const { isShowingProductOption } = productOption;
 
-    console.log('is show card payment:', isShowCardPaymentModal);
-
     return (
       <>
         <div
@@ -414,7 +412,7 @@ export default class Pos extends Component<Props, State> {
             id="payModal"
             style={{ display: isShowCardPaymentModal ? 'block' : 'none' }}
           >
-            <div className={ModalStyle.modalContent}>
+            <div className={ModalStyle.modalContentLg}>
               {isShowCardPaymentModal ? <CardPayment /> : <></>}
             </div>
           </div>

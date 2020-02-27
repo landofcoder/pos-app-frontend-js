@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { updateIsShowCardPaymentModel } from '../../../actions/homeAction';
+import {
+  updateIsShowCardPaymentModel,
+  updateCardPaymentType,
+  acceptPaymentCard
+} from '../../../actions/homeAction';
 import InputCard from './InputCard';
 
 class CardPayment extends Component {
@@ -24,6 +28,12 @@ class CardPayment extends Component {
   };
 
   render() {
+    const {
+      updateCardPaymentType,
+      cardPayment,
+      acceptPaymentCard
+    } = this.props;
+    const cardPaymentType = cardPayment.type;
     return (
       <div className="row">
         <div className="modal-content" style={{ minHeight: '300px' }}>
@@ -37,40 +47,66 @@ class CardPayment extends Component {
             />
           </div>
           <div className="modal-body">
-            <div className="row">
-              <div className="col-12">
-                <div className="row">
-                  <div className="col-md-4">
-                    <button
-                      type="button"
-                      className="btn btn-outline-primary btn-lg btn-block"
-                    >
-                      CASH
-                    </button>
-                  </div>
-                  <div className="col-md-4">
-                    <button
-                      type="button"
-                      className="btn btn-outline-primary btn-lg btn-block"
-                    >
-                      Stripe
-                    </button>
-                  </div>
-                  <div className="col-md-4">
-                    <button
-                      type="button"
-                      className="btn btn-outline-primary btn-lg btn-block"
-                    >
-                      {' '}
-                      Authorize.net
-                    </button>
+            <div className="col-10 offset-1">
+              <div className="row">
+                <div className="col-12 text-center mb-4">
+                  <h2>$67</h2>
+                </div>
+                <div className="col-12">
+                  <div className="row">
+                    <div className="col-md-4">
+                      <button
+                        onClick={() => updateCardPaymentType('cash')}
+                        type="button"
+                        className={`btn btn-outline-primary btn-lg btn-block ${
+                          cardPaymentType === 'cash' ? 'active' : ''
+                        }`}
+                      >
+                        CASH
+                      </button>
+                    </div>
+                    <div className="col-md-4">
+                      <button
+                        onClick={() => updateCardPaymentType('stripe')}
+                        type="button"
+                        className={`btn btn-outline-primary btn-lg btn-block ${
+                          cardPaymentType === 'stripe' ? 'active' : ''
+                        }`}
+                      >
+                        Stripe
+                      </button>
+                    </div>
+                    <div className="col-md-4">
+                      <button
+                        onClick={() => updateCardPaymentType('authorize')}
+                        type="button"
+                        className={`btn btn-outline-primary btn-lg btn-block ${
+                          cardPaymentType === 'authorize' ? 'active' : ''
+                        }`}
+                      >
+                        {' '}
+                        Authorize.net
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="col-md-12">
-                <InputCard />
+                <div className="col-md-12 mt-4 mb-5">
+                  <InputCard />
+                </div>
               </div>
             </div>
+          </div>
+          <div className="modal-footer">
+            <button type="button" className="btn btn-secondary btn-lg">
+              Close
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary btn-lg"
+              onClick={acceptPaymentCard}
+            >
+              Accept $67
+            </button>
           </div>
         </div>
       </div>
@@ -80,14 +116,17 @@ class CardPayment extends Component {
 
 function mapStateToProps(state) {
   return {
-    isShowCardPaymentModal: state.mainRd.checkout.isShowCardPaymentModal
+    isShowCardPaymentModal: state.mainRd.checkout.isShowCardPaymentModal,
+    cardPayment: state.mainRd.checkout.cardPayment
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     updateIsShowCardPaymentModel: payload =>
-      dispatch(updateIsShowCardPaymentModel(payload))
+      dispatch(updateIsShowCardPaymentModel(payload)),
+    updateCardPaymentType: payload => dispatch(updateCardPaymentType(payload)),
+    acceptPaymentCard: () => dispatch(acceptPaymentCard())
   };
 }
 
