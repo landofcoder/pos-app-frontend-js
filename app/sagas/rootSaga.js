@@ -60,7 +60,7 @@ import {
   getDefaultPaymentMethod,
   getDefaultShippingMethod
 } from './common/orderSaga';
-import { calcPrice } from '../common/productPrice';
+import { calcPrice } from '../common/product-price';
 import { BUNDLE, CONFIGURABLE, GROUPED } from '../constants/product-types';
 import {
   CHECK_LOGIN_BACKGROUND,
