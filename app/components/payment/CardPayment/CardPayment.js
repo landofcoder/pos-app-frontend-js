@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import {
   updateIsShowCardPaymentModel,
   updateCardPaymentType,
-  acceptPaymentCard
+  acceptPaymentCard,
+  cashCheckoutAction
 } from '../../../actions/homeAction';
 import InputCard from './InputCard';
 
@@ -25,6 +26,16 @@ class CardPayment extends Component {
       // Hide any modal
       updateIsShowCardPaymentModel(false);
     }
+  };
+
+  switchToCashPayment = () => {
+    const { cashCheckoutAction, updateIsShowCardPaymentModel } = this.props;
+
+    // Close modal
+    updateIsShowCardPaymentModel(false);
+
+    // Show cash modal
+    cashCheckoutAction();
   };
 
   render() {
@@ -57,17 +68,6 @@ class CardPayment extends Component {
                   <div className="row">
                     <div className="col-md-4">
                       <button
-                        onClick={() => updateCardPaymentType('cash')}
-                        type="button"
-                        className={`btn btn-outline-primary btn-lg btn-block ${
-                          cardPaymentType === 'cash' ? 'active' : ''
-                        }`}
-                      >
-                        CASH
-                      </button>
-                    </div>
-                    <div className="col-md-4">
-                      <button
                         onClick={() => updateCardPaymentType('stripe')}
                         type="button"
                         className={`btn btn-outline-primary btn-lg btn-block ${
@@ -89,6 +89,17 @@ class CardPayment extends Component {
                         Authorize.net
                       </button>
                     </div>
+                    <div className="col-md-4">
+                      <button
+                        onClick={() => this.switchToCashPayment()}
+                        type="button"
+                        className={`btn btn-outline-primary btn-lg btn-block ${
+                          cardPaymentType === 'cash' ? 'active' : ''
+                        }`}
+                      >
+                        CASH
+                      </button>
+                    </div>
                   </div>
                 </div>
                 <div className="col-md-12 mt-4 mb-5">
@@ -97,23 +108,27 @@ class CardPayment extends Component {
               </div>
             </div>
           </div>
-          <div className="modal-footer">
-            <button
-              type="button"
-              className="btn btn-secondary btn-lg"
-              onClick={() => updateIsShowCardPaymentModel(false)}
-            >
-              Close
-            </button>
-            <button
-              disabled={cardPaymentType === ''}
-              type="button"
-              className="btn btn-primary btn-lg"
-              onClick={acceptPaymentCard}
-            >
-              Accept $67
-            </button>
-          </div>
+          {cardPaymentType ? (
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary btn-lg"
+                onClick={() => updateIsShowCardPaymentModel(false)}
+              >
+                Close
+              </button>
+              <button
+                disabled={cardPaymentType === ''}
+                type="button"
+                className="btn btn-primary btn-lg"
+                onClick={acceptPaymentCard}
+              >
+                Accept $67
+              </button>
+            </div>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
     );
@@ -132,7 +147,8 @@ function mapDispatchToProps(dispatch) {
     updateIsShowCardPaymentModel: payload =>
       dispatch(updateIsShowCardPaymentModel(payload)),
     updateCardPaymentType: payload => dispatch(updateCardPaymentType(payload)),
-    acceptPaymentCard: () => dispatch(acceptPaymentCard())
+    acceptPaymentCard: () => dispatch(acceptPaymentCard()),
+    cashCheckoutAction: () => dispatch(cashCheckoutAction())
   };
 }
 

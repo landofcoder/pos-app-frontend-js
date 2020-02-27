@@ -70,7 +70,7 @@ const initialState = {
       // Detail order for preparing to checkout
     },
     cardPayment: {
-      type: '', // cash, stripe, authorize
+      type: 'stripe', // cash, stripe, authorize
       cardInfo: {
         nameOnCard: '',
         cardNumber: '',
