@@ -110,7 +110,6 @@ const initialState = {
     tax_label: null
   },
   detailOutlet: {},
-  dataCheckoutDetailItemHistoryOffline: {},
   orderHistory: [],
   orderHistoryDetail: {},
   orderHistoryDetailOffline: {},
@@ -342,10 +341,10 @@ const mainRd = (state: Object = initialState, action: Object) =>
         }
       }
       case types.PLACE_ORDER_ERROR:
-          const { message } =  action.payload;
-          console.log(message);
-          draft.messageOrderError = message;
-          break;
+        const { message } = action.payload;
+        console.log(message);
+        draft.messageOrderError = message;
+        break;
       case types.COPY_CART_CURRENT_TO_RECEIPT:
         draft.receipt.cartForReceipt = draft.cartCurrent;
         break;
@@ -379,11 +378,16 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.TOGGLE_MODAL_ORDER_DETAIL:
         draft.isOpenDetailOrder = action.payload.isShow;
+        draft.isOpenDetailOrderOffline = false;
         draft.order_id_history = action.payload.order_id;
+        draft.orderHistoryDetailOffline = {};
+        draft.orderHistoryDetail = {};
         break;
       case types.TOGGLE_MODAL_ORDER_DETAIL_OFFLINE:
         draft.isOpenDetailOrderOffline = action.payload.isShow;
-        draft.dataCheckoutDetailItemHistoryOffline = action.payload.dataItem;
+        draft.isOpenDetailOrder = false;
+        draft.orderHistoryDetailOffline = action.payload.dataItem;
+        draft.orderHistoryDetail = {};
         break;
       case types.TOGGLE_MODAL_CALCULATOR:
         draft.isOpenCalculator = action.payload;

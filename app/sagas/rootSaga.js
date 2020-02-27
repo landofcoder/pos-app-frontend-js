@@ -1267,7 +1267,6 @@ function* rootSaga() {
   yield takeEvery(
     types.GET_PRODUCT_BY_SKU_FROM_SCANNER,
     getProductBySkuFromScannerSaga
-  );
-}
+  );}
 
 export default rootSaga;
