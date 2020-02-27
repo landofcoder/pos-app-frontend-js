@@ -23,7 +23,15 @@ class CartReceipt extends Component<Props> {
     } = this.props;
 
     /* eslint-disable-next-line */
-    const { subtotal_display, subtotal_label, discount_display, discount_label, cashier_name_display, cashier_label, grand_total_label } = customReceipt;
+    const {
+      subtotal_display,
+      subtotal_label,
+      discount_display,
+      discount_label,
+      cashier_name_display,
+      cashier_label,
+      grand_total_label
+    } = customReceipt;
 
     const { totals } = orderPreparingCheckout;
     console.log('totals:', totals);
@@ -35,102 +43,84 @@ class CartReceipt extends Component<Props> {
     /*eslint-disable*/
 
     return (
-      <div className={style.wrapCartReceipt}>
-        <table>
+      <div>
+        <table style={{ width: '100%' }}>
           <thead>
-          <tr>
-            <th>Product</th>
-            <th>Quantity</th>
-            <th>Price</th>
-          </tr>
+            <tr>
+              <th style={{ color: '#444', textAlign: 'left' }}>Product</th>
+              <th style={{ color: '#444', textAlign: 'left' }}>Quantity</th>
+              <th style={{ color: '#444', textAlign: 'right' }}>Price</th>
+            </tr>
           </thead>
           <tbody>
-          {cartForReceipt.map((item, index) => {
-            return (
-              <tr key={index}>
-                <td>{item.name}</td>
-                <td>{item.pos_qty}</td>
-                <td>{item.pos_totalPriceFormat}</td>
-              </tr>
-            );
-          })}
+            {cartForReceipt.map((item, index) => {
+              return (
+                <tr key={index}>
+                  <td style={{ paddingTop: '6px', paddingBottom: '6px' }}>
+                    {item.name}
+                  </td>
+                  <td
+                    style={{
+                      paddingTop: '6px',
+                      paddingBottom: '6px',
+                      textAlign: 'left'
+                    }}
+                  >
+                    {item.pos_qty}
+                  </td>
+                  <td
+                    style={{
+                      paddingTop: '6px',
+                      paddingBottom: '6px',
+                      textAlign: 'right'
+                    }}
+                  >
+                    {item.pos_totalPriceFormat}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
-        <hr/>
-        <div className="form-group row">
-          {Number(subtotal_display) === 1 ? (
-            <>
-              <label
-                htmlFor="receiptLblGrandTotal"
-                className="col-sm-4 col-form-label"
-              >
-                {subtotal_label}
-              </label>
-              <div className="col-sm-8 text-right">
-                <p id="receiptLblGrandTotal" className="font-weight-bold">
-                  {subTotal}
-                </p>
-              </div>
-            </>
-          ) : (
-            <></>
-          )}
+        <hr />
 
-          <label
-            htmlFor="receiptLblGrandTotal"
-            className="col-sm-4 col-form-label"
-          >
-            Shipping & Handling
-          </label>
-          <div className="col-sm-8 text-right">
-            <p id="receiptLblGrandTotal" className="font-weight-bold">
-              {shippingAmount}
-            </p>
-          </div>
-
-          {
-            Number(discount_display) === 1 ? <>
-              <label
-                htmlFor="receiptLblDiscountAmount"
-                className="col-sm-4 col-form-label"
-              >
-                {discount_label}
-              </label>
-              <div className="col-sm-8 text-right">
-                <p id="receiptLblDiscountAmount" className="font-weight-bold">
-                  {discountAmount}
-                </p>
-              </div>
-            </> : <></>
-          }
-          <label
-            htmlFor="receiptLblOrderTotal"
-            className="col-sm-4 col-form-label"
-          >
-            {grand_total_label}
-          </label>
-          <div className="col-sm-8 text-right">
-            <p id="receiptLblOrderTotal" className="font-weight-bold">
-              {grandTotal}
-            </p>
-          </div>
-        </div>
-        <hr/>
-          {
-            Number(cashier_name_display) === 1 ?
-              <>
-              <div className="form-group row">
-                <label
-                  htmlFor="receiptLblCashierName"
-                  className="col-sm-12 col-form-label"
-                >
-                  <span id="receiptLblCashierName">{cashier_label}&nbsp;</span>
-                  <span>{cashierInfo.first_name}</span>
-                </label>
-              </div>
-                <hr/>
-              </> : <></>
-          }
+        {Number(subtotal_display) === 1 ? (
+          <table style={{ width: '100%' }}>
+            <tbody>
+              <tr>
+                <td style={{ textAlign: 'left' }}>{subtotal_label}</td>
+                <td style={{ textAlign: 'right' }}>{subTotal}</td>
+              </tr>
+            </tbody>
+          </table>
+        ) : null}
+        <table style={{ width: '100%' }}>
+          <tbody>
+            <tr>
+              <td style={{ textAlign: 'left' }}>Shipping & Handling</td>
+              <td style={{ textAlign: 'right',fontWeight: "bold" }}>{shippingAmount}</td>
+            </tr>
+            {Number(discount_display) === 1 ? (
+              <tr>
+                <td style={{ textAlign: 'left' }}>{discount_label}</td>
+                <td style={{ textAlign: 'right',fontWeight: "bold" }}>{discountAmount}</td>
+              </tr>
+            ) : null}
+            <tr>
+              <td style={{ textAlign: 'left' }}>{grand_total_label}</td>
+              <td style={{ textAlign: 'right', fontWeight: "bold" }}>{grandTotal}</td>
+            </tr>
+          </tbody>
+        </table>
+        {Number(cashier_name_display) === 1 ? (
+          <>
+            <table style={{ width: '100%' }}>
+              <td style={{ textAlign: 'left' }}>{cashier_label}&nbsp;</td>
+              <td style={{ textAlign: 'right' }}>{cashierInfo.first_name}</td>
+            </table>
+            <hr />
+          </>
+        ) : null}
       </div>
     );
   }
