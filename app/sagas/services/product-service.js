@@ -17,7 +17,7 @@ import {
   QUERY_GET_PRODUCT_BY_CATEGORY,
   QUERY_SEARCH_PRODUCT
 } from '../../constants/product-query';
-import { updateCurrentPosCommand } from './CommonService';
+import { updateCurrentPosCommand } from './common-service';
 
 /**
  * Search product service

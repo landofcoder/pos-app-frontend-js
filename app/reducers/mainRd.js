@@ -68,6 +68,15 @@ const initialState = {
         base_shipping_amount: 0
       }
       // Detail order for preparing to checkout
+    },
+    cardPayment: {
+      type: 'stripe', // cash, stripe, authorize
+      cardInfo: {
+        nameOnCard: '',
+        cardNumber: '',
+        expDate: '',
+        csc: ''
+      }
     }
   },
   cartHoldList: [],
@@ -528,6 +537,9 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.UPDATE_TRIGGER_SCANNER_PRODUCT_TO_FALSE:
         draft.hidDevice.triggerProduct.status = false;
+        break;
+      case types.UPDATE_CARD_PAYMENT_TYPE:
+        draft.checkout.cardPayment.type = action.payload;
         break;
       default:
         return draft;

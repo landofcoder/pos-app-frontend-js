@@ -11,7 +11,8 @@ import {
   getDiscountForQuoteService,
   placeCashOrderService,
   createOrderLocal
-} from './services/CartService';
+} from './services/cart-service';
+import { stripeMakePayment } from './services/payments/stripe-payment';
 import {
   getDetailProductBundleService,
   getDetailProductConfigurableService,
@@ -20,14 +21,14 @@ import {
   searchProductService,
   syncAllProducts,
   getProductBySkuFromScanner
-} from './services/ProductService';
+} from './services/product-service';
 import {
   getCustomerCartTokenService,
   searchCustomer,
   searchCustomerByName,
   signUpCustomerService
-} from './services/CustomerService';
-import { createCustomerCartService } from './services/CustomerCartService';
+} from './services/customer-service';
+import { createCustomerCartService } from './services/customer-cart-service';
 import {
   getAllCategoriesService,
   getCustomReceiptService,
@@ -37,19 +38,19 @@ import {
   getShopInfoService,
   getSystemConfigService,
   cancelOrderService
-} from './services/CommonService';
+} from './services/common-service';
 import {
   createConnectedDeviceSettings,
   createSyncAllDataFlag,
   haveToSyncAllData,
   getConnectedDeviceSettings,
   removeScannerDeviceConnected
-} from './services/SettingsService';
+} from './services/settings-service';
 import {
   getInfoCashierService,
   getLoggedDb,
   getMainUrlKey
-} from './services/LoginService';
+} from './services/login-service';
 import { sumCartTotalPrice } from '../common/cart';
 
 import {
@@ -60,7 +61,7 @@ import {
   getDefaultPaymentMethod,
   getDefaultShippingMethod
 } from './common/orderSaga';
-import { calcPrice } from '../common/productPrice';
+import { calcPrice } from '../common/product-price';
 import { BUNDLE, CONFIGURABLE, GROUPED } from '../constants/product-types';
 import {
   CHECK_LOGIN_BACKGROUND,
@@ -107,6 +108,8 @@ const methodPayment = state => state.mainRd.posSystemConfig.payment_for_pos;
 const allDevices = state => state.mainRd.hidDevice.allDevices;
 const orderDetailLocalDb = state => state.mainRd.orderHistoryDetailOffline;
 const orderDetailOnline = state => state.mainRd.orderHistoryDetail;
+const cardPayment = state => state.mainRd.checkout.cardPayment;
+
 /**
  * Create quote and show cash model
  */
@@ -1257,6 +1260,22 @@ function* orderAction(payload) {
     default:
   }
 }
+function* acceptPaymentCardSaga() {
+  const cardPaymentResult = yield select(cardPayment);
+  const cardType = cardPaymentResult.type;
+  switch (cardType) {
+    case 'stripe':
+      yield call(stripeMakePayment);
+      break;
+    case 'authorize':
+      console.log('run to authorize');
+      break;
+    default:
+      break;
+  }
+  console.log('card payment result:', cardPaymentResult);
+}
+
 /**
  * Default root saga
  * @returns void
@@ -1305,6 +1324,7 @@ function* rootSaga() {
     getProductBySkuFromScannerSaga
   );
   yield takeEvery(types.ORDER_ACTION, orderAction);
+  yield takeEvery(types.ACCEPT_PAYMENT_CART, acceptPaymentCardSaga);
 }
 
 export default rootSaga;

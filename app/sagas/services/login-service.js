@@ -1,4 +1,4 @@
-import { cashierInfoSync, getCashierInfoLocal } from './SettingsService';
+import { cashierInfoSync, getCashierInfoLocal } from './settings-service';
 import {
   getByKeyV2,
   createKey,

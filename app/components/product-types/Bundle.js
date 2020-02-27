@@ -9,7 +9,7 @@ import {
   addToCart,
   updateIsShowingProductOption
 } from '../../actions/homeAction';
-import { sumBundlePrice } from '../../common/productPrice';
+import { sumBundlePrice } from '../../common/product-price';
 
 const RADIO = 'radio';
 const CHECKBOX = 'checkbox';
