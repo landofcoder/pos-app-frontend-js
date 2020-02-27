@@ -1,6 +1,6 @@
 const stripe = require('stripe')('sk_test_7A41m1DQ7bgQ22hpDeqkuJCV00xpLDxjGv');
 
-export async function stripeCreateToken() {
+export async function stripeMakePayment() {
   // Create token
   const token = await stripe.tokens.create({
     card: {

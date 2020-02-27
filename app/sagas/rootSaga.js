@@ -12,7 +12,7 @@ import {
   placeCashOrderService,
   createOrderLocal
 } from './services/CartService';
-import { stripeCreateToken } from './services/PaymentService';
+import { stripeMakePayment } from './services/PaymentService';
 import {
   getDetailProductBundleService,
   getDetailProductConfigurableService,
@@ -1228,7 +1228,7 @@ function* acceptPaymentCardSaga() {
   const cardType = cardPaymentResult.type;
   switch (cardType) {
     case 'stripe':
-      yield call(stripeCreateToken);
+      yield call(stripeMakePayment);
       break;
     case 'authorize':
       console.log('run to authorize');
