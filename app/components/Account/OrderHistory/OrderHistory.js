@@ -4,12 +4,7 @@ import {
   getOrderHistory,
   toggleModalOrderDetail,
   toggleModalOrderDetailOffline,
-  actionTakePaymentDetailOrder,
-  actionReorderDetailOrder,
-  actionPrintDetailOrder,
-  actionTakeShipmentDetailOrder,
-  actionCancelDetailOrder,
-  actionRefundDetailOrder,
+  orderAction,
   getOrderHistoryDetail
 } from '../../../actions/accountAction';
 import DetailOrder from './DetailOrder/DetailOrder';
@@ -17,6 +12,16 @@ import DetailOrderOffline from './DetailOrderOffline/DetailOrderOffline';
 import Styles from './order-history.scss';
 import { formatCurrencyCode } from '../../../common/settings';
 import StylesPos from '../../pos.scss';
+import {
+  PAYMENT_ACTION_ORDER,
+  REORDER_ACTION_ORDER,
+  PRINT_ACTION_ORDER,
+  SHIPMENT_ACTION_ORDER,
+  CANCEL_ACTION_ORDER,
+  REFUND_ACTION_ORDER,
+  DETAIL_ORDER_ONLINE,
+  DETAIL_ORDER_OFFLINE
+} from '../../../constants/root';
 
 type Props = {
   getOrderHistory: () => void,
@@ -26,12 +31,7 @@ type Props = {
   isOpenDetailOrderOffline: boolean,
   toggleModalOrderDetail: object => void,
   toggleModalOrderDetailOffline: object => void,
-  actionTakePaymentDetailOrder: () => void,
-  actionReorderDetailOrder: () => void,
-  actionPrintDetailOrder: () => void,
-  actionTakeShipmentDetailOrder: () => void,
-  actionCancelDetailOrder: () => void,
-  actionRefundDetailOrder: () => void,
+  orderAction: payload => void,
   getOrderHistoryDetail: id => void,
   orderHistoryDetailOffline: object,
   orderHistoryDetail: object
@@ -66,27 +66,30 @@ class OrderHistory extends Component<Props> {
     return null;
   };
 
-  actionDetailOrder = () => {
-    const {
-      actionTakePaymentDetailOrder,
-      actionReorderDetailOrder,
-      actionPrintDetailOrder,
-      actionTakeShipmentDetailOrder,
-      actionCancelDetailOrder,
-      actionRefundDetailOrder,
-      orderHistoryDetailOffline,
-      orderHistoryDetail,
-      isOpenDetailOrder,
+  isShowingDetailOrder = () => {
+    const { orderHistoryDetail, isOpenDetailOrder } = this.props;
+    // Object.entries(obj).length > 0 to check in object empty or not
+    return Object.entries(orderHistoryDetail).length > 0 && isOpenDetailOrder;
+  };
+
+  isShowingDetailOrderOffline = () => {
+    const { orderHistoryDetailOffline, isOpenDetailOrderOffline } = this.props;
+    return (
+      Object.entries(orderHistoryDetailOffline).length > 0 &&
       isOpenDetailOrderOffline
-    } = this.props;
+    );
+  };
+
+  selectKindOfDetail = () => {
+    if (this.isShowingDetailOrder()) return DETAIL_ORDER_ONLINE;
+    if (this.isShowingDetailOrderOffline()) return DETAIL_ORDER_OFFLINE;
+  };
+
+  actionDetailOrder = () => {
+    const { orderAction } = this.props;
 
     // check have detail order to consider show action detail
-    // Object.entries(obj).length > 0 to check in object empty or not
-    if (
-      (Object.entries(orderHistoryDetail).length > 0 && isOpenDetailOrder) ||
-      (Object.entries(orderHistoryDetailOffline).length > 0 &&
-        isOpenDetailOrderOffline)
-    ) {
+    if (this.isShowingDetailOrder() || this.isShowingDetailOrderOffline()) {
       return (
         <div
           className={`${Styles.wrapOrderAction} ${StylesPos.wrapFooterAction} `}
@@ -99,7 +102,10 @@ class OrderHistory extends Component<Props> {
                 type="button"
                 className="btn btn-outline-primary btn-lg btn-block"
                 onClick={() => {
-                  actionTakePaymentDetailOrder();
+                  orderAction({
+                    action: PAYMENT_ACTION_ORDER,
+                    kindOf: this.selectKindOfDetail()
+                  });
                 }}
               >
                 Take Payment
@@ -110,7 +116,10 @@ class OrderHistory extends Component<Props> {
                 type="button"
                 className="btn btn-outline-primary btn-lg btn-block"
                 onClick={() => {
-                  actionReorderDetailOrder();
+                  orderAction({
+                    action: REORDER_ACTION_ORDER,
+                    kindOf: this.selectKindOfDetail()
+                  });
                 }}
               >
                 Reorder
@@ -121,7 +130,10 @@ class OrderHistory extends Component<Props> {
                 type="button"
                 className="btn btn-outline-dark btn-lg btn-block"
                 onClick={() => {
-                  actionPrintDetailOrder();
+                  orderAction({
+                    action: PRINT_ACTION_ORDER,
+                    kindOf: this.selectKindOfDetail()
+                  });
                 }}
               >
                 Print
@@ -132,7 +144,10 @@ class OrderHistory extends Component<Props> {
                 type="button"
                 className="btn btn-outline-secondary btn-lg btn-block"
                 onClick={() => {
-                  actionTakeShipmentDetailOrder();
+                  orderAction({
+                    action: SHIPMENT_ACTION_ORDER,
+                    kindOf: this.selectKindOfDetail()
+                  });
                 }}
               >
                 Take Shipment
@@ -146,8 +161,12 @@ class OrderHistory extends Component<Props> {
               <button
                 type="button"
                 className="btn btn-outline-danger btn-lg btn-block"
+                disabled={this.isShowingDetailOrder()}
                 onClick={() => {
-                  actionCancelDetailOrder();
+                  orderAction({
+                    action: CANCEL_ACTION_ORDER,
+                    kindOf: this.selectKindOfDetail()
+                  });
                 }}
               >
                 Cancel
@@ -158,7 +177,10 @@ class OrderHistory extends Component<Props> {
                 type="button"
                 className="btn btn-outline-dark btn-lg btn-block"
                 onClick={() => {
-                  actionRefundDetailOrder();
+                  orderAction({
+                    action: REFUND_ACTION_ORDER,
+                    kindOf: this.selectKindOfDetail()
+                  });
                 }}
               >
                 Refund
@@ -260,15 +282,8 @@ function mapDispatchToProps(dispatch) {
       dispatch(toggleModalOrderDetail(payload)),
     toggleModalOrderDetailOffline: payload =>
       dispatch(toggleModalOrderDetailOffline(payload)),
-    actionTakePaymentDetailOrder: () =>
-      dispatch(actionTakePaymentDetailOrder()),
-    actionReorderDetailOrder: () => dispatch(actionReorderDetailOrder()),
-    actionPrintDetailOrder: () => dispatch(actionPrintDetailOrder()),
-    actionTakeShipmentDetailOrder: () =>
-      dispatch(actionTakeShipmentDetailOrder()),
-    actionCancelDetailOrder: () => dispatch(actionCancelDetailOrder()),
-    actionRefundDetailOrder: () => dispatch(actionRefundDetailOrder()),
-    getOrderHistoryDetail: id => dispatch(getOrderHistoryDetail(id))
+    getOrderHistoryDetail: id => dispatch(getOrderHistoryDetail(id)),
+    orderAction: payload => dispatch(orderAction(payload))
   };
 }
 

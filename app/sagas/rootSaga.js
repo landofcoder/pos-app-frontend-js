@@ -35,7 +35,8 @@ import {
   getOrderHistoryService,
   getOrderHistoryServiceDetails,
   getShopInfoService,
-  getSystemConfigService
+  getSystemConfigService,
+  cancelOrderService
 } from './services/CommonService';
 import {
   createConnectedDeviceSettings,
@@ -104,7 +105,8 @@ const guestInfo = state => state.mainRd.posSystemConfig.default_guest_checkout;
 const shippingMethod = state => state.mainRd.posSystemConfig.shipping_method;
 const methodPayment = state => state.mainRd.posSystemConfig.payment_for_pos;
 const allDevices = state => state.mainRd.hidDevice.allDevices;
-
+const orderDetailLocalDb = state => state.mainRd.orderHistoryDetailOffline;
+const orderDetailOnline = state => state.mainRd.orderHistoryDetail;
 /**
  * Create quote and show cash model
  */
@@ -1221,6 +1223,40 @@ function* getProductBySkuFromScannerSaga(payload) {
   });
 }
 
+function* orderActionOffline(payload) {
+  const data = yield select(orderDetailLocalDb);
+  console.log(data);
+  switch (payload) {
+    case types.CANCEL_ACTION_ORDER:
+      yield cancelOrderService(data.id);
+      break;
+    default:
+      break;
+  }
+}
+
+function* orderActionOnline(payload) {
+  const data = yield select(orderDetailOnline);
+  console.log(data);
+  switch (payload) {
+    default:
+      break;
+  }
+}
+
+function* orderAction(payload) {
+  const { kindOf, action } = payload.payload;
+  console.log(kindOf);
+  switch (kindOf) {
+    case types.DETAIL_ORDER_OFFLINE:
+      yield orderActionOffline(action);
+      break;
+    case types.DETAIL_ORDER_ONLINE:
+      yield orderActionOnline(action);
+      break;
+    default:
+  }
+}
 /**
  * Default root saga
  * @returns void
@@ -1267,6 +1303,8 @@ function* rootSaga() {
   yield takeEvery(
     types.GET_PRODUCT_BY_SKU_FROM_SCANNER,
     getProductBySkuFromScannerSaga
-  );}
+  );
+  yield takeEvery(types.ORDER_ACTION, orderAction);
+}
 
 export default rootSaga;

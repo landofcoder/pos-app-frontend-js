@@ -41,38 +41,9 @@ export function actionLoadingOrderDetailOffline(payload) {
   };
 }
 
-export function actionTakePaymentDetailOrder() {
+export function orderAction(payload) {
   return {
-    type: type.TAKE_PAYMENT_DETAIL_ORDER_ACTION
-  };
-}
-
-export function actionReorderDetailOrder() {
-  return {
-    type: type.REORDER_DETAIL_ORDER_ACTION
-  };
-}
-
-export function actionPrintDetailOrder() {
-  return {
-    type: type.PRINT_DETAIL_ORDER_ACTION
-  };
-}
-
-export function actionTakeShipmentDetailOrder() {
-  return {
-    type: type.TAKE_SHIPMENT_DETAIL_ORDER_ACTION
-  };
-}
-
-export function actionCancelDetailOrder() {
-  return {
-    type: type.CANCEL_DETAIL_ORDER_ACTION
-  };
-}
-
-export function actionRefundDetailOrder() {
-  return {
-    type: type.REFUND_DETAIL_ORDER_ACTION
+    type: type.ORDER_ACTION,
+    payload
   };
 }

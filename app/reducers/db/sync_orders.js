@@ -18,3 +18,8 @@ export async function deteleAllOrders() {
   const tbl = db.table(table);
   await tbl.clear();
 }
+
+export async function deleteOrder(id) {
+  const tbl = db.table(table);
+  await tbl.delete(id);
+}

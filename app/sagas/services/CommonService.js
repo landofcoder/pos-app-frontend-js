@@ -8,6 +8,7 @@ import {
   getReceiptInfoLocal
 } from './SettingsService';
 import { getCategories } from '../../reducers/db/categories';
+import { deleteOrder } from '../../reducers/db/sync_orders';
 import { UPDATE_CURRENT_POS_COMMAND } from '../../constants/root';
 import { getOfflineMode } from '../../common/settings';
 
@@ -247,6 +248,10 @@ export async function getOrderHistoryServiceDetails(index) {
   });
   const data = await response.json();
   return data;
+}
+
+export async function cancelOrderService(index) {
+  await deleteOrder(index);
 }
 
 /**
