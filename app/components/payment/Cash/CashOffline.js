@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Styles from './cash.scss';
-import { getDiscountForOfflineCheckout } from '../../../actions/homeAction';
 import { sumCartTotalPrice } from '../../../common/cart';
 import { formatCurrencyCode } from '../../../common/settings';
 
 type Props = {
-  getDiscountForOfflineCheckout: () => void,
   isLoadingDiscountCheckoutOffline: boolean,
   currencyCode: string,
   cartCurrent: Object,
@@ -15,11 +13,6 @@ type Props = {
 
 class CashOffline extends Component<Props> {
   props: Props;
-
-  componentDidMount() {
-    const { getDiscountForOfflineCheckout } = this.props;
-    getDiscountForOfflineCheckout();
-  }
 
   /**
    * Handle total price
@@ -116,14 +109,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    getDiscountForOfflineCheckout: () =>
-      dispatch(getDiscountForOfflineCheckout())
-  };
-}
-
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  null
 )(CashOffline);

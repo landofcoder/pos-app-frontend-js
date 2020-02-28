@@ -107,90 +107,70 @@ const methodPayment = state => state.mainRd.posSystemConfig.payment_for_pos;
 const allDevices = state => state.mainRd.hidDevice.allDevices;
 const cardPayment = state => state.mainRd.checkout.cardPayment;
 
-/**
- * Create quote and show cash model
- */
-function* cashCheckout() {
+function* toggleCashCheckoutActionSg() {
   // Show cash modal
   yield put({ type: types.UPDATE_SHOW_CASH_MODAL, payload: true });
 
-  // Show cash loading pre order
-  yield put({ type: types.UPDATE_CASH_LOADING_PREPARING_ORDER, payload: true });
+  // Checkout action handling
+  yield checkoutActionSg();
+}
 
-  const offlineMode = yield getOfflineMode();
-  const cartCurrentResultObj = yield select(cartCurrentObj);
+function* applyCustomerOrQuestCheckout(cartCurrentResultObj) {
   const defaultOutletShippingAddressResult = yield select(
     defaultOutletShippingAddress
   );
   const shippingMethodResult = yield select(shippingMethod);
   const methodPaymentResult = yield select(methodPayment);
-  console.log(shippingMethodResult);
+
+  console.log('dd1:', shippingMethodResult);
+  console.log('dd2:', methodPaymentResult);
+
+  if (cartCurrentResultObj.isGuestCustomer === true) {
+    // orderPreparingCheckout = {
+    //   payment_methods: [],
+    //   currency_id: currencyCode,
+    //   email: guestInfoResult.email,
+    //   shipping_address: {
+    //     firstname: guestInfoResult.first_name,
+    //     lastname: guestInfoResult.last_name,
+    //     street: guestInfoResult.street,
+    //     city: guestInfoResult.city,
+    //     country_id: guestInfoResult.country,
+    //     region_id: guestInfoResult.region_id,
+    //     postcode: guestInfoResult.zip_code,
+    //     telephone: guestInfoResult.telephone,
+    //     shipping_method: shippingMethodDefault(
+    //       shippingMethodResult.default_shipping_method
+    //     ),
+    //     method: methodPaymentResult.default_payment_method
+    //   },
+    //   totals: {
+    //     base_subtotal: totalPrice,
+    //     discount_amount: 0,
+    //     base_shipping_amount: 0,
+    //     grand_total: totalPrice
+    //   }
+    // };
+    const guestInfoResult = yield select(guestInfo);
+    console.log('guest info result:', guestInfoResult);
+  } else {
+    // Get customer selected
+  }
+  console.log('default outlet shipping:', defaultOutletShippingAddressResult);
+}
+
+/**
+ * Create quote and show cash model
+ */
+function* checkoutActionSg() {
+  // Show cash loading pre order
+  yield put({ type: types.UPDATE_LOADING_PREPARING_ORDER, payload: true });
+
+  const offlineMode = yield getOfflineMode();
+  yield applyCustomerOrQuestCheckout();
+
   if (offlineMode === 1) {
-    // eslint-disable-next-line prefer-destructuring
-    const currencyCode = window.currency;
-    const totalPrice = sumCartTotalPrice(
-      cartCurrentResultObj,
-      currencyCode,
-      false
-    );
-    // check guestCheckout or Customer
-    let orderPreparingCheckout = {};
-    if (cartCurrentResultObj.isGuestCustomer === true) {
-      const guestInfoResult = yield select(guestInfo);
-      orderPreparingCheckout = {
-        payment_methods: [],
-        currency_id: currencyCode,
-        email: guestInfoResult.email,
-        shipping_address: {
-          firstname: guestInfoResult.first_name,
-          lastname: guestInfoResult.last_name,
-          street: guestInfoResult.street,
-          city: guestInfoResult.city,
-          country_id: guestInfoResult.country,
-          region_id: guestInfoResult.region_id,
-          postcode: guestInfoResult.zip_code,
-          telephone: guestInfoResult.telephone,
-          shipping_method: shippingMethodDefault(
-            shippingMethodResult.default_shipping_method
-          ),
-          method: methodPaymentResult.default_payment_method
-        },
-        totals: {
-          base_subtotal: totalPrice,
-          discount_amount: 0,
-          base_shipping_amount: 0,
-          grand_total: totalPrice
-        }
-      };
-    } else {
-      orderPreparingCheckout = {
-        payment_methods: [],
-        currency_id: currencyCode,
-        email: cartCurrentResultObj.customer.email,
-        shipping_address: {
-          shipping_method: shippingMethodDefault(
-            shippingMethodResult.default_shipping_method
-          ),
-          method: methodPaymentResult.default_payment_method,
-          postcode: defaultOutletShippingAddressResult[0].data.post_code
-        },
-        totals: {
-          base_subtotal: totalPrice,
-          discount_amount: 0,
-          base_shipping_amount: 0,
-          grand_total: totalPrice
-        }
-      };
-      orderPreparingCheckout.shipping_address = Object.assign(
-        {},
-        orderPreparingCheckout.shipping_address,
-        defaultOutletShippingAddressResult[0].data
-      );
-    }
-    yield put({
-      type: types.RECEIVED_ORDER_PREPARING_CHECKOUT,
-      payload: orderPreparingCheckout
-    });
+    yield getDiscountForOfflineCheckoutSaga();
   } else {
     // Handles for online mode
     const posSystemConfigResult = yield select(posSystemConfig);
@@ -231,7 +211,7 @@ function* cashCheckout() {
 
   // Hide cash loading pre order
   yield put({
-    type: types.UPDATE_CASH_LOADING_PREPARING_ORDER,
+    type: types.UPDATE_LOADING_PREPARING_ORDER,
     payload: false
   });
 }
@@ -1244,7 +1224,7 @@ function* acceptPaymentCardSaga() {
  * @returns void
  */
 function* rootSaga() {
-  yield takeEvery(types.CASH_CHECKOUT_ACTION, cashCheckout);
+  yield takeEvery(types.CHECKOUT_ACTION, checkoutActionSg);
   yield takeEvery(types.SEARCH_ACTION, searchProduct);
   yield takeEvery(
     types.CASH_CHECKOUT_PLACE_ORDER_ACTION,
@@ -1287,6 +1267,10 @@ function* rootSaga() {
     getProductBySkuFromScannerSaga
   );
   yield takeEvery(types.ACCEPT_PAYMENT_CART, acceptPaymentCardSaga);
+  yield takeEvery(
+    types.TOGGLE_CASH_CHECKOUT_ACTION,
+    toggleCashCheckoutActionSg
+  );
 }
 
 export default rootSaga;

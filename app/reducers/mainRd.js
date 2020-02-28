@@ -45,6 +45,7 @@ const initialState = {
   checkout: {
     isShowCashPaymentModel: false,
     isShowCardPaymentModal: false,
+    loadingPreparingOrder: false, // Status cash loading for preparing to show cash payment form
     // All checkout variables
     offline: {
       isLoadingDiscount: false,
@@ -135,7 +136,6 @@ const initialState = {
   isLoadingOrderHistoryDetailOffline: true,
   isLoadingSignUpCustomer: false,
   customerSearchResult: [],
-  cashLoadingPreparingOrder: false, // Status cash loading for preparing to show cash payment form
   isLoadingCashPlaceOrder: false,
   productOption: {
     // State product option for all product type configurable, bundle, grouped product
@@ -176,8 +176,8 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.JOIN_PRODUCT_RESULT:
         draft.productList = draft.productList.concat(action.payload);
         break;
-      case types.UPDATE_CASH_LOADING_PREPARING_ORDER:
-        draft.cashLoadingPreparingOrder = action.payload;
+      case types.UPDATE_LOADING_PREPARING_ORDER:
+        draft.checkout.loadingPreparingOrder = action.payload;
         break;
       case types.UPDATE_MAIN_PANEL_TYPE:
         draft.mainPanelType = action.payload;

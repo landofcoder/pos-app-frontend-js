@@ -4,7 +4,7 @@ import {
   updateIsShowCardPaymentModel,
   updateCardPaymentType,
   acceptPaymentCard,
-  cashCheckoutAction
+  checkoutAction
 } from '../../../actions/homeAction';
 import InputCard from './InputCard';
 
@@ -29,13 +29,11 @@ class CardPayment extends Component {
   };
 
   switchToCashPayment = () => {
-    const { cashCheckoutAction, updateIsShowCardPaymentModel } = this.props;
-
+    const { checkoutAction, updateIsShowCardPaymentModel } = this.props;
     // Close modal
     updateIsShowCardPaymentModel(false);
-
     // Show cash modal
-    cashCheckoutAction();
+    checkoutAction();
   };
 
   render() {
@@ -43,9 +41,14 @@ class CardPayment extends Component {
       updateCardPaymentType,
       cardPayment,
       acceptPaymentCard,
-      updateIsShowCardPaymentModel
+      updateIsShowCardPaymentModel,
+      orderPreparingCheckout,
+      loadingPreparingOrder
     } = this.props;
     const cardPaymentType = cardPayment.type;
+    console.log('orders preparing:', orderPreparingCheckout);
+    console.log('is loading preparing orders:', loadingPreparingOrder);
+
     return (
       <div className="row">
         <div className="modal-content" style={{ minHeight: '300px' }}>
@@ -62,7 +65,16 @@ class CardPayment extends Component {
             <div className="col-10 offset-1">
               <div className="row">
                 <div className="col-12 text-center mb-4">
-                  <h2>$67</h2>
+                  {loadingPreparingOrder ? (
+                    <div
+                      className="spinner-border spinner-border-sm"
+                      role="status"
+                    >
+                      <span className="sr-only">Loading...</span>
+                    </div>
+                  ) : (
+                    <h2>$67</h2>
+                  )}
                 </div>
                 <div className="col-12">
                   <div className="row">
@@ -138,7 +150,9 @@ class CardPayment extends Component {
 function mapStateToProps(state) {
   return {
     isShowCardPaymentModal: state.mainRd.checkout.isShowCardPaymentModal,
-    cardPayment: state.mainRd.checkout.cardPayment
+    cardPayment: state.mainRd.checkout.cardPayment,
+    orderPreparingCheckout: state.mainRd.checkout.orderPreparingCheckout,
+    loadingPreparingOrder: state.mainRd.checkout.loadingPreparingOrder
   };
 }
 
@@ -148,7 +162,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(updateIsShowCardPaymentModel(payload)),
     updateCardPaymentType: payload => dispatch(updateCardPaymentType(payload)),
     acceptPaymentCard: () => dispatch(acceptPaymentCard()),
-    cashCheckoutAction: () => dispatch(cashCheckoutAction())
+    checkoutAction: () => dispatch(checkoutAction())
   };
 }
 

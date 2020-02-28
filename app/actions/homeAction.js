@@ -21,12 +21,6 @@ export function deleteItemCart(payload) {
   };
 }
 
-export function checkoutAction() {
-  return {
-    type: types.CHECK_OUT_ACTION
-  };
-}
-
 export function holdAction() {
   return {
     type: types.HOLD_ACTION
@@ -40,9 +34,15 @@ export function switchToHoldItemCart(payload) {
   };
 }
 
-export function cashCheckoutAction() {
+export function checkoutAction() {
   return {
-    type: types.CASH_CHECKOUT_ACTION
+    type: types.CHECKOUT_ACTION
+  };
+}
+
+export function toggleCashCheckoutAction() {
+  return {
+    type: types.TOGGLE_CASH_CHECKOUT_ACTION
   };
 }
 
@@ -254,11 +254,11 @@ export function updateIsInternetConnected(payload) {
   };
 }
 
-export function getDiscountForOfflineCheckout() {
-  return {
-    type: types.GET_DISCOUNT_FOR_OFFLINE_CHECKOUT
-  };
-}
+// export function getDiscountForOfflineCheckout() {
+//   return {
+//     type: types.GET_DISCOUNT_FOR_OFFLINE_CHECKOUT
+//   };
+// }
 
 export function updateIsShowModelEditingCartItem(payload) {
   return {

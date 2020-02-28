@@ -4,7 +4,7 @@ import Styles from './cash.scss';
 import { formatCurrencyCode } from '../../../common/settings';
 
 type Props = {
-  cashLoadingPreparingOrder: boolean,
+  loadingPreparingOrder: boolean,
   orderPreparingCheckout: Object,
   currencyCode: string
 };
@@ -15,7 +15,7 @@ class CashOnline extends Component<Props> {
   render() {
     const {
       orderPreparingCheckout,
-      cashLoadingPreparingOrder,
+      loadingPreparingOrder,
       currencyCode
     } = this.props;
     const subTotal = formatCurrencyCode(
@@ -41,7 +41,7 @@ class CashOnline extends Component<Props> {
             Subtotal
           </label>
           <div className="col-sm-8 pt-1">
-            {cashLoadingPreparingOrder ? (
+            {loadingPreparingOrder ? (
               <div className="spinner-border spinner-border-sm" role="status">
                 <span className="sr-only">Loading...</span>
               </div>
@@ -75,7 +75,7 @@ class CashOnline extends Component<Props> {
             Order total
           </label>
           <div className="col-sm-8 pt-1">
-            {cashLoadingPreparingOrder ? (
+            {loadingPreparingOrder ? (
               <div className="spinner-border spinner-border-sm" role="status">
                 <span className="sr-only">Loading...</span>
               </div>
@@ -93,7 +93,7 @@ class CashOnline extends Component<Props> {
 
 function mapStateToProps(state) {
   return {
-    cashLoadingPreparingOrder: state.mainRd.cashLoadingPreparingOrder,
+    loadingPreparingOrder: state.mainRd.checkout.loadingPreparingOrder,
     orderPreparingCheckout: state.mainRd.checkout.orderPreparingCheckout,
     currencyCode: state.mainRd.shopInfoConfig[0]
   };
