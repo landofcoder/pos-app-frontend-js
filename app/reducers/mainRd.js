@@ -5,10 +5,15 @@ import {
   LOADING,
   LOGIN_FORM
 } from '../constants/main-panel-types';
-import {
-  cartCurrentDefaultData,
-  testCartCurrentForDefaultReceipt
-} from './common';
+import { testCartCurrentForDefaultReceipt } from './common';
+
+const cartCurrentDefaultData = {
+  cartId: '',
+  customerToken: '',
+  data: [],
+  customer: null, // Current customer for current cart
+  isGuestCustomer: true
+};
 
 const initialState = {
   switchingMode: LOADING, // LOADING, LOGIN_FORM, CHILDREN, SYNC_SCREEN

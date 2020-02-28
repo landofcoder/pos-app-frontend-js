@@ -88,6 +88,7 @@ import {
 import { getNewToken } from './authenSaga';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
+const cartCurrentObj = state => state.mainRd.cartCurrent;
 const cartCurrentToken = state => state.mainRd.cartCurrent.customerToken;
 const cartId = state => state.mainRd.cartCurrent.cartId;
 const cartIsGuestCustomer = state => state.mainRd.cartCurrent.isGuestCustomer;
@@ -114,17 +115,23 @@ function* toggleCashCheckoutActionSg() {
   yield checkoutActionSg();
 }
 
-function* applyCustomerOrQuestCheckout(cartCurrentResultObj) {
+function* applyCustomerOrQuestAndShippingCheckout() {
   const defaultOutletShippingAddressResult = yield select(
     defaultOutletShippingAddress
   );
   const shippingMethodResult = yield select(shippingMethod);
   const methodPaymentResult = yield select(methodPayment);
+  const cartCurrentObjResult = yield select(cartCurrentObj);
 
   console.log('dd1:', shippingMethodResult);
   console.log('dd2:', methodPaymentResult);
 
-  if (cartCurrentResultObj.isGuestCustomer === true) {
+  if (cartCurrentObjResult.isGuestCustomer === true) {
+    const guestInfoResult = yield select(guestInfo);
+    yield put({
+      type: types.UPDATE_CUSTOMER_INFO_AND_SHIPPING_ADDRESS_PREPARING_CHECKOUT,
+      payload: { customer: guestInfoResult }
+    });
     // orderPreparingCheckout = {
     //   payment_methods: [],
     //   currency_id: currencyCode,
@@ -150,7 +157,7 @@ function* applyCustomerOrQuestCheckout(cartCurrentResultObj) {
     //     grand_total: totalPrice
     //   }
     // };
-    const guestInfoResult = yield select(guestInfo);
+
     console.log('guest info result:', guestInfoResult);
   } else {
     // Get customer selected
@@ -166,53 +173,53 @@ function* checkoutActionSg() {
   yield put({ type: types.UPDATE_LOADING_PREPARING_ORDER, payload: true });
 
   const offlineMode = yield getOfflineMode();
-  yield applyCustomerOrQuestCheckout();
+  yield applyCustomerOrQuestAndShippingCheckout();
 
-  if (offlineMode === 1) {
-    yield getDiscountForOfflineCheckoutSaga();
-  } else {
-    // Handles for online mode
-    const posSystemConfigResult = yield select(posSystemConfig);
-    const posSystemConfigGuestCustomer = posSystemConfigResult[3];
-    const defaultShippingMethod = yield getDefaultShippingMethod();
-    const cartCurrentResult = yield select(cartCurrent);
-
-    const {
-      cartId,
-      isGuestCustomer,
-      customerToken,
-      defaultGuestCheckout
-    } = yield getCustomerCart();
-
-    yield all(
-      cartCurrentResult.map(item =>
-        call(addProductToQuote, cartId, item, {
-          isGuestCustomer,
-          customerToken
-        })
-      )
-    );
-
-    // Add shipping and get detail order
-    const response = yield call(addShippingInformationService, cartId, {
-      isGuestCustomer,
-      customerToken,
-      defaultShippingMethod,
-      posSystemConfigGuestCustomer,
-      defaultGuestCheckout
-    });
-
-    yield put({
-      type: types.RECEIVED_ORDER_PREPARING_CHECKOUT,
-      payload: response
-    });
-  }
-
-  // Hide cash loading pre order
-  yield put({
-    type: types.UPDATE_LOADING_PREPARING_ORDER,
-    payload: false
-  });
+  // if (offlineMode === 1) {
+  //   yield getDiscountForOfflineCheckoutSaga();
+  // } else {
+  //   // Handles for online mode
+  //   const posSystemConfigResult = yield select(posSystemConfig);
+  //   const posSystemConfigGuestCustomer = posSystemConfigResult[3];
+  //   const defaultShippingMethod = yield getDefaultShippingMethod();
+  //   const cartCurrentResult = yield select(cartCurrent);
+  //
+  //   const {
+  //     cartId,
+  //     isGuestCustomer,
+  //     customerToken,
+  //     defaultGuestCheckout
+  //   } = yield getCustomerCart();
+  //
+  //   yield all(
+  //     cartCurrentResult.map(item =>
+  //       call(addProductToQuote, cartId, item, {
+  //         isGuestCustomer,
+  //         customerToken
+  //       })
+  //     )
+  //   );
+  //
+  //   // Add shipping and get detail order
+  //   const response = yield call(addShippingInformationService, cartId, {
+  //     isGuestCustomer,
+  //     customerToken,
+  //     defaultShippingMethod,
+  //     posSystemConfigGuestCustomer,
+  //     defaultGuestCheckout
+  //   });
+  //
+  //   yield put({
+  //     type: types.RECEIVED_ORDER_PREPARING_CHECKOUT,
+  //     payload: response
+  //   });
+  // }
+  //
+  // // Hide cash loading pre order
+  // yield put({
+  //   type: types.UPDATE_LOADING_PREPARING_ORDER,
+  //   payload: false
+  // });
 }
 
 /**
