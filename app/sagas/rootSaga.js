@@ -88,7 +88,6 @@ import {
 import { getNewToken } from './authenSaga';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
-const cartCurrentObj = state => state.mainRd.cartCurrent;
 const cartCurrentToken = state => state.mainRd.cartCurrent.customerToken;
 const cartId = state => state.mainRd.cartCurrent.cartId;
 const cartIsGuestCustomer = state => state.mainRd.cartCurrent.isGuestCustomer;
