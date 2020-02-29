@@ -541,6 +541,11 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.UPDATE_CARD_PAYMENT_TYPE:
         draft.checkout.cardPayment.type = action.payload;
         break;
+      case types.REMOVE_ORDER_LIST:
+        let orderList = draft.orderHistory;
+        orderList.splice(action.payload, 1);
+        draft.orderHistory = orderList;
+        draft.isOpenDetailOrderOffline = false;
       default:
         return draft;
     }

@@ -109,6 +109,7 @@ const allDevices = state => state.mainRd.hidDevice.allDevices;
 const orderDetailLocalDb = state => state.mainRd.orderHistoryDetailOffline;
 const orderDetailOnline = state => state.mainRd.orderHistoryDetail;
 const cardPayment = state => state.mainRd.checkout.cardPayment;
+const orderList = state => state.mainRd.orderHistory;
 
 /**
  * Create quote and show cash model
@@ -1228,10 +1229,17 @@ function* getProductBySkuFromScannerSaga(payload) {
 
 function* orderActionOffline(payload) {
   const data = yield select(orderDetailLocalDb);
-  console.log(data);
+  const dataList = yield select(orderList);
+  let index;
+  for (let i = 0; i < dataList.length; i += 1) {
+    if (dataList[i].id) {
+      if (dataList[i].id === data.id) index = i;
+    }
+  }
   switch (payload) {
     case types.CANCEL_ACTION_ORDER:
-      yield cancelOrderService(data.id);
+      yield cancelOrderService(data.id); // delete in localdb
+      yield put({ type: types.REMOVE_ORDER_LIST, payload: index });
       break;
     default:
       break;
