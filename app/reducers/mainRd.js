@@ -542,6 +542,10 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.UPDATE_CARD_PAYMENT_TYPE:
         draft.checkout.cardPayment.type = action.payload;
         break;
+      case types.UPDATE_CUSTOMER_INFO_AND_SHIPPING_ADDRESS_PREPARING_CHECKOUT:
+        const customerInfo = action.payload.customer;
+        console.log('customer info:', customerInfo);
+        break;
       default:
         return draft;
     }

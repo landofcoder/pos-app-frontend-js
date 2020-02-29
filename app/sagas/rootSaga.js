@@ -115,6 +115,10 @@ function* toggleCashCheckoutActionSg() {
   yield checkoutActionSg();
 }
 
+/**
+ * Apply customer info and shipping info to order preparing checkout
+ * @returns void
+ */
 function* applyCustomerOrQuestAndShippingCheckout() {
   const defaultOutletShippingAddressResult = yield select(
     defaultOutletShippingAddress
@@ -126,12 +130,28 @@ function* applyCustomerOrQuestAndShippingCheckout() {
   console.log('dd1:', shippingMethodResult);
   console.log('dd2:', methodPaymentResult);
 
+  // Get customer info
+  let customerInfo;
   if (cartCurrentObjResult.isGuestCustomer === true) {
-    const guestInfoResult = yield select(guestInfo);
-    yield put({
-      type: types.UPDATE_CUSTOMER_INFO_AND_SHIPPING_ADDRESS_PREPARING_CHECKOUT,
-      payload: { customer: guestInfoResult }
-    });
+    customerInfo = yield select(guestInfo);
+  } else {
+    // Get customer in cartCurrent
+    const cartCurrentObjResult = yield select(cartCurrentObj);
+    customerInfo = cartCurrentObjResult.customer;
+  }
+
+  // Get default shipping info, get default outlet address checkout as default
+  let customerShippingAddress;
+
+  yield put({
+    type: types.UPDATE_CUSTOMER_INFO_AND_SHIPPING_ADDRESS_PREPARING_CHECKOUT,
+    payload: {
+      customer: customerInfo,
+      shippingAddress: customerShippingAddress
+    }
+  });
+
+  if (cartCurrentObjResult.isGuestCustomer === true) {
     // orderPreparingCheckout = {
     //   payment_methods: [],
     //   currency_id: currencyCode,
@@ -158,7 +178,7 @@ function* applyCustomerOrQuestAndShippingCheckout() {
     //   }
     // };
 
-    console.log('guest info result:', guestInfoResult);
+    console.log('guest info result:', customerInfo);
   } else {
     // Get customer selected
   }
