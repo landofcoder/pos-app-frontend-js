@@ -68,7 +68,7 @@ export function* getProductBySkuFromScanner(payload) {
  * @param currentPage
  * @returns void
  */
-async function querySearchProduct(searchValue, currentPage) {
+export async function querySearchProduct(searchValue, currentPage) {
   try {
     let itemResult = [];
     // Full text search by product name

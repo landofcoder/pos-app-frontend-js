@@ -20,7 +20,8 @@ import {
   getProductByCategoryService,
   searchProductService,
   syncAllProducts,
-  getProductBySkuFromScanner
+  getProductBySkuFromScanner,
+  querySearchProduct
 } from './services/product-service';
 import {
   getCustomerCartTokenService,
@@ -73,7 +74,7 @@ import { syncCategories } from '../reducers/db/categories';
 import { syncCustomers } from '../reducers/db/customers';
 import { signUpCustomer } from '../reducers/db/sync_customers';
 import { getAllOrders } from '../reducers/db/sync_orders';
-import { counterProduct } from '../reducers/db/products';
+import { counterProduct, getProductBySkuLocal } from '../reducers/db/products';
 import { getOfflineMode, shippingMethodDefault } from '../common/settings';
 import { createProduct } from '../reducers/db/sync_custom_product';
 import {
@@ -110,7 +111,6 @@ const orderDetailLocalDb = state => state.mainRd.orderHistoryDetailOffline;
 const orderDetailOnline = state => state.mainRd.orderHistoryDetail;
 const cardPayment = state => state.mainRd.checkout.cardPayment;
 const orderList = state => state.mainRd.orderHistory;
-
 /**
  * Create quote and show cash model
  */
@@ -1226,6 +1226,83 @@ function* getProductBySkuFromScannerSaga(payload) {
     payload: productResult
   });
 }
+function* getProductInOrder(payload) {
+  const skuList = [];
+  const productBySku = [];
+  let listItems = [];
+  if (payload.synced) {
+    // synced
+    listItems = payload.data.items;
+  } else {
+    listItems = payload.data.items.cartCurrentResult;
+  }
+  for (let i = 0; i < listItems.length; i += 1) {
+    // to flitter type of product with sku
+    const config = listItems[i].sku.split('-');
+    skuList.push(config);
+  }
+  console.log(skuList);
+
+  if (getOfflineMode() === 1) {
+    console.log('in search in offline mode');
+    for (let i = 0; i < skuList.length; i += 1) {
+      let data;
+      if (skuList[i].length > 2) {
+        data = yield call(getProductBySkuLocal, skuList[i][0]);
+      } else {
+        data = yield call(getProductBySkuLocal, skuList[i].join('-'));
+      }
+      console.log(data);
+      if (data.length > 0) {
+        productBySku.push(data[0]);
+        // need to delete item in skuList when finded item in localDb to search remain product not in local yet
+        skuList.splice(i, 1);
+        i -= 1;
+      }
+    }
+  }
+  console.log(skuList);
+  for (let i = 0; i < skuList.length; i += 1) {
+    let data;
+    if (skuList[i].length > 2) {
+      data = yield call(querySearchProduct, skuList[i][0]);
+    } else {
+      data = yield call(querySearchProduct, skuList[i].join('-'));
+    }
+    if (data.length > 0) {
+      productBySku.push(data[0]);
+      // need to delete item in skuList when finded item in localDb to search remain product not in local yet
+      skuList.splice(i, 1);
+      i -= 1;
+    }
+  }
+  return productBySku;
+}
+
+function* reorderAction(payload) {
+  // if order in not sync yet will reuse order with param suit for checkout
+  console.log(payload);
+  const itemList = payload.data.items.cartCurrentResult;
+  if (!payload.synced) {
+    for (let i = 0; i < itemList.length; i += 1) {
+      yield put({ type: types.ADD_TO_CART, payload: itemList[i] });
+    }
+  } else {
+    // if order in compelete ofcourse
+    const productBySku = yield getProductInOrder(payload);
+    // push product to cart
+    // check cart current emtpy or not
+    const cartCurrentResult = yield select(cartCurrent);
+    if (cartCurrentResult.length > 0) {
+      // hold cart current
+      yield put({ type: types.HOLD_ACTION });
+    }
+    for (let i = 0; i < productBySku.length; i += 1) {
+      yield put({ type: types.ADD_TO_CART, payload: productBySku[i] });
+    }
+    console.log(productBySku);
+  }
+}
 
 function* orderActionOffline(payload) {
   const data = yield select(orderDetailLocalDb);
@@ -1241,6 +1318,9 @@ function* orderActionOffline(payload) {
       yield cancelOrderService(data.id); // delete in localdb
       yield put({ type: types.REMOVE_ORDER_LIST, payload: index });
       break;
+    case types.REORDER_ACTION_ORDER:
+      yield reorderAction({ data, synced: false });
+      break;
     default:
       break;
   }
@@ -1250,6 +1330,9 @@ function* orderActionOnline(payload) {
   const data = yield select(orderDetailOnline);
   console.log(data);
   switch (payload) {
+    case types.REORDER_ACTION_ORDER:
+      yield reorderAction({ data, synced: true });
+      break;
     default:
       break;
   }
