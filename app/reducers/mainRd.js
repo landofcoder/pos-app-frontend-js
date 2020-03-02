@@ -6,6 +6,7 @@ import {
   LOGIN_FORM
 } from '../constants/main-panel-types';
 import { testCartCurrentForDefaultReceipt } from './common';
+import { getShippingMethodCode } from '../common/settings';
 
 const cartCurrentDefaultData = {
   cartId: '',
@@ -65,7 +66,20 @@ const initialState = {
     orderPreparingCheckout: {
       currency_id: '',
       email: '',
-      shipping_address: {},
+      shipping_address: {
+        country_id: '',
+        street: [],
+        company: '',
+        telephone: '',
+        postcode: '',
+        city: '',
+        firstname: '',
+        lastname: '',
+        email: '',
+        sameAsBilling: 1,
+        shipping_method: '',
+        method: ''
+      },
       totals: {
         discount_amount: 0,
         base_subtotal: 0,
@@ -212,7 +226,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
         const { value } = action.payload.payload.event.target;
         draft.productOption.optionValue.configurable_options[
           index
-        ].pos_selected = value;
+          ].pos_selected = value;
         break;
       }
       case types.ON_BUNDLE_SELECTED_RADIO_ONCHANGE: {
@@ -233,14 +247,14 @@ const mainRd = (state: Object = initialState, action: Object) =>
         const { index, arraySelected } = action.payload;
         draft.productOption.optionValue.items[
           index
-        ].option_selected = arraySelected;
+          ].option_selected = arraySelected;
         break;
       }
       case types.ON_BUNDLE_SELECTED_MULTIPLE_ONCHANGE: {
         const { index, arraySelected } = action.payload;
         draft.productOption.optionValue.items[
           index
-        ].option_selected = arraySelected;
+          ].option_selected = arraySelected;
         break;
       }
       case types.ON_BUNDLE_SELECTED_MULTIPLE_REMOVE_ITEM_ONCHANGE: {
@@ -265,7 +279,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
         const { index, optionId, value } = action.payload;
         draft.productOption.optionValue.items[
           index
-        ].options = draft.productOption.optionValue.items[index].options.map(
+          ].options = draft.productOption.optionValue.items[index].options.map(
           item => {
             if (item.id === optionId) {
               item.qty = Number(value);
@@ -308,11 +322,10 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.UPDATE_CASH_PLACE_ORDER_LOADING:
         draft.isLoadingCashPlaceOrder = action.payload;
         break;
-      case types.UPDATE_ITEM_CART:
-        {
-          const { index, item } = action.payload;
-          draft.cartCurrent.data[index] = item;
-        }
+      case types.UPDATE_ITEM_CART: {
+        const { index, item } = action.payload;
+        draft.cartCurrent.data[index] = item;
+      }
         break;
       case types.ADD_ITEM_TO_CART: {
         const product = Object.assign({}, action.payload);
@@ -356,10 +369,10 @@ const mainRd = (state: Object = initialState, action: Object) =>
         }
       }
       case types.PLACE_ORDER_ERROR:
-          const { message } =  action.payload;
-          console.log(message);
-          draft.messageOrderError = message;
-          break;
+        const { message } = action.payload;
+        console.log(message);
+        draft.messageOrderError = message;
+        break;
       case types.COPY_CART_CURRENT_TO_RECEIPT:
         draft.receipt.cartForReceipt = draft.cartCurrent;
         break;
@@ -542,10 +555,30 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.UPDATE_CARD_PAYMENT_TYPE:
         draft.checkout.cardPayment.type = action.payload;
         break;
-      case types.UPDATE_CUSTOMER_INFO_AND_SHIPPING_ADDRESS_PREPARING_CHECKOUT:
+      case types.UPDATE_CUSTOMER_INFO_AND_SHIPPING_ADDRESS_PREPARING_CHECKOUT: {
         const customerInfo = action.payload.customer;
+        const shippingAddress = action.payload.shippingAddress;
+        const posSystemConfigResult = action.payload.posSystemConfigResult;
+        const { email } = customerInfo;
+        const shippingMethod = getShippingMethodCode(posSystemConfigResult.shipping_method);
+        const paymentForPos = posSystemConfigResult.payment_for_pos;
+
+        draft.checkout.orderPreparingCheckout.email = email;
+        draft.checkout.orderPreparingCheckout.shipping_address.country_id = shippingAddress.country_id;
+        draft.checkout.orderPreparingCheckout.shipping_address.street = [];
+        draft.checkout.orderPreparingCheckout.shipping_address.company = '';
+        draft.checkout.orderPreparingCheckout.shipping_address.telephone = shippingAddress.telephone;
+        draft.checkout.orderPreparingCheckout.shipping_address.postcode = shippingAddress.post_code;
+        draft.checkout.orderPreparingCheckout.shipping_address.city = shippingAddress.city;
+        draft.checkout.orderPreparingCheckout.shipping_address.firstname = shippingAddress.firstname;
+        draft.checkout.orderPreparingCheckout.shipping_address.lastname = shippingAddress.lastname;
+        draft.checkout.orderPreparingCheckout.shipping_address.sameAsBilling = 1;
+        draft.checkout.orderPreparingCheckout.shipping_address.shipping_method = shippingMethod;
+        draft.checkout.orderPreparingCheckout.shipping_address.method = paymentForPos;
         console.log('customer info:', customerInfo);
+        console.log('shipping address:', shippingAddress);
         break;
+      }
       default:
         return draft;
     }

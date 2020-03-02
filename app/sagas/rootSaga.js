@@ -50,7 +50,6 @@ import {
   getLoggedDb,
   getMainUrlKey
 } from './services/login-service';
-import { sumCartTotalPrice } from '../common/cart';
 
 import {
   handleProductType,
@@ -73,7 +72,7 @@ import { syncCustomers } from '../reducers/db/customers';
 import { signUpCustomer } from '../reducers/db/sync_customers';
 import { getAllOrders } from '../reducers/db/sync_orders';
 import { counterProduct } from '../reducers/db/products';
-import { getOfflineMode, shippingMethodDefault } from '../common/settings';
+import { getOfflineMode } from '../common/settings';
 import { createProduct } from '../reducers/db/sync_custom_product';
 import {
   CHILDREN,
@@ -102,8 +101,6 @@ const orderPreparingCheckoutState = state =>
   state.mainRd.checkout.orderPreparingCheckout;
 const defaultOutletShippingAddress = state => state.mainRd.detailOutlet;
 const guestInfo = state => state.mainRd.posSystemConfig.default_guest_checkout;
-const shippingMethod = state => state.mainRd.posSystemConfig.shipping_method;
-const methodPayment = state => state.mainRd.posSystemConfig.payment_for_pos;
 const allDevices = state => state.mainRd.hidDevice.allDevices;
 const cardPayment = state => state.mainRd.checkout.cardPayment;
 
@@ -123,12 +120,16 @@ function* applyCustomerOrQuestAndShippingCheckout() {
   const defaultOutletShippingAddressResult = yield select(
     defaultOutletShippingAddress
   );
-  const shippingMethodResult = yield select(shippingMethod);
-  const methodPaymentResult = yield select(methodPayment);
+  const shippingAddress = defaultOutletShippingAddressResult[0]
+    ? defaultOutletShippingAddressResult[0].data
+    : null;
+
+  const posSystemConfigResult = yield select(posSystemConfig);
   const cartCurrentObjResult = yield select(cartCurrentObj);
 
-  console.log('dd1:', shippingMethodResult);
-  console.log('dd2:', methodPaymentResult);
+  if (!shippingAddress) {
+    console.error('shipping address is null');
+  }
 
   // Get customer info
   let customerInfo;
@@ -140,49 +141,14 @@ function* applyCustomerOrQuestAndShippingCheckout() {
     customerInfo = cartCurrentObjResult.customer;
   }
 
-  // Get default shipping info, get default outlet address checkout as default
-  let customerShippingAddress;
-
   yield put({
     type: types.UPDATE_CUSTOMER_INFO_AND_SHIPPING_ADDRESS_PREPARING_CHECKOUT,
     payload: {
       customer: customerInfo,
-      shippingAddress: customerShippingAddress
+      shippingAddress,
+      posSystemConfigResult
     }
   });
-
-  if (cartCurrentObjResult.isGuestCustomer === true) {
-    // orderPreparingCheckout = {
-    //   payment_methods: [],
-    //   currency_id: currencyCode,
-    //   email: guestInfoResult.email,
-    //   shipping_address: {
-    //     firstname: guestInfoResult.first_name,
-    //     lastname: guestInfoResult.last_name,
-    //     street: guestInfoResult.street,
-    //     city: guestInfoResult.city,
-    //     country_id: guestInfoResult.country,
-    //     region_id: guestInfoResult.region_id,
-    //     postcode: guestInfoResult.zip_code,
-    //     telephone: guestInfoResult.telephone,
-    //     shipping_method: shippingMethodDefault(
-    //       shippingMethodResult.default_shipping_method
-    //     ),
-    //     method: methodPaymentResult.default_payment_method
-    //   },
-    //   totals: {
-    //     base_subtotal: totalPrice,
-    //     discount_amount: 0,
-    //     base_shipping_amount: 0,
-    //     grand_total: totalPrice
-    //   }
-    // };
-
-    console.log('guest info result:', customerInfo);
-  } else {
-    // Get customer selected
-  }
-  console.log('default outlet shipping:', defaultOutletShippingAddressResult);
 }
 
 /**
@@ -195,51 +161,51 @@ function* checkoutActionSg() {
   const offlineMode = yield getOfflineMode();
   yield applyCustomerOrQuestAndShippingCheckout();
 
-  // if (offlineMode === 1) {
-  //   yield getDiscountForOfflineCheckoutSaga();
-  // } else {
-  //   // Handles for online mode
-  //   const posSystemConfigResult = yield select(posSystemConfig);
-  //   const posSystemConfigGuestCustomer = posSystemConfigResult[3];
-  //   const defaultShippingMethod = yield getDefaultShippingMethod();
-  //   const cartCurrentResult = yield select(cartCurrent);
-  //
-  //   const {
-  //     cartId,
-  //     isGuestCustomer,
-  //     customerToken,
-  //     defaultGuestCheckout
-  //   } = yield getCustomerCart();
-  //
-  //   yield all(
-  //     cartCurrentResult.map(item =>
-  //       call(addProductToQuote, cartId, item, {
-  //         isGuestCustomer,
-  //         customerToken
-  //       })
-  //     )
-  //   );
-  //
-  //   // Add shipping and get detail order
-  //   const response = yield call(addShippingInformationService, cartId, {
-  //     isGuestCustomer,
-  //     customerToken,
-  //     defaultShippingMethod,
-  //     posSystemConfigGuestCustomer,
-  //     defaultGuestCheckout
-  //   });
-  //
-  //   yield put({
-  //     type: types.RECEIVED_ORDER_PREPARING_CHECKOUT,
-  //     payload: response
-  //   });
-  // }
-  //
-  // // Hide cash loading pre order
-  // yield put({
-  //   type: types.UPDATE_LOADING_PREPARING_ORDER,
-  //   payload: false
-  // });
+  if (offlineMode === 1) {
+    yield getDiscountForOfflineCheckoutSaga();
+  } else {
+    // Handles for online mode
+    const posSystemConfigResult = yield select(posSystemConfig);
+    const posSystemConfigGuestCustomer = posSystemConfigResult[3];
+    const defaultShippingMethod = yield getDefaultShippingMethod();
+    const cartCurrentResult = yield select(cartCurrent);
+
+    const {
+      cartId,
+      isGuestCustomer,
+      customerToken,
+      defaultGuestCheckout
+    } = yield getCustomerCart();
+
+    yield all(
+      cartCurrentResult.map(item =>
+        call(addProductToQuote, cartId, item, {
+          isGuestCustomer,
+          customerToken
+        })
+      )
+    );
+
+    // Add shipping and get detail order
+    const response = yield call(addShippingInformationService, cartId, {
+      isGuestCustomer,
+      customerToken,
+      defaultShippingMethod,
+      posSystemConfigGuestCustomer,
+      defaultGuestCheckout
+    });
+
+    yield put({
+      type: types.RECEIVED_ORDER_PREPARING_CHECKOUT,
+      payload: response
+    });
+  }
+
+  // Hide cash loading pre order
+  yield put({
+    type: types.UPDATE_LOADING_PREPARING_ORDER,
+    payload: false
+  });
 }
 
 /**
