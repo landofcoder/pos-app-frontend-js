@@ -31,22 +31,16 @@ class CashOffline extends Component<Props> {
       subTotal +
       offlineCartInfo.base_discount_amount -
       offlineCartInfo.shipping_and_tax_amount;
-    return formatCurrencyCode(grandTotal, currencyCode);
+    return formatCurrencyCode(grandTotal);
   };
 
   render() {
-    const {
-      isLoadingDiscountCheckoutOffline,
-      offlineCartInfo,
-      currencyCode
-    } = this.props;
+    const { isLoadingDiscountCheckoutOffline, offlineCartInfo } = this.props;
     const discountAmount = formatCurrencyCode(
-      offlineCartInfo.base_discount_amount,
-      currencyCode
+      offlineCartInfo.base_discount_amount
     );
     const shippingTaxAndAmount = formatCurrencyCode(
-      offlineCartInfo.shipping_and_tax_amount,
-      currencyCode
+      offlineCartInfo.shipping_and_tax_amount
     );
     return (
       <div>

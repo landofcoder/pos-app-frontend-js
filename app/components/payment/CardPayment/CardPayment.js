@@ -7,6 +7,7 @@ import {
   checkoutAction
 } from '../../../actions/homeAction';
 import InputCard from './InputCard';
+import { formatCurrencyCode } from '../../../common/settings';
 
 class CardPayment extends Component {
   props: Props;
@@ -46,8 +47,11 @@ class CardPayment extends Component {
       loadingPreparingOrder
     } = this.props;
     const cardPaymentType = cardPayment.type;
-    console.log('orders preparing:', orderPreparingCheckout);
-    console.log('is loading preparing orders:', loadingPreparingOrder);
+    // eslint-disable-next-line camelcase
+    const grandTotal = formatCurrencyCode(
+      orderPreparingCheckout.totals.grand_total
+    );
+    console.log('grand total:', grandTotal);
 
     return (
       <div className="row">
@@ -73,7 +77,7 @@ class CardPayment extends Component {
                       <span className="sr-only">Loading...</span>
                     </div>
                   ) : (
-                    <h2>$67</h2>
+                    <h2>{grandTotal}</h2>
                   )}
                 </div>
                 <div className="col-12">
@@ -135,7 +139,7 @@ class CardPayment extends Component {
                 className="btn btn-primary btn-lg"
                 onClick={acceptPaymentCard}
               >
-                Accept $67
+                Accept {grandTotal}
               </button>
             </div>
           ) : (

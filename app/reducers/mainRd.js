@@ -563,6 +563,8 @@ const mainRd = (state: Object = initialState, action: Object) =>
         const shippingMethod = getShippingMethodCode(posSystemConfigResult.shipping_method);
         const paymentForPos = posSystemConfigResult.payment_for_pos;
 
+        console.log('shipping address:', shippingAddress);
+
         draft.checkout.orderPreparingCheckout.email = email;
         draft.checkout.orderPreparingCheckout.shipping_address.country_id = shippingAddress.country_id;
         draft.checkout.orderPreparingCheckout.shipping_address.street = [];
@@ -575,8 +577,6 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.checkout.orderPreparingCheckout.shipping_address.sameAsBilling = 1;
         draft.checkout.orderPreparingCheckout.shipping_address.shipping_method = shippingMethod;
         draft.checkout.orderPreparingCheckout.shipping_address.method = paymentForPos;
-        console.log('customer info:', customerInfo);
-        console.log('shipping address:', shippingAddress);
         break;
       }
       default:
