@@ -254,12 +254,6 @@ export function updateIsInternetConnected(payload) {
   };
 }
 
-// export function getDiscountForOfflineCheckout() {
-//   return {
-//     type: types.GET_DISCOUNT_FOR_OFFLINE_CHECKOUT
-//   };
-// }
-
 export function updateIsShowModelEditingCartItem(payload) {
   return {
     type: types.UPDATE_IS_SHOW_MODEL_EDITING_CART_ITEM,
