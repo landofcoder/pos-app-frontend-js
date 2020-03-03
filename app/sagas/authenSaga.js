@@ -21,7 +21,7 @@ import {
 } from './services/settings-service';
 import { syncCustomProductService } from './services/product-service';
 import { getAllTbl, deleteByKey } from '../reducers/db/sync_customers';
-import { getAllOrders, deteleAllOrders } from '../reducers/db/sync_orders';
+import { getAllOrders, deleteOrder } from '../reducers/db/sync_orders';
 import { signUpCustomerService } from './services/customer-service';
 import { updateLoggedToken } from '../reducers/db/settings';
 import { syncOrderService } from './services/cart-service';
@@ -157,11 +157,14 @@ function* syncCustomProduct() {
 function* syncOrder() {
   const data = yield getAllOrders();
   if (data.length > 0) {
-    const dataResult = yield call(syncOrderService, data);
-    if (dataResult === true) {
-      yield deteleAllOrders();
-    } else {
-      console.log(dataResult);
+    for (let i = 0; i < data.length; i += 1) {
+      const dataResult = yield call(syncOrderService, data[i]);
+      if (dataResult === true) {
+        console.log('compelete sync order');
+        yield deleteOrder(data[i].id);
+      } else {
+        console.log(dataResult);
+      }
     }
   }
 }

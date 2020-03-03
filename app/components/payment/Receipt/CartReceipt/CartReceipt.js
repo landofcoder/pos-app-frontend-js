@@ -115,8 +115,12 @@ class CartReceipt extends Component<Props> {
         {Number(cashier_name_display) === 1 ? (
           <>
             <table style={{ width: '100%' }}>
-              <td style={{ textAlign: 'left' }}>{cashier_label}&nbsp;</td>
-              <td style={{ textAlign: 'right' }}>{cashierInfo.first_name}</td>
+              <tbody>
+                <tr>
+                  <td style={{ textAlign: 'left' }}>{cashier_label}&nbsp;</td>
+                  <td style={{ textAlign: 'right' }}>{cashierInfo.first_name}</td>
+                </tr>
+              </tbody>
             </table>
             <hr />
           </>
