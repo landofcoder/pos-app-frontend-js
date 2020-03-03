@@ -285,7 +285,8 @@
     "redux-thunk": "^2.3.0",
     "relay-runtime": "^7.1.0",
     "source-map-support": "^0.5.11",
-    "stripe": "^8.22.0"
+    "stripe": "^8.22.0",
+    "authorizenet": "^1.0.7"
   },
   "devEngines": {
     "node": ">=7.x",
