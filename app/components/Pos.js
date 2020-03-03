@@ -35,7 +35,7 @@ type Props = {
   updateIsShowCardPaymentModel: (payload: string) => void,
   cartCurrent: Object,
   mainPanelType: string,
-  cashCheckoutAction: () => void,
+  checkoutAction: () => void,
   getDetailProductConfigurable: (payload: Object) => void,
   getProductBySkuFromScanner: (payload: string) => void,
   getDetailProductBundle: (payload: Object) => void,
@@ -53,6 +53,7 @@ type Props = {
   cartHoldList: Array<Object>,
   switchToHoldItemCart: (payload: number) => void,
   updateTriggerScannerBarcodeTriggerToFalse: (payload: boolean) => void,
+  toggleCashCheckoutAction: (payload: boolean) => void,
   emptyCart: () => void,
   currencyCode: string,
   isLoadingSearchHandle: boolean,
@@ -331,9 +332,12 @@ export default class Pos extends Component<Props, State> {
     }
   };
 
-  gotoPayView = () => {
-    const { updateIsShowCardPaymentModel } = this.props;
+  showPaymentView = () => {
+    const { updateIsShowCardPaymentModel, checkoutAction } = this.props;
     updateIsShowCardPaymentModel(true);
+
+    // Trigger to checkout action
+    checkoutAction();
   };
 
   render() {
@@ -349,7 +353,6 @@ export default class Pos extends Component<Props, State> {
       productList,
       holdAction,
       cartCurrent,
-      cashCheckoutAction,
       isShowModalItemEditCart,
       productOption,
       isShowCashPaymentModel,
@@ -357,7 +360,8 @@ export default class Pos extends Component<Props, State> {
       isOpenReceiptModal,
       toggleModalCalculatorStatus,
       posCommandIsFetchingProduct,
-      defaultColor
+      defaultColor,
+      toggleCashCheckoutAction
     } = this.props;
     const { redirectToAccount, mainWrapProductPanel } = this.state;
     // Check Redirect To Layout Account
@@ -619,7 +623,7 @@ export default class Pos extends Component<Props, State> {
                 type="button"
                 disabled={disableCheckout}
                 className="btn btn-primary btn-lg btn-block"
-                onClick={cashCheckoutAction}
+                onClick={toggleCashCheckoutAction}
               >
                 CASH
               </button>
@@ -627,7 +631,7 @@ export default class Pos extends Component<Props, State> {
             <div className="col-md-2 pl-1 pr-0">
               <button
                 type="button"
-                onClick={this.gotoPayView}
+                onClick={this.showPaymentView}
                 className="btn btn-outline-primary btn-lg btn-block"
               >
                 Pay
