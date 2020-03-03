@@ -30,12 +30,23 @@ class DetailOrderOffline extends Component {
     return formatCurrencyCode(amount);
   };
 
+  showShippingMethod = () => {
+    const { orderHistoryDetail } = this.props;
+    const obj = Object.entries(
+      orderHistoryDetail.items.orderPreparingCheckoutResult.shipping_address
+        .shipping_method
+    );
+    const data = obj.map(index => index[1]);
+    return data;
+  };
+
   render() {
     const {
       isOpenDetailOrder,
       isLoadingOrderHistoryDetail,
       orderHistoryDetail
     } = this.props;
+
     return (
       <>
         <div className={`${Styles.wrapDetailOrder}`}>
@@ -72,8 +83,16 @@ class DetailOrderOffline extends Component {
                               <div className="d-flex justify-content-between pr-1">
                                 <span>Customer: </span>
                                 <span>
-                                  {/* {orderHistoryDetail.customer_firstname}{' '}
-                                  {orderHistoryDetail.customer_lastname} */}
+                                  {
+                                    orderHistoryDetail.items
+                                      .orderPreparingCheckoutResult
+                                      .shipping_address.firstname
+                                  }{' '}
+                                  {
+                                    orderHistoryDetail.items
+                                      .orderPreparingCheckoutResult
+                                      .shipping_address.lastname
+                                  }
                                 </span>
                               </div>
                             </div>
@@ -195,7 +214,8 @@ class DetailOrderOffline extends Component {
                             <span>
                               {
                                 orderHistoryDetail.items
-                                  .orderPreparingCheckoutResult.payment_methods
+                                  .orderPreparingCheckoutResult.shipping_address
+                                  .method.default_payment_method
                               }
                             </span>
                           </div>
@@ -226,13 +246,7 @@ class DetailOrderOffline extends Component {
                         </div>
                         <div className={`col ${Styles.wrapContent}`}>
                           <div className="d-flex justify-content-between pr-1">
-                            <span>
-                              {
-                                orderHistoryDetail.items
-                                  .orderPreparingCheckoutResult.shipping_address
-                                  .shipping_method
-                              }
-                            </span>
+                            <span>{this.showShippingMethod()}</span>
                           </div>
                         </div>
                       </div>
@@ -285,11 +299,9 @@ class DetailOrderOffline extends Component {
                           <div className="d-flex justify-content-between pr-1">
                             <span>Address</span>
                             <span>
-                              {
-                                orderHistoryDetail.items
-                                  .orderPreparingCheckoutResult.shipping_address
-                                  .street
-                              }
+                              {orderHistoryDetail.items.orderPreparingCheckoutResult.shipping_address.street.map(
+                                index => index
+                              )}
                             </span>
                           </div>
                           <div className="d-flex justify-content-between pr-1">
