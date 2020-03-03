@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import {
   getOrderHistory,
   toggleModalOrderDetail,
@@ -12,6 +13,7 @@ import DetailOrderOffline from './DetailOrderOffline/DetailOrderOffline';
 import Styles from './order-history.scss';
 import { formatCurrencyCode } from '../../../common/settings';
 import StylesPos from '../../pos.scss';
+import types from '../../../constants/routes';
 import {
   PAYMENT_ACTION_ORDER,
   REORDER_ACTION_ORDER,
@@ -34,7 +36,8 @@ type Props = {
   orderAction: payload => void,
   getOrderHistoryDetail: id => void,
   orderHistoryDetailOffline: object,
-  orderHistoryDetail: object
+  orderHistoryDetail: object,
+  history: payload => void
 };
 
 class OrderHistory extends Component<Props> {
@@ -86,7 +89,7 @@ class OrderHistory extends Component<Props> {
   };
 
   actionDetailOrder = () => {
-    const { orderAction } = this.props;
+    const { orderAction, history } = this.props;
 
     // check have detail order to consider show action detail
     if (this.isShowingDetailOrder() || this.isShowingDetailOrderOffline()) {
@@ -120,6 +123,7 @@ class OrderHistory extends Component<Props> {
                     action: REORDER_ACTION_ORDER,
                     kindOf: this.selectKindOfDetail()
                   });
+                  history.push(types.POS);
                 }}
               >
                 Reorder
@@ -287,7 +291,9 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(OrderHistory);
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(OrderHistory)
+);

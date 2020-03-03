@@ -1358,6 +1358,13 @@ function* reorderAction(payload) {
   // if order in not sync yet will reuse order with param suit for checkout
   console.log(payload);
   const itemList = payload.data.items.cartCurrentResult;
+
+  const cartCurrentResult = yield select(cartCurrent);
+  if (cartCurrentResult.length > 0) {
+    // hold cart current
+    yield put({ type: types.HOLD_ACTION });
+  }
+
   if (!payload.synced) {
     for (let i = 0; i < itemList.length; i += 1) {
       yield put({ type: types.ADD_TO_CART, payload: itemList[i] });
@@ -1368,11 +1375,6 @@ function* reorderAction(payload) {
     console.log(productBySku);
     // push product to cart
     // check cart current emtpy or not
-    const cartCurrentResult = yield select(cartCurrent);
-    if (cartCurrentResult.length > 0) {
-      // hold cart current
-      yield put({ type: types.HOLD_ACTION });
-    }
     for (let i = 0; i < productBySku.length; i += 1) {
       yield considerAddToCart(productBySku[i]);
     }
