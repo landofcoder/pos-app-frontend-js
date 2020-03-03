@@ -631,6 +631,8 @@ function* getSearchCustomer(payload) {
  * @returns void
  */
 function* addToCart(payload) {
+  console.log('add to cart');
+  console.log(payload);
   // Find sky if exits sku, then increment qty
   const listCartCurrent = yield select(cartCurrent);
   const cartCustomerResult = yield select(customer);
@@ -1227,6 +1229,7 @@ function* getProductBySkuFromScannerSaga(payload) {
   });
 }
 function* getProductInOrder(payload) {
+  console.log(payload);
   const skuList = [];
   const productBySku = [];
   let listItems = [];
@@ -1236,9 +1239,11 @@ function* getProductInOrder(payload) {
   } else {
     listItems = payload.data.items.cartCurrentResult;
   }
+  console.log(listItems);
   for (let i = 0; i < listItems.length; i += 1) {
     // to flitter type of product with sku
     const config = listItems[i].sku.split('-');
+    console.log(config);
     skuList.push(config);
   }
   console.log(skuList);
@@ -1247,14 +1252,17 @@ function* getProductInOrder(payload) {
     console.log('in search in offline mode');
     for (let i = 0; i < skuList.length; i += 1) {
       let data;
+      let item;
       if (skuList[i].length > 2) {
         data = yield call(getProductBySkuLocal, skuList[i][0]);
+        item = { data: data[0], sku: skuList[i].join('-') };
       } else {
         data = yield call(getProductBySkuLocal, skuList[i].join('-'));
+        item = { data: data[0], sku: skuList[i].join('-') };
       }
       console.log(data);
       if (data.length > 0) {
-        productBySku.push(data[0]);
+        productBySku.push(item);
         // need to delete item in skuList when finded item in localDb to search remain product not in local yet
         skuList.splice(i, 1);
         i -= 1;
@@ -1262,21 +1270,88 @@ function* getProductInOrder(payload) {
     }
   }
   console.log(skuList);
+  // tach sku de search
   for (let i = 0; i < skuList.length; i += 1) {
     let data;
+    let item;
+    const sku = skuList[i].join('-');
+    console.log(sku);
     if (skuList[i].length > 2) {
-      data = yield call(querySearchProduct, skuList[i][0]);
+      data = yield call(querySearchProduct, skuList[i][0], 1);
+      // because search with return all same sku name so find exact sku
+      console.log(data);
+      for (let i = 0; i < data.length; i += 1) {
+        if (data[i].sku === skuList[i][0]) {
+          item = { data: data[i], sku };
+        }
+      }
     } else {
-      data = yield call(querySearchProduct, skuList[i].join('-'));
+      data = yield call(querySearchProduct, skuList[i].join('-'), 1);
+      // because search with return all same sku name so find exact sku
+      console.log(data);
+      for (let i = 0; i < data.length; i += 1) {
+        if (data[i].sku === sku) {
+          item = { data: data[i], sku };
+        }
+      }
     }
     if (data.length > 0) {
-      productBySku.push(data[0]);
+      productBySku.push(item);
       // need to delete item in skuList when finded item in localDb to search remain product not in local yet
       skuList.splice(i, 1);
       i -= 1;
     }
   }
+  // remain product with search error
+  console.log('product cant search');
+  console.log(skuList);
   return productBySku;
+}
+
+function codeSelectConfigurable(payload) {
+  // from sku attribute to select product type
+  console.log('consider in code select');
+  console.log(payload);
+  const sku = payload.sku.split('-');
+  const listSkuProduct = payload.data.variants;
+  let resultProduct;
+  console.log(sku);
+  console.log(listSkuProduct);
+  for (let i = 0; i < listSkuProduct.length; i += 1) {
+    if (
+      listSkuProduct[i].attributes[0].label === sku[1] ||
+      (listSkuProduct[i].attributes[0].label === sku[2] &&
+        listSkuProduct[i].attributes[1].label === sku[1]) ||
+      listSkuProduct[i].attributes[1].label === sku[2]
+    ) {
+      resultProduct = listSkuProduct[i].product;
+    }
+  }
+  console.log(resultProduct);
+  return resultProduct;
+}
+
+function* considerAddToCart(payload) {
+  let productResult;
+  console.log(payload);
+  console.log('consider type of product to add cart');
+  console.log(payload.data.type_id);
+  switch (payload.data.type_id) {
+    case 'configurable':
+      console.log('go configurable');
+      console.log(payload);
+      productResult = yield call(codeSelectConfigurable, payload);
+      yield put({ type: types.ADD_TO_CART, payload: productResult });
+      break;
+    case 'simple':
+      console.log('go simple');
+      yield put({ type: types.ADD_TO_CART, payload: payload.data });
+      break;
+    default:
+      console.log(payload);
+      yield put({ type: types.ADD_TO_CART, payload: payload.data });
+      break;
+  }
 }
 
 function* reorderAction(payload) {
@@ -1290,6 +1365,7 @@ function* reorderAction(payload) {
   } else {
     // if order in compelete ofcourse
     const productBySku = yield getProductInOrder(payload);
+    console.log(productBySku);
     // push product to cart
     // check cart current emtpy or not
     const cartCurrentResult = yield select(cartCurrent);
@@ -1298,9 +1374,8 @@ function* reorderAction(payload) {
       yield put({ type: types.HOLD_ACTION });
     }
     for (let i = 0; i < productBySku.length; i += 1) {
-      yield put({ type: types.ADD_TO_CART, payload: productBySku[i] });
+      yield considerAddToCart(productBySku[i]);
     }
-    console.log(productBySku);
   }
 }
 
@@ -1328,7 +1403,6 @@ function* orderActionOffline(payload) {
 
 function* orderActionOnline(payload) {
   const data = yield select(orderDetailOnline);
-  console.log(data);
   switch (payload) {
     case types.REORDER_ACTION_ORDER:
       yield reorderAction({ data, synced: true });
