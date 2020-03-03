@@ -131,7 +131,6 @@ export async function createGuestCartService() {
  * @returns void
  */
 export async function addShippingInformationService(cartToken, payloadCart) {
-  console.log('payload cart:', payloadCart);
   let url = '';
   let token = window.liveToken;
   const {
@@ -160,11 +159,11 @@ export async function addShippingInformationService(cartToken, payloadCart) {
     referrer: 'no-referrer',
     body: JSON.stringify({
       addressInformation: {
-        shippingAddress: renderShippingAddress(
+        shipping_address: renderShippingAddress(
           posSystemConfigCustomer,
           defaultGuestCheckout
         ),
-        billingAddress: renderShippingAddress(
+        billing_address: renderShippingAddress(
           posSystemConfigCustomer,
           defaultGuestCheckout
         ),
@@ -184,11 +183,8 @@ export async function addShippingInformationService(cartToken, payloadCart) {
  * @returns void
  */
 function renderShippingAddress(customerConfig, defaultGuestCheckout) {
-  console.log('dd1:', customerConfig);
-  console.log('dd2:', defaultGuestCheckout);
-
   let city;
-  let country;
+  let countryId;
   let email;
   let firstName;
   let lastName;
@@ -200,7 +196,7 @@ function renderShippingAddress(customerConfig, defaultGuestCheckout) {
   // If customer selected
   if (customerConfig) {
     city = customerConfig ? customerConfig.city : '';
-    country = customerConfig ? customerConfig.country : '';
+    countryId = customerConfig ? customerConfig.country : '';
     email = customerConfig ? customerConfig.email : '';
     firstName = customerConfig ? customerConfig.first_name : '';
     lastName = customerConfig ? customerConfig.last_name : '';
@@ -211,7 +207,7 @@ function renderShippingAddress(customerConfig, defaultGuestCheckout) {
     // eslint-disable-next-line prefer-destructuring
     city = defaultGuestCheckout.city;
     // eslint-disable-next-line prefer-destructuring
-    country = defaultGuestCheckout.country;
+    countryId = defaultGuestCheckout.country_id;
     // eslint-disable-next-line prefer-destructuring
     email = defaultGuestCheckout.email;
     firstName = defaultGuestCheckout.first_name;
@@ -224,13 +220,14 @@ function renderShippingAddress(customerConfig, defaultGuestCheckout) {
     regionId = defaultGuestCheckout.region_id;
     postcode = defaultGuestCheckout.zip_code;
   }
+
   return {
-    country_id: country,
+    country_id: countryId,
     street,
     company: '',
     telephone,
     postcode,
-    regionId,
+    region_id: regionId,
     city,
     firstname: firstName,
     lastname: lastName,

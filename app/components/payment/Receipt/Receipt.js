@@ -97,6 +97,11 @@ class Receipt extends Component<Props> {
       header_content,
       footer_content
     } = customReceipt;
+    const css = `
+        img {
+            width: 100%;
+        }
+    `;
     return (
       <>
         <iframe
@@ -106,6 +111,7 @@ class Receipt extends Component<Props> {
         <div style={{ color: '#666' }} className={Style.wrapMainReceipt}>
           <div className="modal-content">
             <div className={Style.wrapMainPrint} id="wrap-main-receipt">
+              <style>{css}</style>
               <table
                 style={{
                   width: '100%',
@@ -120,7 +126,8 @@ class Receipt extends Component<Props> {
                         <img
                           style={{
                             display: 'block',
-                            margin: '0 auto'
+                            margin: '0 auto',
+                            width: '150px'
                           }}
                           src={window.mainUrl + '/pub/' + icon}
                         ></img>

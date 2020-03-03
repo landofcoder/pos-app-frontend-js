@@ -1,11 +1,4 @@
-export const cartCurrentDefaultData = {
-  cartId: '',
-  customerToken: '',
-  data: [],
-  customer: null, // Current customer for current cart
-  isGuestCustomer: true
-};
-
+// eslint-disable-next-line no-unused-vars
 const testCartCurrentForReceipt = [
   {
     id: 533,

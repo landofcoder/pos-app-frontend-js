@@ -11,7 +11,7 @@ import CashOnline from './CashOnline';
 import { formatCurrencyCode } from '../../../common/settings';
 
 type Props = {
-  cashLoadingPreparingOrder: boolean,
+  loadingPreparingOrder: boolean,
   cashPlaceOrderAction: () => void,
   updateShowCashModal: () => void,
   isLoadingCashPlaceOrder: boolean,
@@ -62,7 +62,7 @@ class CashPayment extends Component<Props> {
 
   considerOrder = () => {
     const {
-      cashLoadingPreparingOrder,
+      loadingPreparingOrder,
       posSystemConfig,
       isLoadingDiscountCheckoutOffline
     } = this.props;
@@ -73,14 +73,14 @@ class CashPayment extends Component<Props> {
     if (enableOfflineMode === 1 && isLoadingDiscountCheckoutOffline === false)
       return true;
     // in offlinemode != 1 check value order
-    if (cashLoadingPreparingOrder === false && enableOfflineMode !== 1)
+    if (loadingPreparingOrder === false && enableOfflineMode !== 1)
       return true;
     return false;
   };
 
   transactionCustomer = () => {
     const { inputCustomerCash } = this.state;
-    const { cashLoadingPreparingOrder } = this.props;
+    const { loadingPreparingOrder } = this.props;
     return (
       <div className="form-group row">
         <label
@@ -114,7 +114,7 @@ class CashPayment extends Component<Props> {
             </label>
 
             <div className="col-sm-8 pt-1">
-              {cashLoadingPreparingOrder ? (
+              {loadingPreparingOrder ? (
                 <div className="spinner-border spinner-border-sm" role="status">
                   <span className="sr-only">Loading...</span>
                 </div>
@@ -148,7 +148,6 @@ class CashPayment extends Component<Props> {
 
   render() {
     const {
-      cashLoadingPreparingOrder,
       cashPlaceOrderAction,
       updateShowCashModal,
       isLoadingCashPlaceOrder,
@@ -159,7 +158,6 @@ class CashPayment extends Component<Props> {
     const enableOfflineMode = Number(
       posSystemConfig.general_configuration.enable_offline_mode
     );
-    console.log(this.props);
     return (
       <div className="row">
         <div
@@ -228,7 +226,7 @@ class CashPayment extends Component<Props> {
 
 function mapStateToProps(state) {
   return {
-    cashLoadingPreparingOrder: state.mainRd.cashLoadingPreparingOrder,
+    loadingPreparingOrder: state.mainRd.checkout.loadingPreparingOrder,
     isLoadingCashPlaceOrder: state.mainRd.isLoadingCashPlaceOrder,
     currencyCode: state.mainRd.shopInfoConfig[0],
     posSystemConfig: state.mainRd.posSystemConfig,
