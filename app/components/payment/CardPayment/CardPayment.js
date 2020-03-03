@@ -51,7 +51,6 @@ class CardPayment extends Component {
     const grandTotal = formatCurrencyCode(
       orderPreparingCheckout.totals.grand_total
     );
-    console.log('grand total:', grandTotal);
 
     return (
       <div className="row">
@@ -119,7 +118,7 @@ class CardPayment extends Component {
                   </div>
                 </div>
                 <div className="col-md-12 mt-4 mb-5">
-                  <InputCard />
+                  <InputCard/>
                 </div>
               </div>
             </div>
@@ -134,12 +133,12 @@ class CardPayment extends Component {
                 Close
               </button>
               <button
-                disabled={cardPaymentType === ''}
+                disabled={cardPaymentType === '' || loadingPreparingOrder}
                 type="button"
                 className="btn btn-primary btn-lg"
                 onClick={acceptPaymentCard}
               >
-                Accept {grandTotal}
+                Accept {loadingPreparingOrder === false ? grandTotal : ''}
               </button>
             </div>
           ) : (
