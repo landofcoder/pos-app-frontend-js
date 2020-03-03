@@ -184,7 +184,18 @@ const mainRd = (state: Object = initialState, action: Object) =>
   produce(state, draft => {
     switch (action.type) {
       case types.RECEIVED_ORDER_PREPARING_CHECKOUT:
-        draft.checkout.orderPreparingCheckout = action.payload;
+        const totals = action.payload.totals;
+        const discount_amount = totals.discount_amount;
+        const base_subtotal = totals.base_subtotal;
+        const grand_total = totals.grand_total;
+        const tax_amount = totals.tax_amount;
+        const base_shipping_amount = totals.base_shipping_amount;
+
+        draft.checkout.orderPreparingCheckout.totals.discount_amount = discount_amount;
+        draft.checkout.orderPreparingCheckout.totals.base_subtotal = base_subtotal;
+        draft.checkout.orderPreparingCheckout.totals.grand_total = grand_total;
+        draft.checkout.orderPreparingCheckout.totals.tax_amount = tax_amount;
+        draft.checkout.orderPreparingCheckout.totals.base_shipping_amount = base_shipping_amount;
         break;
       case types.UPDATE_IS_SHOW_CARD_PAYMENT_MODAL:
         draft.checkout.isShowCardPaymentModal = action.payload;

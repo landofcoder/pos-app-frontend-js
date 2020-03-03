@@ -120,6 +120,12 @@ function* applyCustomerOrQuestAndShippingCheckout() {
   const defaultOutletShippingAddressResult = yield select(
     defaultOutletShippingAddress
   );
+
+  console.log(
+    'default shipping address result:',
+    defaultOutletShippingAddressResult
+  );
+
   const shippingAddress = defaultOutletShippingAddressResult[0]
     ? defaultOutletShippingAddressResult[0].data
     : null;
@@ -194,6 +200,8 @@ function* checkoutActionSg() {
       posSystemConfigGuestCustomer,
       defaultGuestCheckout
     });
+
+    console.log('response when added shipping:', response);
 
     yield put({
       type: types.RECEIVED_ORDER_PREPARING_CHECKOUT,
