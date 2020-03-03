@@ -13,6 +13,7 @@ import {
   createOrderLocal
 } from './services/cart-service';
 import { stripeMakePayment } from './services/payments/stripe-payment';
+import { authorizeMakePayment } from './services/payments/authorize-payment';
 import {
   getDetailProductBundleService,
   getDetailProductConfigurableService,
@@ -1205,18 +1206,26 @@ function* getProductBySkuFromScannerSaga(payload) {
 
 function* acceptPaymentCardSaga() {
   const cardPaymentResult = yield select(cardPayment);
+  const orderPreparingCheckoutStateResult = yield select(
+    orderPreparingCheckoutState
+  );
+  const ordersGrandTotal = orderPreparingCheckoutStateResult.totals.grand_total;
   const cardType = cardPaymentResult.type;
+  // Get total amount in current cart
+
+  let resultCode = 0;
   switch (cardType) {
     case 'stripe':
-      yield call(stripeMakePayment);
+      resultCode = yield call(stripeMakePayment, ordersGrandTotal);
       break;
     case 'authorize':
-      console.log('run to authorize');
+      resultCode = yield call(authorizeMakePayment, ordersGrandTotal);
       break;
     default:
       break;
   }
-  console.log('card payment result:', cardPaymentResult);
+
+  console.log('result code:', resultCode);
 }
 
 /**

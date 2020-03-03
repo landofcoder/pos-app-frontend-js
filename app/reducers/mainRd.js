@@ -184,6 +184,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
   produce(state, draft => {
     switch (action.type) {
       case types.RECEIVED_ORDER_PREPARING_CHECKOUT:
+        console.log('totals:', action.payload.totals);
         const totals = action.payload.totals;
         const discount_amount = totals.discount_amount;
         const base_subtotal = totals.base_subtotal;
