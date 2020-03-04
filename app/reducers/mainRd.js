@@ -1,12 +1,13 @@
 import produce from 'immer';
 import * as types from '../constants/root';
 import {
+  CHILDREN,
   HOME_DEFAULT_PRODUCT_LIST,
   LOADING,
   LOGIN_FORM
 } from '../constants/main-panel-types';
 import { testCartCurrentForDefaultReceipt } from './common';
-import { getShippingMethodCode } from '../common/settings';
+import { getShippingMethodCode, getOfflineMode } from '../common/settings';
 
 const cartCurrentDefaultData = {
   cartId: '',
@@ -37,6 +38,7 @@ const initialState = {
   isLoadingRequireStep: false,
   posSystemConfig: {}, // General config for pos
   shopInfoConfig: {}, // Shop info config
+  specialConditionSwitchMode: true,
   mainPanelType: HOME_DEFAULT_PRODUCT_LIST, // Main panel type for switching all main panel
   mainProductListLoading: false, // Main product list loading
   messageSignUpCustomer: null,
@@ -237,7 +239,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
         const { value } = action.payload.payload.event.target;
         draft.productOption.optionValue.configurable_options[
           index
-          ].pos_selected = value;
+        ].pos_selected = value;
         break;
       }
       case types.ON_BUNDLE_SELECTED_RADIO_ONCHANGE: {
@@ -258,14 +260,14 @@ const mainRd = (state: Object = initialState, action: Object) =>
         const { index, arraySelected } = action.payload;
         draft.productOption.optionValue.items[
           index
-          ].option_selected = arraySelected;
+        ].option_selected = arraySelected;
         break;
       }
       case types.ON_BUNDLE_SELECTED_MULTIPLE_ONCHANGE: {
         const { index, arraySelected } = action.payload;
         draft.productOption.optionValue.items[
           index
-          ].option_selected = arraySelected;
+        ].option_selected = arraySelected;
         break;
       }
       case types.ON_BUNDLE_SELECTED_MULTIPLE_REMOVE_ITEM_ONCHANGE: {
@@ -290,7 +292,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
         const { index, optionId, value } = action.payload;
         draft.productOption.optionValue.items[
           index
-          ].options = draft.productOption.optionValue.items[index].options.map(
+        ].options = draft.productOption.optionValue.items[index].options.map(
           item => {
             if (item.id === optionId) {
               item.qty = Number(value);
@@ -333,10 +335,11 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.UPDATE_CASH_PLACE_ORDER_LOADING:
         draft.isLoadingCashPlaceOrder = action.payload;
         break;
-      case types.UPDATE_ITEM_CART: {
-        const { index, item } = action.payload;
-        draft.cartCurrent.data[index] = item;
-      }
+      case types.UPDATE_ITEM_CART:
+        {
+          const { index, item } = action.payload;
+          draft.cartCurrent.data[index] = item;
+        }
         break;
       case types.ADD_ITEM_TO_CART: {
         const product = Object.assign({}, action.payload);
@@ -489,8 +492,32 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.checkout.orderPreparingCheckout.totals.grand_total = baseGrandTotal;
         draft.checkout.orderPreparingCheckout.totals.tax_amount = shippingAndTaxAmount;
         break;
+      case types.ACCEPT_CONDITION_SWITCH_MODE:
+        draft.specialConditionSwitchMode = action.payload;
+        break;
       case types.UPDATE_SWITCHING_MODE:
-        draft.switchingMode = action.payload;
+        // i found a bug in this case that switchingMode in LOGIN_FORM after sync success it auto switch to HOME_PAGE :/
+        console.log('switchingMode before');
+        console.log(state.switchingMode);
+        console.log('payload after');
+        console.log(action.payload);
+        console.log('get offline mode');
+        if (state.switchingMode === 'LOGIN_FORM') {
+          console.log(getOfflineMode());
+        }
+        console.log('special condition');
+        console.log(state.specialConditionSwitchMode);
+        if (
+          !(
+            state.switchingMode === LOGIN_FORM &&
+            action.payload === CHILDREN &&
+            state.specialConditionSwitchMode &&
+            getOfflineMode()
+          )
+        ) {
+          draft.switchingMode = action.payload;
+          draft.specialConditionSwitchMode = true;
+        }
         break;
       case types.BACK_TO_LOGIN:
         draft.switchingMode = LOGIN_FORM;
@@ -581,20 +608,28 @@ const mainRd = (state: Object = initialState, action: Object) =>
         const shippingAddress = action.payload.shippingAddress;
         const posSystemConfigResult = action.payload.posSystemConfigResult;
         const { email } = customerInfo;
-        const shippingMethod = getShippingMethodCode(posSystemConfigResult.shipping_method);
+        const shippingMethod = getShippingMethodCode(
+          posSystemConfigResult.shipping_method
+        );
         const paymentForPos = posSystemConfigResult.payment_for_pos;
 
         console.log('shipping address:', shippingAddress);
 
         draft.checkout.orderPreparingCheckout.email = email;
-        draft.checkout.orderPreparingCheckout.shipping_address.country_id = shippingAddress.country_id;
+        draft.checkout.orderPreparingCheckout.shipping_address.country_id =
+          shippingAddress.country_id;
         draft.checkout.orderPreparingCheckout.shipping_address.street = [];
         draft.checkout.orderPreparingCheckout.shipping_address.company = '';
-        draft.checkout.orderPreparingCheckout.shipping_address.telephone = shippingAddress.telephone;
-        draft.checkout.orderPreparingCheckout.shipping_address.postcode = shippingAddress.post_code;
-        draft.checkout.orderPreparingCheckout.shipping_address.city = shippingAddress.city;
-        draft.checkout.orderPreparingCheckout.shipping_address.firstname = shippingAddress.firstname;
-        draft.checkout.orderPreparingCheckout.shipping_address.lastname = shippingAddress.lastname;
+        draft.checkout.orderPreparingCheckout.shipping_address.telephone =
+          shippingAddress.telephone;
+        draft.checkout.orderPreparingCheckout.shipping_address.postcode =
+          shippingAddress.post_code;
+        draft.checkout.orderPreparingCheckout.shipping_address.city =
+          shippingAddress.city;
+        draft.checkout.orderPreparingCheckout.shipping_address.firstname =
+          shippingAddress.firstname;
+        draft.checkout.orderPreparingCheckout.shipping_address.lastname =
+          shippingAddress.lastname;
         draft.checkout.orderPreparingCheckout.shipping_address.sameAsBilling = 1;
         draft.checkout.orderPreparingCheckout.shipping_address.shipping_method = shippingMethod;
         draft.checkout.orderPreparingCheckout.shipping_address.method = paymentForPos;

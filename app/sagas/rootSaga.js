@@ -754,6 +754,7 @@ function* syncData() {
       yield createSyncAllDataFlag();
 
       // Update counterMode for recheck background
+      yield put({ type: types.ACCEPT_CONDITION_SWITCH_MODE, payload: false });
       yield put({ type: types.UPDATE_FLAG_SWITCHING_MODE });
     } else {
       console.warn(
@@ -952,6 +953,7 @@ function* checkLoginBackgroundSaga() {
         yield put({ type: types.UPDATE_SWITCHING_MODE, payload: SYNC_SCREEN });
         yield syncData();
       } else {
+        yield put({ type: types.ACCEPT_CONDITION_SWITCH_MODE, payload: false });
         yield put({ type: types.UPDATE_SWITCHING_MODE, payload: CHILDREN });
         yield syncData();
       }

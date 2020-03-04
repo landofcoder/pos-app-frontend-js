@@ -78,6 +78,7 @@ function* getMainUrl() {
 function* cleanUrlWorkplace() {
   yield put({ type: types.START_LOADING_WORKPLACE });
   yield call(setMainUrlKey, '');
+  yield put({ type: types.RECEIVED_MODULE_INSTALLED, payload: {} });
   yield put({ type: types.STOP_LOADING_WORKPLACE });
 }
 

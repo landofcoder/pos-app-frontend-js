@@ -24,38 +24,43 @@ class CashierInfo extends Component<Props> {
     const { first_name, last_name, phone, email } = cashierInfo;
     return (
       <>
-        <div className="card">
-          <h5 className="card-header">Cashier Information</h5>
-          <div className="card-body">
-            <div className="form-group">
-              <p className="card-text font-weight-bold">First Name</p>
-              <div className="form-group">
-                <label className="">{first_name}</label>
-              </div>
-              <p className="card-text font-weight-bold">Last Name</p>
-              <div className="form-group">
-                <label className="">{last_name}</label>
-              </div>
-              <p className="card-text font-weight-bold">Email Adrdress</p>
-              <div className="form-group">
-                <label className="">{email}</label>
-              </div>
-              <p className="card-text font-weight-bold">Phone</p>
-              <div className="form-group">
-                <label className="">{phone}</label>
+        <div className="row">
+          <div className="col-md-3"></div>
+          <div className="col-md-6">
+            <div className="card">
+              <h5 className="card-header">Cashier Information</h5>
+              <div className="card-body">
+                <div className="form-group">
+                  <p className="card-text font-weight-bold">First Name</p>
+                  <div className="form-group">
+                    <label className="">{first_name}</label>
+                  </div>
+                  <p className="card-text font-weight-bold">Last Name</p>
+                  <div className="form-group">
+                    <label className="">{last_name}</label>
+                  </div>
+                  <p className="card-text font-weight-bold">Email Adrdress</p>
+                  <div className="form-group">
+                    <label className="">{email}</label>
+                  </div>
+                  <p className="card-text font-weight-bold">Phone</p>
+                  <div className="form-group">
+                    <label className="">{phone}</label>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div className="card mt-3">
-          <div className="card-body">
-            <button
-              type="button"
-              className="btn btn-danger"
-              onClick={this.handleSignOut}
-            >
-              Sign out
-            </button>
+            <div className="card mt-3">
+              <div className="card-body">
+                <button
+                  type="button"
+                  className="btn btn-danger"
+                  onClick={this.handleSignOut}
+                >
+                  Sign out
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </>

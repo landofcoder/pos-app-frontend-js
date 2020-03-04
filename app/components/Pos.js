@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router';
 import ListCart from './ListCart/ListCart';
 import Styles from './pos.scss';
 import CommonStyle from './styles/common.scss';
@@ -23,9 +22,9 @@ import Receipt from './payment/Receipt/Receipt';
 import EditCart from './ListCart/EditCart/EditCart';
 import { sumCartTotalPrice } from '../common/cart';
 import Categories from './commons/Categories/Categories';
-import routers from '../constants/routes';
 import { limitLoop } from '../common/settings';
 import Custom from './product-types/Custom';
+import routes from '../constants/routes';
 
 type Props = {
   productList: Array<Object>,
@@ -63,13 +62,13 @@ type Props = {
   toggleModalCalculatorStatus: boolean,
   posCommandIsFetchingProduct: boolean,
   defaultColor: string,
-  hidDevice: Object
+  hidDevice: Object,
+  history: payload => void
 };
 
 type State = {
   delayTimer: Object,
   typeId: string,
-  redirectToAccount: boolean
 };
 
 type product = {
@@ -84,7 +83,6 @@ export default class Pos extends Component<Props, State> {
     this.state = {
       delayTimer: {},
       typeId: '',
-      redirectToAccount: false,
       mainWrapProductPanel: 'main-wrap-product-panel'
     };
   }
@@ -96,14 +94,14 @@ export default class Pos extends Component<Props, State> {
       hidDevice
     } = this.props;
     const loopStep = 5000;
-    limitLoop(
-      () => {
-        autoLoginToGetNewToken();
-        autoSyncGroupCheckout(loopStep);
-      },
-      30,
-      loopStep
-    );
+    autoSyncGroupCheckout();
+    // limitLoop(
+    //   () => {
+    //     autoLoginToGetNewToken();
+    //   },
+    //   30,
+    //   loopStep
+    // );
 
     // Uncomment below code for testing scanner device working
     // const { getProductBySkuFromScanner } = this.props;
@@ -165,7 +163,8 @@ export default class Pos extends Component<Props, State> {
    * Redirect to account view
    */
   handleRedirectToAccount = () => {
-    this.setState({ redirectToAccount: true });
+    const { history } = this.props;
+    history.push(routes.ACCOUNT);
   };
 
   /**
@@ -363,11 +362,8 @@ export default class Pos extends Component<Props, State> {
       defaultColor,
       toggleCashCheckoutAction
     } = this.props;
-    const { redirectToAccount, mainWrapProductPanel } = this.state;
+    const { mainWrapProductPanel } = this.state;
     // Check Redirect To Layout Account
-    if (redirectToAccount) {
-      return <Redirect to={routers.ACCOUNT} />;
-    }
 
     const classWrapProductPanel = `pr-3 ${Styles.wrapProductPanel} row`;
     // Enable checkout button or disable
