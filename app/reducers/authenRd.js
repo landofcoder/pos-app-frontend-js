@@ -84,6 +84,7 @@ const authenRd = (state = initialState, action) =>
         break;
       case typesAuthen.CHANGE_STATUS_TO_MODULE_INSTALLED:
         draft.toModuleInstalled = action.payload;
+        draft.moduleInstalled = {}
         break;
       default:
     }

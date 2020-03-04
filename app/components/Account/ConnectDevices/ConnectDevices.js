@@ -50,8 +50,8 @@ class ConnectDevices extends Component<Props> {
           <div className="col-md-3" />
           <div className="col-md-6">
             <div className="card">
+              <h5 className="card-header">Barcode scanner</h5>
               <div className="card-body">
-                <h5 className="card-title">Barcode scanner</h5>
                 {connectedDeviceStatus ? (
                   <>
                     <hr />
@@ -72,21 +72,24 @@ class ConnectDevices extends Component<Props> {
                 ) : (
                   <>
                     <div className="list-group">
-                      <div className="form-group">
-                        <select
-                          onChange={this.handleChangeDevice}
-                          value={deviceSelected}
-                        >
-                          {allDevices.map((device, index) => {
-                            return (
-                              <option key={index} value={index}>
-                                {device.product === ''
-                                  ? 'Unknown device'
-                                  : device.product}
-                              </option>
-                            );
-                          })}
-                        </select>
+                      <div className="form-group row">
+                        <div className="col-5">
+                          <select
+                            onChange={this.handleChangeDevice}
+                            value={deviceSelected}
+                            className="form-control"
+                          >
+                            {allDevices.map((device, index) => {
+                              return (
+                                <option key={index} value={index}>
+                                  {device.product === ''
+                                    ? 'Unknown device'
+                                    : device.product}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </div>
                       </div>
                       <div className="form-group">
                         {errorConnect ? (

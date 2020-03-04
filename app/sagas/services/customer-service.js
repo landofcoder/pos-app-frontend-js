@@ -3,6 +3,7 @@
  * @returns {Promise<any>}
  */
 import { getGraphqlPath } from '../../common/settings';
+
 export async function searchCustomerByName(payload) {
   const searchValue = payload.payload;
   const response = await fetch(
@@ -77,14 +78,15 @@ export async function getCustomerCartTokenService(customerId) {
  * @returns void
  */
 export async function signUpCustomerService(payload) {
-  const response = await fetch(getGraphqlPath(), {
-    method: 'POST', // *GET, POST, PUT, DELETE, etc.
-    headers: {
-      'Content-Type': 'application/json'
-      // 'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: JSON.stringify({
-      query: `mutation {
+  try {
+    const response = await fetch(getGraphqlPath(), {
+      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        'Content-Type': 'application/json'
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: JSON.stringify({
+        query: `mutation {
         createCustomer(
           input: {
             firstname: "${payload.payload.customer.firstname}"
@@ -103,11 +105,13 @@ export async function signUpCustomerService(payload) {
           }
         }
       }`
-    }) // body data type must match "Content-Type" header
-  });
-  const data = await response.json(); // parses JSON response into native JavaScript objects
-  if (data.message === undefined && data.errors === undefined) {
-    return { data, ok: true };
+      }) // body data type must match "Content-Type" header
+    });
+    const data = await response.json(); // parses JSON response into native JavaScript objects
+    if (data.message === undefined && data.errors === undefined) {
+      return { data, ok: true };
+    }
+  } catch (e) {
+    return { ok: false };
   }
-  return { data, ok: false };
 }

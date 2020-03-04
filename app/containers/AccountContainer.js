@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import Settings from '../components/Account/Account';
 
 function mapStateToProps(state) {
@@ -11,7 +12,9 @@ function mapDispatchToProp(dispatch) {
   return {};
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProp
-)(Settings);
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProp
+  )(Settings)
+);

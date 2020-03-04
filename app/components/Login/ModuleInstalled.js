@@ -74,7 +74,9 @@ class ModuleInstalled extends Component {
     console.log('module installed:', moduleInstalled);
     return (
       <>
-        <div className={`${commonStyles.contentColumn} ${styles.wrapPage} pl-0 pr-0`}>
+        <div
+          className={`${commonStyles.contentColumn} ${styles.wrapPage} pl-0 pr-0`}
+        >
           <div className="col-sm-6 col-md-5 col-lg-4">
             <div className="form-group">
               <button
@@ -99,9 +101,7 @@ class ModuleInstalled extends Component {
                 <div>
                   <div className="card">
                     <div className="card-body">
-                      <h5 className="card-title">
-                        All modules require:
-                      </h5>
+                      <h5 className="card-title">All modules require:</h5>
                       {Object.keys(moduleInstalled).map(key => {
                         return this.showModuleInstalled(
                           moduleInstalled[key],
