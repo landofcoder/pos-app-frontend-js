@@ -162,7 +162,7 @@ function* applyCustomerOrQuestAndShippingCheckout() {
  * Create quote and show cash model
  */
 function* checkoutActionSg() {
-  // Show cash loading pre order
+  // Show loading pre order
   yield put({ type: types.UPDATE_LOADING_PREPARING_ORDER, payload: true });
 
   const offlineMode = yield getOfflineMode();
@@ -1204,6 +1204,10 @@ function* getProductBySkuFromScannerSaga(payload) {
   });
 }
 
+/**
+ * Accept payment card
+ * @returns void
+ */
 function* acceptPaymentCardSaga() {
   const cardPaymentResult = yield select(cardPayment);
   const orderPreparingCheckoutStateResult = yield select(

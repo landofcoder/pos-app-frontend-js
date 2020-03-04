@@ -12,6 +12,7 @@ const stripe = require('stripe')('sk_test_7A41m1DQ7bgQ22hpDeqkuJCV00xpLDxjGv');
  * @returns void
  */
 export async function stripeMakePayment(amount) {
+  console.log('amount:', amount);
   // Create token
   const token = await stripe.tokens.create({
     card: {

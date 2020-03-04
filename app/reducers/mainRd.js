@@ -92,11 +92,13 @@ const initialState = {
     cardPayment: {
       type: 'stripe', // cash, stripe, authorize
       cardInfo: {
-        nameOnCard: '',
-        cardNumber: '',
-        expDate: '',
-        csc: ''
-      }
+        nameOnCard: 'VU HOANG CHIEN',
+        cardNumber: '4242424242424242',
+        expMonth: 2,
+        expYear: 2021,
+        cvc: '314'
+      },
+      resultCharge: 0 // Default is 0, and with payment.json types
     }
   },
   cartHoldList: [],
@@ -591,6 +593,10 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.checkout.orderPreparingCheckout.shipping_address.method = paymentForPos;
         break;
       }
+      case types.ON_CARD_PAYMENT_FIELD_ONCHANGE:
+        console.log('field onChange payload:', action.payload);
+        draft.checkout.cardPayment.cardInfo[action.payload.field] = action.payload.value;
+        break;
       default:
         return draft;
     }

@@ -363,3 +363,10 @@ export function acceptPaymentCard() {
     type: types.ACCEPT_PAYMENT_CART
   };
 }
+
+export function onCardPaymentFieldOnChange(payload) {
+  return {
+    type: types.ON_CARD_PAYMENT_FIELD_ONCHANGE,
+    payload
+  };
+}

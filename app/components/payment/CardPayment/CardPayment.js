@@ -4,10 +4,15 @@ import {
   updateIsShowCardPaymentModel,
   updateCardPaymentType,
   acceptPaymentCard,
-  checkoutAction
+  checkoutAction,
+  toggleCashCheckoutAction
 } from '../../../actions/homeAction';
 import InputCard from './InputCard';
 import { formatCurrencyCode } from '../../../common/settings';
+import {
+  CANNOT_CHARGE,
+  SHOP_CURRENCY_IS_NOT_CONFIG
+} from '../../../constants/payment';
 
 class CardPayment extends Component {
   props: Props;
@@ -30,11 +35,15 @@ class CardPayment extends Component {
   };
 
   switchToCashPayment = () => {
-    const { checkoutAction, updateIsShowCardPaymentModel } = this.props;
+    const {
+      toggleCashCheckoutAction,
+      updateIsShowCardPaymentModel
+    } = this.props;
     // Close modal
     updateIsShowCardPaymentModel(false);
+
     // Show cash modal
-    checkoutAction();
+    toggleCashCheckoutAction();
   };
 
   render() {
@@ -51,6 +60,7 @@ class CardPayment extends Component {
     const grandTotal = formatCurrencyCode(
       orderPreparingCheckout.totals.grand_total
     );
+    const { resultCharge } = cardPayment;
 
     return (
       <div className="row">
@@ -118,9 +128,25 @@ class CardPayment extends Component {
                   </div>
                 </div>
                 <div className="col-md-12 mt-4 mb-5">
-                  <InputCard/>
+                  <InputCard />
                 </div>
               </div>
+            </div>
+            <div className="col-12">
+              {() => {
+                switch (resultCharge) {
+                  case CANNOT_CHARGE:
+                    return <p className="text-danger">Cannot charge</p>;
+                  case SHOP_CURRENCY_IS_NOT_CONFIG:
+                    return (
+                      <p className="text-danger">
+                        Left aligned text on all viewport sizes.
+                      </p>
+                    );
+                  default:
+                    return <p></p>;
+                }
+              }}
             </div>
           </div>
           {cardPaymentType ? (
@@ -153,9 +179,9 @@ class CardPayment extends Component {
 function mapStateToProps(state) {
   return {
     isShowCardPaymentModal: state.mainRd.checkout.isShowCardPaymentModal,
-    cardPayment: state.mainRd.checkout.cardPayment,
     orderPreparingCheckout: state.mainRd.checkout.orderPreparingCheckout,
-    loadingPreparingOrder: state.mainRd.checkout.loadingPreparingOrder
+    loadingPreparingOrder: state.mainRd.checkout.loadingPreparingOrder,
+    cardPayment: state.mainRd.checkout.cardPayment
   };
 }
 
@@ -165,7 +191,8 @@ function mapDispatchToProps(dispatch) {
       dispatch(updateIsShowCardPaymentModel(payload)),
     updateCardPaymentType: payload => dispatch(updateCardPaymentType(payload)),
     acceptPaymentCard: () => dispatch(acceptPaymentCard()),
-    checkoutAction: () => dispatch(checkoutAction())
+    checkoutAction: () => dispatch(checkoutAction()),
+    toggleCashCheckoutAction: () => dispatch(toggleCashCheckoutAction())
   };
 }
 
