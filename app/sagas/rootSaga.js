@@ -109,6 +109,7 @@ const orderDetailLocalDb = state => state.mainRd.orderHistoryDetailOffline;
 const orderDetailOnline = state => state.mainRd.orderHistoryDetail;
 const cardPayment = state => state.mainRd.checkout.cardPayment;
 const orderList = state => state.mainRd.orderHistory;
+const productList = state => state.mainRd.productList;
 
 function* toggleCashCheckoutActionSg() {
   // Show cash modal
@@ -1234,6 +1235,31 @@ function* getProductInOrder(payload) {
   }
   console.dir(skuList);
 
+  // search in reducer
+  const productListResult = yield select(productList);
+  let itemResult;
+  for (let i = 0; i < skuList.length; i += 1) {
+    console.log('finded it in reducer');
+    const productResult = productListResult.find(item => {
+      if (skuList[i].item.length > 2 && skuList[i].item === item.sku) {
+        return item;
+      }
+      if (skuList[i].item.join('-') === item.sku) {
+        return item;
+      }
+    });
+    console.log(productResult);
+    if (productResult) {
+      itemResult = {
+        data: productResult,
+        sku: skuList[i].item.join('-'),
+        qty: skuList[i].qty
+      };
+      productBySku.push(itemResult);
+      skuList.splice(i, 1);
+      i -= 1;
+    }
+  }
   // search in localDb
   if (getOfflineMode() === 1) {
     console.log('in search in offline mode');
@@ -1292,13 +1318,13 @@ function* getProductInOrder(payload) {
     }
     if (data.length > 0) {
       productBySku.push(item);
-      // need to delete item in skuList when finded item in localDb to search remain product not in local yet
+      // need to delete item in skuList when finded item of product search
       skuList.splice(i, 1);
       i -= 1;
     }
   }
-  // remain product with search error
-  console.log('product cant search');
+  // remain product with get error
+  console.log('product cant get');
   console.log(skuList);
   return productBySku;
 }
@@ -1331,7 +1357,7 @@ function* considerAddToCart(payload) {
   console.log(payload);
   console.log('consider type of product to add cart');
   console.log(payload.data.type_id);
-  console.log('qty : ' + payload.qty);
+  console.log(`qty : ${payload.qty}`);
   // add qty to object of payload
   switch (payload.data.type_id) {
     case 'configurable':
@@ -1361,15 +1387,16 @@ function* considerAddToCart(payload) {
 }
 
 function* reorderAction(payload) {
-  // if order in not sync yet will reuse order with param suit for checkout
   console.log(payload);
   const itemList = payload.data.items.cartCurrentResult;
-
+  // check cart current has product
   const cartCurrentResult = yield select(cartCurrent);
   if (cartCurrentResult.length > 0) {
     // hold cart current
     yield put({ type: types.HOLD_ACTION });
   }
+
+  // if order in not sync yet will reuse order with param suit for checkout
 
   if (!payload.synced) {
     for (let i = 0; i < itemList.length; i += 1) {
