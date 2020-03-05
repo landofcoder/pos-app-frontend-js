@@ -603,6 +603,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
         orderList.splice(action.payload, 1);
         draft.orderHistory = orderList;
         draft.isOpenDetailOrderOffline = false;
+        break;
       case types.UPDATE_CUSTOMER_INFO_AND_SHIPPING_ADDRESS_PREPARING_CHECKOUT: {
         const customerInfo = action.payload.customer;
         const shippingAddress = action.payload.shippingAddress;
