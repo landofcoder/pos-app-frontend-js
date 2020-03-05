@@ -1226,23 +1226,34 @@ function* getProductInOrder(payload) {
   console.log(listItems);
   for (let i = 0; i < listItems.length; i += 1) {
     // to flitter type of product with sku
+    console.log(listItems[i]);
     const config = listItems[i].sku.split('-');
+    const qty = listItems[i].qty_ordered;
     console.log(config);
-    skuList.push(config);
+    skuList.push({ item: config, qty });
   }
-  console.log(skuList);
+  console.dir(skuList);
 
+  // search in localDb
   if (getOfflineMode() === 1) {
     console.log('in search in offline mode');
     for (let i = 0; i < skuList.length; i += 1) {
       let data;
       let item;
-      if (skuList[i].length > 2) {
-        data = yield call(getProductBySkuLocal, skuList[i][0]);
-        item = { data: data[0], sku: skuList[i].join('-') };
+      if (skuList[i].item.length > 2) {
+        data = yield call(getProductBySkuLocal, skuList[i].item[0]);
+        item = {
+          data: data[0],
+          sku: skuList[i].item.join('-'),
+          qty: skuList[i].qty
+        };
       } else {
-        data = yield call(getProductBySkuLocal, skuList[i].join('-'));
-        item = { data: data[0], sku: skuList[i].join('-') };
+        data = yield call(getProductBySkuLocal, skuList[i].item.join('-'));
+        item = {
+          data: data[0],
+          sku: skuList[i].item.join('-'),
+          qty: skuList[i].qty
+        };
       }
       console.log(data);
       if (data.length > 0) {
@@ -1253,29 +1264,29 @@ function* getProductInOrder(payload) {
       }
     }
   }
-  console.log(skuList);
-  // tach sku de search
+
+  // search wil call api
   for (let i = 0; i < skuList.length; i += 1) {
     let data;
     let item;
-    const sku = skuList[i].join('-');
+    const sku = skuList[i].item.join('-');
     console.log(sku);
-    if (skuList[i].length > 2) {
-      data = yield call(querySearchProduct, skuList[i][0], 1);
+    if (skuList[i].item.length > 2) {
+      data = yield call(querySearchProduct, skuList[i].item[0], 1);
       // because search with return all same sku name so find exact sku
       console.log(data);
       for (let i = 0; i < data.length; i += 1) {
-        if (data[i].sku === skuList[i][0]) {
-          item = { data: data[i], sku };
+        if (data[i].sku === skuList[i].item[0]) {
+          item = { data: data[i], sku, qty: skuList[i].qty };
         }
       }
     } else {
-      data = yield call(querySearchProduct, skuList[i].join('-'), 1);
+      data = yield call(querySearchProduct, skuList[i].item.join('-'), 1);
       // because search with return all same sku name so find exact sku
       console.log(data);
       for (let i = 0; i < data.length; i += 1) {
         if (data[i].sku === sku) {
-          item = { data: data[i], sku };
+          item = { data: data[i], sku, qty: skuList[i].qty };
         }
       }
     }
@@ -1320,20 +1331,31 @@ function* considerAddToCart(payload) {
   console.log(payload);
   console.log('consider type of product to add cart');
   console.log(payload.data.type_id);
+  console.log('qty : ' + payload.qty);
+  // add qty to object of payload
   switch (payload.data.type_id) {
     case 'configurable':
       console.log('go configurable');
       console.log(payload);
       productResult = yield call(codeSelectConfigurable, payload);
-      yield put({ type: types.ADD_TO_CART, payload: productResult });
+      yield put({
+        type: types.ADD_TO_CART,
+        payload: Object.assign({ pos_qty: payload.qty }, productResult)
+      });
       break;
     case 'simple':
       console.log('go simple');
-      yield put({ type: types.ADD_TO_CART, payload: payload.data });
+      yield put({
+        type: types.ADD_TO_CART,
+        payload: Object.assign({ pos_qty: payload.qty }, payload.data)
+      });
       break;
     default:
       console.log(payload);
-      yield put({ type: types.ADD_TO_CART, payload: payload.data });
+      yield put({
+        type: types.ADD_TO_CART,
+        payload: Object.assign({ pos_qty: payload.qty }, payload.data)
+      });
       break;
   }
 }
@@ -1360,6 +1382,7 @@ function* reorderAction(payload) {
     // push product to cart
     // check cart current emtpy or not
     for (let i = 0; i < productBySku.length; i += 1) {
+      // push product with qty
       yield considerAddToCart(productBySku[i]);
     }
   }
