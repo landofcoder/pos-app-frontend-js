@@ -94,14 +94,14 @@ export default class Pos extends Component<Props, State> {
       hidDevice
     } = this.props;
     const loopStep = 5000;
-    autoSyncGroupCheckout();
-    // limitLoop(
-    //   () => {
-    //     autoLoginToGetNewToken();
-    //   },
-    //   30,
-    //   loopStep
-    // );
+    limitLoop(
+      () => {
+        autoLoginToGetNewToken();
+        autoSyncGroupCheckout();
+      },
+      30,
+      loopStep
+    );
 
     // Uncomment below code for testing scanner device working
     // const { getProductBySkuFromScanner } = this.props;

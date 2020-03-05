@@ -160,7 +160,7 @@ function* syncOrder() {
   if (data.length > 0) {
     for (let i = 0; i < data.length; i += 1) {
       const dataResult = yield call(syncOrderService, data[i]);
-      if (dataResult === true) {
+      if (!dataResult.errors && !dataResult.message) {
         console.log('compelete sync order');
         yield deleteOrder(data[i].id);
       } else {
