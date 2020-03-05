@@ -5,7 +5,9 @@ import {
   shopInfoSync,
   getShopInfoLocal,
   receiptInfoSync,
-  getReceiptInfoLocal
+  getReceiptInfoLocal,
+  getDetailOutLetLocal,
+  outLetConfigSync
 } from './settings-service';
 import { getCategories } from '../../reducers/db/categories';
 import { deleteOrder } from '../../reducers/db/sync_orders';
@@ -146,6 +148,7 @@ export async function getCustomReceiptService(outletId) {
 export async function getDetailOutletService(payload) {
   const outletId = payload;
   let data = [];
+  let error = false;
   try {
     const response = await fetch(
       `${window.mainUrl}index.php/rest/V1/lof-outlet/get-detail-outlet?id=${outletId}`,
@@ -165,6 +168,15 @@ export async function getDetailOutletService(payload) {
     data = await response.json();
   } catch (e) {
     data = [];
+    error = true;
+  }
+  if (error) {
+    data = await getDetailOutLetLocal();
+    if (data.length > 0) {
+      data = data[0].value;
+    }
+  } else {
+    await outLetConfigSync(data);
   }
   return data;
 }
