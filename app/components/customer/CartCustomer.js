@@ -126,7 +126,7 @@ class CartCustomer extends Component<Props> {
                     </div>
                     <div className="input-group mb-3">
                       <input
-                        type="text by email or id customer's"
+                        type="text"
                         className="form-control"
                         placeholder="Search by id, email or first name of customer"
                         aria-label="Recipient's username"
