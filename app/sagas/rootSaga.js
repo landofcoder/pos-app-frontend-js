@@ -1232,6 +1232,7 @@ function* getProductInOrder(payload) {
   }
   console.log(skuList);
 
+  // search in localDb
   if (getOfflineMode() === 1) {
     console.log('in search in offline mode');
     for (let i = 0; i < skuList.length; i += 1) {
@@ -1253,8 +1254,8 @@ function* getProductInOrder(payload) {
       }
     }
   }
-  console.log(skuList);
-  // tach sku de search
+
+  // search wil call api
   for (let i = 0; i < skuList.length; i += 1) {
     let data;
     let item;
