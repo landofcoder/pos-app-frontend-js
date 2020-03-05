@@ -3,17 +3,36 @@ import { connect } from 'react-redux';
 import {
   updateIsShowCardPaymentModel,
   updateCardPaymentType,
-  acceptPaymentCard,
-  checkoutAction
+  cardCheckoutPlaceOrderAction,
+  checkoutAction,
+  startCashCheckoutAction,
+  updatePaymentResultCode
 } from '../../../actions/homeAction';
 import InputCard from './InputCard';
 import { formatCurrencyCode } from '../../../common/settings';
+import {
+  SUCCESS_CHARGE,
+  CANNOT_CHARGE,
+  SHOP_CURRENCY_IS_NOT_CONFIG
+} from '../../../constants/payment';
 
 class CardPayment extends Component {
   props: Props;
 
   componentDidMount(): void {
     document.addEventListener('keydown', this.escFunction, false);
+  }
+
+  componentDidUpdate() {
+    const { cardPayment, updateIsShowCardPaymentModel } = this.props;
+    const { resultCharge } = cardPayment;
+    if (resultCharge === SUCCESS_CHARGE) {
+      const { updatePaymentResultCode } = this.props;
+      updatePaymentResultCode(0);
+
+      // Close modal
+      updateIsShowCardPaymentModel(false);
+    }
   }
 
   componentWillUnmount() {
@@ -30,11 +49,34 @@ class CardPayment extends Component {
   };
 
   switchToCashPayment = () => {
-    const { checkoutAction, updateIsShowCardPaymentModel } = this.props;
+    const {
+      startCashCheckoutAction,
+      updateIsShowCardPaymentModel
+    } = this.props;
     // Close modal
     updateIsShowCardPaymentModel(false);
     // Show cash modal
-    checkoutAction();
+    startCashCheckoutAction();
+  };
+
+  renderErrorMessage = chargeResult => {
+    switch (chargeResult) {
+      case CANNOT_CHARGE:
+        return (
+          <p className="text-danger">
+            *Cannot charge: please check your balance or contact technical
+            support
+          </p>
+        );
+      case SHOP_CURRENCY_IS_NOT_CONFIG:
+        return (
+          <p className="text-danger">
+            Left aligned text on all viewport sizes.
+          </p>
+        );
+      default:
+        return <p></p>;
+    }
   };
 
   render() {
@@ -51,7 +93,8 @@ class CardPayment extends Component {
     const grandTotal = formatCurrencyCode(
       orderPreparingCheckout.totals.grand_total
     );
-
+    const { resultCharge, isLoadingCharging } = cardPayment;
+    console.log('loading status:', isLoadingCharging);
     return (
       <div className="row">
         <div className="modal-content" style={{ minHeight: '300px' }}>
@@ -122,6 +165,9 @@ class CardPayment extends Component {
                 </div>
               </div>
             </div>
+            <div className="col-12">
+              {this.renderErrorMessage(resultCharge)}
+            </div>
           </div>
           {cardPaymentType ? (
             <div className="modal-footer">
@@ -133,11 +179,24 @@ class CardPayment extends Component {
                 Close
               </button>
               <button
-                disabled={cardPaymentType === '' || loadingPreparingOrder}
+                disabled={
+                  cardPaymentType === '' ||
+                  loadingPreparingOrder ||
+                  isLoadingCharging
+                }
                 type="button"
                 className="btn btn-primary btn-lg"
                 onClick={acceptPaymentCard}
               >
+                {isLoadingCharging ? (
+                  <span
+                    className="spinner-border spinner-border"
+                    role="status"
+                    aria-hidden="true"
+                  />
+                ) : (
+                  <></>
+                )}
                 Accept {loadingPreparingOrder === false ? grandTotal : ''}
               </button>
             </div>
@@ -153,9 +212,9 @@ class CardPayment extends Component {
 function mapStateToProps(state) {
   return {
     isShowCardPaymentModal: state.mainRd.checkout.isShowCardPaymentModal,
-    cardPayment: state.mainRd.checkout.cardPayment,
     orderPreparingCheckout: state.mainRd.checkout.orderPreparingCheckout,
-    loadingPreparingOrder: state.mainRd.checkout.loadingPreparingOrder
+    loadingPreparingOrder: state.mainRd.checkout.loadingPreparingOrder,
+    cardPayment: state.mainRd.checkout.cardPayment
   };
 }
 
@@ -164,8 +223,11 @@ function mapDispatchToProps(dispatch) {
     updateIsShowCardPaymentModel: payload =>
       dispatch(updateIsShowCardPaymentModel(payload)),
     updateCardPaymentType: payload => dispatch(updateCardPaymentType(payload)),
-    acceptPaymentCard: () => dispatch(acceptPaymentCard()),
-    checkoutAction: () => dispatch(checkoutAction())
+    acceptPaymentCard: () => dispatch(cardCheckoutPlaceOrderAction()),
+    checkoutAction: () => dispatch(checkoutAction()),
+    startCashCheckoutAction: () => dispatch(startCashCheckoutAction()),
+    updatePaymentResultCode: payload =>
+      dispatch(updatePaymentResultCode(payload))
   };
 }
 
