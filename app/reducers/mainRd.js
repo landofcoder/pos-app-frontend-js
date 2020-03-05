@@ -98,7 +98,8 @@ const initialState = {
         expYear: 2021,
         cvc: '314'
       },
-      resultCharge: 0 // Default is 0, and with payment.json types
+      resultCharge: 0, // Default is 0, and with payment.json types
+      isLoadingCharging: false
     }
   },
   cartHoldList: [],
@@ -577,8 +578,6 @@ const mainRd = (state: Object = initialState, action: Object) =>
         const shippingMethod = getShippingMethodCode(posSystemConfigResult.shipping_method);
         const paymentForPos = posSystemConfigResult.payment_for_pos;
 
-        console.log('shipping address:', shippingAddress);
-
         draft.checkout.orderPreparingCheckout.email = email;
         draft.checkout.orderPreparingCheckout.shipping_address.country_id = shippingAddress.country_id;
         draft.checkout.orderPreparingCheckout.shipping_address.street = [];
@@ -596,6 +595,13 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.ON_CARD_PAYMENT_FIELD_ONCHANGE:
         console.log('field onChange payload:', action.payload);
         draft.checkout.cardPayment.cardInfo[action.payload.field] = action.payload.value;
+        break;
+      case types.UPDATE_PAYMENT_RESULT_CODE:
+        console.log('payment result:', action.payload);
+        draft.checkout.cardPayment.resultCharge = action.payload;
+        break;
+      case types.START_CARD_PAYMENT_LOADING:
+        draft.checkout.cardPayment.isLoadingCharging = action.payload;
         break;
       default:
         return draft;

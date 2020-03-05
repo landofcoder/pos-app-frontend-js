@@ -40,9 +40,9 @@ export function checkoutAction() {
   };
 }
 
-export function toggleCashCheckoutAction() {
+export function startCashCheckoutAction() {
   return {
-    type: types.TOGGLE_CASH_CHECKOUT_ACTION
+    type: types.START_CASH_CHECKOUT_ACTION
   };
 }
 
@@ -358,15 +358,22 @@ export function updateCardPaymentType(payload) {
   };
 }
 
-export function acceptPaymentCard() {
+export function cardCheckoutPlaceOrderAction() {
   return {
-    type: types.ACCEPT_PAYMENT_CART
+    type: types.CARD_CHECKOUT_PLACE_ORDER_ACTION
   };
 }
 
 export function onCardPaymentFieldOnChange(payload) {
   return {
     type: types.ON_CARD_PAYMENT_FIELD_ONCHANGE,
+    payload
+  };
+}
+
+export function updatePaymentResultCode(payload) {
+  return {
+    type: types.UPDATE_PAYMENT_RESULT_CODE,
     payload
   };
 }

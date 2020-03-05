@@ -85,6 +85,7 @@ import {
   QUERY_GET_PRODUCT_BY_CATEGORY,
   QUERY_SEARCH_PRODUCT
 } from '../constants/product-query';
+import { SUCCESS_CHARGE } from '../constants/payment';
 import { getNewToken } from './authenSaga';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
@@ -105,7 +106,7 @@ const guestInfo = state => state.mainRd.posSystemConfig.default_guest_checkout;
 const allDevices = state => state.mainRd.hidDevice.allDevices;
 const cardPayment = state => state.mainRd.checkout.cardPayment;
 
-function* toggleCashCheckoutActionSg() {
+function* startCashCheckoutActionSg() {
   // Show cash modal
   yield put({ type: types.UPDATE_SHOW_CASH_MODAL, payload: true });
 
@@ -371,7 +372,11 @@ function* cashCheckoutPlaceOrder() {
   // Close cash place order modal
   yield put({ type: types.UPDATE_SHOW_CASH_MODAL, payload: false });
 
-  // Step 4: Open receipt modal
+  yield finalCheckoutStep();
+}
+
+function* finalCheckoutStep() {
+  // Open receipt modal
   yield put({ type: types.OPEN_RECEIPT_MODAL });
 
   // Clean cart current
@@ -1208,7 +1213,10 @@ function* getProductBySkuFromScannerSaga(payload) {
  * Accept payment card
  * @returns void
  */
-function* acceptPaymentCardSaga() {
+function* cardCheckoutPlaceOrderActionSg() {
+  // Start button payment loading
+  yield put({ type: types.START_CARD_PAYMENT_LOADING, payload: true });
+
   const cardPaymentResult = yield select(cardPayment);
   const orderPreparingCheckoutStateResult = yield select(
     orderPreparingCheckoutState
@@ -1229,7 +1237,16 @@ function* acceptPaymentCardSaga() {
       break;
   }
 
-  console.log('result code:', resultCode);
+  // Update result code
+  yield put({ type: types.UPDATE_PAYMENT_RESULT_CODE, payload: resultCode });
+
+  // Stop button payment loading
+  yield put({ type: types.START_CARD_PAYMENT_LOADING, payload: false });
+
+  if (resultCode === SUCCESS_CHARGE) {
+    // Show receipt after charged
+    yield finalCheckoutStep();
+  }
 }
 
 /**
@@ -1237,12 +1254,7 @@ function* acceptPaymentCardSaga() {
  * @returns void
  */
 function* rootSaga() {
-  yield takeEvery(types.CHECKOUT_ACTION, checkoutActionSg);
   yield takeEvery(types.SEARCH_ACTION, searchProduct);
-  yield takeEvery(
-    types.CASH_CHECKOUT_PLACE_ORDER_ACTION,
-    cashCheckoutPlaceOrder
-  );
   yield takeEvery(
     types.GET_DETAIL_PRODUCT_CONFIGURABLE,
     getDetailProductConfigurable
@@ -1279,10 +1291,15 @@ function* rootSaga() {
     types.GET_PRODUCT_BY_SKU_FROM_SCANNER,
     getProductBySkuFromScannerSaga
   );
-  yield takeEvery(types.ACCEPT_PAYMENT_CART, acceptPaymentCardSaga);
   yield takeEvery(
-    types.TOGGLE_CASH_CHECKOUT_ACTION,
-    toggleCashCheckoutActionSg
+    types.CARD_CHECKOUT_PLACE_ORDER_ACTION,
+    cardCheckoutPlaceOrderActionSg
+  );
+  yield takeEvery(types.CHECKOUT_ACTION, checkoutActionSg);
+  yield takeEvery(types.START_CASH_CHECKOUT_ACTION, startCashCheckoutActionSg);
+  yield takeEvery(
+    types.CASH_CHECKOUT_PLACE_ORDER_ACTION,
+    cashCheckoutPlaceOrder
   );
 }
 

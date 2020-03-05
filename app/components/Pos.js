@@ -53,7 +53,7 @@ type Props = {
   cartHoldList: Array<Object>,
   switchToHoldItemCart: (payload: number) => void,
   updateTriggerScannerBarcodeTriggerToFalse: (payload: boolean) => void,
-  toggleCashCheckoutAction: (payload: boolean) => void,
+  startCashCheckoutAction: (payload: boolean) => void,
   emptyCart: () => void,
   currencyCode: string,
   isLoadingSearchHandle: boolean,
@@ -334,6 +334,8 @@ export default class Pos extends Component<Props, State> {
 
   showPaymentView = () => {
     const { updateIsShowCardPaymentModel, checkoutAction } = this.props;
+
+    // Show card payment modal
     updateIsShowCardPaymentModel(true);
 
     // Trigger to checkout action
@@ -361,7 +363,7 @@ export default class Pos extends Component<Props, State> {
       toggleModalCalculatorStatus,
       posCommandIsFetchingProduct,
       defaultColor,
-      toggleCashCheckoutAction
+      startCashCheckoutAction
     } = this.props;
     const { redirectToAccount, mainWrapProductPanel } = this.state;
     // Check Redirect To Layout Account
@@ -623,7 +625,7 @@ export default class Pos extends Component<Props, State> {
                 type="button"
                 disabled={disableCheckout}
                 className="btn btn-primary btn-lg btn-block"
-                onClick={toggleCashCheckoutAction}
+                onClick={startCashCheckoutAction}
               >
                 CASH
               </button>
@@ -631,6 +633,7 @@ export default class Pos extends Component<Props, State> {
             <div className="col-md-2 pl-1 pr-0">
               <button
                 type="button"
+                disabled={disableCheckout}
                 onClick={this.showPaymentView}
                 className="btn btn-outline-primary btn-lg btn-block"
               >
