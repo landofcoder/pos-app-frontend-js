@@ -1,41 +1,47 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Styles from './cash.scss';
+import Styles from '../Cash/cash.scss';
 import { formatCurrencyCode } from '../../../common/settings';
 
 type Props = {
   loadingPreparingOrder: boolean,
-  orderPreparingCheckout: Object,
-  currencyCode: string
+  orderPreparingCheckout: Object
 };
 
-class CashOnline extends Component<Props> {
+class SubTotal extends Component<Props> {
   props: Props;
 
+  sumOrderTotal = () => {
+    const { orderPreparingCheckout } = this.props;
+    const subTotal = orderPreparingCheckout.totals.base_subtotal;
+
+    const shippingAmount = orderPreparingCheckout.totals.base_shipping_amount;
+    const discountAmount = orderPreparingCheckout.totals.base_discount_amount;
+
+    console.log('dd0::', orderPreparingCheckout);
+    console.log('dd1:', subTotal);
+    console.log('dd2:', shippingAmount);
+    console.log('dd3:', discountAmount);
+
+    const grandTotal = orderPreparingCheckout.totals.grand_total;
+    return formatCurrencyCode(grandTotal);
+  };
+
   render() {
-    const {
-      orderPreparingCheckout,
-      loadingPreparingOrder,
-      currencyCode
-    } = this.props;
+    const { loadingPreparingOrder, orderPreparingCheckout } = this.props;
     const subTotal = formatCurrencyCode(
-      orderPreparingCheckout.totals.base_subtotal,
-      currencyCode
+      orderPreparingCheckout.totals.base_subtotal
     );
-    const discountAmount = formatCurrencyCode(
-      orderPreparingCheckout.totals.discount_amount,
-      currencyCode
-    );
+
     const shippingAmount = formatCurrencyCode(
-      orderPreparingCheckout.totals.base_shipping_amount,
-      currencyCode
+      orderPreparingCheckout.totals.base_shipping_amount
     );
-    const grandTotal = formatCurrencyCode(
-      orderPreparingCheckout.totals.grand_total,
-      currencyCode
+
+    const discountAmount = formatCurrencyCode(
+      orderPreparingCheckout.totals.base_discount_amount
     );
     return (
-      <>
+      <div>
         <div className="form-group row">
           <label htmlFor="staticEmail" className="col-sm-4 col-form-label">
             Subtotal
@@ -81,12 +87,12 @@ class CashOnline extends Component<Props> {
               </div>
             ) : (
               <div className="font-weight-bold">
-                <p className="font-weight-bold">{grandTotal}</p>
+                <p className="font-weight-bold">{this.sumOrderTotal()}</p>
               </div>
             )}
           </div>
         </div>
-      </>
+      </div>
     );
   }
 }
@@ -94,12 +100,11 @@ class CashOnline extends Component<Props> {
 function mapStateToProps(state) {
   return {
     loadingPreparingOrder: state.mainRd.checkout.loadingPreparingOrder,
-    orderPreparingCheckout: state.mainRd.checkout.orderPreparingCheckout,
-    currencyCode: state.mainRd.shopInfoConfig[0]
+    orderPreparingCheckout: state.mainRd.checkout.orderPreparingCheckout
   };
 }
 
 export default connect(
   mapStateToProps,
   null
-)(CashOnline);
+)(SubTotal);

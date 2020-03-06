@@ -155,8 +155,8 @@ export default class Pos extends Component<Props, State> {
    * @returns {number}
    */
   sumTotalPrice = () => {
-    const { cartCurrent, currencyCode } = this.props;
-    return sumCartTotalPrice(cartCurrent, currencyCode);
+    const { cartCurrent } = this.props;
+    return sumCartTotalPrice(cartCurrent);
   };
 
   /**
@@ -286,22 +286,22 @@ export default class Pos extends Component<Props, State> {
   renderDiscountAndTax = () => {
     return (
       <>
-        <div className={CommonStyle.wrapRow}>
-          <div className={CommonStyle.wrapLabel}>
-            <span>Subtotal</span>
-          </div>
-          <div className={CommonStyle.wrapValue}>
-            <span>{this.sumTotalPrice()}</span>
-          </div>
-        </div>
-        <div className={CommonStyle.wrapRow}>
-          <div className={CommonStyle.wrapLabel}>
-            <span>Discount</span>
-          </div>
-          <div className={CommonStyle.wrapValue}>
-            <span>--</span>
-          </div>
-        </div>
+        {/*<div className={CommonStyle.wrapRow}>*/}
+        {/*  <div className={CommonStyle.wrapLabel}>*/}
+        {/*    <span>Subtotal</span>*/}
+        {/*  </div>*/}
+        {/*  <div className={CommonStyle.wrapValue}>*/}
+        {/*    <span>{this.sumTotalPrice()}</span>*/}
+        {/*  </div>*/}
+        {/*</div>*/}
+        {/*<div className={CommonStyle.wrapRow}>*/}
+        {/*  <div className={CommonStyle.wrapLabel}>*/}
+        {/*    <span>Discount</span>*/}
+        {/*  </div>*/}
+        {/*  <div className={CommonStyle.wrapValue}>*/}
+        {/*    <span>--</span>*/}
+        {/*  </div>*/}
+        {/*</div>*/}
       </>
     );
   };
@@ -543,7 +543,7 @@ export default class Pos extends Component<Props, State> {
                           className={CommonStyle.wrapLabel}
                           data-grand-total="1"
                         >
-                          <span>ORDER TOTAL</span>
+                          <span>Subtotal</span>
                         </div>
                         <div
                           className={CommonStyle.wrapValue}
