@@ -4,7 +4,8 @@ import * as types from '../constants/authen';
 import {
   LOGOUT_POS_ACTION,
   UPDATE_FLAG_SWITCHING_MODE,
-  SYNC_CLIENT_DATA
+  SYNC_CLIENT_DATA,
+  GET_SYNC_MANAGER
 } from '../constants/root.json';
 import {
   loginService,
@@ -21,6 +22,7 @@ import {
 } from './services/settings-service';
 import { syncCustomProductService } from './services/product-service';
 import { getAllTbl, deleteByKey } from '../reducers/db/sync_customers';
+import { getAllTblCustomProduct } from '../reducers/db/sync_custom_product';
 import { getAllOrders, deleteOrder } from '../reducers/db/sync_orders';
 import { signUpCustomerService } from './services/customer-service';
 import { updateLoggedToken } from '../reducers/db/settings';
@@ -170,19 +172,44 @@ function* syncOrder() {
   }
 }
 
-function* syncClientData() {
+function* syncClientData(payload) {
+  console.log(payload.payload);
   const dbTime = yield getTimeSyncConstant();
   const nowTime = Date.now();
-  if (nowTime - dbTime > 1200000) {
+  if (nowTime - dbTime > 1200000 || payload.payload === true) {
+    yield put({ type: types.CHANGE_STATUS_SYNC, payload: true });
     yield resetTimeSyncConstant();
     yield syncCustomProduct();
     yield syncCustomer();
     yield syncOrder();
+    yield put({ type: types.CHANGE_STATUS_SYNC, payload: false });
+    yield put({ type: GET_SYNC_MANAGER });
   }
 }
 
 function* autoLoginToGetNewTokenSaga() {
   yield getNewToken();
+}
+
+function* getListSyncManager() {
+  // get all order in localdb
+  const payloadResultOrder = yield getAllOrders();
+  yield put({
+    type: types.RECEIVED_LIST_SYNC_ORDER,
+    payload: payloadResultOrder
+  });
+  // get all custom product in localdb
+  const payloadResultCustomProduct = yield getAllTblCustomProduct();
+  yield put({
+    type: types.RECEIVED_LIST_SYNC_CUSTOM_PRODUCT,
+    payload: payloadResultCustomProduct
+  });
+  // get all customer in localdb
+  const payloadResultCustomer = yield getAllTbl();
+  yield put({
+    type: types.RECEIVED_LIST_SYNC_CUSTOMER,
+    payload: payloadResultCustomer
+  });
 }
 
 function* authenSaga() {
@@ -197,6 +224,7 @@ function* authenSaga() {
     autoLoginToGetNewTokenSaga
   );
   yield takeEvery(SYNC_CLIENT_DATA, syncClientData);
+  yield takeEvery(GET_SYNC_MANAGER, getListSyncManager);
 }
 
 export default authenSaga;

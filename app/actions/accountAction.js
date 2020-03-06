@@ -47,3 +47,9 @@ export function orderAction(payload) {
     payload
   };
 }
+
+export function getSyncManager() {
+  return {
+    type: type.GET_SYNC_MANAGER
+  };
+}

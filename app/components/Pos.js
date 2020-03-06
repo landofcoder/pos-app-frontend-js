@@ -68,7 +68,7 @@ type Props = {
 
 type State = {
   delayTimer: Object,
-  typeId: string,
+  typeId: string
 };
 
 type product = {

@@ -17,6 +17,12 @@ const initialState = {
   moduleInstalled: {},
   errorServiceModuleInstalled: false,
   senseUrl: '',
+  syncManager: {
+    syncCustomProduct: null,
+    syncCustomer: null,
+    syncOrder: null,
+    syncStatus: false
+  },
   toModuleInstalled: false
 };
 
@@ -76,6 +82,15 @@ const authenRd = (state = initialState, action) =>
       case typesAuthen.RECEIVED_MODULE_INSTALLED:
         draft.moduleInstalled = action.payload;
         break;
+      case typesAuthen.RECEIVED_LIST_SYNC_ORDER:
+        draft.syncManager.syncOrder = action.payload;
+        break;
+      case typesAuthen.RECEIVED_LIST_SYNC_CUSTOM_PRODUCT:
+        draft.syncManager.syncCustomProduct = action.payload;
+        break;
+      case typesAuthen.RECEIVED_LIST_SYNC_CUSTOMER:
+        draft.syncManager.syncCustomer = action.payload;
+        break;
       case typesAuthen.ERROR_SERVICE_MODULES_INSTALLED:
         draft.errorServiceModuleInstalled = action.payload;
         break;
@@ -84,8 +99,10 @@ const authenRd = (state = initialState, action) =>
         break;
       case typesAuthen.CHANGE_STATUS_TO_MODULE_INSTALLED:
         draft.toModuleInstalled = action.payload;
-        draft.moduleInstalled = {}
+        draft.moduleInstalled = {};
         break;
+      case typesAuthen.CHANGE_STATUS_SYNC:
+        draft.syncManager.syncStatus = action.payload;
       default:
     }
   });

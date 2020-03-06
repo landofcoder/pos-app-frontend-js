@@ -1,12 +1,19 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import * as routes from '../../constants/routes.json';
 import OrderHistory from './OrderHistory/OrderHistory';
 import CashierInfo from './CashierInfo/CashierInfo';
 import ConnectDevices from './ConnectDevices/ConnectDevices';
 import Styles from './Account.scss';
+import SyncManager from './SyncManager/SyncManager';
 
-export default class Account extends Component {
+type Props = {
+  syncStatus: boolean
+};
+class Account extends Component {
+  props: Props;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -36,6 +43,8 @@ export default class Account extends Component {
         return <CashierInfo />;
       case 'connectDevices':
         return <ConnectDevices />;
+      case 'syncManager':
+        return <SyncManager />;
       default:
         return null;
     }
@@ -46,8 +55,15 @@ export default class Account extends Component {
     this.setState({ viewSelected: 'connectDevices' });
   };
 
+  syncManagerAction = e => {
+    e.preventDefault();
+    this.setState({ viewSelected: 'syncManager' });
+  };
+
   render() {
     const { viewSelected } = this.state;
+    const { syncStatus } = this.props;
+    console.log(syncStatus);
     return (
       <>
         <div data-tid="container" className="pr-0 pl-0 pt-2">
@@ -116,6 +132,25 @@ export default class Account extends Component {
                       Connect Devices
                     </a>
                   </li>
+                  <li className="nav-item">
+                    <a
+                      className={`nav-link ${
+                        viewSelected === 'syncManager' ? 'active' : ''
+                      } ${Styles.radiusButton}`}
+                      role="tab"
+                      href="#"
+                      onClick={this.syncManagerAction}
+                    >
+                      Sync Status{' '}
+                      {syncStatus ? (
+                        <span
+                          className="spinner-border spinner-border-sm"
+                          role="status"
+                          aria-hidden="true"
+                        ></span>
+                      ) : null}
+                    </a>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -130,3 +165,16 @@ export default class Account extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    syncStatus: state.authenRd.syncManager.syncStatus
+  };
+}
+function mapDispatchToProps(dispatch) {
+  return {};
+}
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Account);

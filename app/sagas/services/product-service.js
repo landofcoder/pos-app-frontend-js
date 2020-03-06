@@ -7,7 +7,7 @@ import {
   counterProduct
 } from '../../reducers/db/products';
 import { getCategories } from '../../reducers/db/categories';
-import { getAllTbl, deleteByKey } from '../../reducers/db/sync_custom_product';
+import { getAllTblCustomProduct, deleteByKey } from '../../reducers/db/sync_custom_product';
 import {
   getGraphqlPath,
   getOfflineMode,
@@ -862,7 +862,7 @@ export async function syncCustomProductAPI(payload) {
   console.log(payload);
 }
 export async function syncCustomProductService() {
-  const data = await getAllTbl();
+  const data = await getAllTblCustomProduct();
   console.log('sync custom product');
   console.log(data);
   for (let i = 0; i < data.length; i += 1) {
