@@ -1,66 +1,66 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { withRouter } from 'react-router';
 import { logout } from '../../../actions/authenAction';
-import Styles from './CashierInfo.scss';
 import * as routes from '../../../constants/routes.json';
+
 type Props = {
   cashierInfo: Object,
-  logout: () => void
+  logout: () => void,
+  history: payload => void
 };
 
 class CashierInfo extends Component<Props> {
   props: Props;
 
-  constructor(props) {
-    super(props);
-    this.state = { redirect: false };
-  }
-
   handleSignOut = () => {
-    const { logout } = this.props;
+    const { logout, history } = this.props;
     logout();
-    this.setState({ redirect: true });
+    history.push(routes.POS);
   };
 
   render() {
     const { cashierInfo } = this.props;
     const { first_name, last_name, phone, email } = cashierInfo;
-    const { redirect } = this.state;
     return (
       <>
-        <div className="card">
-          <h5 className={`card-header`}>Cashier Information</h5>
-          <div className={`card-body`}>
-            <div className={`form-group`}>
-              <p className="card-text font-weight-bold">First Name</p>
-              <div className="form-group">
-                <label className="">{first_name}</label>
-              </div>
-              <p className="card-text font-weight-bold">Last Name</p>
-              <div className="form-group">
-                <label className="">{last_name}</label>
-              </div>
-              <p className="card-text font-weight-bold">Email Adrdress</p>
-              <div className="form-group">
-                <label className="">{email}</label>
-              </div>
-              <p className="card-text font-weight-bold">Phone</p>
-              <div className="form-group">
-                <label className="">{phone}</label>
+        <div className="row">
+          <div className="col-md-3"></div>
+          <div className="col-md-6">
+            <div className="card">
+              <h5 className="card-header">Cashier Information</h5>
+              <div className="card-body">
+                <div className="form-group">
+                  <p className="card-text font-weight-bold">First Name</p>
+                  <div className="form-group">
+                    <label className="">{first_name}</label>
+                  </div>
+                  <p className="card-text font-weight-bold">Last Name</p>
+                  <div className="form-group">
+                    <label className="">{last_name}</label>
+                  </div>
+                  <p className="card-text font-weight-bold">Email Adrdress</p>
+                  <div className="form-group">
+                    <label className="">{email}</label>
+                  </div>
+                  <p className="card-text font-weight-bold">Phone</p>
+                  <div className="form-group">
+                    <label className="">{phone}</label>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div className="card mt-3">
-          <div className="card-body">
-            <button
-              type="button"
-              className="btn btn-danger"
-              onClick={this.handleSignOut}
-            >
-              Sign out
-            </button>
+            <div className="card mt-3">
+              <div className="card-body">
+                <button
+                  type="button"
+                  className="btn btn-danger"
+                  onClick={this.handleSignOut}
+                >
+                  Sign out
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </>
@@ -77,7 +77,9 @@ function mapDispatchToProps(dispatch) {
     logout: () => dispatch(logout())
   };
 }
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CashierInfo);
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(CashierInfo)
+);

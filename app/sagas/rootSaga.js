@@ -21,7 +21,8 @@ import {
   getProductByCategoryService,
   searchProductService,
   syncAllProducts,
-  getProductBySkuFromScanner
+  getProductBySkuFromScanner,
+  querySearchProduct
 } from './services/product-service';
 import {
   getCustomerCartTokenService,
@@ -37,7 +38,8 @@ import {
   getOrderHistoryService,
   getOrderHistoryServiceDetails,
   getShopInfoService,
-  getSystemConfigService
+  getSystemConfigService,
+  cancelOrderService
 } from './services/common-service';
 import {
   createConnectedDeviceSettings,
@@ -72,7 +74,7 @@ import { syncCategories } from '../reducers/db/categories';
 import { syncCustomers } from '../reducers/db/customers';
 import { signUpCustomer } from '../reducers/db/sync_customers';
 import { getAllOrders } from '../reducers/db/sync_orders';
-import { counterProduct } from '../reducers/db/products';
+import { counterProduct, getProductBySkuLocal } from '../reducers/db/products';
 import { getOfflineMode } from '../common/settings';
 import { createProduct } from '../reducers/db/sync_custom_product';
 import {
@@ -104,7 +106,11 @@ const orderPreparingCheckoutState = state =>
 const defaultOutletShippingAddress = state => state.mainRd.detailOutlet;
 const guestInfo = state => state.mainRd.posSystemConfig.default_guest_checkout;
 const allDevices = state => state.mainRd.hidDevice.allDevices;
+const orderDetailLocalDb = state => state.mainRd.orderHistoryDetailOffline;
+const orderDetailOnline = state => state.mainRd.orderHistoryDetail;
 const cardPayment = state => state.mainRd.checkout.cardPayment;
+const orderList = state => state.mainRd.orderHistory;
+const productList = state => state.mainRd.productList;
 
 function* startCashCheckoutActionSg() {
   // Show cash modal
@@ -611,6 +617,8 @@ function* getSearchCustomer(payload) {
  * @returns void
  */
 function* addToCart(payload) {
+  console.log('add to cart');
+  console.log(payload);
   // Find sky if exits sku, then increment qty
   const listCartCurrent = yield select(cartCurrent);
   const cartCustomerResult = yield select(customer);
@@ -750,6 +758,7 @@ function* syncData() {
       yield createSyncAllDataFlag();
 
       // Update counterMode for recheck background
+      yield put({ type: types.ACCEPT_CONDITION_SWITCH_MODE, payload: false });
       yield put({ type: types.UPDATE_FLAG_SWITCHING_MODE });
     } else {
       console.warn(
@@ -936,6 +945,7 @@ function* checkLoginBackgroundSaga() {
         yield put({ type: types.UPDATE_SWITCHING_MODE, payload: SYNC_SCREEN });
         yield syncData();
       } else {
+        yield put({ type: types.ACCEPT_CONDITION_SWITCH_MODE, payload: false });
         yield put({ type: types.UPDATE_SWITCHING_MODE, payload: CHILDREN });
         yield syncData();
       }
@@ -1195,6 +1205,71 @@ function* getProductBySkuFromScannerSaga(payload) {
   });
 }
 
+function* reorderAction(payload) {
+  console.log(payload);
+  const itemList = payload.data.items.cartCurrentResult;
+  // check cart current has product
+  const cartCurrentResult = yield select(cartCurrent);
+  if (cartCurrentResult.length > 0) {
+    // hold cart current
+    yield put({ type: types.HOLD_ACTION });
+  }
+
+  // if order in not sync yet will reuse order with param suit for checkout
+
+  if (!payload.synced) {
+    for (let i = 0; i < itemList.length; i += 1) {
+      yield put({ type: types.ADD_TO_CART, payload: itemList[i] });
+    }
+  }
+}
+
+function* orderActionOffline(payload) {
+  const data = yield select(orderDetailLocalDb);
+  const dataList = yield select(orderList);
+  let index;
+  for (let i = 0; i < dataList.length; i += 1) {
+    if (dataList[i].id) {
+      if (dataList[i].id === data.id) index = i;
+    }
+  }
+  switch (payload) {
+    case types.CANCEL_ACTION_ORDER:
+      yield cancelOrderService(data.id); // delete in localdb
+      yield put({ type: types.REMOVE_ORDER_LIST, payload: index });
+      break;
+    case types.REORDER_ACTION_ORDER:
+      yield reorderAction({ data, synced: false });
+      break;
+    default:
+      break;
+  }
+}
+
+function* orderActionOnline(payload) {
+  const data = yield select(orderDetailOnline);
+  switch (payload) {
+    case types.REORDER_ACTION_ORDER:
+      yield reorderAction({ data, synced: true });
+      break;
+    default:
+      break;
+  }
+}
+
+function* orderAction(payload) {
+  const { kindOf, action } = payload.payload;
+  console.log(kindOf);
+  switch (kindOf) {
+    case types.DETAIL_ORDER_OFFLINE:
+      yield orderActionOffline(action);
+      break;
+    case types.DETAIL_ORDER_ONLINE:
+      yield orderActionOnline(action);
+      break;
+    default:
+  }
+}
 /**
  * Accept payment card
  * @returns void
@@ -1240,6 +1315,7 @@ function* cardCheckoutPlaceOrderActionSg() {
  * @returns void
  */
 function* rootSaga() {
+  yield takeEvery(types.CHECKOUT_ACTION, checkoutActionSg);
   yield takeEvery(types.SEARCH_ACTION, searchProduct);
   yield takeEvery(
     types.GET_DETAIL_PRODUCT_CONFIGURABLE,
@@ -1273,6 +1349,9 @@ function* rootSaga() {
     types.GET_PRODUCT_BY_SKU_FROM_SCANNER,
     getProductBySkuFromScannerSaga
   );
+
+  yield takeEvery(types.ORDER_ACTION, orderAction);
+
   yield takeEvery(
     types.CARD_CHECKOUT_PLACE_ORDER_ACTION,
     cardCheckoutPlaceOrderActionSg

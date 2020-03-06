@@ -1,19 +1,12 @@
-.contentSize{
-  margin:auto;
-  width: 700px;
-}
-.colorBg{
-  background-color: #EFEFEF !important;
-}
-.colorWhite{
+@import '../order-history';
+.wrapDetailOrder {
+  height: $heightOrder;
+  overflow-y: auto;
   background-color: white;
 }
-.row{
+
+.wrapContent {
   display: flex;
-  flex-direction: row;
-}
-.wrapContent{
-   display: flex;
-   flex-direction: column;
-   padding: 16px;
+  flex-direction: column;
+  padding: 16px;
 }

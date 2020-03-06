@@ -1,5 +1,6 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import Pos from '../components/Pos';
 import * as homeActions from '../actions/homeAction';
 
@@ -34,7 +35,9 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(homeActions, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Pos);
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Pos)
+);

@@ -13,7 +13,7 @@ const cashierInfoLabel = 'cashier_info';
 const receiptInfoLabel = 'receipt_info';
 const timeSyncConstant = 'time_sync_constant';
 const connectedScannerDeviceLabel = 'connected_scanner_device';
-
+const detailOutlet = 'outlet_config';
 export async function haveToSyncAllData() {
   const data = await getByKey(syncAllDataLabel);
   return data;
@@ -56,6 +56,17 @@ export async function shopInfoSync(shopInfo) {
   }
 }
 
+export async function outLetConfigSync(outletInfo) {
+  const outletInfoDb = await getByKeyV2(detailOutlet);
+  if (outletInfoDb.length === 0) {
+    // Create key
+    await createKey(detailOutlet, outletInfo);
+  } else {
+    // Update shopInfo
+    await updateById(outletInfoDb[0].id, outletInfo);
+  }
+}
+
 export async function receiptInfoSync(receipt) {
   const receiptInfo = await getByKeyV2(receiptInfoLabel);
   if (!receiptInfo) {
@@ -72,6 +83,10 @@ export async function getShopInfoLocal() {
   return data;
 }
 
+export async function getDetailOutLetLocal() {
+  const data = await getByKey(detailOutlet);
+  return data;
+}
 export async function getReceiptInfoLocal() {
   const data = await getByKeyV2(cashierInfoLabel);
   return data;

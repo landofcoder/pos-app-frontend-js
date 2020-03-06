@@ -121,8 +121,12 @@ export async function setMainUrlKey(payload) {
   };
   const url = await getByKeyV2(mainUrlKey);
   if (url) {
+    console.log('update');
     await updateById(url.id, data);
-  } else await createKey(mainUrlKey, data);
+  } else {
+    console.log('create by key');
+    await createKey(mainUrlKey, data);
+  }
   return data.url;
 }
 

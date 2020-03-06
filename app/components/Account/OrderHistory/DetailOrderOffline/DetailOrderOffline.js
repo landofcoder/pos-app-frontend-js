@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import ModalStyle from '../../../styles/modal.scss';
 import Styles from '../DetailOrder/detail-order.scss';
 import { formatCurrencyCode } from '../../../../common/settings';
 import {
@@ -31,22 +30,33 @@ class DetailOrderOffline extends Component {
     return formatCurrencyCode(amount);
   };
 
+  showShippingMethod = () => {
+    const { orderHistoryDetail } = this.props;
+    const obj = Object.entries(
+      orderHistoryDetail.items.orderPreparingCheckoutResult.shipping_address
+        .shipping_method
+    );
+    const data = obj.map(index => index[1]);
+    return data;
+  };
+
   render() {
     const {
       isOpenDetailOrder,
       isLoadingOrderHistoryDetail,
-      orderHistoryDetail,
-      toggleModalOrderDetail
+      orderHistoryDetail
     } = this.props;
+
     return (
       <>
-        <div className={Styles.wrapDetailOrder}>
+        <div className={`${Styles.wrapDetailOrder}`}>
           <div
-            className={ModalStyle.modal}
-            style={{ display: isOpenDetailOrder ? 'block' : 'none' }}
+            style={{
+              display: isOpenDetailOrder ? 'block' : 'none'
+            }}
           >
             <div className={Styles.contentSize}>
-              <div className={`${Styles.colorBg} modal-content`}>
+              <div className={`${Styles.colorBg}`}>
                 {isLoadingOrderHistoryDetail ? (
                   <div className="d-flex justify-content-center mt-5 mb-5">
                     <div
@@ -73,8 +83,16 @@ class DetailOrderOffline extends Component {
                               <div className="d-flex justify-content-between pr-1">
                                 <span>Customer: </span>
                                 <span>
-                                  {/* {orderHistoryDetail.customer_firstname}{' '}
-                                  {orderHistoryDetail.customer_lastname} */}
+                                  {
+                                    orderHistoryDetail.items
+                                      .orderPreparingCheckoutResult
+                                      .shipping_address.firstname
+                                  }{' '}
+                                  {
+                                    orderHistoryDetail.items
+                                      .orderPreparingCheckoutResult
+                                      .shipping_address.lastname
+                                  }
                                 </span>
                               </div>
                             </div>
@@ -93,31 +111,30 @@ class DetailOrderOffline extends Component {
                         </div>
                         <div>
                           {orderHistoryDetail.items.cartCurrentResult.map(
-                            item => (
-                              <>
-                                <div
-                                  className={`border-bottom col ${Styles.wrapContent}`}
-                                >
-                                  <div className="d-flex justify-content-between pr-1">
-                                    <div>
-                                      <div className="d-flex justify-content-between pr-1">
-                                        <span>{item.name}</span>
-                                      </div>
-                                      <div className="d-flex justify-content-between pr-1">
-                                        <div>
-                                          <span>sku: {item.sku}, </span>
-                                          <span>ordered: {item.pos_qty} </span>
-                                        </div>
+                            (item, index) => (
+                              <div
+                                key={index}
+                                className={`border-bottom col ${Styles.wrapContent}`}
+                              >
+                                <div className="d-flex justify-content-between pr-1">
+                                  <div>
+                                    <div className="d-flex justify-content-between pr-1">
+                                      <span>{item.name}</span>
+                                    </div>
+                                    <div className="d-flex justify-content-between pr-1">
+                                      <div>
+                                        <span>sku: {item.sku}, </span>
+                                        <span>ordered: {item.pos_qty} </span>
                                       </div>
                                     </div>
-                                    <span>
-                                      {this.formatSymbolMoney(
-                                        item.pos_totalPrice
-                                      )}
-                                    </span>
                                   </div>
+                                  <span>
+                                    {this.formatSymbolMoney(
+                                      item.pos_totalPrice
+                                    )}
+                                  </span>
                                 </div>
-                              </>
+                              </div>
                             )
                           )}
                         </div>
@@ -197,7 +214,8 @@ class DetailOrderOffline extends Component {
                             <span>
                               {
                                 orderHistoryDetail.items
-                                  .orderPreparingCheckoutResult.payment_methods
+                                  .orderPreparingCheckoutResult.shipping_address
+                                  .method.default_payment_method
                               }
                             </span>
                           </div>
@@ -228,13 +246,7 @@ class DetailOrderOffline extends Component {
                         </div>
                         <div className={`col ${Styles.wrapContent}`}>
                           <div className="d-flex justify-content-between pr-1">
-                            <span>
-                              {
-                                orderHistoryDetail.items
-                                  .orderPreparingCheckoutResult.shipping_address
-                                  .shipping_method
-                              }
-                            </span>
+                            <span>{this.showShippingMethod()}</span>
                           </div>
                         </div>
                       </div>
@@ -287,11 +299,9 @@ class DetailOrderOffline extends Component {
                           <div className="d-flex justify-content-between pr-1">
                             <span>Address</span>
                             <span>
-                              {
-                                orderHistoryDetail.items
-                                  .orderPreparingCheckoutResult.shipping_address
-                                  .street
-                              }
+                              {orderHistoryDetail.items.orderPreparingCheckoutResult.shipping_address.street.map(
+                                index => index
+                              )}
                             </span>
                           </div>
                           <div className="d-flex justify-content-between pr-1">
@@ -316,20 +326,6 @@ class DetailOrderOffline extends Component {
                           </div>
                         </div>
                       </div>
-
-                      <div className="modal-footer">
-                        <div className="col-md-2 p-0">
-                          <button
-                            type="button"
-                            className="btn btn-secondary btn-block"
-                            onClick={() =>
-                              toggleModalOrderDetail({ isShow: false })
-                            }
-                          >
-                            CLOSE
-                          </button>
-                        </div>
-                      </div>
                     </div>
                   </>
                 )}
@@ -347,7 +343,7 @@ function mapStateToProps(state) {
     isOpenDetailOrder: state.mainRd.isOpenDetailOrderOffline,
     isLoadingOrderHistoryDetail:
       state.mainRd.isLoadingOrderHistoryDetailOffline,
-    orderHistoryDetail: state.mainRd.dataCheckoutDetailItemHistoryOffline
+    orderHistoryDetail: state.mainRd.orderHistoryDetailOffline
   };
 }
 function mapDispatchToProps(dispatch) {

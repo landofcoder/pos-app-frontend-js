@@ -16,7 +16,7 @@ export async function deleteByKey(key) {
   }
 }
 
-export async function getAllTbl() {
+export async function getAllTblCustomProduct() {
   const tbl = db.table(table);
   const data = await tbl.toArray();
   return data;

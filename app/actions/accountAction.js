@@ -40,3 +40,16 @@ export function actionLoadingOrderDetailOffline(payload) {
     payload
   };
 }
+
+export function orderAction(payload) {
+  return {
+    type: type.ORDER_ACTION,
+    payload
+  };
+}
+
+export function getSyncManager() {
+  return {
+    type: type.GET_SYNC_MANAGER
+  };
+}

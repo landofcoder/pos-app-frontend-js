@@ -83,7 +83,9 @@ export async function getDefaultProductLocal() {
 }
 
 export async function getProductBySkuLocal(payload) {
-  await db.table(table).where({ sku: payload });
+  console.log(payload);
+  const data = await db.table(table).where({ sku: payload });
+  return data.toArray();
 }
 
 /**

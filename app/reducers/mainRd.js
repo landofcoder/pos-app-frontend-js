@@ -1,6 +1,7 @@
 import produce from 'immer';
 import * as types from '../constants/root';
 import {
+  CHILDREN,
   HOME_DEFAULT_PRODUCT_LIST,
   LOADING,
   LOGIN_FORM
@@ -37,6 +38,7 @@ const initialState = {
   isLoadingRequireStep: false,
   posSystemConfig: {}, // General config for pos
   shopInfoConfig: {}, // Shop info config
+  specialConditionSwitchMode: true,
   mainPanelType: HOME_DEFAULT_PRODUCT_LIST, // Main panel type for switching all main panel
   mainProductListLoading: false, // Main product list loading
   messageSignUpCustomer: null,
@@ -130,7 +132,6 @@ const initialState = {
     tax_label: null
   },
   detailOutlet: {},
-  dataCheckoutDetailItemHistoryOffline: {},
   orderHistory: [],
   orderHistoryDetail: {},
   orderHistoryDetailOffline: {},
@@ -409,11 +410,16 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.TOGGLE_MODAL_ORDER_DETAIL:
         draft.isOpenDetailOrder = action.payload.isShow;
+        draft.isOpenDetailOrderOffline = false;
         draft.order_id_history = action.payload.order_id;
+        draft.orderHistoryDetailOffline = {};
+        draft.orderHistoryDetail = {};
         break;
       case types.TOGGLE_MODAL_ORDER_DETAIL_OFFLINE:
         draft.isOpenDetailOrderOffline = action.payload.isShow;
-        draft.dataCheckoutDetailItemHistoryOffline = action.payload.dataItem;
+        draft.isOpenDetailOrder = false;
+        draft.orderHistoryDetailOffline = action.payload.dataItem;
+        draft.orderHistoryDetail = {};
         break;
       case types.TOGGLE_MODAL_CALCULATOR:
         draft.isOpenCalculator = action.payload;
@@ -472,8 +478,32 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.checkout.orderPreparingCheckout.totals.grand_total = baseGrandTotal;
         draft.checkout.orderPreparingCheckout.totals.tax_amount = shippingAndTaxAmount;
         break;
+      case types.ACCEPT_CONDITION_SWITCH_MODE:
+        draft.specialConditionSwitchMode = action.payload;
+        break;
       case types.UPDATE_SWITCHING_MODE:
-        draft.switchingMode = action.payload;
+        // i found a bug in this case that switchingMode in LOGIN_FORM after sync success it auto switch to HOME_PAGE :/
+        console.log('switchingMode before');
+        console.log(state.switchingMode);
+        console.log('payload after');
+        console.log(action.payload);
+        console.log('get offline mode');
+        if (state.switchingMode === 'LOGIN_FORM') {
+          console.log(getOfflineMode());
+        }
+        console.log('special condition');
+        console.log(state.specialConditionSwitchMode);
+        if (
+          !(
+            state.switchingMode === LOGIN_FORM &&
+            action.payload === CHILDREN &&
+            state.specialConditionSwitchMode &&
+            getOfflineMode()
+          )
+        ) {
+          draft.switchingMode = action.payload;
+          draft.specialConditionSwitchMode = true;
+        }
         break;
       case types.BACK_TO_LOGIN:
         draft.switchingMode = LOGIN_FORM;
@@ -553,6 +583,12 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.UPDATE_CARD_PAYMENT_TYPE:
         draft.checkout.cardPayment.type = action.payload;
+        break;
+      case types.REMOVE_ORDER_LIST:
+        let orderList = draft.orderHistory;
+        orderList.splice(action.payload, 1);
+        draft.orderHistory = orderList;
+        draft.isOpenDetailOrderOffline = false;
         break;
       case types.UPDATE_CUSTOMER_INFO_AND_SHIPPING_ADDRESS_PREPARING_CHECKOUT: {
         const customerInfo = action.payload.customer;

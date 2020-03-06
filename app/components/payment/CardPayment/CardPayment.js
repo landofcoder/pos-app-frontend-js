@@ -55,7 +55,6 @@ class CardPayment extends Component {
     } = this.props;
     // Close modal
     updateIsShowCardPaymentModel(false);
-
     // Show cash modal
     startCashCheckoutAction();
   };
@@ -162,7 +161,7 @@ class CardPayment extends Component {
                   </div>
                 </div>
                 <div className="col-md-12 mt-4 mb-5">
-                  <InputCard />
+                  <InputCard/>
                 </div>
               </div>
             </div>

@@ -6,9 +6,8 @@
   color: grey;
 }
 .radiusButton {
-  border-radius: 1px !important;
+  border-radius: 1px;
 }
 .wrapFullHeightList {
-  height: 94vh;
-  overflow-y: scroll;
+  height: calc(100vh - 65px);
 }
