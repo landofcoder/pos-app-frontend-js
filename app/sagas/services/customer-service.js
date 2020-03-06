@@ -108,7 +108,7 @@ export async function signUpCustomerService(payload) {
       }) // body data type must match "Content-Type" header
     });
     const data = await response.json(); // parses JSON response into native JavaScript objects
-    if (data.message === undefined && data.errors === undefined) {
+    if (!data.message && !data.errors) {
       return { data, ok: true };
     }
   } catch (e) {

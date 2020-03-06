@@ -173,7 +173,6 @@ function* syncOrder() {
 }
 
 function* syncClientData(payload) {
-  console.log(payload.payload);
   const dbTime = yield getTimeSyncConstant();
   const nowTime = Date.now();
   if (nowTime - dbTime > 1200000 || payload.payload === true) {
