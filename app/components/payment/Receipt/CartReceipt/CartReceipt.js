@@ -36,7 +36,7 @@ class CartReceipt extends Component<Props> {
     const { totals } = orderPreparingCheckout;
     console.log('totals:', totals);
     const subTotal = formatCurrencyCode(totals.base_subtotal);
-    const discountAmount = formatCurrencyCode(totals.discount_amount);
+    const discountAmount = formatCurrencyCode(totals.base_discount_amount);
     const shippingAmount = formatCurrencyCode(totals.base_shipping_amount);
     const grandTotal = formatCurrencyCode(totals.grand_total);
     // eslint-disable-next-line no-lone-blocks

@@ -6,8 +6,7 @@ import {
   cashPlaceOrderAction
 } from '../../../actions/homeAction';
 import Calculator from '../Calculator/Calculator';
-import CashOffline from './CashOffline';
-import CashOnline from './CashOnline';
+import SubTotal from '../Subtotal/SubTotal';
 import { formatCurrencyCode } from '../../../common/settings';
 
 type Props = {
@@ -20,8 +19,7 @@ type Props = {
   toggleModalCalculator: (payload: boolean) => void,
   orderPreparingCheckout: Object,
   currencyCode: string,
-  messageOrderError: string,
-  isLoadingDiscountCheckoutOffline: boolean
+  messageOrderError: string
 };
 
 class CashPayment extends Component<Props> {
@@ -63,18 +61,13 @@ class CashPayment extends Component<Props> {
   considerOrder = () => {
     const {
       loadingPreparingOrder,
-      posSystemConfig,
-      isLoadingDiscountCheckoutOffline
+      posSystemConfig
     } = this.props;
     const enableOfflineMode = Number(
       posSystemConfig.general_configuration.enable_offline_mode
     );
-    // in offline check discount check discount
-    if (enableOfflineMode === 1 && isLoadingDiscountCheckoutOffline === false)
-      return true;
-    // in offlinemode != 1 check value order
-    if (loadingPreparingOrder === false && enableOfflineMode !== 1)
-      return true;
+    // If offline mode != 1 check value order
+    if (loadingPreparingOrder === false && enableOfflineMode !== 1) return true;
     return false;
   };
 
@@ -106,7 +99,6 @@ class CashPayment extends Component<Props> {
             id="inputValue"
           />
         </div>
-        {/* <div className={Styles.lineSubTotal} /> */}
         {inputCustomerCash === '' ? null : (
           <>
             <label htmlFor="inputValue" className="col-sm-4 pt-1">
@@ -158,6 +150,8 @@ class CashPayment extends Component<Props> {
     const enableOfflineMode = Number(
       posSystemConfig.general_configuration.enable_offline_mode
     );
+
+    console.log('enable offline mode:', enableOfflineMode);
     return (
       <div className="row">
         <div
@@ -179,7 +173,7 @@ class CashPayment extends Component<Props> {
             />
           </div>
           <div className="modal-body">
-            {enableOfflineMode === 1 ? <CashOffline /> : <CashOnline />}
+            {<SubTotal />}
             {this.considerOrder() ? this.transactionCustomer() : null}
             <span className="text-danger">{messageOrderError}</span>
           </div>
@@ -232,9 +226,7 @@ function mapStateToProps(state) {
     posSystemConfig: state.mainRd.posSystemConfig,
     toggleModalCalculatorStatus: state.mainRd.isOpenCalculator,
     orderPreparingCheckout: state.mainRd.checkout.orderPreparingCheckout,
-    messageOrderError: state.mainRd.messageOrderError,
-    isLoadingDiscountCheckoutOffline:
-      state.mainRd.checkout.offline.isLoadingDiscount
+    messageOrderError: state.mainRd.messageOrderError
   };
 }
 

@@ -52,17 +52,6 @@ const initialState = {
     isShowCashPaymentModel: false,
     isShowCardPaymentModal: false,
     loadingPreparingOrder: false, // Status cash loading for preparing to show cash payment form
-    // All checkout variables
-    offline: {
-      isLoadingDiscount: false,
-      cartInfo: {
-        base_discount_amount: 0,
-        base_grand_total: 0,
-        base_sub_total: 0,
-        quote_id: 0,
-        shipping_and_tax_amount: 0
-      }
-    },
     orderPreparingCheckout: {
       currency_id: '',
       email: '',
@@ -81,13 +70,12 @@ const initialState = {
         method: ''
       },
       totals: {
-        discount_amount: 0,
+        base_discount_amount: 0,
         base_subtotal: 0,
         grand_total: 0,
         tax_amount: 0,
         base_shipping_amount: 0
       }
-      // Detail order for preparing to checkout
     },
     cardPayment: {
       type: 'stripe', // cash, stripe, authorize
@@ -189,13 +177,13 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.RECEIVED_ORDER_PREPARING_CHECKOUT:
         console.log('totals:', action.payload.totals);
         const totals = action.payload.totals;
-        const discount_amount = totals.discount_amount;
+        const discount_amount = totals.base_discount_amount;
         const base_subtotal = totals.base_subtotal;
         const grand_total = totals.grand_total;
         const tax_amount = totals.tax_amount;
         const base_shipping_amount = totals.base_shipping_amount;
 
-        draft.checkout.orderPreparingCheckout.totals.discount_amount = discount_amount;
+        draft.checkout.orderPreparingCheckout.totals.base_discount_amount = discount_amount;
         draft.checkout.orderPreparingCheckout.totals.base_subtotal = base_subtotal;
         draft.checkout.orderPreparingCheckout.totals.grand_total = grand_total;
         draft.checkout.orderPreparingCheckout.totals.tax_amount = tax_amount;
@@ -472,18 +460,14 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.customerSearchResult = [];
         draft.cashierInfo = {};
         break;
-      case types.UPDATE_IS_LOADING_GET_CHECKOUT_OFFLINE:
-        draft.checkout.offline.isLoadingDiscount = action.payload;
-        break;
       case types.RECEIVED_CHECKOUT_OFFLINE_CART_INFO:
         const ordersInfo = action.payload[0];
-        draft.checkout.offline.cartInfo = action.payload[0];
         // Update to preparing checkout
         const baseDiscountAmount = ordersInfo.base_discount_amount;
         const baseGrandTotal = ordersInfo.base_grand_total;
         const baseSubTotal = ordersInfo.base_sub_total;
         const shippingAndTaxAmount = ordersInfo.shipping_and_tax_amount;
-        draft.checkout.orderPreparingCheckout.totals.discount_amount = baseDiscountAmount;
+        draft.checkout.orderPreparingCheckout.totals.base_discount_amount = baseDiscountAmount;
         draft.checkout.orderPreparingCheckout.totals.base_subtotal = baseSubTotal;
         draft.checkout.orderPreparingCheckout.totals.grand_total = baseGrandTotal;
         draft.checkout.orderPreparingCheckout.totals.tax_amount = shippingAndTaxAmount;

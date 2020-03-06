@@ -203,8 +203,6 @@ function* checkoutActionSg() {
       defaultGuestCheckout
     });
 
-    console.log('response when added shipping:', response);
-
     yield put({
       type: types.RECEIVED_ORDER_PREPARING_CHECKOUT,
       payload: response
@@ -858,12 +856,6 @@ function* signUpAction(payload) {
  * @returns void
  */
 function* getDiscountForOfflineCheckoutSaga() {
-  // Start loading
-  yield put({
-    type: types.UPDATE_IS_LOADING_GET_CHECKOUT_OFFLINE,
-    payload: true
-  });
-
   const cartCurrentResult = yield select(cartCurrent);
   // Handles for offline mode
   const posSystemConfigResult = yield select(posSystemConfig);
@@ -879,12 +871,6 @@ function* getDiscountForOfflineCheckoutSaga() {
       payload: result
     });
   }
-
-  // Stop loading
-  yield put({
-    type: types.UPDATE_IS_LOADING_GET_CHECKOUT_OFFLINE,
-    payload: false
-  });
 }
 
 /**
@@ -1271,10 +1257,6 @@ function* rootSaga() {
   yield takeEvery(types.GET_PRODUCT_BY_CATEGORY, getProductByCategory);
   yield takeEvery(types.SIGN_UP_CUSTOMER, signUpAction);
   yield takeEvery(types.GET_ORDER_HISTORY_DETAIL_ACTION, getOrderHistoryDetail);
-  yield takeEvery(
-    types.GET_DISCOUNT_FOR_OFFLINE_CHECKOUT,
-    getDiscountForOfflineCheckoutSaga
-  );
   yield takeEvery(CHECK_LOGIN_BACKGROUND, checkLoginBackgroundSaga);
   yield takeEvery(types.UPDATE_QTY_CART_ITEM, updateQtyCartItemSaga);
   yield takeEvery(
