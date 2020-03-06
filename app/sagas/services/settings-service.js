@@ -57,7 +57,7 @@ export async function shopInfoSync(shopInfo) {
 }
 
 export async function outLetConfigSync(outletInfo) {
-  const outletInfoDb = await getByKey(detailOutlet);
+  const outletInfoDb = await getByKeyV2(detailOutlet);
   if (outletInfoDb.length === 0) {
     // Create key
     await createKey(detailOutlet, outletInfo);
