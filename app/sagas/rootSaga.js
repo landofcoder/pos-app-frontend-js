@@ -1218,178 +1218,6 @@ function* getProductBySkuFromScannerSaga(payload) {
     payload: productResult
   });
 }
-function* getProductInOrder(payload) {
-  console.log(payload);
-  const skuList = [];
-  const productBySku = [];
-  let listItems = [];
-  if (payload.synced) {
-    // synced
-    listItems = payload.data.items;
-  } else {
-    listItems = payload.data.items.cartCurrentResult;
-  }
-  console.log(listItems);
-  for (let i = 0; i < listItems.length; i += 1) {
-    // to flitter type of product with sku
-    console.log(listItems[i]);
-    const config = listItems[i].sku.split('-');
-    const qty = listItems[i].qty_ordered;
-    console.log(config);
-    skuList.push({ item: config, qty });
-  }
-  console.dir(skuList);
-
-  // search in reducer
-  const productListResult = yield select(productList);
-  let itemResult;
-  for (let i = 0; i < skuList.length; i += 1) {
-    console.log('finded it in reducer');
-    const productResult = productListResult.find(item => {
-      if (skuList[i].item.length > 2 && skuList[i].item === item.sku) {
-        return item;
-      }
-      if (skuList[i].item.join('-') === item.sku) {
-        return item;
-      }
-    });
-    console.log(productResult);
-    if (productResult) {
-      itemResult = {
-        data: productResult,
-        sku: skuList[i].item.join('-'),
-        qty: skuList[i].qty
-      };
-      productBySku.push(itemResult);
-      skuList.splice(i, 1);
-      i -= 1;
-    }
-  }
-  // search in localDb
-  if (getOfflineMode() === 1) {
-    console.log('in search in offline mode');
-    for (let i = 0; i < skuList.length; i += 1) {
-      let data;
-      let item;
-      if (skuList[i].item.length > 2) {
-        data = yield call(getProductBySkuLocal, skuList[i].item[0]);
-        item = {
-          data: data[0],
-          sku: skuList[i].item.join('-'),
-          qty: skuList[i].qty
-        };
-      } else {
-        data = yield call(getProductBySkuLocal, skuList[i].item.join('-'));
-        item = {
-          data: data[0],
-          sku: skuList[i].item.join('-'),
-          qty: skuList[i].qty
-        };
-      }
-      console.log(data);
-      if (data.length > 0) {
-        productBySku.push(item);
-        // need to delete item in skuList when finded item in localDb to search remain product not in local yet
-        skuList.splice(i, 1);
-        i -= 1;
-      }
-    }
-  }
-
-  // search wil call api
-  for (let i = 0; i < skuList.length; i += 1) {
-    let data;
-    let item;
-    const sku = skuList[i].item.join('-');
-    console.log(sku);
-    if (skuList[i].item.length > 2) {
-      data = yield call(querySearchProduct, skuList[i].item[0], 1);
-      // because search with return all same sku name so find exact sku
-      console.log(data);
-      for (let i = 0; i < data.length; i += 1) {
-        if (data[i].sku === skuList[i].item[0]) {
-          item = { data: data[i], sku, qty: skuList[i].qty };
-        }
-      }
-    } else {
-      data = yield call(querySearchProduct, skuList[i].item.join('-'), 1);
-      // because search with return all same sku name so find exact sku
-      console.log(data);
-      for (let i = 0; i < data.length; i += 1) {
-        if (data[i].sku === sku) {
-          item = { data: data[i], sku, qty: skuList[i].qty };
-        }
-      }
-    }
-    if (data.length > 0) {
-      productBySku.push(item);
-      // need to delete item in skuList when finded item of product search
-      skuList.splice(i, 1);
-      i -= 1;
-    }
-  }
-  // remain product with get error
-  console.log('product cant get');
-  console.log(skuList);
-  return productBySku;
-}
-
-function codeSelectConfigurable(payload) {
-  // from sku attribute to select product type
-  console.log('consider in code select');
-  console.log(payload);
-  const sku = payload.sku.split('-');
-  const listSkuProduct = payload.data.variants;
-  let resultProduct;
-  console.log(sku);
-  console.log(listSkuProduct);
-  for (let i = 0; i < listSkuProduct.length; i += 1) {
-    if (
-      listSkuProduct[i].attributes[0].label === sku[1] ||
-      (listSkuProduct[i].attributes[0].label === sku[2] &&
-        listSkuProduct[i].attributes[1].label === sku[1]) ||
-      listSkuProduct[i].attributes[1].label === sku[2]
-    ) {
-      resultProduct = listSkuProduct[i].product;
-    }
-  }
-  console.log(resultProduct);
-  return resultProduct;
-}
-
-function* considerAddToCart(payload) {
-  let productResult;
-  console.log(payload);
-  console.log('consider type of product to add cart');
-  console.log(payload.data.type_id);
-  console.log(`qty : ${payload.qty}`);
-  // add qty to object of payload
-  switch (payload.data.type_id) {
-    case 'configurable':
-      console.log('go configurable');
-      console.log(payload);
-      productResult = yield call(codeSelectConfigurable, payload);
-      yield put({
-        type: types.ADD_TO_CART,
-        payload: Object.assign({ pos_qty: payload.qty }, productResult)
-      });
-      break;
-    case 'simple':
-      console.log('go simple');
-      yield put({
-        type: types.ADD_TO_CART,
-        payload: Object.assign({ pos_qty: payload.qty }, payload.data)
-      });
-      break;
-    default:
-      console.log(payload);
-      yield put({
-        type: types.ADD_TO_CART,
-        payload: Object.assign({ pos_qty: payload.qty }, payload.data)
-      });
-      break;
-  }
-}
 
 function* reorderAction(payload) {
   console.log(payload);
@@ -1406,16 +1234,6 @@ function* reorderAction(payload) {
   if (!payload.synced) {
     for (let i = 0; i < itemList.length; i += 1) {
       yield put({ type: types.ADD_TO_CART, payload: itemList[i] });
-    }
-  } else {
-    // if order in compelete ofcourse
-    const productBySku = yield getProductInOrder(payload);
-    console.log(productBySku);
-    // push product to cart
-    // check cart current emtpy or not
-    for (let i = 0; i < productBySku.length; i += 1) {
-      // push product with qty
-      yield considerAddToCart(productBySku[i]);
     }
   }
 }
@@ -1549,7 +1367,7 @@ function* rootSaga() {
     types.GET_PRODUCT_BY_SKU_FROM_SCANNER,
     getProductBySkuFromScannerSaga
   );
-  
+
   yield takeEvery(types.ORDER_ACTION, orderAction);
 
   yield takeEvery(
