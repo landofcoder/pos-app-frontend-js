@@ -841,7 +841,6 @@ function* getOrderHistory() {
 }
 
 function* signUpAction(payload) {
-  console.log(payload);
   yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: true });
   const offlineMode = yield getOfflineMode();
   if (offlineMode === 1) {
@@ -849,12 +848,13 @@ function* signUpAction(payload) {
     yield put({ type: types.TOGGLE_MODAL_SIGN_UP_CUSTOMER, payload: false });
   } else {
     const res = yield call(signUpCustomerService, payload);
-    yield put({
-      type: types.MESSAGE_SIGN_UP_CUSTOMER,
-      payload: res.data.message
-    });
-    if (res.ok) {
+    if (res.success) {
       yield put({ type: types.TOGGLE_MODAL_SIGN_UP_CUSTOMER, payload: false });
+    } else {
+      yield put({
+        type: types.MESSAGE_SIGN_UP_CUSTOMER,
+        payload: res.data.errors[0].message
+      });
     }
   }
   yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: false });
