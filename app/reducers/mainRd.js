@@ -321,6 +321,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.cartCurrent.cartId = action.payload;
         break;
       case types.UPDATE_SHOW_CASH_MODAL:
+        draft.messageOrderError = '';
         draft.checkout.isShowCashPaymentModel = action.payload;
         break;
       case types.UPDATE_CASH_PLACE_ORDER_LOADING:

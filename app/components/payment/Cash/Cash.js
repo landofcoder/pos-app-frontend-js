@@ -3,11 +3,13 @@ import { connect } from 'react-redux';
 import {
   updateShowCashModal,
   toggleModalCalculator,
-  cashPlaceOrderAction
+  cashPlaceOrderAction,
+  messagePlaceOrderError
 } from '../../../actions/homeAction';
 import Calculator from '../Calculator/Calculator';
 import SubTotal from '../Subtotal/SubTotal';
 import { formatCurrencyCode } from '../../../common/settings';
+import { validateShippingAddress } from '../../../common/customer';
 
 type Props = {
   loadingPreparingOrder: boolean,
@@ -19,7 +21,10 @@ type Props = {
   toggleModalCalculator: (payload: boolean) => void,
   orderPreparingCheckout: Object,
   currencyCode: string,
-  messageOrderError: string
+  cartCurrent: Object,
+  messageOrderError: string,
+  sendMessagePlaceOrderError: payload => void,
+  detailOutlet: Object
 };
 
 class CashPayment extends Component<Props> {
@@ -61,13 +66,27 @@ class CashPayment extends Component<Props> {
   considerOrder = () => {
     const {
       loadingPreparingOrder,
-      posSystemConfig
+      posSystemConfig,
+      cartCurrent,
+      sendMessagePlaceOrderError,
+      detailOutlet
     } = this.props;
-    const enableOfflineMode = Number(
-      posSystemConfig.general_configuration.enable_offline_mode
-    );
+    // check validate place order in here
     // If offline mode != 1 check value order
-    if (loadingPreparingOrder === false && enableOfflineMode !== 1) return true;
+    // if loading don't consider
+
+    if (loadingPreparingOrder) return false;
+
+    const result = validateShippingAddress(
+      detailOutlet[0].data,
+      posSystemConfig.default_guest_checkout,
+      cartCurrent.isGuestCustomer
+    );
+    if (!result.status) {
+      sendMessagePlaceOrderError(result);
+      return false;
+    }
+    if (loadingPreparingOrder === false) return true;
     return false;
   };
 
@@ -226,7 +245,9 @@ function mapStateToProps(state) {
     posSystemConfig: state.mainRd.posSystemConfig,
     toggleModalCalculatorStatus: state.mainRd.isOpenCalculator,
     orderPreparingCheckout: state.mainRd.checkout.orderPreparingCheckout,
-    messageOrderError: state.mainRd.messageOrderError
+    messageOrderError: state.mainRd.messageOrderError,
+    cartCurrent: state.mainRd.cartCurrent,
+    detailOutlet: state.mainRd.detailOutlet
   };
 }
 
@@ -234,7 +255,9 @@ function mapDispatchToProps(dispatch) {
   return {
     cashPlaceOrderAction: () => dispatch(cashPlaceOrderAction()),
     updateShowCashModal: payload => dispatch(updateShowCashModal(payload)),
-    toggleModalCalculator: payload => dispatch(toggleModalCalculator(payload))
+    toggleModalCalculator: payload => dispatch(toggleModalCalculator(payload)),
+    sendMessagePlaceOrderError: payload =>
+      dispatch(messagePlaceOrderError(payload))
   };
 }
 

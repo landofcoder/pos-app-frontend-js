@@ -110,7 +110,7 @@ const orderDetailLocalDb = state => state.mainRd.orderHistoryDetailOffline;
 const orderDetailOnline = state => state.mainRd.orderHistoryDetail;
 const cardPayment = state => state.mainRd.checkout.cardPayment;
 const orderList = state => state.mainRd.orderHistory;
-const productList = state => state.mainRd.productList;
+const detailOutlet = state => state.mainRd.detailOutlet;
 
 function* startCashCheckoutActionSg() {
   // Show cash modal
@@ -179,8 +179,8 @@ function* checkoutActionSg() {
     yield getDiscountForOfflineCheckoutSaga();
   } else {
     // Handles for online mode
-    const posSystemConfigResult = yield select(posSystemConfig);
-    const posSystemConfigGuestCustomer = posSystemConfigResult[3];
+    const detailOutletResult = yield select(detailOutlet);
+    const outletConfigDefaultCustomer = detailOutletResult[0].data;
     const defaultShippingMethod = yield getDefaultShippingMethod();
     const cartCurrentResult = yield select(cartCurrent);
 
@@ -205,7 +205,7 @@ function* checkoutActionSg() {
       isGuestCustomer,
       customerToken,
       defaultShippingMethod,
-      posSystemConfigGuestCustomer,
+      outletConfigDefaultCustomer,
       defaultGuestCheckout
     });
 

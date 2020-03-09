@@ -377,3 +377,10 @@ export function updatePaymentResultCode(payload) {
     payload
   };
 }
+
+export function messagePlaceOrderError(payload) {
+  return {
+    type: types.PLACE_ORDER_ERROR,
+    payload
+  }
+}
