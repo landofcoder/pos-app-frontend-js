@@ -483,16 +483,6 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.UPDATE_SWITCHING_MODE:
         // i found a bug in this case that switchingMode in LOGIN_FORM after sync success it auto switch to HOME_PAGE :/
-        console.log('switchingMode before');
-        console.log(state.switchingMode);
-        console.log('payload after');
-        console.log(action.payload);
-        console.log('get offline mode');
-        if (state.switchingMode === 'LOGIN_FORM') {
-          console.log(getOfflineMode());
-        }
-        console.log('special condition');
-        console.log(state.specialConditionSwitchMode);
         if (
           !(
             state.switchingMode === LOGIN_FORM &&
