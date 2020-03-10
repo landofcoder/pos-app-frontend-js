@@ -40,9 +40,10 @@ export function checkoutAction() {
   };
 }
 
-export function startCashCheckoutAction() {
+export function startCashCheckoutAction(payload) {
   return {
-    type: types.START_CASH_CHECKOUT_ACTION
+    type: types.START_CASH_CHECKOUT_ACTION,
+    payload
   };
 }
 
@@ -382,5 +383,5 @@ export function messagePlaceOrderError(payload) {
   return {
     type: types.PLACE_ORDER_ERROR,
     payload
-  }
+  };
 }

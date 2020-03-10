@@ -56,7 +56,7 @@ class CardPayment extends Component {
     // Close modal
     updateIsShowCardPaymentModel(false);
     // Show cash modal
-    startCashCheckoutAction();
+    startCashCheckoutAction(true);
   };
 
   renderErrorMessage = chargeResult => {
@@ -161,7 +161,7 @@ class CardPayment extends Component {
                   </div>
                 </div>
                 <div className="col-md-12 mt-4 mb-5">
-                  <InputCard/>
+                  <InputCard />
                 </div>
               </div>
             </div>
@@ -225,7 +225,8 @@ function mapDispatchToProps(dispatch) {
     updateCardPaymentType: payload => dispatch(updateCardPaymentType(payload)),
     acceptPaymentCard: () => dispatch(cardCheckoutPlaceOrderAction()),
     checkoutAction: () => dispatch(checkoutAction()),
-    startCashCheckoutAction: () => dispatch(startCashCheckoutAction()),
+    startCashCheckoutAction: payload =>
+      dispatch(startCashCheckoutAction(payload)),
     updatePaymentResultCode: payload =>
       dispatch(updatePaymentResultCode(payload))
   };

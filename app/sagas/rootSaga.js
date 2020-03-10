@@ -112,12 +112,12 @@ const cardPayment = state => state.mainRd.checkout.cardPayment;
 const orderList = state => state.mainRd.orderHistory;
 const detailOutlet = state => state.mainRd.detailOutlet;
 
-function* startCashCheckoutActionSg() {
+function* startCashCheckoutActionSg(payload) {
   // Show cash modal
   yield put({ type: types.UPDATE_SHOW_CASH_MODAL, payload: true });
 
   // Checkout action handling
-  yield checkoutActionSg();
+  if (payload.payload !== true) yield checkoutActionSg();
 }
 
 /**
@@ -1315,7 +1315,6 @@ function* cardCheckoutPlaceOrderActionSg() {
  * @returns void
  */
 function* rootSaga() {
-  yield takeEvery(types.CHECKOUT_ACTION, checkoutActionSg);
   yield takeEvery(types.SEARCH_ACTION, searchProduct);
   yield takeEvery(
     types.GET_DETAIL_PRODUCT_CONFIGURABLE,

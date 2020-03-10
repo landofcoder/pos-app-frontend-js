@@ -52,7 +52,7 @@ type Props = {
   cartHoldList: Array<Object>,
   switchToHoldItemCart: (payload: number) => void,
   updateTriggerScannerBarcodeTriggerToFalse: (payload: boolean) => void,
-  startCashCheckoutAction: (payload: boolean) => void,
+  startCashCheckoutAction: () => void,
   emptyCart: () => void,
   currencyCode: string,
   isLoadingSearchHandle: boolean,
@@ -287,22 +287,22 @@ export default class Pos extends Component<Props, State> {
   renderDiscountAndTax = () => {
     return (
       <>
-        {/*<div className={CommonStyle.wrapRow}>*/}
-        {/*  <div className={CommonStyle.wrapLabel}>*/}
-        {/*    <span>Subtotal</span>*/}
-        {/*  </div>*/}
-        {/*  <div className={CommonStyle.wrapValue}>*/}
-        {/*    <span>{this.sumTotalPrice()}</span>*/}
-        {/*  </div>*/}
-        {/*</div>*/}
-        {/*<div className={CommonStyle.wrapRow}>*/}
-        {/*  <div className={CommonStyle.wrapLabel}>*/}
-        {/*    <span>Discount</span>*/}
-        {/*  </div>*/}
-        {/*  <div className={CommonStyle.wrapValue}>*/}
-        {/*    <span>--</span>*/}
-        {/*  </div>*/}
-        {/*</div>*/}
+        {/* <div className={CommonStyle.wrapRow}> */}
+        {/*  <div className={CommonStyle.wrapLabel}> */}
+        {/*    <span>Subtotal</span> */}
+        {/*  </div> */}
+        {/*  <div className={CommonStyle.wrapValue}> */}
+        {/*    <span>{this.sumTotalPrice()}</span> */}
+        {/*  </div> */}
+        {/* </div> */}
+        {/* <div className={CommonStyle.wrapRow}> */}
+        {/*  <div className={CommonStyle.wrapLabel}> */}
+        {/*    <span>Discount</span> */}
+        {/*  </div> */}
+        {/*  <div className={CommonStyle.wrapValue}> */}
+        {/*    <span>--</span> */}
+        {/*  </div> */}
+        {/* </div> */}
       </>
     );
   };
