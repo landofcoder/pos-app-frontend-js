@@ -13,7 +13,7 @@ class SyncOrderManager extends Component {
     const { listSyncOrder } = this.props;
     return (
       <>
-        <table style={{ width: '100%' }}>
+        <table className="table" style={{ width: '100%' }}>
           <thead>
             <tr>
               <th scope="col">#</th>
@@ -31,11 +31,9 @@ class SyncOrderManager extends Component {
                     <tr
                       key={index}
                       className={Styles.tableRowList}
-                      onClick={() =>
-                        item.local
-                          ? this.getOrderHistoryDetailOffline(item)
-                          : this.getOrderHistoryDetail(item.sales_order_id)
-                      }
+                      onClick={e => {
+                        e.preventDefault();
+                      }}
                     >
                       <th scope="row">{index + 1}</th>
                       <td>{item.sales_order_id}</td>
@@ -65,8 +63,7 @@ function mapStateToProps(state) {
   };
 }
 function mapDispatchToProps(dispatch) {
-  return {
-  };
+  return {};
 }
 export default connect(
   mapStateToProps,

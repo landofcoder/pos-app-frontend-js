@@ -13,7 +13,7 @@ class SyncCustomerManager extends Component {
     console.log(ListSyncCustomer);
     return (
       <>
-        <table style={{ width: '100%' }}>
+        <table className="table" style={{ width: '100%' }}>
           <thead>
             <tr>
               <th scope="col">#</th>

@@ -74,7 +74,7 @@ import { syncCategories } from '../reducers/db/categories';
 import { syncCustomers } from '../reducers/db/customers';
 import { signUpCustomer } from '../reducers/db/sync_customers';
 import { getAllOrders } from '../reducers/db/sync_orders';
-import { counterProduct, getProductBySkuLocal } from '../reducers/db/products';
+import { counterProduct } from '../reducers/db/products';
 import { getOfflineMode } from '../common/settings';
 import { createProduct } from '../reducers/db/sync_custom_product';
 import {

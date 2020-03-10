@@ -192,7 +192,7 @@ class CashPayment extends Component<Props> {
             />
           </div>
           <div className="modal-body">
-            {<SubTotal />}
+            <SubTotal />
             {this.considerOrder() ? this.transactionCustomer() : null}
             <span className="text-danger">{messageOrderError}</span>
           </div>

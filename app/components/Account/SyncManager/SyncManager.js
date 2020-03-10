@@ -143,7 +143,9 @@ class SyncManager extends Component {
               <div className="col-md-5"></div>
             </div>
           </div>
-          <div className="col-9">{this.renderSwitchShowUpSync()}</div>
+          <div className="col-9">
+            <div className="card">{this.renderSwitchShowUpSync()}</div>
+          </div>
         </div>
       </>
     );
