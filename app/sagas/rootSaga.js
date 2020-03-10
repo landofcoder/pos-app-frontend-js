@@ -21,8 +21,7 @@ import {
   getProductByCategoryService,
   searchProductService,
   syncAllProducts,
-  getProductBySkuFromScanner,
-  querySearchProduct
+  getProductBySkuFromScanner
 } from './services/product-service';
 import {
   getCustomerCartTokenService,
@@ -89,6 +88,7 @@ import {
 } from '../constants/product-query';
 import { SUCCESS_CHARGE } from '../constants/payment';
 import { getNewToken } from './authenSaga';
+import { sumCartTotalPrice } from '../common/cart';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
 const cartCurrentObj = state => state.mainRd.cartCurrent;
@@ -865,16 +865,29 @@ function* signUpAction(payload) {
  * @returns void
  */
 function* getDiscountForOfflineCheckoutSaga() {
-  const cartCurrentResult = yield select(cartCurrent);
+  const cartCurrentObjResult = yield select(cartCurrentObj);
   // Handles for offline mode
   const posSystemConfigResult = yield select(posSystemConfig);
   const result = yield call(getDiscountForQuoteService, {
-    cart: cartCurrentResult,
+    cart: cartCurrentObjResult.data,
     config: posSystemConfigResult
   });
   const typeOfResult = typeof result;
   // If json type returned, that mean get discount success
   if (typeOfResult !== 'string' && result.message === undefined) {
+    yield put({
+      type: types.RECEIVED_CHECKOUT_OFFLINE_CART_INFO,
+      payload: result
+    });
+  } else {
+    // caclculator total checkout when offline in here
+    console.log(cartCurrentObjResult);
+    const sumTotalPriceResult = sumCartTotalPrice(cartCurrentObjResult);
+    const result = [
+      {
+        base_sub_total: sumTotalPriceResult
+      }
+    ];
     yield put({
       type: types.RECEIVED_CHECKOUT_OFFLINE_CART_INFO,
       payload: result
