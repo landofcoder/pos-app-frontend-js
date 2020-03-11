@@ -135,7 +135,7 @@ export async function addShippingInformationService(cartToken, payloadCart) {
   let token = window.liveToken;
   const {
     defaultShippingMethod,
-    posSystemConfigCustomer,
+    outletConfigDefaultCustomer,
     defaultGuestCheckout
   } = payloadCart;
   if (payloadCart.isGuestCustomer) {
@@ -160,12 +160,14 @@ export async function addShippingInformationService(cartToken, payloadCart) {
     body: JSON.stringify({
       addressInformation: {
         shipping_address: renderShippingAddress(
-          posSystemConfigCustomer,
-          defaultGuestCheckout
+          outletConfigDefaultCustomer,
+          defaultGuestCheckout,
+          payloadCart.isGuestCustomer
         ),
         billing_address: renderShippingAddress(
-          posSystemConfigCustomer,
-          defaultGuestCheckout
+          outletConfigDefaultCustomer,
+          defaultGuestCheckout,
+          payloadCart.isGuestCustomer
         ),
         shipping_method_code: defaultShippingMethod,
         shipping_carrier_code: defaultShippingMethod
@@ -182,7 +184,11 @@ export async function addShippingInformationService(cartToken, payloadCart) {
  * @param defaultGuestCheckout
  * @returns void
  */
-function renderShippingAddress(customerConfig, defaultGuestCheckout) {
+function renderShippingAddress(
+  customerConfig,
+  defaultGuestCheckout,
+  isGuestCustomer
+) {
   let city;
   let countryId;
   let email;
@@ -192,16 +198,17 @@ function renderShippingAddress(customerConfig, defaultGuestCheckout) {
   let telephone;
   let postcode = '';
   let regionId = 1;
-
   // If customer selected
-  if (customerConfig) {
+  if (!isGuestCustomer) {
     city = customerConfig ? customerConfig.city : '';
-    countryId = customerConfig ? customerConfig.country : '';
+    countryId = customerConfig ? customerConfig.country_id : '';
     email = customerConfig ? customerConfig.email : '';
-    firstName = customerConfig ? customerConfig.first_name : '';
-    lastName = customerConfig ? customerConfig.last_name : '';
-    street = customerConfig ? customerConfig.street : [''];
+    firstName = customerConfig ? customerConfig.firstname : '';
+    lastName = customerConfig ? customerConfig.lastname : '';
+    street = customerConfig ? [customerConfig.street] : [''];
     telephone = customerConfig ? customerConfig.telephone : '';
+    regionId = customerConfig ? +customerConfig.region_id : '';
+    postcode = customerConfig ? customerConfig.post_code : '';
   } else {
     // Get from customer guest checkout
     // eslint-disable-next-line prefer-destructuring
@@ -217,8 +224,7 @@ function renderShippingAddress(customerConfig, defaultGuestCheckout) {
     // eslint-disable-next-line prefer-destructuring
     telephone = defaultGuestCheckout.telephone;
     // eslint-disable-next-line prefer-destructuring
-    regionId = defaultGuestCheckout.region_id;
-    postcode = defaultGuestCheckout.zip_code;
+    postcode = defaultGuestCheckout.post_code;
   }
 
   return {

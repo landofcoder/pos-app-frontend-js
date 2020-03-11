@@ -13,7 +13,7 @@ class SyncCustomProductManager extends Component {
     const { ListSyncCustomProduct } = this.props;
     return (
       <>
-        <table style={{ width: '100%' }}>
+        <table className="table" style={{ width: '100%' }}>
           <thead>
             <tr>
               <th scope="col">#</th>

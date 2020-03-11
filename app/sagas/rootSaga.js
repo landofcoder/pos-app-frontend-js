@@ -73,7 +73,7 @@ import { syncCategories } from '../reducers/db/categories';
 import { syncCustomers } from '../reducers/db/customers';
 import { signUpCustomer } from '../reducers/db/sync_customers';
 import { getAllOrders } from '../reducers/db/sync_orders';
-import { counterProduct, getProductBySkuLocal } from '../reducers/db/products';
+import { counterProduct } from '../reducers/db/products';
 import { getOfflineMode } from '../common/settings';
 import { createProduct } from '../reducers/db/sync_custom_product';
 import {
@@ -110,14 +110,14 @@ const orderDetailLocalDb = state => state.mainRd.orderHistoryDetailOffline;
 const orderDetailOnline = state => state.mainRd.orderHistoryDetail;
 const cardPayment = state => state.mainRd.checkout.cardPayment;
 const orderList = state => state.mainRd.orderHistory;
-const productList = state => state.mainRd.productList;
+const detailOutlet = state => state.mainRd.detailOutlet;
 
-function* startCashCheckoutActionSg() {
+function* startCashCheckoutActionSg(payload) {
   // Show cash modal
   yield put({ type: types.UPDATE_SHOW_CASH_MODAL, payload: true });
 
   // Checkout action handling
-  yield checkoutActionSg();
+  if (payload.payload !== true) yield checkoutActionSg();
 }
 
 /**
@@ -179,8 +179,8 @@ function* checkoutActionSg() {
     yield getDiscountForOfflineCheckoutSaga();
   } else {
     // Handles for online mode
-    const posSystemConfigResult = yield select(posSystemConfig);
-    const posSystemConfigGuestCustomer = posSystemConfigResult[3];
+    const detailOutletResult = yield select(detailOutlet);
+    const outletConfigDefaultCustomer = detailOutletResult[0].data;
     const defaultShippingMethod = yield getDefaultShippingMethod();
     const cartCurrentResult = yield select(cartCurrent);
 
@@ -205,7 +205,7 @@ function* checkoutActionSg() {
       isGuestCustomer,
       customerToken,
       defaultShippingMethod,
-      posSystemConfigGuestCustomer,
+      outletConfigDefaultCustomer,
       defaultGuestCheckout
     });
 
@@ -841,22 +841,22 @@ function* getOrderHistory() {
 }
 
 function* signUpAction(payload) {
-  console.log(payload);
   yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: true });
   const offlineMode = yield getOfflineMode();
   if (offlineMode === 1) {
     yield call(signUpCustomer, payload);
+    yield put({ type: types.TOGGLE_MODAL_SIGN_UP_CUSTOMER, payload: false });
   } else {
     const res = yield call(signUpCustomerService, payload);
-    yield put({
-      type: types.MESSAGE_SIGN_UP_CUSTOMER,
-      payload: res.data.message
-    });
-    if (res.ok) {
+    if (res.success) {
       yield put({ type: types.TOGGLE_MODAL_SIGN_UP_CUSTOMER, payload: false });
+    } else {
+      yield put({
+        type: types.MESSAGE_SIGN_UP_CUSTOMER,
+        payload: res.data.errors[0].message
+      });
     }
   }
-
   yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: false });
 }
 
@@ -1328,7 +1328,6 @@ function* cardCheckoutPlaceOrderActionSg() {
  * @returns void
  */
 function* rootSaga() {
-  yield takeEvery(types.CHECKOUT_ACTION, checkoutActionSg);
   yield takeEvery(types.SEARCH_ACTION, searchProduct);
   yield takeEvery(
     types.GET_DETAIL_PRODUCT_CONFIGURABLE,
