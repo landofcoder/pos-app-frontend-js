@@ -140,12 +140,14 @@ const initialState = {
   orderHistoryDetailOffline: {},
   order_id_history: null,
   isOpenFindCustomer: false,
+  isOpenAddNote: false,
   isOpenSignUpCustomer: false,
   isOpenCalculator: false,
   isOpenDetailOrder: false,
   isOpenDetailOrderOffline: false,
   isLoadingSearchCustomer: false,
   isLoadingOrderHistory: false,
+  isLoadingNoteOrderAction: false,
   isLoadingOrderHistoryDetail: true,
   isLoadingOrderHistoryDetailOffline: true,
   isLoadingSignUpCustomer: false,
@@ -300,6 +302,11 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.TOGGLE_MODAL_CUSTOMER:
         draft.isOpenFindCustomer = action.payload;
         break;
+      case types.TOGGLE_ACTION_ORDER_ADD_NOTE:
+        draft.isOpenAddNote = action.payload;
+        break;
+      case types.LOADING_NOTE_ORDER_ACTION:
+        draft.isLoadingNoteOrderAction = action.payload;
       case types.TOGGLE_MODAL_SIGN_UP_CUSTOMER:
         draft.isOpenSignUpCustomer = action.payload;
         break;

@@ -6,6 +6,7 @@ import {
   toggleModalOrderDetail,
   toggleModalOrderDetailOffline,
   orderAction,
+  toggleModalAddNote,
   getOrderHistoryDetail
 } from '../../../actions/accountAction';
 import DetailOrder from './DetailOrder/DetailOrder';
@@ -24,6 +25,7 @@ import {
   DETAIL_ORDER_ONLINE,
   DETAIL_ORDER_OFFLINE
 } from '../../../constants/root';
+import AddNoteOrder from './AddNoteOrder/AddNoteOrder';
 
 type Props = {
   getOrderHistory: () => void,
@@ -31,13 +33,15 @@ type Props = {
   orderHistory: [],
   isOpenDetailOrder: boolean,
   isOpenDetailOrderOffline: boolean,
+  isOpenAddNote: boolean,
   toggleModalOrderDetail: object => void,
   toggleModalOrderDetailOffline: object => void,
   orderAction: payload => void,
   getOrderHistoryDetail: id => void,
   orderHistoryDetailOffline: object,
   orderHistoryDetail: object,
-  history: payload => void
+  history: payload => void,
+  toggleModalAddNote: payload => void
 };
 
 class OrderHistory extends Component<Props> {
@@ -89,7 +93,7 @@ class OrderHistory extends Component<Props> {
   };
 
   actionDetailOrder = () => {
-    const { orderAction, history } = this.props;
+    const { orderAction, history, isOpenAddNote } = this.props;
 
     // check have detail order to consider show action detail
     if (this.isShowingDetailOrder() || this.isShowingDetailOrderOffline()) {
@@ -97,6 +101,7 @@ class OrderHistory extends Component<Props> {
         <div
           className={`${Styles.wrapOrderAction} ${StylesPos.wrapFooterAction} `}
         >
+          {isOpenAddNote ? <AddNoteOrder /> : null}
           <div
             className={`${StylesPos.wrapActionFirstLine} ${Styles.fixMarginRow} row`}
           >
@@ -164,6 +169,17 @@ class OrderHistory extends Component<Props> {
             <div className="col-md-2 pl-1 pr-0">
               <button
                 type="button"
+                className="btn btn-outline-primary btn-lg btn-block"
+                onClick={() => {
+                  this.noteOrderAction();
+                }}
+              >
+                Note
+              </button>
+            </div>
+            <div className="col-md-2 pl-1 pr-0">
+              <button
+                type="button"
                 className="btn btn-outline-danger btn-lg btn-block"
                 disabled={this.isShowingDetailOrder()}
                 onClick={() => {
@@ -195,6 +211,11 @@ class OrderHistory extends Component<Props> {
       );
     }
     return null;
+  };
+
+  noteOrderAction = () => {
+    const { toggleModalAddNote } = this.props;
+    toggleModalAddNote(true);
   };
 
   render() {
@@ -272,6 +293,7 @@ function mapStateToProps(state) {
   return {
     isOpenDetailOrder: state.mainRd.isOpenDetailOrder,
     isOpenDetailOrderOffline: state.mainRd.isOpenDetailOrderOffline,
+    isOpenAddNote: state.mainRd.isOpenAddNote,
     isLoading: state.mainRd.isLoadingOrderHistory,
     orderHistory: state.mainRd.orderHistory,
     orderHistoryDetailOffline: state.mainRd.orderHistoryDetailOffline,
@@ -287,7 +309,8 @@ function mapDispatchToProps(dispatch) {
     toggleModalOrderDetailOffline: payload =>
       dispatch(toggleModalOrderDetailOffline(payload)),
     getOrderHistoryDetail: id => dispatch(getOrderHistoryDetail(id)),
-    orderAction: payload => dispatch(orderAction(payload))
+    orderAction: payload => dispatch(orderAction(payload)),
+    toggleModalAddNote: payload => dispatch(toggleModalAddNote(payload))
   };
 }
 

@@ -11,7 +11,8 @@ import {
   getDiscountForQuoteService,
   placeCashOrderService,
   createOrderLocal,
-  getDiscountCodeForQuoteService
+  getDiscountCodeForQuoteService,
+  noteOrderActionService
 } from './services/cart-service';
 import { stripeMakePayment } from './services/payments/stripe-payment';
 import { authorizeMakePayment } from './services/payments/authorize-payment';
@@ -1223,6 +1224,23 @@ function* getProductBySkuFromScannerSaga(payload) {
   });
 }
 
+function* noteOrderAction(payload) {
+  console.log('in noteOrderAction');
+  console.log(payload);
+  yield put({ type: types.LOADING_NOTE_ORDER_ACTION, payload: true });
+  const id = payload.data.entity_id;
+  console.log(id);
+  if (payload.synced) {
+    yield call(noteOrderActionService, { message: payload.message, id });
+    // get id and call service
+  } else {
+    // set in localdb
+  }
+  yield put({ type: types.LOADING_NOTE_ORDER_ACTION, payload: false });
+  yield put({ type: types.TOGGLE_ACTION_ORDER_ADD_NOTE, payload: false });
+  // yield put({type: types.})
+}
+
 function* reorderAction(payload) {
   console.log(payload);
   const itemList = payload.data.items.cartCurrentResult;
@@ -1251,13 +1269,16 @@ function* orderActionOffline(payload) {
       if (dataList[i].id === data.id) index = i;
     }
   }
-  switch (payload) {
+  switch (payload.action) {
     case types.CANCEL_ACTION_ORDER:
       yield cancelOrderService(data.id); // delete in localdb
       yield put({ type: types.REMOVE_ORDER_LIST, payload: index });
       break;
     case types.REORDER_ACTION_ORDER:
       yield reorderAction({ data, synced: false });
+      break;
+    case types.NOTE_ORDER_ACTION:
+      yield noteOrderAction({ data, synced: false, message: payload.payload });
       break;
     default:
       break;
@@ -1266,24 +1287,28 @@ function* orderActionOffline(payload) {
 
 function* orderActionOnline(payload) {
   const data = yield select(orderDetailOnline);
-  switch (payload) {
+  console.log(payload.action);
+  switch (payload.action) {
     case types.REORDER_ACTION_ORDER:
       yield reorderAction({ data, synced: true });
+      break;
+    case types.NOTE_ORDER_ACTION:
+      yield noteOrderAction({ data, synced: true, message: payload.payload });
       break;
     default:
       break;
   }
 }
 
-function* orderAction(payload) {
-  const { kindOf, action } = payload.payload;
+function* orderAction(params) {
+  const { kindOf, action, payload } = params.payload;
   console.log(kindOf);
   switch (kindOf) {
     case types.DETAIL_ORDER_OFFLINE:
-      yield orderActionOffline(action);
+      yield orderActionOffline({ action, payload });
       break;
     case types.DETAIL_ORDER_ONLINE:
-      yield orderActionOnline(action);
+      yield orderActionOnline({ action, payload });
       break;
     default:
   }
