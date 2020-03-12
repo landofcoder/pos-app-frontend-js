@@ -73,10 +73,13 @@ const initialState = {
       },
       totals: {
         base_discount_amount: 0,
+        init_discount_amount: 0,
         base_subtotal: 0,
         grand_total: 0,
         tax_amount: 0,
-        base_shipping_amount: 0
+        base_shipping_amount: 0,
+        discount_code: 0,
+        amount_discount_code: 0
       }
     },
     cardPayment: {
@@ -230,7 +233,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
         const { value } = action.payload.payload.event.target;
         draft.productOption.optionValue.configurable_options[
           index
-          ].pos_selected = value;
+        ].pos_selected = value;
         break;
       }
       case types.ON_BUNDLE_SELECTED_RADIO_ONCHANGE: {
@@ -251,14 +254,14 @@ const mainRd = (state: Object = initialState, action: Object) =>
         const { index, arraySelected } = action.payload;
         draft.productOption.optionValue.items[
           index
-          ].option_selected = arraySelected;
+        ].option_selected = arraySelected;
         break;
       }
       case types.ON_BUNDLE_SELECTED_MULTIPLE_ONCHANGE: {
         const { index, arraySelected } = action.payload;
         draft.productOption.optionValue.items[
           index
-          ].option_selected = arraySelected;
+        ].option_selected = arraySelected;
         break;
       }
       case types.ON_BUNDLE_SELECTED_MULTIPLE_REMOVE_ITEM_ONCHANGE: {
@@ -283,7 +286,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
         const { index, optionId, value } = action.payload;
         draft.productOption.optionValue.items[
           index
-          ].options = draft.productOption.optionValue.items[index].options.map(
+        ].options = draft.productOption.optionValue.items[index].options.map(
           item => {
             if (item.id === optionId) {
               item.qty = Number(value);
@@ -306,6 +309,10 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.RECEIVED_CUSTOMER_SEARCH_RESULT:
         draft.customerSearchResult = action.searchResult.items;
         break;
+      case types.REFRESH_DISCOUNT_CODE:
+        draft.checkout.orderPreparingCheckout.totals.amount_discount_code = 0;
+        draft.checkout.orderPreparingCheckout.totals.discount_code = 0;
+        break;
       case types.SELECT_CUSTOMER_FOR_CURRENT_CART:
         draft.cartCurrent.customer = action.payload;
         draft.cartCurrent.isGuestCustomer = false;
@@ -327,10 +334,11 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.UPDATE_CASH_PLACE_ORDER_LOADING:
         draft.isLoadingCashPlaceOrder = action.payload;
         break;
-      case types.UPDATE_ITEM_CART: {
-        const { index, item } = action.payload;
-        draft.cartCurrent.data[index] = item;
-      }
+      case types.UPDATE_ITEM_CART:
+        {
+          const { index, item } = action.payload;
+          draft.cartCurrent.data[index] = item;
+        }
         break;
       case types.ADD_ITEM_TO_CART: {
         const product = Object.assign({}, action.payload);
@@ -450,6 +458,15 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.RECEIVED_ALL_CATEGORIES:
         draft.allCategories = action.payload;
+        break;
+      case types.SET_DISCOUNT_CODE_ACTION:
+        draft.checkout.orderPreparingCheckout.totals.discount_code =
+          action.payload;
+        draft.checkout.orderPreparingCheckout.totals.amount_discount_code = 0;
+        break;
+      case types.RECEIVED_AMOUNT_DISCOUNT_OF_DISCOUNT_CODE:
+        draft.checkout.orderPreparingCheckout.totals.amount_discount_code =
+          +action.payload;
         break;
       case types.IS_INTERNET_CONNECTED:
         draft.internetConnected = action.payload;
@@ -586,18 +603,26 @@ const mainRd = (state: Object = initialState, action: Object) =>
         const shippingAddress = action.payload.shippingAddress;
         const posSystemConfigResult = action.payload.posSystemConfigResult;
         const { email } = customerInfo;
-        const shippingMethod = getShippingMethodCode(posSystemConfigResult.shipping_method);
+        const shippingMethod = getShippingMethodCode(
+          posSystemConfigResult.shipping_method
+        );
         const paymentForPos = posSystemConfigResult.payment_for_pos;
 
         draft.checkout.orderPreparingCheckout.email = email;
-        draft.checkout.orderPreparingCheckout.shipping_address.country_id = shippingAddress.country_id;
+        draft.checkout.orderPreparingCheckout.shipping_address.country_id =
+          shippingAddress.country_id;
         draft.checkout.orderPreparingCheckout.shipping_address.street = [];
         draft.checkout.orderPreparingCheckout.shipping_address.company = '';
-        draft.checkout.orderPreparingCheckout.shipping_address.telephone = shippingAddress.telephone;
-        draft.checkout.orderPreparingCheckout.shipping_address.postcode = shippingAddress.post_code;
-        draft.checkout.orderPreparingCheckout.shipping_address.city = shippingAddress.city;
-        draft.checkout.orderPreparingCheckout.shipping_address.firstname = shippingAddress.firstname;
-        draft.checkout.orderPreparingCheckout.shipping_address.lastname = shippingAddress.lastname;
+        draft.checkout.orderPreparingCheckout.shipping_address.telephone =
+          shippingAddress.telephone;
+        draft.checkout.orderPreparingCheckout.shipping_address.postcode =
+          shippingAddress.post_code;
+        draft.checkout.orderPreparingCheckout.shipping_address.city =
+          shippingAddress.city;
+        draft.checkout.orderPreparingCheckout.shipping_address.firstname =
+          shippingAddress.firstname;
+        draft.checkout.orderPreparingCheckout.shipping_address.lastname =
+          shippingAddress.lastname;
         draft.checkout.orderPreparingCheckout.shipping_address.sameAsBilling = 1;
         draft.checkout.orderPreparingCheckout.shipping_address.shipping_method = shippingMethod;
         draft.checkout.orderPreparingCheckout.shipping_address.method = paymentForPos;
@@ -605,7 +630,8 @@ const mainRd = (state: Object = initialState, action: Object) =>
       }
       case types.ON_CARD_PAYMENT_FIELD_ONCHANGE:
         console.log('field onChange payload:', action.payload);
-        draft.checkout.cardPayment.cardInfo[action.payload.field] = action.payload.value;
+        draft.checkout.cardPayment.cardInfo[action.payload.field] =
+          action.payload.value;
         break;
       case types.UPDATE_PAYMENT_RESULT_CODE:
         console.log('payment result:', action.payload);

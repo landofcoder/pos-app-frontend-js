@@ -102,14 +102,14 @@ class CashPayment extends Component<Props> {
           Cash Transaction
         </label>
         <label
-          className="col-sm-4 pt-1 pr-0 col-form-label"
+          className="col-sm-5 pt-1 pr-0 col-form-label"
           htmlFor="inputValue"
         >
           Customer&apos;s cash recieved
         </label>
-        <div className="col-sm-8 pb-1">
+        <div className="col-sm-7 pb-1">
           <input
-            ref={input => input && input.focus()}
+            // ref={input => input && input.focus()}
             type="number"
             placeholder="Input Customer's Cash"
             className="form-control"

@@ -385,3 +385,17 @@ export function messagePlaceOrderError(payload) {
     payload
   };
 }
+
+export function getDiscountCodeAction(payload) {
+  return {
+    type: types.DISCOUNT_CODE_ACTION,
+    payload
+  };
+}
+
+export function setDiscountCodeAction(payload) {
+  return {
+    type: types.SET_DISCOUNT_CODE_ACTION,
+    payload
+  };
+}

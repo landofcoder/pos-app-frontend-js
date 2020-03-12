@@ -327,6 +327,11 @@ export async function getDiscountForQuoteService(payload) {
   return data;
 }
 
+export async function getDiscountCodeForQuoteService(payload) {
+  console.log(`in discount code service ${payload}`);
+  return null;
+}
+
 /**
  * Get order from local
  * @param payload

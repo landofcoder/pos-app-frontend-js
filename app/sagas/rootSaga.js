@@ -10,7 +10,8 @@ import {
   createShipmentService,
   getDiscountForQuoteService,
   placeCashOrderService,
-  createOrderLocal
+  createOrderLocal,
+  getDiscountCodeForQuoteService
 } from './services/cart-service';
 import { stripeMakePayment } from './services/payments/stripe-payment';
 import { authorizeMakePayment } from './services/payments/authorize-payment';
@@ -174,7 +175,8 @@ function* checkoutActionSg() {
 
   const offlineMode = yield getOfflineMode();
   yield applyCustomerOrQuestAndShippingCheckout();
-
+  // refresh input discount code
+  yield put({ type: types.REFRESH_DISCOUNT_CODE });
   if (offlineMode === 1) {
     yield getDiscountForOfflineCheckoutSaga();
   } else {
@@ -885,7 +887,10 @@ function* getDiscountForOfflineCheckoutSaga() {
     const sumTotalPriceResult = sumCartTotalPrice(cartCurrentObjResult);
     const result = [
       {
-        base_sub_total: sumTotalPriceResult
+        base_discount_amount: 0,
+        base_grand_total: sumTotalPriceResult,
+        base_sub_total: sumTotalPriceResult,
+        shipping_and_tax_amount: 0
       }
     ];
     yield put({
@@ -1323,6 +1328,27 @@ function* cardCheckoutPlaceOrderActionSg() {
   }
 }
 
+function* discountCode(payload) {
+  console.log(payload);
+  const data = yield call(getDiscountCodeForQuoteService, payload.payload);
+  if (data) {
+    // if in offline mode increate amount discount else call checkoutActionSg to check Subtotal with discount code again
+    if (getOfflineMode() === 1) {
+      yield put({
+        type: types.RECEIVED_AMOUNT_DISCOUNT_OF_DISCOUNT_CODE,
+        // payload: data
+        payload: data
+      });
+    } else {
+    }
+  } else {
+    yield put({
+      type: types.RECEIVED_AMOUNT_DISCOUNT_OF_DISCOUNT_CODE,
+      // payload: 0
+      payload: 0
+    });
+  }
+}
 /**
  * Default root saga
  * @returns void
@@ -1374,6 +1400,7 @@ function* rootSaga() {
     types.CASH_CHECKOUT_PLACE_ORDER_ACTION,
     cashCheckoutPlaceOrder
   );
+  yield takeEvery(types.DISCOUNT_CODE_ACTION, discountCode);
 }
 
 export default rootSaga;
