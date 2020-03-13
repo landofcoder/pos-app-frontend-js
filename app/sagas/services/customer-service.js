@@ -78,6 +78,7 @@ export async function getCustomerCartTokenService(customerId) {
  * @returns void
  */
 export async function signUpCustomerService(payload) {
+  let data;
   try {
     const response = await fetch(getGraphqlPath(), {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -107,11 +108,12 @@ export async function signUpCustomerService(payload) {
       }`
       }) // body data type must match "Content-Type" header
     });
-    const data = await response.json(); // parses JSON response into native JavaScript objects
+    data = await response.json(); // parses JSON response into native JavaScript objects
     if (!data.message && !data.errors) {
-      return { data, ok: true };
+      return { data, success: true };
     }
   } catch (e) {
-    return { ok: false };
+    console.log(e);
   }
+  return { data, success: false };
 }

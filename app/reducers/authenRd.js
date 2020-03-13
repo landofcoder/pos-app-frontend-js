@@ -103,6 +103,7 @@ const authenRd = (state = initialState, action) =>
         break;
       case typesAuthen.CHANGE_STATUS_SYNC:
         draft.syncManager.syncStatus = action.payload;
+        break;
       default:
     }
   });

@@ -176,6 +176,7 @@ export async function getDetailOutletService(payload) {
       data = data[0].value;
     }
   } else {
+    console.log(data);
     await outLetConfigSync(data);
   }
   return data;

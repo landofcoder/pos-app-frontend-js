@@ -78,24 +78,6 @@ class SyncManager extends Component {
                   Sync Order
                 </a>
               </li>
-              <li className="list-group-item">
-                <a
-                  className={`nav-link  ${
-                    viewSelected === 'syncCustomProduct' ? 'active' : ''
-                  }`}
-                  id="v-pills-profile-tab"
-                  data-toggle="pill"
-                  href="#"
-                  role="tab"
-                  aria-controls="v-pills-profile"
-                  onClick={e => {
-                    e.preventDefault();
-                    this.viewSelectedAction('syncCustomProduct');
-                  }}
-                >
-                  Sync Custom Product
-                </a>
-              </li>
               <li className="list-group-item ">
                 <a
                   className={`nav-link  ${
@@ -114,32 +96,56 @@ class SyncManager extends Component {
                   Sync Customer
                 </a>
               </li>
+              <li className="list-group-item">
+                <a
+                  className={`nav-link  ${
+                    viewSelected === 'syncCustomProduct' ? 'active' : ''
+                  }`}
+                  id="v-pills-profile-tab"
+                  data-toggle="pill"
+                  href="#"
+                  role="tab"
+                  aria-controls="v-pills-profile"
+                  onClick={e => {
+                    e.preventDefault();
+                    this.viewSelectedAction('syncCustomProduct');
+                  }}
+                >
+                  Sync Custom Product
+                </a>
+              </li>
             </ul>
             <div className="row form-group mt-2">
-              <div className="col-md-5"></div>
-              <div className="col-md-2">
+              <div className="col-md-1"></div>
+              <div className="col-md-5">
                 {syncStatus ? (
-                  <div
-                    className="spinner-border spinner-border-sm"
-                    role="status"
-                  >
-                    <span className="sr-only">Loading...</span>
-                  </div>
+                  <>
+                    <div
+                      className="spinner-border spinner-border-sm"
+                      role="status"
+                    ></div>
+                    <span>&nbsp; Syncing...</span>
+                  </>
                 ) : (
-                  <a
-                    href="#"
-                    onClick={e => {
-                      this.syncStartAction(e);
-                    }}
-                  >
-                    <i className="fas fa-sync fa-1x"></i>
-                  </a>
+                  <>
+                    <a
+                      href="#"
+                      onClick={e => {
+                        this.syncStartAction(e);
+                      }}
+                    >
+                      <i className="fas fa-sync fa-1x"></i>
+                      <span>&nbsp; Not sync yet</span>
+                    </a>
+                  </>
                 )}
               </div>
               <div className="col-md-5"></div>
             </div>
           </div>
-          <div className="col-9">{this.renderSwitchShowUpSync()}</div>
+          <div className="col-9">
+            <div className="card">{this.renderSwitchShowUpSync()}</div>
+          </div>
         </div>
       </>
     );

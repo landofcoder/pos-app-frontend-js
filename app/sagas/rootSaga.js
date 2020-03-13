@@ -10,7 +10,9 @@ import {
   createShipmentService,
   getDiscountForQuoteService,
   placeCashOrderService,
-  createOrderLocal
+  createOrderLocal,
+  getDiscountCodeForQuoteService,
+  noteOrderActionService
 } from './services/cart-service';
 import { stripeMakePayment } from './services/payments/stripe-payment';
 import { authorizeMakePayment } from './services/payments/authorize-payment';
@@ -21,8 +23,7 @@ import {
   getProductByCategoryService,
   searchProductService,
   syncAllProducts,
-  getProductBySkuFromScanner,
-  querySearchProduct
+  getProductBySkuFromScanner
 } from './services/product-service';
 import {
   getCustomerCartTokenService,
@@ -74,7 +75,7 @@ import { syncCategories } from '../reducers/db/categories';
 import { syncCustomers } from '../reducers/db/customers';
 import { signUpCustomer } from '../reducers/db/sync_customers';
 import { getAllOrders } from '../reducers/db/sync_orders';
-import { counterProduct, getProductBySkuLocal } from '../reducers/db/products';
+import { counterProduct } from '../reducers/db/products';
 import { getOfflineMode } from '../common/settings';
 import { createProduct } from '../reducers/db/sync_custom_product';
 import {
@@ -89,6 +90,7 @@ import {
 } from '../constants/product-query';
 import { SUCCESS_CHARGE } from '../constants/payment';
 import { getNewToken } from './authenSaga';
+import { sumCartTotalPrice } from '../common/cart';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
 const cartCurrentObj = state => state.mainRd.cartCurrent;
@@ -110,14 +112,14 @@ const orderDetailLocalDb = state => state.mainRd.orderHistoryDetailOffline;
 const orderDetailOnline = state => state.mainRd.orderHistoryDetail;
 const cardPayment = state => state.mainRd.checkout.cardPayment;
 const orderList = state => state.mainRd.orderHistory;
-const productList = state => state.mainRd.productList;
+const detailOutlet = state => state.mainRd.detailOutlet;
 
-function* startCashCheckoutActionSg() {
+function* startCashCheckoutActionSg(payload) {
   // Show cash modal
   yield put({ type: types.UPDATE_SHOW_CASH_MODAL, payload: true });
 
   // Checkout action handling
-  yield checkoutActionSg();
+  if (payload.payload !== true) yield checkoutActionSg();
 }
 
 /**
@@ -174,13 +176,14 @@ function* checkoutActionSg() {
 
   const offlineMode = yield getOfflineMode();
   yield applyCustomerOrQuestAndShippingCheckout();
-
+  // refresh input discount code
+  yield put({ type: types.REFRESH_DISCOUNT_CODE });
   if (offlineMode === 1) {
     yield getDiscountForOfflineCheckoutSaga();
   } else {
     // Handles for online mode
-    const posSystemConfigResult = yield select(posSystemConfig);
-    const posSystemConfigGuestCustomer = posSystemConfigResult[3];
+    const detailOutletResult = yield select(detailOutlet);
+    const outletConfigDefaultCustomer = detailOutletResult[0].data;
     const defaultShippingMethod = yield getDefaultShippingMethod();
     const cartCurrentResult = yield select(cartCurrent);
 
@@ -205,7 +208,7 @@ function* checkoutActionSg() {
       isGuestCustomer,
       customerToken,
       defaultShippingMethod,
-      posSystemConfigGuestCustomer,
+      outletConfigDefaultCustomer,
       defaultGuestCheckout
     });
 
@@ -841,22 +844,22 @@ function* getOrderHistory() {
 }
 
 function* signUpAction(payload) {
-  console.log(payload);
   yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: true });
   const offlineMode = yield getOfflineMode();
   if (offlineMode === 1) {
     yield call(signUpCustomer, payload);
+    yield put({ type: types.TOGGLE_MODAL_SIGN_UP_CUSTOMER, payload: false });
   } else {
     const res = yield call(signUpCustomerService, payload);
-    yield put({
-      type: types.MESSAGE_SIGN_UP_CUSTOMER,
-      payload: res.data.message
-    });
-    if (res.ok) {
+    if (res.success) {
       yield put({ type: types.TOGGLE_MODAL_SIGN_UP_CUSTOMER, payload: false });
+    } else {
+      yield put({
+        type: types.MESSAGE_SIGN_UP_CUSTOMER,
+        payload: res.data.errors[0].message
+      });
     }
   }
-
   yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: false });
 }
 
@@ -865,16 +868,32 @@ function* signUpAction(payload) {
  * @returns void
  */
 function* getDiscountForOfflineCheckoutSaga() {
-  const cartCurrentResult = yield select(cartCurrent);
+  const cartCurrentObjResult = yield select(cartCurrentObj);
   // Handles for offline mode
   const posSystemConfigResult = yield select(posSystemConfig);
   const result = yield call(getDiscountForQuoteService, {
-    cart: cartCurrentResult,
+    cart: cartCurrentObjResult.data,
     config: posSystemConfigResult
   });
   const typeOfResult = typeof result;
   // If json type returned, that mean get discount success
   if (typeOfResult !== 'string' && result.message === undefined) {
+    yield put({
+      type: types.RECEIVED_CHECKOUT_OFFLINE_CART_INFO,
+      payload: result
+    });
+  } else {
+    // caclculator total checkout when offline in here
+    console.log(cartCurrentObjResult);
+    const sumTotalPriceResult = sumCartTotalPrice(cartCurrentObjResult);
+    const result = [
+      {
+        base_discount_amount: 0,
+        base_grand_total: sumTotalPriceResult,
+        base_sub_total: sumTotalPriceResult,
+        shipping_and_tax_amount: 0
+      }
+    ];
     yield put({
       type: types.RECEIVED_CHECKOUT_OFFLINE_CART_INFO,
       payload: result
@@ -1205,6 +1224,23 @@ function* getProductBySkuFromScannerSaga(payload) {
   });
 }
 
+function* noteOrderAction(payload) {
+  console.log('in noteOrderAction');
+  console.log(payload);
+  yield put({ type: types.LOADING_NOTE_ORDER_ACTION, payload: true });
+  const id = payload.data.entity_id;
+  console.log(id);
+  if (payload.synced) {
+    yield call(noteOrderActionService, { message: payload.message, id });
+    // get id and call service
+  } else {
+    // set in localdb
+  }
+  yield put({ type: types.LOADING_NOTE_ORDER_ACTION, payload: false });
+  yield put({ type: types.TOGGLE_ACTION_ORDER_ADD_NOTE, payload: false });
+  // yield put({type: types.})
+}
+
 function* reorderAction(payload) {
   console.log(payload);
   const itemList = payload.data.items.cartCurrentResult;
@@ -1233,13 +1269,16 @@ function* orderActionOffline(payload) {
       if (dataList[i].id === data.id) index = i;
     }
   }
-  switch (payload) {
+  switch (payload.action) {
     case types.CANCEL_ACTION_ORDER:
       yield cancelOrderService(data.id); // delete in localdb
       yield put({ type: types.REMOVE_ORDER_LIST, payload: index });
       break;
     case types.REORDER_ACTION_ORDER:
       yield reorderAction({ data, synced: false });
+      break;
+    case types.NOTE_ORDER_ACTION:
+      yield noteOrderAction({ data, synced: false, message: payload.payload });
       break;
     default:
       break;
@@ -1248,24 +1287,28 @@ function* orderActionOffline(payload) {
 
 function* orderActionOnline(payload) {
   const data = yield select(orderDetailOnline);
-  switch (payload) {
+  console.log(payload.action);
+  switch (payload.action) {
     case types.REORDER_ACTION_ORDER:
       yield reorderAction({ data, synced: true });
+      break;
+    case types.NOTE_ORDER_ACTION:
+      yield noteOrderAction({ data, synced: true, message: payload.payload });
       break;
     default:
       break;
   }
 }
 
-function* orderAction(payload) {
-  const { kindOf, action } = payload.payload;
+function* orderAction(params) {
+  const { kindOf, action, payload } = params.payload;
   console.log(kindOf);
   switch (kindOf) {
     case types.DETAIL_ORDER_OFFLINE:
-      yield orderActionOffline(action);
+      yield orderActionOffline({ action, payload });
       break;
     case types.DETAIL_ORDER_ONLINE:
-      yield orderActionOnline(action);
+      yield orderActionOnline({ action, payload });
       break;
     default:
   }
@@ -1310,12 +1353,32 @@ function* cardCheckoutPlaceOrderActionSg() {
   }
 }
 
+function* discountCode(payload) {
+  console.log(payload);
+  const data = yield call(getDiscountCodeForQuoteService, payload.payload);
+  if (data) {
+    // if in offline mode increate amount discount else call checkoutActionSg to check Subtotal with discount code again
+    if (getOfflineMode() === 1) {
+      yield put({
+        type: types.RECEIVED_AMOUNT_DISCOUNT_OF_DISCOUNT_CODE,
+        // payload: data
+        payload: data
+      });
+    } else {
+    }
+  } else {
+    yield put({
+      type: types.RECEIVED_AMOUNT_DISCOUNT_OF_DISCOUNT_CODE,
+      // payload: 0
+      payload: 0
+    });
+  }
+}
 /**
  * Default root saga
  * @returns void
  */
 function* rootSaga() {
-  yield takeEvery(types.CHECKOUT_ACTION, checkoutActionSg);
   yield takeEvery(types.SEARCH_ACTION, searchProduct);
   yield takeEvery(
     types.GET_DETAIL_PRODUCT_CONFIGURABLE,
@@ -1362,6 +1425,7 @@ function* rootSaga() {
     types.CASH_CHECKOUT_PLACE_ORDER_ACTION,
     cashCheckoutPlaceOrder
   );
+  yield takeEvery(types.DISCOUNT_CODE_ACTION, discountCode);
 }
 
 export default rootSaga;

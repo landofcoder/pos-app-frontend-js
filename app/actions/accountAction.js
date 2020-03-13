@@ -34,6 +34,19 @@ export function toggleModalOrderDetailOffline(payload) {
   };
 }
 
+export function toggleModalAddNote(payload) {
+  return {
+    type: type.TOGGLE_ACTION_ORDER_ADD_NOTE,
+    payload
+  };
+}
+
+export function addNoteOrderAction(payload) {
+  return {
+    type: type.NOTE_ORDER_ACTION,
+    payload
+  };
+}
 export function actionLoadingOrderDetailOffline(payload) {
   return {
     type: type.LOADING_ORDER_HISTORY_DETAIL_OFFLINE,

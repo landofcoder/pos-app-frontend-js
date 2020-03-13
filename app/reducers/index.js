@@ -1,3 +1,4 @@
+// @flow
 import { combineReducers } from 'redux';
 import { connectRouter } from 'connected-react-router';
 import mainRd from './mainRd';

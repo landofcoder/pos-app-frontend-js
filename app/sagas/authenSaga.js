@@ -5,7 +5,7 @@ import {
   LOGOUT_POS_ACTION,
   UPDATE_FLAG_SWITCHING_MODE,
   SYNC_CLIENT_DATA,
-  GET_SYNC_MANAGER
+  GET_SYNC_MANAGER,
 } from '../constants/root.json';
 import {
   loginService,

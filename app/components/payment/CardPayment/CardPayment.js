@@ -15,6 +15,7 @@ import {
   CANNOT_CHARGE,
   SHOP_CURRENCY_IS_NOT_CONFIG
 } from '../../../constants/payment';
+import SubTotal from '../Subtotal/SubTotal';
 
 class CardPayment extends Component {
   props: Props;
@@ -56,7 +57,7 @@ class CardPayment extends Component {
     // Close modal
     updateIsShowCardPaymentModel(false);
     // Show cash modal
-    startCashCheckoutAction();
+    startCashCheckoutAction(true);
   };
 
   renderErrorMessage = chargeResult => {
@@ -110,17 +111,11 @@ class CardPayment extends Component {
           <div className="modal-body">
             <div className="col-10 offset-1">
               <div className="row">
-                <div className="col-12 text-center mb-4">
-                  {loadingPreparingOrder ? (
-                    <div
-                      className="spinner-border spinner-border-sm"
-                      role="status"
-                    >
-                      <span className="sr-only">Loading...</span>
-                    </div>
-                  ) : (
-                    <h2>{grandTotal}</h2>
-                  )}
+                <div className="card mb-3">
+                  <div className="card-header">Checkout Total</div>
+                  <div className="card-body">
+                    <SubTotal />
+                  </div>
                 </div>
                 <div className="col-12">
                   <div className="row">
@@ -161,7 +156,7 @@ class CardPayment extends Component {
                   </div>
                 </div>
                 <div className="col-md-12 mt-4 mb-5">
-                  <InputCard/>
+                  <InputCard />
                 </div>
               </div>
             </div>
@@ -225,7 +220,8 @@ function mapDispatchToProps(dispatch) {
     updateCardPaymentType: payload => dispatch(updateCardPaymentType(payload)),
     acceptPaymentCard: () => dispatch(cardCheckoutPlaceOrderAction()),
     checkoutAction: () => dispatch(checkoutAction()),
-    startCashCheckoutAction: () => dispatch(startCashCheckoutAction()),
+    startCashCheckoutAction: payload =>
+      dispatch(startCashCheckoutAction(payload)),
     updatePaymentResultCode: payload =>
       dispatch(updatePaymentResultCode(payload))
   };

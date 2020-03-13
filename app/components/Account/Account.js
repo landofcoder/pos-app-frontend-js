@@ -105,24 +105,6 @@ class Account extends Component {
                   <li className="nav-item">
                     <a
                       className={`nav-link ${
-                        viewSelected === 'CashierInfo' ? 'active' : ''
-                      } ${Styles.radiusButton}`}
-                      id="v-pills-home-tab"
-                      data-toggle="pill"
-                      role="tab"
-                      href="#"
-                      aria-controls="v-pills-home"
-                      onClick={e => {
-                        e.preventDefault();
-                        this.viewSelectedAction('CashierInfo');
-                      }}
-                    >
-                      Account Setting
-                    </a>
-                  </li>
-                  <li className="nav-item">
-                    <a
-                      className={`nav-link ${
                         viewSelected === 'connectDevices' ? 'active' : ''
                       } ${Styles.radiusButton}`}
                       role="tab"
@@ -149,6 +131,24 @@ class Account extends Component {
                           aria-hidden="true"
                         ></span>
                       ) : null}
+                    </a>
+                  </li>
+                  <li className="nav-item">
+                    <a
+                      className={`nav-link ${
+                        viewSelected === 'CashierInfo' ? 'active' : ''
+                      } ${Styles.radiusButton}`}
+                      id="v-pills-home-tab"
+                      data-toggle="pill"
+                      role="tab"
+                      href="#"
+                      aria-controls="v-pills-home"
+                      onClick={e => {
+                        e.preventDefault();
+                        this.viewSelectedAction('CashierInfo');
+                      }}
+                    >
+                      Account Setting
                     </a>
                   </li>
                 </ul>
