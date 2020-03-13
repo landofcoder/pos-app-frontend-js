@@ -40,7 +40,8 @@ import {
   getOrderHistoryServiceDetails,
   getShopInfoService,
   getSystemConfigService,
-  cancelOrderService
+  cancelOrderService,
+  getNoteOrderActionService
 } from './services/common-service';
 import {
   createConnectedDeviceSettings,
@@ -820,6 +821,8 @@ function* getProductByCategoryLazyLoad(categoryId, currentPage) {
 function* getOrderHistoryDetail(payload) {
   yield put({ type: types.TURN_ON_LOADING_ORDER_HISTORY_DETAIL });
   const data = yield call(getOrderHistoryServiceDetails, payload.payload);
+  const dataComment = yield call(getNoteOrderActionService, payload.payload);
+  data.comments = dataComment.items;
   yield put({
     type: types.RECEIVED_ORDER_HISTORY_DETAIL_ACTION,
     payload: data
@@ -1232,6 +1235,7 @@ function* noteOrderAction(payload) {
   console.log(id);
   if (payload.synced) {
     yield call(noteOrderActionService, { message: payload.message, id });
+    yield put({ type: types.GET_ORDER_HISTORY_DETAIL_ACTION, payload: id });
     // get id and call service
   } else {
     // set in localdb

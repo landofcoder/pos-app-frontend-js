@@ -257,6 +257,37 @@ class DetailOrder extends Component {
                         </div>
                       </div>
                     </div>
+
+                    {/* Comments Order */}
+
+                    <div className="form-group">
+                      <div>
+                        <div
+                          className={`border-bottom col ${Styles.wrapContent}`}
+                        >
+                          <span className="font-weight-bold">
+                            Comments Order
+                          </span>
+                        </div>
+                      </div>
+                      <div className={`col ${Styles.wrapContent}`}>
+                        {orderHistoryDetail.comments ? (
+                          orderHistoryDetail.comments.map((item, index) => {
+                            console.log(item);
+                            return (
+                              <div key={index}>
+                                <div className="form-group pb-3 border-bottom">
+                                  <p>{item.created_at}</p>
+                                  <p>{item.comment}</p>
+                                </div>
+                              </div>
+                            );
+                          })
+                        ) : (
+                          <span>Nothing</span>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

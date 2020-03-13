@@ -379,7 +379,7 @@ export async function noteOrderActionService(payload) {
   const params = {
     statusHistory: {
       comment: payload.message,
-      created_at: Date.now()
+      created_at: new Date()
     }
   }
   try {
