@@ -5,7 +5,7 @@ import {
   updateById,
   deleteByKey
 } from '../../reducers/db/settings';
-
+import { apiGatewayPath } from '../../../configs/env/config.main';
 
 const loggedInfoKey = 'logged_info';
 const mainUrlKey = 'main_url';
@@ -141,22 +141,20 @@ export async function getMainUrlKey() {
 
 /**
  * Get module installed
- * @param url
  * @returns void
  */
-export async function getModuleInstalledService(url) {
+export async function getModuleInstalledService() {
   let data;
   let error = false;
   try {
     const response = await fetch(
-      `${url}index.php/rest/V1/pos/check-all-module-installed`,
+      `${apiGatewayPath}/authencation/get-all-module-installed`,
       {
         method: 'GET',
-        mode: 'cors',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        redirect: 'follow',
-        referrer: 'no-referrer'
+        headers: {
+          'store-domain': 'http://localmagento.com/',
+          platform: 'magento'
+        }
       }
     );
     const statusCode = response.status;
