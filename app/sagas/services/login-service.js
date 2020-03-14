@@ -6,6 +6,7 @@ import {
   deleteByKey
 } from '../../reducers/db/settings';
 
+
 const loggedInfoKey = 'logged_info';
 const mainUrlKey = 'main_url';
 
