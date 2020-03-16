@@ -163,7 +163,8 @@ export async function getModuleInstalledService() {
     } else {
       data = [
         {
-          'module-all': false
+          'module-all': false,
+          'module-pos': false
         }
       ];
     }
