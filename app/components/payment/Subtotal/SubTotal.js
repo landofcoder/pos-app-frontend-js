@@ -14,7 +14,8 @@ type Props = {
   setDiscountCodeAction: (payload: string) => void,
   discountCode: string,
   amountDiscountCode: string,
-  initDiscountAmount: number
+  initDiscountAmount: number,
+  earn_points: string
 };
 
 class SubTotal extends Component<Props> {
@@ -111,7 +112,8 @@ class SubTotal extends Component<Props> {
       loadingPreparingOrder,
       orderPreparingCheckout,
       amountDiscountCode,
-      initDiscountAmount
+      initDiscountAmount,
+      earn_points
     } = this.props;
     const subTotal = formatCurrencyCode(
       orderPreparingCheckout.totals.base_subtotal
@@ -189,6 +191,13 @@ class SubTotal extends Component<Props> {
               </div>
             )}
           </div>
+          {!!earn_points && !loadingPreparingOrder ? (
+            <label htmlFor="staticEmail" className="col-sm-12 col-form-label">
+              <p className="text-secondary">
+                Earning point total: {earn_points}{' '}
+              </p>
+            </label>
+          ) : null}
         </div>
       </div>
     );
@@ -204,7 +213,8 @@ function mapStateToProps(state) {
     amountDiscountCode:
       state.mainRd.checkout.orderPreparingCheckout.totals.amount_discount_code,
     initDiscountAmount:
-      state.mainRd.checkout.orderPreparingCheckout.totals.init_discount_amount
+      state.mainRd.checkout.orderPreparingCheckout.totals.init_discount_amount,
+    earn_points: state.mainRd.checkout.orderPreparingCheckout.totals.earn_points
   };
 }
 
