@@ -381,7 +381,7 @@ export async function noteOrderActionService(payload) {
       comment: payload.message,
       created_at: new Date()
     }
-  }
+  };
   try {
     const response = await fetch(
       `${window.mainUrl}index.php/rest/V1/orders/${payload.id}/comments`,
@@ -392,6 +392,26 @@ export async function noteOrderActionService(payload) {
           Authorization: `Bearer ${window.liveToken}`
         },
         body: JSON.stringify(params)
+      }
+    );
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+  return { errors: true };
+}
+
+export async function getEarningPointByCartId(Id) {
+  try {
+    const response = await fetch(
+      `${window.mainUrl}index.php/rest/V1/lof-rewardpointintegration/getEarningPointByCartId?cartId=${Id}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${window.liveToken}`
+        },
       }
     );
     const data = await response.json();

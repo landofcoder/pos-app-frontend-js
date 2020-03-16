@@ -12,7 +12,8 @@ import {
   placeCashOrderService,
   createOrderLocal,
   getDiscountCodeForQuoteService,
-  noteOrderActionService
+  noteOrderActionService,
+  getEarningPointByCartId
 } from './services/cart-service';
 import { stripeMakePayment } from './services/payments/stripe-payment';
 import { authorizeMakePayment } from './services/payments/authorize-payment';
@@ -195,7 +196,7 @@ function* checkoutActionSg() {
       defaultGuestCheckout
     } = yield getCustomerCart();
 
-    yield all(
+    const dataAddProductToQuote = yield all(
       cartCurrentResult.map(item =>
         call(addProductToQuote, cartId, item, {
           isGuestCustomer,
@@ -213,6 +214,16 @@ function* checkoutActionSg() {
       defaultGuestCheckout
     });
 
+    // reward-point intergrate in here quote_id
+    if (dataAddProductToQuote.length > 0) {
+      const totalRewardPointAtCart = yield call(
+        getEarningPointByCartId,
+        dataAddProductToQuote[0].quote_id
+      );
+      console.log('total get point in cart');
+      console.log(totalRewardPointAtCart);
+      response.earn_points = totalRewardPointAtCart[0].earn_points;
+    }
     yield put({
       type: types.RECEIVED_ORDER_PREPARING_CHECKOUT,
       payload: response

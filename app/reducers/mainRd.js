@@ -79,7 +79,8 @@ const initialState = {
         tax_amount: 0,
         base_shipping_amount: 0,
         discount_code: 0,
-        amount_discount_code: 0
+        amount_discount_code: 0,
+        earn_points: null
       }
     },
     cardPayment: {
@@ -183,17 +184,18 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.RECEIVED_ORDER_PREPARING_CHECKOUT:
         console.log('totals:', action.payload.totals);
         const totals = action.payload.totals;
+        const earn_points = action.payload.earn_points;
         const discount_amount = totals.base_discount_amount;
         const base_subtotal = totals.base_subtotal;
         const grand_total = totals.grand_total;
         const tax_amount = totals.tax_amount;
         const base_shipping_amount = totals.base_shipping_amount;
-
         draft.checkout.orderPreparingCheckout.totals.base_discount_amount = discount_amount;
         draft.checkout.orderPreparingCheckout.totals.base_subtotal = base_subtotal;
         draft.checkout.orderPreparingCheckout.totals.grand_total = grand_total;
         draft.checkout.orderPreparingCheckout.totals.tax_amount = tax_amount;
         draft.checkout.orderPreparingCheckout.totals.base_shipping_amount = base_shipping_amount;
+        draft.checkout.orderPreparingCheckout.totals.earn_points = earn_points
         break;
       case types.UPDATE_IS_SHOW_CARD_PAYMENT_MODAL:
         draft.checkout.isShowCardPaymentModal = action.payload;
