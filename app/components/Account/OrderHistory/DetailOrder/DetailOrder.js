@@ -271,21 +271,18 @@ class DetailOrder extends Component {
                         </div>
                       </div>
                       <div className={`col ${Styles.wrapContent}`}>
-                        {orderHistoryDetail.comments ? (
-                          orderHistoryDetail.comments.map((item, index) => {
-                            console.log(item);
-                            return (
-                              <div key={index}>
-                                <div className="form-group pb-3 border-bottom">
-                                  <p>{item.created_at}</p>
-                                  <p>{item.comment}</p>
+                        {orderHistoryDetail.comments
+                          ? orderHistoryDetail.comments.map((item, index) => {
+                              return (
+                                <div key={index}>
+                                  <div className="form-group pb-3 border-bottom">
+                                    <p>{item.created_at}</p>
+                                    <p>{item.comment}</p>
+                                  </div>
                                 </div>
-                              </div>
-                            );
-                          })
-                        ) : (
-                          <span>Nothing</span>
-                        )}
+                              );
+                            })
+                          : null}
                       </div>
                     </div>
                   </div>
