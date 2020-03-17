@@ -87,11 +87,6 @@ class OrderHistory extends Component<Props> {
     );
   };
 
-  selectKindOfDetail = () => {
-    if (this.isShowingDetailOrder()) return DETAIL_ORDER_ONLINE;
-    if (this.isShowingDetailOrderOffline()) return DETAIL_ORDER_OFFLINE;
-  };
-
   actionDetailOrder = () => {
     const { orderAction, history, isOpenAddNote } = this.props;
 
@@ -111,8 +106,7 @@ class OrderHistory extends Component<Props> {
                 className="btn btn-outline-primary btn-lg btn-block"
                 onClick={() => {
                   orderAction({
-                    action: PAYMENT_ACTION_ORDER,
-                    kindOf: this.selectKindOfDetail()
+                    action: PAYMENT_ACTION_ORDER
                   });
                 }}
               >
@@ -125,8 +119,7 @@ class OrderHistory extends Component<Props> {
                 className="btn btn-outline-primary btn-lg btn-block"
                 onClick={() => {
                   orderAction({
-                    action: REORDER_ACTION_ORDER,
-                    kindOf: this.selectKindOfDetail()
+                    action: REORDER_ACTION_ORDER
                   });
                   history.push(types.POS);
                 }}
@@ -140,8 +133,7 @@ class OrderHistory extends Component<Props> {
                 className="btn btn-outline-dark btn-lg btn-block"
                 onClick={() => {
                   orderAction({
-                    action: PRINT_ACTION_ORDER,
-                    kindOf: this.selectKindOfDetail()
+                    action: PRINT_ACTION_ORDER
                   });
                 }}
               >
@@ -154,8 +146,7 @@ class OrderHistory extends Component<Props> {
                 className="btn btn-outline-secondary btn-lg btn-block"
                 onClick={() => {
                   orderAction({
-                    action: SHIPMENT_ACTION_ORDER,
-                    kindOf: this.selectKindOfDetail()
+                    action: SHIPMENT_ACTION_ORDER
                   });
                 }}
               >
@@ -184,8 +175,7 @@ class OrderHistory extends Component<Props> {
                 disabled={this.isShowingDetailOrder()}
                 onClick={() => {
                   orderAction({
-                    action: CANCEL_ACTION_ORDER,
-                    kindOf: this.selectKindOfDetail()
+                    action: CANCEL_ACTION_ORDER
                   });
                 }}
               >
@@ -198,8 +188,7 @@ class OrderHistory extends Component<Props> {
                 className="btn btn-outline-dark btn-lg btn-block"
                 onClick={() => {
                   orderAction({
-                    action: REFUND_ACTION_ORDER,
-                    kindOf: this.selectKindOfDetail()
+                    action: REFUND_ACTION_ORDER
                   });
                 }}
               >
