@@ -30,7 +30,8 @@ import {
   getCustomerCartTokenService,
   searchCustomer,
   searchCustomerByName,
-  signUpCustomerService
+  signUpCustomerService,
+  getTotalRewardPointCustomerService
 } from './services/customer-service';
 import { createCustomerCartService } from './services/customer-cart-service';
 import {
@@ -857,6 +858,18 @@ function* getOrderHistory() {
   yield put({ type: types.TURN_OFF_LOADING_ORDER_HISTORY });
 }
 
+function* getTotalRewardPointCustomer(payload) {
+  const id = payload.payload;
+  const resultPoint = yield call(getTotalRewardPointCustomerService, id);
+  if (resultPoint.success) {
+    console.log(resultPoint.data);
+    yield put({
+      type: types.RECEIVED_TOTAL_REWARD_POINT_CUSTOMER,
+      payload: resultPoint.data
+    });
+  }
+}
+
 function* signUpAction(payload) {
   yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: true });
   const offlineMode = yield getOfflineMode();
@@ -1441,6 +1454,10 @@ function* rootSaga() {
     cashCheckoutPlaceOrder
   );
   yield takeEvery(types.DISCOUNT_CODE_ACTION, discountCode);
+  yield takeEvery(
+    types.GET_TOTAL_REWARD_POINT_CUSTOMER,
+    getTotalRewardPointCustomer
+  );
 }
 
 export default rootSaga;

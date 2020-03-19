@@ -27,7 +27,8 @@ function mapStateToProps(state) {
     posCommandIsFetchingProduct:
       state.mainRd.currentPosCommand.isFetchingProduct,
     defaultColor: state.mainRd.posSystemConfig,
-    hidDevice: state.mainRd.hidDevice
+    hidDevice: state.mainRd.hidDevice,
+    totalRewardPointCustomer: state.mainRd.cartCurrent.totalRewardPoint
   };
 }
 

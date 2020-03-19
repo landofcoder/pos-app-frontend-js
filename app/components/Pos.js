@@ -63,7 +63,8 @@ type Props = {
   posCommandIsFetchingProduct: boolean,
   defaultColor: string,
   hidDevice: Object,
-  history: payload => void
+  history: payload => void,
+  totalRewardPointCustomer: string
 };
 
 type State = {
@@ -342,6 +343,25 @@ export default class Pos extends Component<Props, State> {
     checkoutAction();
   };
 
+  showupTotalPointCustomer = () => {
+    const { totalRewardPointCustomer } = this.props;
+    if (+totalRewardPointCustomer !== -1) {
+      return (
+        <>
+          <div className={CommonStyle.wrapRow}>
+            <div className={CommonStyle.wrapLabel} data-grand-total="1">
+              <span>Total Reward points</span>
+            </div>
+            <div className={CommonStyle.wrapValue} data-grand-total="1">
+              <span>{totalRewardPointCustomer}</span>
+            </div>
+          </div>
+        </>
+      );
+    }
+    return null;
+  };
+
   render() {
     const {
       mainProductListLoading,
@@ -460,6 +480,18 @@ export default class Pos extends Component<Props, State> {
                 <div className="col-md-2">
                   <Categories />
                 </div>
+                {/* <div className="col-sm-1 pt-2 pl-5 pr-0 mx-auto">
+                  <a
+                    onClick={() => {
+                      this.addCustomProduct();
+                    }}
+                  >
+                    <i
+                      style={{ color: '#888' }}
+                      className="fas fa-plus-circle fa-lg"
+                    ></i>
+                  </a>
+                </div> */}
                 <div className="col-md-9 mb-0 pr-0">
                   <div className="input-group flex-nowrap">
                     <div className="input-group mb-3">
@@ -539,6 +571,8 @@ export default class Pos extends Component<Props, State> {
                   <div className={CommonStyle.subTotalContainer}>
                     <div className={CommonStyle.wrapSubTotal}>
                       {this.renderDiscountAndTax()}
+                      {this.showupTotalPointCustomer()}
+
                       <div className={CommonStyle.wrapRow}>
                         <div
                           className={CommonStyle.wrapLabel}

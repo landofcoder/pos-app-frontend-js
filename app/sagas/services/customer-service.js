@@ -117,3 +117,32 @@ export async function signUpCustomerService(payload) {
   }
   return { data, success: false };
 }
+
+export async function getTotalRewardPointCustomerService(payload) {
+  let data;
+  try {
+    const response = await fetch(
+      `${window.mainUrl}index.php/rest/V1/lof-rewardpoints/customer/${payload}`,
+      {
+        method: 'GET', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors', // no-cors, *cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omit
+        headers: {
+          'Content-Type': 'application/json'
+          // Authorization: `Bearer ${customerToken}`
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: 'follow', // manual, *follow, error
+        referrer: 'no-referrer' // no-referrer, *client
+      }
+    );
+    const data = await response.json(); // parses JSON response into native JavaScript objects
+    if (!data.message && !data.errors) {
+      return { data, success: true };
+    }
+  } catch (e) {
+    console.log(e);
+  }
+  return { data, success: false };
+}

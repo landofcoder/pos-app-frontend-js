@@ -194,6 +194,12 @@ export function selectCustomerForCurrentCart(payload) {
   };
 }
 
+export function getTotalRewardPointCustomer(payload) {
+  return {
+    type: types.GET_TOTAL_REWARD_POINT_CUSTOMER,
+    payload
+  }
+}
 export function unSelectCustomerForCurrentCart(payload) {
   return {
     type: types.UN_SELECT_CUSTOMER_FOR_CURRENT_CART,

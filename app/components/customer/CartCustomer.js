@@ -5,7 +5,8 @@ import {
   searchCustomer,
   selectCustomerForCurrentCart,
   unSelectCustomerForCurrentCart,
-  toggleModalSignUpCustomer
+  toggleModalSignUpCustomer,
+  getTotalRewardPointCustomer
 } from '../../actions/homeAction';
 import Styles from './cart-customer.scss';
 import ModalStyle from '../styles/modal.scss';
@@ -19,7 +20,8 @@ type Props = {
   customerSearchResult: Array,
   selectCustomerForCurrentCart: (payload: Object) => void,
   unSelectCustomerForCurrentCart: (payload: Object) => void,
-  toggleModalSignUpCustomer: (payload: boolean) => void
+  toggleModalSignUpCustomer: (payload: boolean) => void,
+  getTotalRewardPointCustomer: (payload: string) => void
 };
 
 class CartCustomer extends Component<Props> {
@@ -70,7 +72,8 @@ class CartCustomer extends Component<Props> {
       isLoadingSearchCustomer,
       customerSearchResult,
       selectCustomerForCurrentCart,
-      unSelectCustomerForCurrentCart
+      unSelectCustomerForCurrentCart,
+      getTotalRewardPointCustomer
     } = this.props;
     let email = '';
     let firstname = '';
@@ -151,7 +154,10 @@ class CartCustomer extends Component<Props> {
                         return (
                           <button
                             key={index}
-                            onClick={() => selectCustomerForCurrentCart(item)}
+                            onClick={() => {
+                              selectCustomerForCurrentCart(item);
+                              getTotalRewardPointCustomer(item.id);
+                            }}
                             type="button"
                             className="list-group-item list-group-item-action"
                           >
@@ -219,7 +225,9 @@ const mapDispatchToProps = dispatch => {
     unSelectCustomerForCurrentCart: payload =>
       dispatch(unSelectCustomerForCurrentCart(payload)),
     toggleModalSignUpCustomer: payload =>
-      dispatch(toggleModalSignUpCustomer(payload))
+      dispatch(toggleModalSignUpCustomer(payload)),
+    getTotalRewardPointCustomer: payload =>
+      dispatch(getTotalRewardPointCustomer(payload))
   };
 };
 

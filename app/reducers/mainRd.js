@@ -14,7 +14,8 @@ const cartCurrentDefaultData = {
   customerToken: '',
   data: [],
   customer: null, // Current customer for current cart
-  isGuestCustomer: true
+  isGuestCustomer: true,
+  totalRewardPoint: -1 // -1 because that is a condition to show rewardpoint if rewardpoint module not install yet
 };
 
 const initialState = {
@@ -195,7 +196,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.checkout.orderPreparingCheckout.totals.grand_total = grand_total;
         draft.checkout.orderPreparingCheckout.totals.tax_amount = tax_amount;
         draft.checkout.orderPreparingCheckout.totals.base_shipping_amount = base_shipping_amount;
-        draft.checkout.orderPreparingCheckout.totals.earn_points = earn_points
+        draft.checkout.orderPreparingCheckout.totals.earn_points = earn_points;
         break;
       case types.UPDATE_IS_SHOW_CARD_PAYMENT_MODAL:
         draft.checkout.isShowCardPaymentModal = action.payload;
@@ -317,6 +318,11 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.RECEIVED_CUSTOMER_SEARCH_RESULT:
         draft.customerSearchResult = action.searchResult.items;
+        break;
+      case types.RECEIVED_TOTAL_REWARD_POINT_CUSTOMER:
+        const result = JSON.parse(action.payload);
+        console.log(result);
+        draft.cartCurrent.totalRewardPoint = result.total_point;
         break;
       case types.REFRESH_DISCOUNT_CODE:
         draft.checkout.orderPreparingCheckout.totals.amount_discount_code = 0;
@@ -474,8 +480,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.checkout.orderPreparingCheckout.totals.amount_discount_code = 0;
         break;
       case types.RECEIVED_AMOUNT_DISCOUNT_OF_DISCOUNT_CODE:
-        draft.checkout.orderPreparingCheckout.totals.amount_discount_code =
-          +action.payload;
+        draft.checkout.orderPreparingCheckout.totals.amount_discount_code = +action.payload;
         break;
       case types.IS_INTERNET_CONNECTED:
         draft.internetConnected = action.payload;
