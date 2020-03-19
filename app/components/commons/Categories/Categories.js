@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getProductByCategory } from '../../../actions/homeAction';
+import {
+  getProductByCategory,
+  getDefaultCategory
+} from '../../../actions/homeAction';
 
 type Props = {
   allCategories: Object,
-  getProductByCategory: () => void
+  getProductByCategory: (payload: string) => void,
+  getDefaultCategory: () => void
 };
 
 class Categories extends Component<Props> {
@@ -70,7 +74,7 @@ class Categories extends Component<Props> {
   };
 
   render() {
-    const { allCategories } = this.props;
+    const { allCategories, getDefaultCategory } = this.props;
     const { openNavigation } = this.state;
     /* eslint-disable */
     const children_data = (allCategories && allCategories.children_data) ? allCategories.children_data : [];
@@ -106,6 +110,7 @@ class Categories extends Component<Props> {
                   data-toggle="dropdown"
                   aria-haspopup="true"
                   aria-expanded="false"
+                  onClick={() => getDefaultCategory()}
                 >
                   Default category
                 </a>
@@ -153,7 +158,8 @@ class Categories extends Component<Props> {
 
 function mapDispatchToProps(dispatch) {
   return {
-    getProductByCategory: payload => dispatch(getProductByCategory(payload))
+    getProductByCategory: payload => dispatch(getProductByCategory(payload)),
+    getDefaultCategory: () => dispatch(getDefaultCategory())
   };
 }
 

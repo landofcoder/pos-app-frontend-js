@@ -1394,6 +1394,7 @@ function* rootSaga() {
   yield takeEvery(types.ADD_TO_CART, addToCart);
   yield takeEvery(types.GET_ORDER_HISTORY_ACTION, getOrderHistory);
   yield takeEvery(types.GET_PRODUCT_BY_CATEGORY, getProductByCategory);
+  yield takeEvery(types.GET_DEFAULT_PRODUCT, getDefaultProduct);
   yield takeEvery(types.SIGN_UP_CUSTOMER, signUpAction);
   yield takeEvery(types.GET_ORDER_HISTORY_DETAIL_ACTION, getOrderHistoryDetail);
   yield takeEvery(CHECK_LOGIN_BACKGROUND, checkLoginBackgroundSaga);
