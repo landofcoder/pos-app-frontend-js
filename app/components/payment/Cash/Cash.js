@@ -120,11 +120,11 @@ class CashPayment extends Component<Props> {
         </div>
         {inputCustomerCash === '' ? null : (
           <>
-            <label htmlFor="inputValue" className="col-sm-4 pt-1">
+            <label htmlFor="inputValue" className="col-sm-5 pt-1">
               Change money
             </label>
 
-            <div className="col-sm-8 pt-1">
+            <div className="col-sm-7 pt-1">
               {loadingPreparingOrder ? (
                 <div className="spinner-border spinner-border-sm" role="status">
                   <span className="sr-only">Loading...</span>

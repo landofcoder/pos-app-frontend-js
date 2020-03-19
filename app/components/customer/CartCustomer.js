@@ -77,10 +77,9 @@ class CartCustomer extends Component<Props> {
     let lastname = '';
     if (customer) {
       email = customer.email;
-      firstname = customer.firstname;
-      lastname = customer.lastname;
+      firstname = customer.firstname || customer.payload.customer.firstname;
+      lastname = customer.lastname || customer.payload.customer.lastname;
     }
-
     return (
       <div className={Styles.wrapCartCustomer}>
         {isOpenFindCustomer === true ? (
@@ -157,7 +156,10 @@ class CartCustomer extends Component<Props> {
                           >
                             <div className="row">
                               <div className="col-6">
-                                {item.firstname} {item.lastname}
+                                {item.firstname ||
+                                  item.payload.customer.firstname}{' '}
+                                {item.lastname ||
+                                  item.payload.customer.lastname}
                               </div>
                               <div className="col-6">{item.email}</div>
                             </div>

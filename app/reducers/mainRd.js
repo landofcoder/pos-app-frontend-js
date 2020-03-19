@@ -45,6 +45,7 @@ const initialState = {
   messageOrderError: '',
   productList: [],
   cartCurrent: cartCurrentDefaultData,
+  switchHoldCartIndex: -1,
   receipt: {
     orderId: 0, // Last order is inserted
     isOpenReceiptModal: false,
@@ -321,7 +322,10 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.checkout.orderPreparingCheckout.totals.discount_code = 0;
         break;
       case types.SELECT_CUSTOMER_FOR_CURRENT_CART:
-        draft.cartCurrent.customer = action.payload;
+        if(action.payload.synced === false)
+          draft.cartCurrent.customer = action.payload.payload.customer;
+        else
+          draft.cartCurrent.customer = action.payload;
         draft.cartCurrent.isGuestCustomer = false;
         break;
       case types.UN_SELECT_CUSTOMER_FOR_CURRENT_CART:
@@ -368,16 +372,24 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.cartHoldList.push(currentCart);
         // Clear current cart
         draft.cartCurrent = cartCurrentDefaultData;
+        draft.switchHoldCartIndex = -1;
         break;
       }
       case types.SWITCH_TO_HOLD_ITEM_CART: {
         const index = action.payload;
         // Get item hold cart and set to current cart
         draft.cartCurrent = Object.assign({}, draft.cartHoldList[index]);
+        draft.switchHoldCartIndex = index;
         break;
       }
       case types.EMPTY_CART:
         draft.cartCurrent = cartCurrentDefaultData;
+
+        // we need delete hold cart select
+        const index = draft.switchHoldCartIndex;
+        if (index + 1) {
+          draft.cartHoldList.splice(index, 1);
+        }
         break;
       case types.PLACE_ORDER_SUCCESS: {
         {
@@ -472,8 +484,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.checkout.orderPreparingCheckout.totals.amount_discount_code = 0;
         break;
       case types.RECEIVED_AMOUNT_DISCOUNT_OF_DISCOUNT_CODE:
-        draft.checkout.orderPreparingCheckout.totals.amount_discount_code =
-          +action.payload;
+        draft.checkout.orderPreparingCheckout.totals.amount_discount_code = +action.payload;
         break;
       case types.IS_INTERNET_CONNECTED:
         draft.internetConnected = action.payload;
