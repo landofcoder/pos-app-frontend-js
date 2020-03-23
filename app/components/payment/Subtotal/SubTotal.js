@@ -221,8 +221,10 @@ class SubTotal extends Component<Props> {
               </label>
               {isShowUsePoint ? (
                 <div className="col-12 row">
-                  <div className="col-12">
+                  <div className="col-5 ">
                     <label htmlFor="customRange2">Points range</label>
+                  </div>
+                  <div className="col-7">
                     <input
                       type="range"
                       className="custom-range"
@@ -234,7 +236,7 @@ class SubTotal extends Component<Props> {
                       id="customRange2"
                     />
                   </div>
-                  <div className="col-6">
+                  <div className="col-7 offset-5">
                     <input
                       type="number"
                       className="form-control"
