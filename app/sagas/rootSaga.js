@@ -1409,6 +1409,12 @@ function* discountCode(payload) {
     });
   }
 }
+
+function* actionSpendAmountRewardPointCheckout(payload) {
+  // set api spend point checkout in here
+  console.log(payload);
+  yield checkoutActionSg();
+}
 /**
  * Default root saga
  * @returns void
@@ -1464,6 +1470,10 @@ function* rootSaga() {
   yield takeEvery(
     types.GET_TOTAL_REWARD_POINT_CUSTOMER,
     getTotalRewardPointCustomer
+  );
+  yield takeEvery(
+    types.SPEND_AMOUNT_REWARD_POINT_ACTION,
+    actionSpendAmountRewardPointCheckout
   );
 }
 

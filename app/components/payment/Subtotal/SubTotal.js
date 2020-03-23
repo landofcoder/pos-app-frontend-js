@@ -4,7 +4,8 @@ import Styles from '../Cash/cash.scss';
 import { formatCurrencyCode } from '../../../common/settings';
 import {
   getDiscountCodeAction,
-  setDiscountCodeAction
+  setDiscountCodeAction,
+  spendAmountRewardPointAction
 } from '../../../actions/homeAction';
 
 type Props = {
@@ -16,7 +17,8 @@ type Props = {
   amountDiscountCode: string,
   initDiscountAmount: number,
   earn_points: string,
-  totalRewardPointCustomer: string
+  totalRewardPointCustomer: string,
+  spendAmountRewardPointAction: (payload: string) => void
 };
 
 class SubTotal extends Component<Props> {
@@ -28,15 +30,26 @@ class SubTotal extends Component<Props> {
       delayTimer: null,
       isShowInputCouponCode: false,
       usePointValue: 0,
-      isShowUsePoint: false
+      isShowUsePoint: false,
+      delayTimerRewardInput: null
     };
   }
 
   usePointAction = e => {
     const totalRewardPointCustomer = this.props;
+    const { delayTimerRewardInput } = this.state;
     const { value } = e.target;
-    if (+value <= totalRewardPointCustomer)
+    if (+value <= totalRewardPointCustomer) {
       this.setState({ usePointValue: value });
+      if (delayTimerRewardInput) clearTimeout(delayTimerRewardInput);
+      const delayTimerRes = setTimeout(() => {
+        // Do the ajax stuff
+        spendAmountRewardPointAction(value);
+      }, 300); // Will do the ajax stuff after 1000 ms, or 1 s
+      this.setState({
+        delayTimerRewardInput: delayTimerRes
+      });
+    }
   };
 
   showRewardPointModule = () => {
@@ -46,55 +59,54 @@ class SubTotal extends Component<Props> {
       totalRewardPointCustomer
     } = this.props;
     const { usePointValue, isShowUsePoint } = this.state;
-    if (!!earn_points && !loadingPreparingOrder) {
-      return (
-        <>
-          {totalRewardPointCustomer >= 0 ? (
-            <>
-              <label htmlFor="staticEmail" className="col-sm-5 col-form-label">
-                <p className="text-secondary font-weight-bold">
-                  Use Customer's points
-                </p>
-              </label>
-              <label htmlFor="staticEmail" className="col-sm-6 col-form-label">
-                <a
-                  onClick={() => {
-                    this.setState({ isShowUsePoint: true });
-                  }}
-                >
-                  <i
-                    style={{ color: '#888', cursor: 'pointer' }}
-                    className="fas fa-plus-circle fa-lg cursor-pointer"
-                  ></i>
-                </a>
-              </label>
-              {isShowUsePoint ? (
-                <div className="col-12 row">
-                  <div className="col-5 ">
-                    <label htmlFor="customRange2">Use Reward Point</label>
-                  </div>
-                  <div className="col-7">
-                    <input
-                      type="number"
-                      className="form-control"
-                      id="customRange2"
-                      onChange={this.usePointAction}
-                      value={usePointValue}
-                    />
-                  </div>
+    return (
+      <>
+        {totalRewardPointCustomer >= 0 ? (
+          <>
+            <label htmlFor="staticEmail" className="col-sm-5 col-form-label">
+              <p className="text-secondary font-weight-bold">
+                Use Customer's points
+              </p>
+            </label>
+            <label htmlFor="staticEmail" className="col-sm-6 col-form-label">
+              <a
+                onClick={() => {
+                  this.setState({ isShowUsePoint: true });
+                }}
+              >
+                <i
+                  style={{ color: '#888', cursor: 'pointer' }}
+                  className="fas fa-plus-circle fa-lg cursor-pointer"
+                ></i>
+              </a>
+            </label>
+            {isShowUsePoint ? (
+              <div className="col-12 row">
+                <div className="col-5 ">
+                  <label htmlFor="customRange2">Use Reward Point</label>
                 </div>
-              ) : null}
-            </>
-          ) : null}
+                <div className="col-7">
+                  <input
+                    type="number"
+                    className="form-control"
+                    id="customRange2"
+                    onChange={this.usePointAction}
+                    value={usePointValue}
+                  />
+                </div>
+              </div>
+            ) : null}
+          </>
+        ) : null}
+        {!!earn_points && !loadingPreparingOrder ? (
           <label htmlFor="staticEmail" className="col-sm-12 col-form-label">
             <p className="text-secondary">
               Earning point total: {earn_points}{' '}
             </p>
           </label>
-        </>
-      );
-    }
-    return null;
+        ) : null}
+      </>
+    );
   };
 
   sumOrderTotal = () => {
@@ -284,7 +296,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     getDiscountCodeAction: payload => dispatch(getDiscountCodeAction(payload)),
-    setDiscountCodeAction: payload => dispatch(setDiscountCodeAction(payload))
+    setDiscountCodeAction: payload => dispatch(setDiscountCodeAction(payload)),
+    spendAmountRewardPointAction: payload => dispatch(spendAmountRewardPointAction(payload))
   };
 }
 export default connect(

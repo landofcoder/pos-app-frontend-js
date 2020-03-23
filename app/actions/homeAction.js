@@ -198,7 +198,7 @@ export function getTotalRewardPointCustomer(payload) {
   return {
     type: types.GET_TOTAL_REWARD_POINT_CUSTOMER,
     payload
-  }
+  };
 }
 export function unSelectCustomerForCurrentCart(payload) {
   return {
@@ -402,6 +402,13 @@ export function getDiscountCodeAction(payload) {
 export function setDiscountCodeAction(payload) {
   return {
     type: types.SET_DISCOUNT_CODE_ACTION,
+    payload
+  };
+}
+
+export function spendAmountRewardPointAction(payload) {
+  return {
+    type: types.SPEND_AMOUNT_REWARD_POINT_ACTION,
     payload
   };
 }
