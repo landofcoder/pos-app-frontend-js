@@ -13,7 +13,8 @@ import {
   createOrderLocal,
   getDiscountCodeForQuoteService,
   noteOrderActionService,
-  getEarningPointByCartId
+  getEarningPointByCartId,
+  getOrderHistoryReward
 } from './services/cart-service';
 import { stripeMakePayment } from './services/payments/stripe-payment';
 import { authorizeMakePayment } from './services/payments/authorize-payment';
@@ -42,8 +43,7 @@ import {
   getOrderHistoryServiceDetails,
   getShopInfoService,
   getSystemConfigService,
-  cancelOrderService,
-  getNoteOrderActionService
+  cancelOrderService
 } from './services/common-service';
 import {
   createConnectedDeviceSettings,
@@ -833,8 +833,13 @@ function* getProductByCategoryLazyLoad(categoryId, currentPage) {
 function* getOrderHistoryDetail(payload) {
   yield put({ type: types.TURN_ON_LOADING_ORDER_HISTORY_DETAIL });
   const data = yield call(getOrderHistoryServiceDetails, payload.payload);
-  const dataComment = yield call(getNoteOrderActionService, payload.payload);
-  data.comments = dataComment.items;
+  const { customer_id } = data;
+  const dataRewardPoint = yield call(getOrderHistoryReward, customer_id);
+  const resultOrderReward = dataRewardPoint.data.find(item => {
+    if (+item.data.order_id === +payload.payload) return true;
+    return false;
+  });
+  data.rewardPoint = resultOrderReward;
   yield put({
     type: types.RECEIVED_ORDER_HISTORY_DETAIL_ACTION,
     payload: data

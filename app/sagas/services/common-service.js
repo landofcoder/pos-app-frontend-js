@@ -263,26 +263,6 @@ export async function getOrderHistoryServiceDetails(index) {
   return data;
 }
 
-export async function getNoteOrderActionService(payload) {
-  try {
-    const response = await fetch(
-      `${window.mainUrl}index.php/rest/V1/orders/${payload}/comments`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${window.liveToken}`
-        }
-      }
-    );
-    const data = await response.json();
-    return data;
-  } catch (err) {
-    console.log(err);
-  }
-  return { errors: true };
-}
-
 export async function cancelOrderService(index) {
   await deleteOrder(index);
 }

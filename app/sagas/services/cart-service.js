@@ -411,7 +411,7 @@ export async function getEarningPointByCartId(Id) {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${window.liveToken}`
-        },
+        }
       }
     );
     const data = await response.json();
@@ -420,4 +420,23 @@ export async function getEarningPointByCartId(Id) {
     console.log(err);
   }
   return { errors: true };
+}
+
+export async function getOrderHistoryReward(customerId) {
+  try {
+    const response = await fetch(
+      `${window.mainUrl}index.php/rest/V1/lof-rewardpointintegration/getTransaction?customer_id=${customerId}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+    const data = await response.json();
+    return { data: data, status: true };
+  } catch (err) {
+    console.log(err);
+  }
+  return { data: [], status: false };
 }

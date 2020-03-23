@@ -108,7 +108,7 @@ class DetailOrder extends Component {
                         </div>
                       </div>
                       <div className={`col ${Styles.wrapContent}`}>
-                        <div className="d-flex justify-content-between pr-1">
+                        <div className="form-group d-flex justify-content-between pr-1">
                           <span>Subtotal: </span>
                           <span>
                             {this.formatSymbolMoney(
@@ -124,7 +124,7 @@ class DetailOrder extends Component {
                             )}
                           </span>
                         </div>
-                        <div className="d-flex justify-content-between pr-1">
+                        <div className="form-group d-flex justify-content-between pr-1">
                           <span>Shipping</span>
                           <span>
                             {this.formatSymbolMoney(
@@ -132,7 +132,28 @@ class DetailOrder extends Component {
                             )}
                           </span>
                         </div>
-                        <div className="d-flex justify-content-between pr-1">
+                        {orderHistoryDetail.rewardPoint ? (
+                          <div>
+                            <div className="d-flex justify-content-between pr-1">
+                              <span>You Earned </span>
+                              <span>
+                                {orderHistoryDetail.rewardPoint.data.amount}{' '}
+                                points
+                              </span>
+                            </div>
+                            <div className="form-group d-flex justify-content-between pr-1">
+                              <span>You Spent </span>
+                              <span>
+                                {
+                                  orderHistoryDetail.rewardPoint.data
+                                    .amount_used
+                                }{' '}
+                                points
+                              </span>
+                            </div>
+                          </div>
+                        ) : null}
+                        <div className="form-group d-flex justify-content-between pr-1">
                           <span>Grand Total</span>
                           <span>
                             {this.formatSymbolMoney(
@@ -140,7 +161,7 @@ class DetailOrder extends Component {
                             )}
                           </span>
                         </div>
-                        <div className="d-flex justify-content-between pr-1">
+                        <div className="form-group d-flex justify-content-between pr-1">
                           <span>Total Paid</span>
                           <span>
                             {this.formatSymbolMoney(
@@ -271,17 +292,19 @@ class DetailOrder extends Component {
                         </div>
                       </div>
                       <div className={`col ${Styles.wrapContent}`}>
-                        {orderHistoryDetail.comments
-                          ? orderHistoryDetail.comments.map((item, index) => {
-                              return (
-                                <div key={index}>
-                                  <div className="form-group pb-3 border-bottom">
-                                    <p>{item.created_at}</p>
-                                    <p>{item.comment}</p>
+                        {orderHistoryDetail.status_histories
+                          ? orderHistoryDetail.status_histories.map(
+                              (item, index) => {
+                                return (
+                                  <div key={index}>
+                                    <div className="form-group pb-3 border-bottom">
+                                      <p>{item.created_at}</p>
+                                      <p>{item.comment}</p>
+                                    </div>
                                   </div>
-                                </div>
-                              );
-                            })
+                                );
+                              }
+                            )
                           : null}
                       </div>
                     </div>
