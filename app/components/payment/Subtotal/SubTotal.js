@@ -25,9 +25,17 @@ class SubTotal extends Component<Props> {
     super(props);
     this.state = {
       delayTimer: null,
-      isShowInputCouponCode: false
+      isShowInputCouponCode: false,
+      usePointValue: 0,
+      isShowUsePoint: false
     };
   }
+
+  usePointAction = e => {
+    const maxPoint = 100;
+    const { value } = e.target;
+    if (+value <= maxPoint) this.setState({ usePointValue: value });
+  };
 
   sumOrderTotal = () => {
     const { orderPreparingCheckout } = this.props;
@@ -98,8 +106,8 @@ class SubTotal extends Component<Props> {
             }}
           >
             <i
-              style={{ color: '#888' }}
-              className="fas fa-plus-circle fa-lg"
+              style={{ color: '#888', cursor: 'pointer' }}
+              className="fas fa-plus-circle fa-lg cursor-pointer"
             ></i>
           </a>
         </div>
@@ -108,6 +116,7 @@ class SubTotal extends Component<Props> {
   };
 
   render() {
+    const { usePointValue, isShowUsePoint } = this.state;
     const {
       loadingPreparingOrder,
       orderPreparingCheckout,
@@ -193,22 +202,52 @@ class SubTotal extends Component<Props> {
           </div>
           {true ? (
             <>
-              <label htmlFor="staticEmail" className="col-sm-12 col-form-label">
-                <p className="text-secondary">
-                  Use reward points
+              <label htmlFor="staticEmail" className="col-sm-5 col-form-label">
+                <p className="text-secondary font-weight-bold">
+                  Use Customer's points
                 </p>
               </label>
-              <div className="col-12">
-                <label htmlFor="customRange2">Points range</label>
-                <input
-                  type="range"
-                  className="custom-range"
-                  min="0"
-                  max="100"
-                  step="1"
-                  id="customRange2"
-                />
-              </div>
+              <label htmlFor="staticEmail" className="col-sm-6 col-form-label">
+                <a
+                  onClick={() => {
+                    this.setState({ isShowUsePoint: true });
+                  }}
+                >
+                  <i
+                    style={{ color: '#888', cursor: 'pointer' }}
+                    className="fas fa-plus-circle fa-lg cursor-pointer"
+                  ></i>
+                </a>
+              </label>
+              {isShowUsePoint ? (
+                <div className="col-12 row">
+                  <div className="col-12">
+                    <label htmlFor="customRange2">Points range</label>
+                    <input
+                      type="range"
+                      className="custom-range"
+                      min="0"
+                      max="100"
+                      step="1"
+                      value={usePointValue}
+                      onChange={this.usePointAction}
+                      id="customRange2"
+                    />
+                  </div>
+                  <div className="col-6">
+                    <input
+                      type="number"
+                      className="form-control"
+                      min="0"
+                      max="100"
+                      id="customRange2"
+                      onChange={this.usePointAction}
+                      value={usePointValue}
+                    />
+                  </div>
+                </div>
+              ) : null}
+
               <label htmlFor="staticEmail" className="col-sm-12 col-form-label">
                 <p className="text-secondary">
                   Earning point total: {earn_points}{' '}
