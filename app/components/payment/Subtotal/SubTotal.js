@@ -81,29 +81,34 @@ class SubTotal extends Component<Props> {
               </a>
             </label>
             {isShowUsePoint ? (
-              <div className="col-12 row">
-                <div className="col-5 ">
-                  <label htmlFor="customRange2">Use Reward Point</label>
-                </div>
-                <div className="col-7">
-                  <input
-                    type="number"
-                    className="form-control"
-                    id="customRange2"
-                    onChange={this.usePointAction}
-                    value={usePointValue}
-                  />
+              <div className="col-12 form-group">
+                <div className="row">
+                  <div className="col-5 ">
+                    <label htmlFor="customRange2">Use Reward Point</label>
+                  </div>
+                  <div className="col-7">
+                    <input
+                      type="number"
+                      className="form-control"
+                      id="customRange2"
+                      onChange={this.usePointAction}
+                      value={usePointValue}
+                    />
+                  </div>
                 </div>
               </div>
             ) : null}
           </>
         ) : null}
         {!!earn_points && !loadingPreparingOrder ? (
-          <label htmlFor="staticEmail" className="col-sm-12 col-form-label">
-            <p className="text-secondary">
-              Earning point total: {earn_points}{' '}
-            </p>
-          </label>
+          <>
+            <label htmlFor="staticEmail" className="col-sm-5">
+              <p className="text-secondary">Earning point total</p>
+            </label>
+            <label htmlFor="staticEmail" className="col-sm-7">
+              <p className="text-secondary">{earn_points}</p>
+            </label>
+          </>
         ) : null}
       </>
     );
@@ -297,7 +302,8 @@ function mapDispatchToProps(dispatch) {
   return {
     getDiscountCodeAction: payload => dispatch(getDiscountCodeAction(payload)),
     setDiscountCodeAction: payload => dispatch(setDiscountCodeAction(payload)),
-    spendAmountRewardPointAction: payload => dispatch(spendAmountRewardPointAction(payload))
+    spendAmountRewardPointAction: payload =>
+      dispatch(spendAmountRewardPointAction(payload))
   };
 }
 export default connect(
