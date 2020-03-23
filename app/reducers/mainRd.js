@@ -153,6 +153,7 @@ const initialState = {
   isLoadingOrderHistoryDetail: true,
   isLoadingOrderHistoryDetailOffline: true,
   isLoadingSignUpCustomer: false,
+  isLoadingGetCustomerPoint: false,
   customerSearchResult: [],
   isLoadingCashPlaceOrder: false,
   productOption: {
@@ -200,6 +201,9 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.UPDATE_IS_SHOW_CARD_PAYMENT_MODAL:
         draft.checkout.isShowCardPaymentModal = action.payload;
+        break;
+      case types.UPDATE_LOADING_GET_CUSTOMER_POINT:
+        draft.isLoadingGetCustomerPoint = action.payload;
         break;
       case types.RECEIVED_PRODUCT_RESULT:
         draft.productList = action.payload;

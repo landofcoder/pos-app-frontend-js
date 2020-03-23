@@ -21,7 +21,8 @@ type Props = {
   selectCustomerForCurrentCart: (payload: Object) => void,
   unSelectCustomerForCurrentCart: (payload: Object) => void,
   toggleModalSignUpCustomer: (payload: boolean) => void,
-  getTotalRewardPointCustomer: (payload: string) => void
+  getTotalRewardPointCustomer: (payload: string) => void,
+  isLoadingGetCustomerPoint: boolean
 };
 
 class CartCustomer extends Component<Props> {
@@ -73,7 +74,8 @@ class CartCustomer extends Component<Props> {
       customerSearchResult,
       selectCustomerForCurrentCart,
       unSelectCustomerForCurrentCart,
-      getTotalRewardPointCustomer
+      getTotalRewardPointCustomer,
+      isLoadingGetCustomerPoint
     } = this.props;
     let email = '';
     let firstname = '';
@@ -112,7 +114,15 @@ class CartCustomer extends Component<Props> {
                         <div className="row">
                           <div className="col-md-6">
                             <button type="button" className="btn btn-primary">
-                              {email}
+                              {email}{' '}
+                              {isLoadingGetCustomerPoint ? (
+                                <div
+                                  className="spinner-border spinner-border-sm"
+                                  role="status"
+                                >
+                                  <span className="sr-only">Loading...</span>
+                                </div>
+                              ) : null}
                             </button>
                             <span className={Styles.wrapCloseIcon}>
                               <i
@@ -213,7 +223,8 @@ const mapStateToProps = state => ({
   customer: state.mainRd.cartCurrent.customer,
   isOpenFindCustomer: state.mainRd.isOpenFindCustomer,
   isLoadingSearchCustomer: state.mainRd.isLoadingSearchCustomer,
-  customerSearchResult: state.mainRd.customerSearchResult
+  customerSearchResult: state.mainRd.customerSearchResult,
+  isLoadingGetCustomerPoint: state.mainRd.isLoadingGetCustomerPoint
 });
 
 const mapDispatchToProps = dispatch => {

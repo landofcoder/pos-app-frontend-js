@@ -865,6 +865,7 @@ function* getOrderHistory() {
 
 function* getTotalRewardPointCustomer(payload) {
   const id = payload.payload;
+  yield put({ type: types.UPDATE_LOADING_GET_CUSTOMER_POINT, payload: true });
   const resultPoint = yield call(getTotalRewardPointCustomerService, id);
   if (resultPoint.success) {
     console.log(resultPoint.data);
@@ -873,6 +874,7 @@ function* getTotalRewardPointCustomer(payload) {
       payload: resultPoint.data
     });
   }
+  yield put({ type: types.UPDATE_LOADING_GET_CUSTOMER_POINT, payload: false });
 }
 
 function* signUpAction(payload) {
