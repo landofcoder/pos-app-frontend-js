@@ -191,12 +191,30 @@ class SubTotal extends Component<Props> {
               </div>
             )}
           </div>
-          {!!earn_points && !loadingPreparingOrder ? (
-            <label htmlFor="staticEmail" className="col-sm-12 col-form-label">
-              <p className="text-secondary">
-                Earning point total: {earn_points}{' '}
-              </p>
-            </label>
+          {true ? (
+            <>
+              <label htmlFor="staticEmail" className="col-sm-12 col-form-label">
+                <p className="text-secondary">
+                  Use reward points
+                </p>
+              </label>
+              <div className="col-12">
+                <label htmlFor="customRange2">Points range</label>
+                <input
+                  type="range"
+                  className="custom-range"
+                  min="0"
+                  max="100"
+                  step="1"
+                  id="customRange2"
+                />
+              </div>
+              <label htmlFor="staticEmail" className="col-sm-12 col-form-label">
+                <p className="text-secondary">
+                  Earning point total: {earn_points}{' '}
+                </p>
+              </label>
+            </>
           ) : null}
         </div>
       </div>
