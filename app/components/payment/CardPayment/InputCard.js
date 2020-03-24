@@ -22,9 +22,18 @@ class InputCard extends Component {
     this.focusExpDateInput = utilizeFocus();
   }
 
-  carInfoOnChange = (fieldParams, eParams) => {
-    console.log(eParams);
-    const field = fieldParams;
+  carInfoOnChange = (field, eParams) => {
+    switch (field) {
+      case 'expMonth':
+      case 'expYear':
+      case 'cvc':
+      case 'cardNumber':
+        // eslint-disable-next-line no-restricted-globals
+        if (isNaN(e)) return;
+        break;
+      default:
+        break;
+    }
     const e = eParams.target !== undefined ? eParams.target.value : eParams;
     if (field === 'expMonth') {
       if (e.length === 2 && +e[0] > 1) {
@@ -54,18 +63,6 @@ class InputCard extends Component {
       if (e.length > 3) return;
     }
     const { onCardPaymentFieldOnChange } = this.props;
-    console.log(e);
-    switch (fieldParams) {
-      case 'expMonth':
-      case 'expYear':
-      case 'cvc':
-      case 'cardNumber':
-        // eslint-disable-next-line no-restricted-globals
-        if (isNaN(e)) return;
-        break;
-      default:
-        break;
-    }
     onCardPaymentFieldOnChange({ field, value: e });
   };
 
