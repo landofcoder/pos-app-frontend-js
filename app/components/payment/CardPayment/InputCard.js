@@ -23,6 +23,7 @@ class InputCard extends Component {
   }
 
   carInfoOnChange = (field, eParams) => {
+    const e = eParams.target !== undefined ? eParams.target.value : eParams;
     switch (field) {
       case 'expMonth':
       case 'expYear':
@@ -34,7 +35,6 @@ class InputCard extends Component {
       default:
         break;
     }
-    const e = eParams.target !== undefined ? eParams.target.value : eParams;
     if (field === 'expMonth') {
       if (e.length === 2 && +e[0] > 1) {
         this.carInfoOnChange('expMonth', `0${e[0]}`);
@@ -65,6 +65,15 @@ class InputCard extends Component {
     const { onCardPaymentFieldOnChange } = this.props;
     onCardPaymentFieldOnChange({ field, value: e });
   };
+
+  // eslint-disable-next-line class-methods-use-this
+  checkValidInputCardNumber() {
+    const { cardPayment } = this.props;
+    const { cardNumber } = cardPayment.cardInfo;
+    if (cardNumber.length > 10 && cardNumber.length < 17) return 'is-valid';
+    if (cardNumber.length !== 0) return 'is-invalid';
+    return null;
+  }
 
   render() {
     const { cardPayment } = this.props;
@@ -106,7 +115,10 @@ class InputCard extends Component {
                           Card number
                         </label>
                         <input
-                          className="form-control"
+                          className={
+                            // eslint-disable-next-line prefer-template
+                            `form-control ` + this.checkValidInputCardNumber()
+                          }
                           value={cardNumber}
                           onChange={e => this.carInfoOnChange('cardNumber', e)}
                           type="password"
