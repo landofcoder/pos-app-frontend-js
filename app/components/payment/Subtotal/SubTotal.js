@@ -100,7 +100,7 @@ class SubTotal extends Component<Props> {
             ) : null}
           </>
         ) : null}
-        {!!earn_points && !loadingPreparingOrder ? (
+        {isShowUsePoint ? (
           <>
             <label htmlFor="staticEmail" className="col-sm-5">
               <p className="text-secondary">Earning point total</p>
