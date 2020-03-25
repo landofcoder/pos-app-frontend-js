@@ -54,8 +54,8 @@ class InputCard extends Component {
         return;
       }
     } else if (field === 'expYear') {
-      if (e.length > 2) {
-        this.carInfoOnChange('cvc', e[2]);
+      if (e.length > 4) {
+        this.carInfoOnChange('cvc', e[4]);
         this.focusCvcInput.setFocus();
         return;
       }
