@@ -11,9 +11,10 @@ const initialState = {
   loadingWorkPlace: false,
   loadingModuleComponent: true,
   mainUrl: '',
-  urlInput: '',
-  changeInput: false,
-  defaultProtocol: 'http://',
+  tokenWorkPlace: '',
+  urlTokenService: '',
+  platformTokenService: '',
+  isValidToken: '',
   moduleInstalled: {},
   errorServiceModuleInstalled: false,
   senseUrl: '',
@@ -68,10 +69,11 @@ const authenRd = (state = initialState, action) =>
         break;
       case typesAuthen.ERROR_URL_WORKPLACE:
         draft.messageErrorWorkPlace = action.payload;
+        draft.isValidToken = false;
         break;
-      case typesAuthen.CHANGE_URL_INPUT_WORKPLACE:
-        draft.urlInput = action.payload;
-        draft.changeInput = true;
+      case typesAuthen.CHANGE_TOKEN_INPUT_WORKPLACE:
+        draft.tokenWorkPlace = action.payload;
+        if (action.payload) draft.isValidToken = true;
         break;
       case typesAuthen.SET_DEFAULT_PROTOCOL_WORKPLACE:
         draft.defaultProtocol = action.payload;
@@ -103,6 +105,10 @@ const authenRd = (state = initialState, action) =>
         break;
       case typesAuthen.CHANGE_STATUS_SYNC:
         draft.syncManager.syncStatus = action.payload;
+        break;
+      case typesAuthen.RECEIVED_WORKPLACE_SERVICE:
+        draft.urlTokenService = action.payload.destinationUrl;
+        draft.platformTokenService = action.payload.platform;
         break;
       default:
     }

@@ -52,9 +52,9 @@ export function errorSignInWorkPlaceMessage(payload) {
   };
 }
 
-export function changeUrlInputWorkplace(payload) {
+export function changeWorkPlaceInput(payload) {
   return {
-    type: types.CHANGE_URL_INPUT_WORKPLACE,
+    type: types.CHANGE_TOKEN_INPUT_WORKPLACE,
     payload
   };
 }
@@ -82,6 +82,13 @@ export function changeToModuleInstalled(payload) {
 export function changeSenseUrl(payload) {
   return {
     type: types.CHANGE_SENSE_URL,
+    payload
+  };
+}
+
+export function actionGetInfoWorkPlace(payload) {
+  return {
+    type: types.GET_INFO_WORKPLACE_ACTION,
     payload
   };
 }

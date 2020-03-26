@@ -9,6 +9,7 @@ import { apiGatewayPath } from '../../../configs/env/config.main';
 
 const loggedInfoKey = 'logged_info';
 const mainUrlKey = 'main_url';
+const platformKey = 'platform';
 
 export async function createLoggedDb(payload) {
   const loggedDb = await getByKeyV2(loggedInfoKey);
@@ -137,23 +138,44 @@ export async function getMainUrlKey() {
   return { status: false };
 }
 
+export async function setPlatformKey(payload) {
+  const data = {
+    key: platformKey,
+    value: payload.payload
+  };
+  const platform = await getByKeyV2(platformKey);
+  if (platform) {
+    console.log('update');
+    await updateById(platform.id, data);
+  } else {
+    console.log('create by key');
+    await createKey(platformKey, data);
+  }
+  return platform;
+}
+
+export async function getPlatformKey() {
+  const payload = await getByKeyV2(platformKey);
+  if (payload) {
+    return { status: true, payload };
+  }
+  return { status: false };
+}
+
 /**
  * Get module installed
  * @returns void
  */
-export async function getModuleInstalledService() {
+export async function getModuleInstalledService(urlCheck) {
   let data;
   let error = false;
   try {
-    const response = await fetch(
-      `${apiGatewayPath}/users/get-all-module-installed`,
-      {
-        method: 'GET',
-        headers: {
-          platform: 'magento'
-        }
+    const response = await fetch(`${urlCheck}/users/get-all-module-installed`, {
+      method: 'GET',
+      headers: {
+        platform: 'magento'
       }
-    );
+    });
     const statusCode = response.status;
     if (statusCode === 200) {
       data = await response.json();
@@ -169,4 +191,35 @@ export async function getModuleInstalledService() {
     error = true;
   }
   return { data, error };
+}
+
+export async function workPlaceService(payload) {
+  let response;
+  try {
+    response = await fetch(`${apiGatewayPath}/graphql/graphql`, {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json',
+        platform: 'magento'
+      },
+      redirect: 'follow',
+      referrer: 'no-referrer',
+      body: JSON.stringify({
+        query: `{
+          appsConnected(token: "${payload}") {
+            _id,
+            platform,
+            destinationUrl
+          }
+        }`
+      })
+    });
+    const data = response.json();
+    return data;
+  } catch (e) {
+    return { data: { appConnected: null } };
+  }
 }
