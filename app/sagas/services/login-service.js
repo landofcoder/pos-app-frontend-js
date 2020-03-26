@@ -36,29 +36,27 @@ export async function getLoggedDb() {
 export async function loginService(payload) {
   let response;
   try {
-    response = await fetch(
-      `${window.mainUrl}index.php/rest/V1/integration/admin/token`,
-      {
-        method: 'POST',
-        mode: 'cors',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        redirect: 'follow',
-        referrer: 'no-referrer',
-        body: JSON.stringify({
-          username: payload.payload.username,
-          password: payload.payload.password
-        })
-      }
-    );
+    response = await fetch(`${apiGatewayPath}/users/cashier-login`, {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json',
+        service_type: 'magento'
+      },
+      redirect: 'follow',
+      referrer: 'no-referrer',
+      body: JSON.stringify({
+        username: payload.payload.username,
+        password: payload.payload.password
+      })
+    });
   } catch (e) {
     response = '';
   }
 
-  if (response.status !== 200) {
+  if (!(response.status === 200 || response.status === 201)) {
     return '';
   }
 
@@ -148,12 +146,11 @@ export async function getModuleInstalledService() {
   let error = false;
   try {
     const response = await fetch(
-      `${apiGatewayPath}/authencation/get-all-module-installed`,
+      `${apiGatewayPath}/users/get-all-module-installed`,
       {
         method: 'GET',
         headers: {
-          'store-domain': 'http://localmagento.com/',
-          platform: 'magento'
+          service_type: 'magento'
         }
       }
     );
