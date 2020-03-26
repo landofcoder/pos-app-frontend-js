@@ -13,13 +13,6 @@ export function login(payload) {
   };
 }
 
-export function signInWorkplace(payload) {
-  return {
-    type: types.SIGN_IN_WORKPLACE_ACTION,
-    payload
-  };
-}
-
 export function getMainUrlWorkPlace() {
   return {
     type: types.GET_MAIN_URL
@@ -51,13 +44,6 @@ export function checkLoginBackground() {
   };
 }
 
-export function errorSignInWorkPlaceMessage(payload) {
-  return {
-    type: types.ERROR_URL_WORKPLACE,
-    payload
-  };
-}
-
 export function changeWorkPlaceInput(payload) {
   return {
     type: types.CHANGE_TOKEN_INPUT_WORKPLACE,
@@ -81,13 +67,6 @@ export function getModuleInstalled() {
 export function changeToModuleInstalled(payload) {
   return {
     type: types.CHANGE_STATUS_TO_MODULE_INSTALLED,
-    payload
-  };
-}
-
-export function changeSenseUrl(payload) {
-  return {
-    type: types.CHANGE_SENSE_URL,
     payload
   };
 }

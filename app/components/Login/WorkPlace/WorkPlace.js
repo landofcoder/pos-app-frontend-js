@@ -5,11 +5,8 @@ import ModuleInstalled from '../ModuleInstalled';
 import styles from './workplace.scss';
 import {
   getMainUrlWorkPlace,
-  errorSignInWorkPlaceMessage,
   changeWorkPlaceInput,
   setDefaultProtocolWorkplace,
-  changeToModuleInstalled,
-  changeSenseUrl,
   actionGetInfoWorkPlace,
   getPlatformWorkPlace
 } from '../../../actions/authenAction';
@@ -23,8 +20,6 @@ type Props = {
   tokenWorkPlace: string,
   isValidToken: boolean,
   toModuleInstalled: false,
-  changeToModuleInstalled: payload => void,
-  changeSenseUrl: payload => void,
   actionGetInfoWorkPlace: payload => void
 };
 
@@ -80,6 +75,7 @@ class WorkPlace extends Component {
                     value={tokenWorkPlace}
                     onChange={this.handleChangeToken}
                     type="text"
+                    placeholder="access token"
                     className={`form-control ${this.checkValidateToken()}`}
                     aria-label="Text input with dropdown button"
                     required
@@ -127,13 +123,9 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     getMainUrlWorkPlace: () => dispatch(getMainUrlWorkPlace()),
-    errorSignIn: payload => dispatch(errorSignInWorkPlaceMessage(payload)),
     changeWorkPlaceInput: payload => dispatch(changeWorkPlaceInput(payload)),
     setDefaultProtocol: payload =>
       dispatch(setDefaultProtocolWorkplace(payload)),
-    changeToModuleInstalled: payload =>
-      dispatch(changeToModuleInstalled(payload)),
-    changeSenseUrl: payload => dispatch(changeSenseUrl(payload)),
     actionGetInfoWorkPlace: payload =>
       dispatch(actionGetInfoWorkPlace(payload)),
     getPlatformWorkPlace: () => dispatch(getPlatformWorkPlace())

@@ -167,7 +167,6 @@ function mapStateToProps(state) {
     loading: state.authenRd.loadingModuleComponent,
     moduleInstalled: state.authenRd.moduleInstalled,
     error: state.authenRd.errorServiceModuleInstalled,
-    senseUrl: state.authenRd.senseUrl,
     urlTokenService: state.authenRd.urlTokenService,
     platformTokenService: state.authenRd.platformTokenService
   };
