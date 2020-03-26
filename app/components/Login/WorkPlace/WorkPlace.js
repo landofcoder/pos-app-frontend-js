@@ -50,15 +50,8 @@ class WorkPlace extends Component {
 
   loginFormSubmit = e => {
     e.preventDefault();
-    const { errorSignIn, changeToModuleInstalled, changeSenseUrl } = this.props;
-    const { tokenWorkPlace, actionGetInfoWorkPlace, isValidToken } = this.props;
-    if (isValidToken) {
-      // changeToModuleInstalled(true);
-      // changeSenseUrl(mainUrl);
-      actionGetInfoWorkPlace(tokenWorkPlace);
-    } else {
-      errorSignIn('Invalid Token, please try again!');
-    }
+    const { tokenWorkPlace, actionGetInfoWorkPlace } = this.props;
+    actionGetInfoWorkPlace(tokenWorkPlace);
   };
 
   render() {

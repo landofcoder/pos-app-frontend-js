@@ -249,7 +249,10 @@ function* workPlaceAction(payloadParams) {
     // yield put({})
   } catch (e) {
     console.log(e);
-    yield put({ type: types.ERROR_URL_WORKPLACE, payload: 'Your token does not exist' });
+    yield put({
+      type: types.ERROR_URL_WORKPLACE,
+      payload: 'Invalid Token, please try again!'
+    });
   }
 }
 
