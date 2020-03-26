@@ -43,7 +43,7 @@ export async function loginService(payload) {
       credentials: 'same-origin',
       headers: {
         'Content-Type': 'application/json',
-        service_type: 'magento'
+        platform: 'magento'
       },
       redirect: 'follow',
       referrer: 'no-referrer',
@@ -150,7 +150,7 @@ export async function getModuleInstalledService() {
       {
         method: 'GET',
         headers: {
-          service_type: 'magento'
+          platform: 'magento'
         }
       }
     );
