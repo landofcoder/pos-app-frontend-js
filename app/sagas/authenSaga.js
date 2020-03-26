@@ -38,7 +38,7 @@ function* loginAction(payload) {
   yield put({ type: types.START_LOADING });
   try {
     const data = yield call(loginService, payload);
-    if (data !== '') {
+    if (data) {
       yield createLoggedDb({ info: payload.payload, token: data });
       yield put({ type: UPDATE_FLAG_SWITCHING_MODE }); // Update flag login to make App reload and background check
     } else {
@@ -91,9 +91,10 @@ function* setPlatform(payloadParams) {
 function* getPlatform() {
   const data = yield call(getPlatformKey);
   if (data.status) {
+    console.log(data);
     yield put({
-      type: types.RECEIVED_MAIN_URL,
-      payload: data.payload.value.url
+      type: types.RECEIVED_PLATFORM,
+      payload: data.payload.value.value
     });
   }
 }

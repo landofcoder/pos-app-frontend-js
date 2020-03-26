@@ -98,3 +98,9 @@ export function actionGetInfoWorkPlace(payload) {
     payload
   };
 }
+
+export function getPlatformWorkPlace() {
+  return {
+    type: types.GET_PLATFORM
+  };
+}

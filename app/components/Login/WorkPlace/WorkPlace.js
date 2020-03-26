@@ -10,12 +10,14 @@ import {
   setDefaultProtocolWorkplace,
   changeToModuleInstalled,
   changeSenseUrl,
-  actionGetInfoWorkPlace
+  actionGetInfoWorkPlace,
+  getPlatformWorkPlace
 } from '../../../actions/authenAction';
 
 type Props = {
   loading: boolean,
   getMainUrlWorkPlace: payload => void,
+  getPlatformWorkPlace: () => void,
   changeWorkPlaceInput: payload => void,
   message: string,
   tokenWorkPlace: string,
@@ -30,8 +32,9 @@ class WorkPlace extends Component {
   props: Props;
 
   componentDidMount() {
-    const { getMainUrlWorkPlace } = this.props;
+    const { getMainUrlWorkPlace, getPlatformWorkPlace } = this.props;
     getMainUrlWorkPlace();
+    getPlatformWorkPlace();
   }
 
   handleChangeToken = e => {
@@ -131,7 +134,9 @@ function mapDispatchToProps(dispatch) {
     changeToModuleInstalled: payload =>
       dispatch(changeToModuleInstalled(payload)),
     changeSenseUrl: payload => dispatch(changeSenseUrl(payload)),
-    actionGetInfoWorkPlace: payload => dispatch(actionGetInfoWorkPlace(payload))
+    actionGetInfoWorkPlace: payload =>
+      dispatch(actionGetInfoWorkPlace(payload)),
+    getPlatformWorkPlace: () => dispatch(getPlatformWorkPlace())
   };
 }
 export default connect(

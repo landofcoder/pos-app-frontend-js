@@ -35,16 +35,15 @@ export async function getLoggedDb() {
 }
 
 export async function loginService(payload) {
-  let response;
   try {
-    response = await fetch(`${apiGatewayPath}/users/cashier-login`, {
+    const response = await fetch(`${window.mainUrl}/users/cashier-login`, {
       method: 'POST',
       mode: 'cors',
       cache: 'no-cache',
       credentials: 'same-origin',
       headers: {
         'Content-Type': 'application/json',
-        platform: 'magento'
+        platform: `${window.platform}`
       },
       redirect: 'follow',
       referrer: 'no-referrer',
@@ -53,19 +52,12 @@ export async function loginService(payload) {
         password: payload.payload.password
       })
     });
-  } catch (e) {
-    response = '';
-  }
-
-  if (!(response.status === 200 || response.status === 201)) {
-    return '';
-  }
-
-  if (response.ok) {
     const data = await response.json();
     return data;
+  } catch (e) {
+    console.log(e);
   }
-  return 'error';
+  return null;
 }
 
 /**
