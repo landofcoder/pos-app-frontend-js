@@ -1,5 +1,6 @@
 import produce from 'immer';
 import * as typesAuthen from '../constants/authen';
+import { RECEIVED_PLATFORM } from '../constants/authen';
 
 const initialState = {
   token: '',
@@ -11,6 +12,7 @@ const initialState = {
   loadingWorkPlace: false,
   loadingModuleComponent: true,
   mainUrl: '',
+  mainPlatform: '',
   tokenWorkPlace: '',
   urlTokenService: '',
   platformTokenService: '',
@@ -109,6 +111,10 @@ const authenRd = (state = initialState, action) =>
       case typesAuthen.RECEIVED_WORKPLACE_SERVICE:
         draft.urlTokenService = action.payload.destinationUrl;
         draft.platformTokenService = action.payload.platform;
+        break;
+      case typesAuthen.RECEIVED_PLATFORM:
+        window.platform = action.payload;
+        draft.mainPlatform = action.payload;
         break;
       default:
     }

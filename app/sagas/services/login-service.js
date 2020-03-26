@@ -141,7 +141,7 @@ export async function getMainUrlKey() {
 export async function setPlatformKey(payload) {
   const data = {
     key: platformKey,
-    value: payload.payload
+    value: payload
   };
   const platform = await getByKeyV2(platformKey);
   if (platform) {
@@ -176,13 +176,12 @@ export async function getModuleInstalledService(urlCheck) {
         platform: 'magento'
       }
     });
-    const statusCode = response.status;
-    if (statusCode === 200) {
-      data = await response.json();
-    } else {
+    data = await response.json();
+    if (data.length === 0) {
       data = [
         {
-          'module-all': false
+          'module-all': false,
+          'module-pos': false
         }
       ];
     }

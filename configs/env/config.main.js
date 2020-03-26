@@ -1,1 +1,1 @@
-export const apiGatewayPath = 'http://localhost:32792';
+export const apiGatewayPath = 'http://localhost:32804';

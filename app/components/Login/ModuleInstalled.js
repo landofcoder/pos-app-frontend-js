@@ -5,6 +5,7 @@ import styles from './pagelogin.scss';
 import {
   getModuleInstalled,
   setMainUrlWorkPlace,
+  setPlatformWorkPlace,
   changeToModuleInstalled
 } from '../../actions/authenAction';
 
@@ -15,7 +16,9 @@ type Props = {
   setMainUrlWorkPlace: (payload: string) => void,
   changeToModuleInstalled: (payload: boolean) => void,
   error: boolean,
-  senseUrl: string
+  urlTokenService: string,
+  platformTokenService: string,
+  setPlatformWorkPlace: (payload: string) => void
 };
 class ModuleInstalled extends Component {
   props: Props;
@@ -65,8 +68,14 @@ class ModuleInstalled extends Component {
   };
 
   submitSuiteUrl = () => {
-    const { setMainUrlWorkPlace, senseUrl } = this.props;
-    setMainUrlWorkPlace(senseUrl);
+    const {
+      setMainUrlWorkPlace,
+      platformTokenService,
+      urlTokenService,
+      setPlatformWorkPlace
+    } = this.props;
+    setMainUrlWorkPlace(urlTokenService);
+    setPlatformWorkPlace(platformTokenService);
   };
 
   render() {
@@ -158,7 +167,9 @@ function mapStateToProps(state) {
     loading: state.authenRd.loadingModuleComponent,
     moduleInstalled: state.authenRd.moduleInstalled,
     error: state.authenRd.errorServiceModuleInstalled,
-    senseUrl: state.authenRd.senseUrl
+    senseUrl: state.authenRd.senseUrl,
+    urlTokenService: state.authenRd.urlTokenService,
+    platformTokenService: state.authenRd.platformTokenService
   };
 }
 function mapDispatchToProps(dispatch) {
@@ -166,7 +177,8 @@ function mapDispatchToProps(dispatch) {
     getModuleInstalled: () => dispatch(getModuleInstalled()),
     setMainUrlWorkPlace: payload => dispatch(setMainUrlWorkPlace(payload)),
     changeToModuleInstalled: payload =>
-      dispatch(changeToModuleInstalled(payload))
+      dispatch(changeToModuleInstalled(payload)),
+    setPlatformWorkPlace: payload => dispatch(setPlatformWorkPlace(payload))
   };
 }
 export default connect(

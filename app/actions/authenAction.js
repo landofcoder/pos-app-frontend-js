@@ -33,6 +33,12 @@ export function setMainUrlWorkPlace(payload) {
   };
 }
 
+export function setPlatformWorkPlace(payload) {
+  return {
+    type: types.SET_PLATFORM,
+    payload
+  };
+}
 export function learnUrlWorkPlace() {
   return {
     type: types.CLEAN_URL_WORKPLACE

@@ -80,10 +80,11 @@ function* getMainUrl() {
   }
 }
 
-function* setPlatform(payload) {
+function* setPlatform(payloadParams) {
+  const { payload } = payloadParams;
   yield put({ type: types.START_LOADING_WORKPLACE });
-  const url = yield call(setPlatformKey, payload);
-  yield put({ type: types.RECEIVED_MAIN_URL, payload: url });
+  yield call(setPlatformKey, payload);
+  yield put({ type: types.RECEIVED_PLATFORM, payload });
   yield put({ type: types.STOP_LOADING_WORKPLACE });
 }
 
