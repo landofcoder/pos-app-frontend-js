@@ -923,9 +923,9 @@ function* checkLoginBackgroundSaga() {
     data = yield call(getPlatformKey);
     console.log(data);
     if (data.status) {
-      const { platform } = data.payload.value;
-      yield put({ type: RECEIVED_PLATFORM, payload: platform });
-      window.platform = platform;
+      const { value } = data.payload.value;
+      yield put({ type: RECEIVED_PLATFORM, payload: value });
+      window.platform = value;
     }
 
     // Set token first

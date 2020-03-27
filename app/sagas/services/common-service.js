@@ -24,13 +24,15 @@ export async function getSystemConfigService() {
   let getError = false;
   try {
     const response = await fetch(
-      `${window.mainUrl}index.php/rest/V1/pos/getSystemConfig`,
+      // `${window.mainUrl}index.php/rest/V1/pos/getSystemConfig`,
+      `${window.mainUrl}/users/system-config`,
       {
         method: 'GET',
         mode: 'cors',
         cache: 'no-cache',
         credentials: 'same-origin',
         headers: {
+          platform: window.platform,
           'Content-Type': 'application/json',
           Authorization: `Bearer ${window.liveToken}`
         },
@@ -116,6 +118,7 @@ export async function getCustomReceiptService(outletId) {
         cache: 'no-cache',
         credentials: 'same-origin',
         headers: {
+          platform: window.platform,
           'Content-Type': 'application/json',
           Authorization: `Bearer ${window.liveToken}`
         },
