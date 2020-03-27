@@ -68,21 +68,19 @@ export async function getInfoCashierService() {
   let data;
   let error = false;
   try {
-    const response = await fetch(
-      `${window.mainUrl}index.php/rest/V1/lof-cashier`,
-      {
-        method: 'GET',
-        mode: 'cors',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${window.liveToken}`
-        },
-        redirect: 'follow',
-        referrer: 'no-referrer'
-      }
-    );
+    const response = await fetch(`${window.mainUrl}/cashier/cashier-info`, {
+      method: 'GET',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json',
+        platform: window.platform,
+        token: window.liveToken
+      },
+      redirect: 'follow',
+      referrer: 'no-referrer'
+    });
     const { status } = response;
     if (status === 401) {
       error = true;
@@ -187,7 +185,7 @@ export async function getModuleInstalledService(urlCheck) {
 export async function workPlaceService(payload) {
   let response;
   try {
-    response = await fetch(`${apiGatewayPath}/graphql/graphql`, {
+    response = await fetch(`${apiGatewayPath}/graphql/gateway`, {
       method: 'POST',
       mode: 'cors',
       cache: 'no-cache',
