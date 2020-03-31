@@ -1,11 +1,11 @@
-import { takeEvery, call, put, takeLatest } from 'redux-saga/effects';
+import { takeEvery, call, put, takeLatest, select } from 'redux-saga/effects';
 import { differenceInMinutes } from 'date-fns';
 import * as types from '../constants/authen';
 import {
   LOGOUT_POS_ACTION,
   UPDATE_FLAG_SWITCHING_MODE,
   SYNC_CLIENT_DATA,
-  GET_SYNC_MANAGER
+  GET_SYNC_MANAGER,
 } from '../constants/root.json';
 import {
   loginService,
@@ -27,6 +27,8 @@ import { getAllOrders, deleteOrder } from '../reducers/db/sync_orders';
 import { signUpCustomerService } from './services/customer-service';
 import { updateLoggedToken } from '../reducers/db/settings';
 import { syncOrderService } from './services/cart-service';
+
+const senseUrl = state => state.authenRd.senseUrl;
 
 function* loginAction(payload) {
   // Start loading
@@ -89,7 +91,9 @@ function* cleanUrlWorkplace() {
 function* getModuleInstalled() {
   // Start loading
   yield put({ type: types.LOADING_MODULE_COMPONENT, payload: true });
-  const data = yield call(getModuleInstalledService);
+
+  const url = yield select(senseUrl);
+  const data = yield call(getModuleInstalledService, url);
   if (data.error) {
     yield put({
       type: types.ERROR_SERVICE_MODULES_INSTALLED,

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Paypal from './Paypal/Paypal';
 import {
   updateIsShowCardPaymentModel,
   updateCardPaymentType,
@@ -80,6 +81,18 @@ class CardPayment extends Component {
     }
   };
 
+  switchCheckoutPaymentType = () => {
+    const { cardPayment } = this.props;
+    const cardPaymentType = cardPayment.type;
+    switch (cardPaymentType) {
+      case 'paypal':
+        return <Paypal />;
+        break;
+      default:
+        return <InputCard />;
+    }
+  };
+
   render() {
     const {
       updateCardPaymentType,
@@ -119,7 +132,7 @@ class CardPayment extends Component {
                 </div>
                 <div className="col-12">
                   <div className="row">
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                       <button
                         onClick={() => updateCardPaymentType('stripe')}
                         type="button"
@@ -130,7 +143,7 @@ class CardPayment extends Component {
                         Stripe
                       </button>
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                       <button
                         onClick={() => updateCardPaymentType('authorize')}
                         type="button"
@@ -142,7 +155,19 @@ class CardPayment extends Component {
                         Authorize.net
                       </button>
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
+                      <button
+                        onClick={() => updateCardPaymentType('paypal')}
+                        type="button"
+                        className={`btn btn-outline-primary btn-lg btn-block ${
+                          cardPaymentType === 'paypal' ? 'active' : ''
+                        }`}
+                      >
+                        {' '}
+                        Paypal
+                      </button>
+                    </div>
+                    <div className="col-md-3">
                       <button
                         onClick={() => this.switchToCashPayment()}
                         type="button"
@@ -156,7 +181,7 @@ class CardPayment extends Component {
                   </div>
                 </div>
                 <div className="col-md-12 mt-4 mb-5">
-                  <InputCard />
+                  {this.switchCheckoutPaymentType()}
                 </div>
               </div>
             </div>
