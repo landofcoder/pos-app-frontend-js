@@ -24,24 +24,20 @@ export async function getSystemConfigService() {
   let data = null;
   let getError = false;
   try {
-    const response = await fetch(
-      // `${window.mainUrl}index.php/rest/V1/pos/getSystemConfig`,
-      `${apiGatewayPath}/cashier/system-config`,
-      {
-        method: 'GET',
-        mode: 'cors',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        headers: {
-          platform: window.platform,
-          url: window.mainUrl,
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${window.liveToken}`
-        },
-        redirect: 'follow',
-        referrer: 'no-referrer'
-      }
-    );
+    const response = await fetch(`${apiGatewayPath}/cashier/system-config`, {
+      method: 'GET',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        platform: window.platform,
+        url: window.mainUrl,
+        'Content-Type': 'application/json',
+        token: window.liveToken
+      },
+      redirect: 'follow',
+      referrer: 'no-referrer'
+    });
     data = await response.json();
   } catch (e) {
     getError = true;
