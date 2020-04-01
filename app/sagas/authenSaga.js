@@ -32,7 +32,6 @@ import { updateLoggedToken } from '../reducers/db/settings';
 import { syncOrderService } from './services/cart-service';
 
 const urlTokenService = state => state.authenRd.urlTokenService;
-
 function* loginAction(payload) {
   // Start loading
   yield put({ type: types.START_LOADING });
@@ -237,13 +236,13 @@ function* workPlaceAction(payloadParams) {
     const { payload } = payloadParams;
     const result = yield call(workPlaceService, payload);
     console.log(result);
-    const { appsConnected } = result.data;
-    const { destinationUrl } = appsConnected;
-    const { platform } = appsConnected;
+    const { getApp } = result.data;
+    const { destination_url } = getApp;
+    const { platform } = getApp;
     yield put({ type: types.CHANGE_STATUS_TO_MODULE_INSTALLED, payload: true });
     yield put({
       type: types.RECEIVED_WORKPLACE_SERVICE,
-      payload: { destinationUrl, platform }
+      payload: { destination_url, platform }
     });
     // yield put({ type: types.SET_MAIN_URL, payload: mainUrl });
     // yield put({ type: types.SET_PLATFORM, payload: platform });

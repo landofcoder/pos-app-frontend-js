@@ -36,14 +36,15 @@ export async function getLoggedDb() {
 
 export async function loginService(payload) {
   try {
-    const response = await fetch(`${window.mainUrl}/users/cashier-login`, {
+    const response = await fetch(`${apiGatewayPath}/cashier/login`, {
       method: 'POST',
       mode: 'cors',
       cache: 'no-cache',
       credentials: 'same-origin',
       headers: {
         'Content-Type': 'application/json',
-        platform: `${window.platform}`
+        platform: `${window.platform}`,
+        url: window.mainUrl
       },
       redirect: 'follow',
       referrer: 'no-referrer',
@@ -68,7 +69,7 @@ export async function getInfoCashierService() {
   let data;
   let error = false;
   try {
-    const response = await fetch(`${window.mainUrl}/cashier/cashier-info`, {
+    const response = await fetch(`${apiGatewayPath}/cashier/cashier-info`, {
       method: 'GET',
       mode: 'cors',
       cache: 'no-cache',
@@ -76,7 +77,8 @@ export async function getInfoCashierService() {
       headers: {
         'Content-Type': 'application/json',
         platform: window.platform,
-        token: window.liveToken
+        token: window.liveToken,
+        url: window.mainUrl
       },
       redirect: 'follow',
       referrer: 'no-referrer'
@@ -160,12 +162,16 @@ export async function getModuleInstalledService(urlCheck) {
   let data;
   let error = false;
   try {
-    const response = await fetch(`${urlCheck}/users/get-all-module-installed`, {
-      method: 'GET',
-      headers: {
-        platform: 'magento'
+    const response = await fetch(
+      `${apiGatewayPath}/cashier/get-all-module-installed`,
+      {
+        method: 'GET',
+        headers: {
+          platform: 'magento2',
+          destination_url: urlCheck
+        }
       }
-    });
+    );
     data = await response.json();
     if (data.length === 0) {
       data = [
@@ -191,17 +197,16 @@ export async function workPlaceService(payload) {
       cache: 'no-cache',
       credentials: 'same-origin',
       headers: {
-        'Content-Type': 'application/json',
-        platform: 'magento'
+        'Content-Type': 'application/json'
       },
       redirect: 'follow',
       referrer: 'no-referrer',
       body: JSON.stringify({
         query: `{
-          appsConnected(token: "${payload}") {
+          getApp(token: "${payload}") {
             _id,
             platform,
-            destinationUrl
+            destination_url
           }
         }`
       })

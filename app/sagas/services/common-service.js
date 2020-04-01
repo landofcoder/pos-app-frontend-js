@@ -13,6 +13,7 @@ import { getCategories } from '../../reducers/db/categories';
 import { deleteOrder } from '../../reducers/db/sync_orders';
 import { UPDATE_CURRENT_POS_COMMAND } from '../../constants/root';
 import { getOfflineMode } from '../../common/settings';
+import { apiGatewayPath } from '../../../configs/env/config.main';
 
 /**
  * Data from systemConfig will always get latest settings from api,
@@ -25,7 +26,7 @@ export async function getSystemConfigService() {
   try {
     const response = await fetch(
       // `${window.mainUrl}index.php/rest/V1/pos/getSystemConfig`,
-      `${window.mainUrl}/users/system-config`,
+      `${apiGatewayPath}/cashier/system-config`,
       {
         method: 'GET',
         mode: 'cors',
@@ -33,6 +34,7 @@ export async function getSystemConfigService() {
         credentials: 'same-origin',
         headers: {
           platform: window.platform,
+          url: window.mainUrl,
           'Content-Type': 'application/json',
           Authorization: `Bearer ${window.liveToken}`
         },
@@ -69,7 +71,8 @@ export async function getShopInfoService() {
   let error = false;
   try {
     const response = await fetch(
-      `${window.mainUrl}index.php/rest/V1/pos/getShopInfo`,
+      // `${apiGatewayPath}index.php/rest/V1/pos/getShopInfo`,
+      `${apiGatewayPath}/cashier/shop-info`,
       {
         method: 'GET',
         mode: 'cors',
@@ -77,7 +80,9 @@ export async function getShopInfoService() {
         credentials: 'same-origin',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${window.liveToken}`
+          Authorization: `Bearer ${window.liveToken}`,
+          platform: window.platform,
+          url: window.mainUrl
         },
         redirect: 'follow',
         referrer: 'no-referrer'

@@ -109,7 +109,7 @@ const authenRd = (state = initialState, action) =>
         draft.syncManager.syncStatus = action.payload;
         break;
       case typesAuthen.RECEIVED_WORKPLACE_SERVICE:
-        draft.urlTokenService = action.payload.destinationUrl;
+        draft.urlTokenService = action.payload.destination_url;
         draft.platformTokenService = action.payload.platform;
         break;
       case typesAuthen.RECEIVED_PLATFORM:
