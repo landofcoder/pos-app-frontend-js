@@ -29,7 +29,9 @@ import {
   getCustomerCartTokenService,
   searchCustomer,
   searchCustomerByName,
-  signUpCustomerService
+  searchCustomerDbService,
+  signUpCustomerService,
+  signUpCustomerServiceDb
 } from './services/customer-service';
 import { createCustomerCartService } from './services/customer-cart-service';
 import {
@@ -75,7 +77,6 @@ import {
 } from '../constants/authen';
 import { syncCategories } from '../reducers/db/categories';
 import { syncCustomers } from '../reducers/db/customers';
-import { signUpCustomer } from '../reducers/db/sync_customers';
 import { getAllOrders } from '../reducers/db/sync_orders';
 import { counterProduct } from '../reducers/db/products';
 import { getOfflineMode } from '../common/settings';
@@ -602,8 +603,18 @@ function* getSearchCustomer(payload) {
   console.log(payload);
   const searchResult = yield call(searchCustomer, payload);
   const searchResultByName = yield call(searchCustomerByName, payload);
-  const mergeArray = searchResult.items.concat(searchResultByName.items);
+  const searchDbResult = yield call(searchCustomerDbService, payload);
+  console.log(searchResult);
+  console.log(searchResultByName);
+  const mergeArray = searchResult.items.concat(
+    searchResultByName.items,
+    searchDbResult
+  );
   searchResult.items = mergeArray;
+
+  console.log('search in customer in db');
+  console.log(searchDbResult);
+
   yield put({
     type: types.RECEIVED_CUSTOMER_SEARCH_RESULT,
     searchResult
@@ -848,11 +859,20 @@ function* getOrderHistory() {
 function* signUpAction(payload) {
   yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: true });
   const offlineMode = yield getOfflineMode();
+
   if (offlineMode === 1) {
-    yield call(signUpCustomer, payload);
-    yield put({ type: types.TOGGLE_MODAL_SIGN_UP_CUSTOMER, payload: false });
+    const res = yield call(signUpCustomerServiceDb, payload);
+
+    if (res.success)
+      yield put({ type: types.TOGGLE_MODAL_SIGN_UP_CUSTOMER, payload: false });
+    else
+      yield put({
+        type: types.MESSAGE_SIGN_UP_CUSTOMER,
+        payload: res.message
+      });
   } else {
     const res = yield call(signUpCustomerService, payload);
+
     if (res.success) {
       yield put({ type: types.TOGGLE_MODAL_SIGN_UP_CUSTOMER, payload: false });
     } else {

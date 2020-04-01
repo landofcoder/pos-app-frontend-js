@@ -7,6 +7,7 @@ export async function signUpCustomer(customers) {
   const data = {
     email: payload.customer.email,
     first_name: payload.customer.firstname,
+    synced: false,
     payload
   };
   const signUpCustomerTbl = db.table(table);
@@ -32,4 +33,12 @@ export async function deleteByKey(key) {
   if (data) {
     await tbl.delete(data.id);
   }
+}
+
+export async function getByKey(name) {
+  const productTbl = db.table(table);
+  const result = [];
+  const resultName = await productTbl.where({ first_name: name }).toArray();
+  const resultEmail = await productTbl.where({ email: name }).toArray();
+  return result.concat(resultName, resultEmail);
 }
