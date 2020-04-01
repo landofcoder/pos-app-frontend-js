@@ -52,7 +52,8 @@ import {
 import {
   getInfoCashierService,
   getLoggedDb,
-  getMainUrlKey
+  getMainUrlKey,
+  getPlatformKey
 } from './services/login-service';
 
 import {
@@ -69,6 +70,7 @@ import {
   CHECK_LOGIN_BACKGROUND,
   RECEIVED_TOKEN,
   RECEIVED_MAIN_URL,
+  RECEIVED_PLATFORM,
   STOP_LOADING
 } from '../constants/authen';
 import { syncCategories } from '../reducers/db/categories';
@@ -910,12 +912,20 @@ function* checkLoginBackgroundSaga() {
   console.info('login background checking');
   // Logged
   if (loggedDb !== false) {
-    // Get main url key
-    const data = yield call(getMainUrlKey);
+    // Get main url key and set it default window value
+    // Get platform key and set it default window value
+    let data = yield call(getMainUrlKey);
     if (data.status) {
       const { url } = data.payload.value;
       yield put({ type: RECEIVED_MAIN_URL, payload: url });
       window.mainUrl = url;
+    }
+    data = yield call(getPlatformKey);
+    console.log(data);
+    if (data.status) {
+      const { value } = data.payload.value;
+      yield put({ type: RECEIVED_PLATFORM, payload: value });
+      window.platform = value;
     }
 
     // Set token first

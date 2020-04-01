@@ -85,11 +85,11 @@ const initialState = {
     cardPayment: {
       type: 'stripe', // cash, stripe, authorize
       cardInfo: {
-        nameOnCard: 'VU HOANG CHIEN',
-        cardNumber: '4242424242424242',
-        expMonth: 2,
-        expYear: 2021,
-        cvc: '314'
+        nameOnCard: '',
+        cardNumber: '',
+        expMonth: '',
+        expYear: '',
+        cvc: ''
       },
       resultCharge: 0, // Default is 0, and with payment.json types
       isLoadingCharging: false

@@ -13,13 +13,6 @@ export function login(payload) {
   };
 }
 
-export function signInWorkplace(payload) {
-  return {
-    type: types.SIGN_IN_WORKPLACE_ACTION,
-    payload
-  };
-}
-
 export function getMainUrlWorkPlace() {
   return {
     type: types.GET_MAIN_URL
@@ -33,6 +26,12 @@ export function setMainUrlWorkPlace(payload) {
   };
 }
 
+export function setPlatformWorkPlace(payload) {
+  return {
+    type: types.SET_PLATFORM,
+    payload
+  };
+}
 export function learnUrlWorkPlace() {
   return {
     type: types.CLEAN_URL_WORKPLACE
@@ -45,16 +44,9 @@ export function checkLoginBackground() {
   };
 }
 
-export function errorSignInWorkPlaceMessage(payload) {
+export function changeWorkPlaceInput(payload) {
   return {
-    type: types.ERROR_URL_WORKPLACE,
-    payload
-  };
-}
-
-export function changeUrlInputWorkplace(payload) {
-  return {
-    type: types.CHANGE_URL_INPUT_WORKPLACE,
+    type: types.CHANGE_TOKEN_INPUT_WORKPLACE,
     payload
   };
 }
@@ -79,9 +71,15 @@ export function changeToModuleInstalled(payload) {
   };
 }
 
-export function changeSenseUrl(payload) {
+export function actionGetInfoWorkPlace(payload) {
   return {
-    type: types.CHANGE_SENSE_URL,
+    type: types.GET_INFO_WORKPLACE_ACTION,
     payload
+  };
+}
+
+export function getPlatformWorkPlace() {
+  return {
+    type: types.GET_PLATFORM
   };
 }

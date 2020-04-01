@@ -1,4 +1,4 @@
-import { takeEvery, call, put, takeLatest } from 'redux-saga/effects';
+import { takeEvery, call, put, takeLatest, select } from 'redux-saga/effects';
 import { differenceInMinutes } from 'date-fns';
 import * as types from '../constants/authen';
 import {
@@ -11,10 +11,13 @@ import {
   loginService,
   createLoggedDb,
   getMainUrlKey,
+  setPlatformKey,
+  getPlatformKey,
   setMainUrlKey,
   getModuleInstalledService,
   deleteLoggedDb,
-  getLoggedDb
+  getLoggedDb,
+  workPlaceService
 } from './services/login-service';
 import {
   getTimeSyncConstant,
@@ -28,12 +31,13 @@ import { signUpCustomerService } from './services/customer-service';
 import { updateLoggedToken } from '../reducers/db/settings';
 import { syncOrderService } from './services/cart-service';
 
+const urlTokenService = state => state.authenRd.urlTokenService;
 function* loginAction(payload) {
   // Start loading
   yield put({ type: types.START_LOADING });
   try {
     const data = yield call(loginService, payload);
-    if (data !== '') {
+    if (data) {
       yield createLoggedDb({ info: payload.payload, token: data });
       yield put({ type: UPDATE_FLAG_SWITCHING_MODE }); // Update flag login to make App reload and background check
     } else {
@@ -75,6 +79,25 @@ function* getMainUrl() {
   }
 }
 
+function* setPlatform(payloadParams) {
+  const { payload } = payloadParams;
+  yield put({ type: types.START_LOADING_WORKPLACE });
+  yield call(setPlatformKey, payload);
+  yield put({ type: types.RECEIVED_PLATFORM, payload });
+  yield put({ type: types.STOP_LOADING_WORKPLACE });
+}
+
+function* getPlatform() {
+  const data = yield call(getPlatformKey);
+  if (data.status) {
+    console.log(data);
+    yield put({
+      type: types.RECEIVED_PLATFORM,
+      payload: data.payload.value.value
+    });
+  }
+}
+
 function* cleanUrlWorkplace() {
   yield put({ type: types.START_LOADING_WORKPLACE });
   yield call(setMainUrlKey, '');
@@ -89,7 +112,8 @@ function* cleanUrlWorkplace() {
 function* getModuleInstalled() {
   // Start loading
   yield put({ type: types.LOADING_MODULE_COMPONENT, payload: true });
-  const data = yield call(getModuleInstalledService);
+  const urlResult = yield select(urlTokenService);
+  const data = yield call(getModuleInstalledService, urlResult);
   if (data.error) {
     yield put({
       type: types.ERROR_SERVICE_MODULES_INSTALLED,
@@ -207,10 +231,38 @@ function* getListSyncManager() {
   });
 }
 
+function* workPlaceAction(payloadParams) {
+  try {
+    const { payload } = payloadParams;
+    const result = yield call(workPlaceService, payload);
+    console.log(result);
+    const { getApp } = result.data;
+    const { destination_url } = getApp;
+    const { platform } = getApp;
+    yield put({ type: types.CHANGE_STATUS_TO_MODULE_INSTALLED, payload: true });
+    yield put({
+      type: types.RECEIVED_WORKPLACE_SERVICE,
+      payload: { destination_url, platform }
+    });
+    // yield put({ type: types.SET_MAIN_URL, payload: mainUrl });
+    // yield put({ type: types.SET_PLATFORM, payload: platform });
+    // const mainUrl =
+    // yield put({})
+  } catch (e) {
+    console.log(e);
+    yield put({
+      type: types.ERROR_URL_WORKPLACE,
+      payload: 'Invalid Token, please try again!'
+    });
+  }
+}
+
 function* authenSaga() {
   yield takeEvery(types.LOGIN_ACTION, loginAction);
   yield takeEvery(types.LOGOUT_ACTION, logoutAction);
   yield takeLatest(types.SET_MAIN_URL, setMainUrl);
+  yield takeLatest(types.SET_PLATFORM, setPlatform);
+  yield takeEvery(types.GET_PLATFORM, getPlatform);
   yield takeEvery(types.GET_MAIN_URL, getMainUrl);
   yield takeEvery(types.CLEAN_URL_WORKPLACE, cleanUrlWorkplace);
   yield takeLatest(types.GET_MODULE_INSTALLED, getModuleInstalled);
@@ -220,6 +272,7 @@ function* authenSaga() {
   );
   yield takeEvery(SYNC_CLIENT_DATA, syncClientData);
   yield takeEvery(GET_SYNC_MANAGER, getListSyncManager);
+  yield takeEvery(types.GET_INFO_WORKPLACE_ACTION, workPlaceAction);
 }
 
 export default authenSaga;

@@ -9,6 +9,7 @@ import { apiGatewayPath } from '../../../configs/env/config.main';
 
 const loggedInfoKey = 'logged_info';
 const mainUrlKey = 'main_url';
+const platformKey = 'platform';
 
 export async function createLoggedDb(payload) {
   const loggedDb = await getByKeyV2(loggedInfoKey);
@@ -34,39 +35,30 @@ export async function getLoggedDb() {
 }
 
 export async function loginService(payload) {
-  let response;
   try {
-    response = await fetch(
-      `${window.mainUrl}index.php/rest/V1/integration/admin/token`,
-      {
-        method: 'POST',
-        mode: 'cors',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        redirect: 'follow',
-        referrer: 'no-referrer',
-        body: JSON.stringify({
-          username: payload.payload.username,
-          password: payload.payload.password
-        })
-      }
-    );
-  } catch (e) {
-    response = '';
-  }
-
-  if (response.status !== 200) {
-    return '';
-  }
-
-  if (response.ok) {
+    const response = await fetch(`${apiGatewayPath}/cashier/login`, {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json',
+        platform: `${window.platform}`,
+        url: window.mainUrl
+      },
+      redirect: 'follow',
+      referrer: 'no-referrer',
+      body: JSON.stringify({
+        username: payload.payload.username,
+        password: payload.payload.password
+      })
+    });
     const data = await response.json();
     return data;
+  } catch (e) {
+    console.log(e);
   }
-  return 'error';
+  return null;
 }
 
 /**
@@ -77,21 +69,20 @@ export async function getInfoCashierService() {
   let data;
   let error = false;
   try {
-    const response = await fetch(
-      `${window.mainUrl}index.php/rest/V1/lof-cashier`,
-      {
-        method: 'GET',
-        mode: 'cors',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${window.liveToken}`
-        },
-        redirect: 'follow',
-        referrer: 'no-referrer'
-      }
-    );
+    const response = await fetch(`${apiGatewayPath}/cashier/cashier-info`, {
+      method: 'GET',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json',
+        platform: window.platform,
+        token: window.liveToken,
+        url: window.mainUrl
+      },
+      redirect: 'follow',
+      referrer: 'no-referrer'
+    });
     const { status } = response;
     if (status === 401) {
       error = true;
@@ -139,31 +130,54 @@ export async function getMainUrlKey() {
   return { status: false };
 }
 
+export async function setPlatformKey(payload) {
+  const data = {
+    key: platformKey,
+    value: payload
+  };
+  const platform = await getByKeyV2(platformKey);
+  if (platform) {
+    console.log('update');
+    await updateById(platform.id, data);
+  } else {
+    console.log('create by key');
+    await createKey(platformKey, data);
+  }
+  return platform;
+}
+
+export async function getPlatformKey() {
+  const payload = await getByKeyV2(platformKey);
+  if (payload) {
+    return { status: true, payload };
+  }
+  return { status: false };
+}
+
 /**
  * Get module installed
  * @returns void
  */
-export async function getModuleInstalledService() {
+export async function getModuleInstalledService(urlCheck) {
   let data;
   let error = false;
   try {
     const response = await fetch(
-      `${apiGatewayPath}/authencation/get-all-module-installed`,
+      `${apiGatewayPath}/cashier/get-all-module-installed`,
       {
         method: 'GET',
         headers: {
-          'store-domain': 'http://localmagento.com/',
-          platform: 'magento'
+          platform: 'magento2',
+          destination_url: urlCheck
         }
       }
     );
-    const statusCode = response.status;
-    if (statusCode === 200) {
-      data = await response.json();
-    } else {
+    data = await response.json();
+    if (data.length === 0) {
       data = [
         {
-          'module-all': false
+          'module-all': false,
+          'module-pos': false
         }
       ];
     }
@@ -172,4 +186,34 @@ export async function getModuleInstalledService() {
     error = true;
   }
   return { data, error };
+}
+
+export async function workPlaceService(payload) {
+  let response;
+  try {
+    response = await fetch(`${apiGatewayPath}/graphql/gateway`, {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      redirect: 'follow',
+      referrer: 'no-referrer',
+      body: JSON.stringify({
+        query: `{
+          getApp(token: "${payload}") {
+            _id,
+            platform,
+            destination_url
+          }
+        }`
+      })
+    });
+    const data = response.json();
+    return data;
+  } catch (e) {
+    return { data: { appConnected: null } };
+  }
 }
