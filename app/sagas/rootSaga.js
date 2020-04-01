@@ -94,6 +94,8 @@ import {
 import { SUCCESS_CHARGE } from '../constants/payment';
 import { getNewToken } from './authenSaga';
 import { sumCartTotalPrice } from '../common/cart';
+import { DETAIL_ORDER_ONLINE } from '../constants/root';
+import { DETAIL_ORDER_OFFLINE } from '../constants/root';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
 const cartCurrentObj = state => state.mainRd.cartCurrent;
@@ -116,6 +118,8 @@ const orderDetailOnline = state => state.mainRd.orderHistoryDetail;
 const cardPayment = state => state.mainRd.checkout.cardPayment;
 const orderList = state => state.mainRd.orderHistory;
 const detailOutlet = state => state.mainRd.detailOutlet;
+const isOpenDetailOrderOnline = state => state.mainRd.isOpenDetailOrder;
+const isOpenDetailOrderOffline = state => state.mainRd.isOpenDetailOrderOffline;
 
 function* startCashCheckoutActionSg(payload) {
   // Show cash modal
@@ -1330,10 +1334,48 @@ function* orderActionOnline(payload) {
   }
 }
 
+// type of order action to call in saga
+function isShowingDetailOrder(orderHistoryDetail, isOpenDetailOrder) {
+  // Object.entries(obj).length > 0 to check in object empty or not
+  return Object.entries(orderHistoryDetail).length > 0 && isOpenDetailOrder;
+}
+
+function isShowingDetailOrderOffline(
+  orderHistoryDetailOffline,
+  isOpenDetailOrderOffline
+) {
+  return (
+    Object.entries(orderHistoryDetailOffline).length > 0 &&
+    isOpenDetailOrderOffline
+  );
+}
+
+function* selectTypeOrderAction() {
+  const orderHistoryDetailResult = yield select(orderDetailOnline);
+  const orderHistoryDetailOfflineResult = yield select(orderDetailLocalDb);
+  const isOpenDetailOrderOnlineResult = yield select(isOpenDetailOrderOnline);
+  const isOpenDetailOrderOfflineResult = yield select(isOpenDetailOrderOffline);
+  if (
+    isShowingDetailOrder(
+      orderHistoryDetailResult,
+      isOpenDetailOrderOnlineResult
+    )
+  )
+    return DETAIL_ORDER_ONLINE;
+  if (
+    isShowingDetailOrderOffline(
+      orderHistoryDetailOfflineResult,
+      isOpenDetailOrderOfflineResult
+    )
+  )
+    return DETAIL_ORDER_OFFLINE;
+}
+
 function* orderAction(params) {
-  const { kindOf, action, payload } = params.payload;
-  console.log(kindOf);
-  switch (kindOf) {
+  const { action, payload } = params.payload;
+  const typeOf = yield selectTypeOrderAction();
+  console.log(typeOf);
+  switch (typeOf) {
     case types.DETAIL_ORDER_OFFLINE:
       yield orderActionOffline({ action, payload });
       break;
