@@ -58,55 +58,66 @@ class WorkPlace extends Component {
         <div
           className={`${commonStyles.contentColumn} ${styles.wrapWorkPlacePage}`}
         >
-          <div className="col-sm-12 col-md-5 col-lg-4">
-            <form
-              onSubmit={this.loginFormSubmit}
-              className={`${styles.contentColumn} needs-validation`}
-            >
-              <h1 className="h3 mb-5 text-center">Access POS system</h1>
-              <div className="form-group">
-                <label>Enter your token</label>
-                <div className="input-group mb-3">
-                  <input
-                    value={tokenWorkPlace}
-                    onChange={this.handleChangeToken}
-                    type="text"
-                    placeholder="access token"
-                    className={`form-control ${this.checkValidateToken()}`}
-                    aria-label="Text input with dropdown button"
-                    required
-                  />
-                </div>
+          <div className="container">
+            <div className="row">
+              <div className="col-sm-12 col-md-6 offset-3">
+                <div className="card">
+                  <div className="card-body">
+                    <h3 className="card-title">Access POS system</h3>
+                    <div className="mt-4">
+                      <form
+                        onSubmit={this.loginFormSubmit}
+                        className={`${styles.contentColumn} needs-validation`}
+                      >
+                        <div className="form-group">
+                          <label>Enter your token</label>
+                          <div className="input-group mb-3">
+                            <input
+                              value={tokenWorkPlace}
+                              onChange={this.handleChangeToken}
+                              type="text"
+                              placeholder="access token"
+                              className={`form-control ${this.checkValidateToken()}`}
+                              aria-label="Text input with dropdown button"
+                              required
+                            />
+                          </div>
 
-                {message !== '' ? (
-                  <>
-                    <span className="error text-danger">{message}</span>
-                  </>
-                ) : (
-                  <></>
-                )}
-              </div>
-              <div className="form-group">
-                <button
-                  className="btn btn-lg btn-primary btn-block"
-                  type="submit"
-                >
-                  {loading ? (
-                    <div className="spinner-border" role="status">
-                      <span className="sr-only">Loading...</span>
+                          {message !== '' ? (
+                            <>
+                              <span className="error text-danger">{message}</span>
+                            </>
+                          ) : (
+                            <></>
+                          )}
+                        </div>
+                        <div className="form-group text-right">
+                          <button
+                            className="btn btn-primary"
+                            type="submit"
+                          >
+                            {loading ? (
+                              <div className="spinner-border" role="status">
+                                <span className="sr-only">Loading...</span>
+                              </div>
+                            ) : (
+                              <>Next</>
+                            )}
+                          </button>
+                        </div>
+                      </form>
                     </div>
-                  ) : (
-                    <>Next</>
-                  )}
-                </button>
+                  </div>
+                </div>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       </>
     );
   }
 }
+
 function mapStateToProps(state) {
   return {
     loading: state.authenRd.loadingWorkPlace,
@@ -117,6 +128,7 @@ function mapStateToProps(state) {
     platformTokenService: state.authenRd.platformTokenService
   };
 }
+
 function mapDispatchToProps(dispatch) {
   return {
     getMainUrlWorkPlace: () => dispatch(getMainUrlWorkPlace()),
@@ -128,6 +140,7 @@ function mapDispatchToProps(dispatch) {
     getPlatformWorkPlace: () => dispatch(getPlatformWorkPlace())
   };
 }
+
 export default connect(
   mapStateToProps,
   mapDispatchToProps
