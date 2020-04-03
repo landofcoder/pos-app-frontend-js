@@ -36,12 +36,12 @@ function* loginAction(payload) {
   // Start loading
   yield put({ type: types.START_LOADING });
   try {
-    const data = yield call(loginService, payload);
-    if (data) {
-      yield createLoggedDb({ info: payload.payload, token: data });
+    const resultLogin = yield call(loginService, payload);
+    if (resultLogin.status) {
+      yield createLoggedDb({ info: payload.payload, token: resultLogin.data });
       yield put({ type: UPDATE_FLAG_SWITCHING_MODE }); // Update flag login to make App reload and background check
     } else {
-      yield put({ type: types.ERROR_LOGIN });
+      yield put({ type: types.ERROR_LOGIN, payload: resultLogin.message });
       // Set login button loading to false
       yield put({ type: types.STOP_LOADING });
     }
@@ -51,8 +51,8 @@ function* loginAction(payload) {
 }
 
 function* getNewTokenFromApi(payload) {
-  const data = yield call(loginService, payload);
-  return data;
+  const resultLogin = yield call(loginService, payload);
+  return resultLogin.data;
 }
 
 function* logoutAction() {
@@ -232,6 +232,7 @@ function* getListSyncManager() {
 }
 
 function* workPlaceAction(payloadParams) {
+  yield put({ type: types.START_LOADING_WORKPLACE });
   try {
     const { payload } = payloadParams;
     const result = yield call(workPlaceService, payload);
@@ -239,22 +240,20 @@ function* workPlaceAction(payloadParams) {
     const { getApp } = result.data;
     const { destination_url } = getApp;
     const { platform } = getApp;
-    yield put({ type: types.CHANGE_STATUS_TO_MODULE_INSTALLED, payload: true });
     yield put({
       type: types.RECEIVED_WORKPLACE_SERVICE,
       payload: { destination_url, platform }
     });
-    // yield put({ type: types.SET_MAIN_URL, payload: mainUrl });
-    // yield put({ type: types.SET_PLATFORM, payload: platform });
-    // const mainUrl =
-    // yield put({})
+    yield put({ type: types.SET_MAIN_URL, payload: destination_url });
+    yield put({ type: types.SET_PLATFORM, payload: platform });
   } catch (e) {
     console.log(e);
     yield put({
-      type: types.ERROR_URL_WORKPLACE,
+      type: types.ERROR_TOKEN_WORKPLACE,
       payload: 'Invalid Token, please try again!'
     });
   }
+  yield put({ type: types.STOP_LOADING_WORKPLACE });
 }
 
 function* authenSaga() {
@@ -272,7 +271,7 @@ function* authenSaga() {
   );
   yield takeEvery(SYNC_CLIENT_DATA, syncClientData);
   yield takeEvery(GET_SYNC_MANAGER, getListSyncManager);
-  yield takeEvery(types.GET_INFO_WORKPLACE_ACTION, workPlaceAction);
+  yield takeEvery(types.SUBMIT_TOKEN_WORKPLACE_ACTION, workPlaceAction);
 }
 
 export default authenSaga;

@@ -69,7 +69,7 @@ const authenRd = (state = initialState, action) =>
         window.mainUrl = action.payload;
         draft.mainUrl = action.payload;
         break;
-      case typesAuthen.ERROR_URL_WORKPLACE:
+      case typesAuthen.ERROR_TOKEN_WORKPLACE:
         draft.messageErrorWorkPlace = action.payload;
         draft.isValidToken = false;
         break;
@@ -101,16 +101,13 @@ const authenRd = (state = initialState, action) =>
       case typesAuthen.CHANGE_SENSE_URL:
         draft.senseUrl = action.payload;
         break;
-      case typesAuthen.CHANGE_STATUS_TO_MODULE_INSTALLED:
-        draft.toModuleInstalled = action.payload;
-        draft.moduleInstalled = {};
-        break;
       case typesAuthen.CHANGE_STATUS_SYNC:
         draft.syncManager.syncStatus = action.payload;
         break;
       case typesAuthen.RECEIVED_WORKPLACE_SERVICE:
         draft.urlTokenService = action.payload.destination_url;
         draft.platformTokenService = action.payload.platform;
+        draft.messageErrorWorkPlace = '';
         break;
       case typesAuthen.RECEIVED_PLATFORM:
         window.platform = action.payload;

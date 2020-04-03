@@ -64,16 +64,9 @@ export function getModuleInstalled() {
   };
 }
 
-export function changeToModuleInstalled(payload) {
+export function actionSetInfoWorkPlace(payload) {
   return {
-    type: types.CHANGE_STATUS_TO_MODULE_INSTALLED,
-    payload
-  };
-}
-
-export function actionGetInfoWorkPlace(payload) {
-  return {
-    type: types.GET_INFO_WORKPLACE_ACTION,
+    type: types.SUBMIT_TOKEN_WORKPLACE_ACTION,
     payload
   };
 }
