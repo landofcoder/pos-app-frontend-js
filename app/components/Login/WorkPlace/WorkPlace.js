@@ -85,17 +85,16 @@ class WorkPlace extends Component {
 
                           {message !== '' ? (
                             <>
-                              <span className="error text-danger">{message}</span>
+                              <span className="error text-danger">
+                                {message}
+                              </span>
                             </>
                           ) : (
                             <></>
                           )}
                         </div>
                         <div className="form-group text-right">
-                          <button
-                            className="btn btn-primary"
-                            type="submit"
-                          >
+                          <button className="btn btn-primary" type="submit">
                             {loading ? (
                               <div className="spinner-border" role="status">
                                 <span className="sr-only">Loading...</span>
