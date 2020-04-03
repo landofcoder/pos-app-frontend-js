@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import commonStyles from '../../styles/common.scss';
-import ModuleInstalled from '../ModuleInstalled';
 import styles from './workplace.scss';
 import {
   getMainUrlWorkPlace,
   changeWorkPlaceInput,
   setDefaultProtocolWorkplace,
-  actionGetInfoWorkPlace,
+  actionSetInfoWorkPlace,
   getPlatformWorkPlace
 } from '../../../actions/authenAction';
 
@@ -19,8 +18,7 @@ type Props = {
   message: string,
   tokenWorkPlace: string,
   isValidToken: boolean,
-  toModuleInstalled: false,
-  actionGetInfoWorkPlace: payload => void
+  actionSetInfoWorkPlace: payload => void
 };
 
 class WorkPlace extends Component {
@@ -48,15 +46,13 @@ class WorkPlace extends Component {
 
   loginFormSubmit = e => {
     e.preventDefault();
-    const { tokenWorkPlace, actionGetInfoWorkPlace } = this.props;
-    actionGetInfoWorkPlace(tokenWorkPlace);
+    const { tokenWorkPlace, actionSetInfoWorkPlace } = this.props;
+    actionSetInfoWorkPlace(tokenWorkPlace);
   };
 
   render() {
-    const { loading, message, tokenWorkPlace, toModuleInstalled } = this.props;
-    if (toModuleInstalled) {
-      return <ModuleInstalled/>;
-    }
+    const { loading, message, tokenWorkPlace } = this.props;
+
     return (
       <>
         <div
@@ -89,17 +85,16 @@ class WorkPlace extends Component {
 
                           {message !== '' ? (
                             <>
-                              <span className="error text-danger">{message}</span>
+                              <span className="error text-danger">
+                                {message}
+                              </span>
                             </>
                           ) : (
                             <></>
                           )}
                         </div>
                         <div className="form-group text-right">
-                          <button
-                            className="btn btn-primary"
-                            type="submit"
-                          >
+                          <button className="btn btn-primary" type="submit">
                             {loading ? (
                               <div className="spinner-border" role="status">
                                 <span className="sr-only">Loading...</span>
@@ -127,8 +122,9 @@ function mapStateToProps(state) {
     loading: state.authenRd.loadingWorkPlace,
     message: state.authenRd.messageErrorWorkPlace,
     tokenWorkPlace: state.authenRd.tokenWorkPlace,
-    toModuleInstalled: state.authenRd.toModuleInstalled,
-    isValidToken: state.authenRd.isValidToken
+    isValidToken: state.authenRd.isValidToken,
+    urlTokenService: state.authenRd.urlTokenService,
+    platformTokenService: state.authenRd.platformTokenService
   };
 }
 
@@ -138,8 +134,8 @@ function mapDispatchToProps(dispatch) {
     changeWorkPlaceInput: payload => dispatch(changeWorkPlaceInput(payload)),
     setDefaultProtocol: payload =>
       dispatch(setDefaultProtocolWorkplace(payload)),
-    actionGetInfoWorkPlace: payload =>
-      dispatch(actionGetInfoWorkPlace(payload)),
+    actionSetInfoWorkPlace: payload =>
+      dispatch(actionSetInfoWorkPlace(payload)),
     getPlatformWorkPlace: () => dispatch(getPlatformWorkPlace())
   };
 }
