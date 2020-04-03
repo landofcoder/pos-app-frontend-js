@@ -49,7 +49,7 @@ const authenRd = (state = initialState, action) =>
         draft.token = action.payload;
         break;
       case typesAuthen.ERROR_LOGIN:
-        draft.message = action.payload || 'The email or password not found';
+        draft.message = action.payload || "Your server didn't response";
         break;
       case typesAuthen.SUCCESS_LOGIN:
         draft.message = 'SUCCESS';
