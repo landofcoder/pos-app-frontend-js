@@ -18,7 +18,7 @@
   --white: #fff;
   --gray: #6c757d;
   --gray-dark: #343a40;
-  --primary: #007bff;
+  --primary: #5721cc;
   --secondary: #6c757d;
   --success: #28a745;
   --info: #17a2b8;
@@ -44,25 +44,25 @@
 }
 
 [data-theme='blue'] .btn-outline-danger {
-  border-color: #1ba8f1 !important;
+  border-color: #5721cc !important;
 }
 
 [data-theme='blue'] .btn-outline-info {
-  border-color: #1ba8f1 !important;
+  border-color: #5721cc !important;
   color: #1ba8f1;
 }
 
 [data-theme='blue'] .btn-outline-dark {
-  border-color: #0d96db !important;
+  border-color: #5721cc !important;
   color: #0d96db !important;
 }
 
 [data-theme='blue'] .btn-secondary {
-  border-color: #1d93ce !important;
+  border-color: #5721cc !important;
 }
 
 [data-theme='blue'] .theme-line {
-  background-color: #0d96db;
+  background-color: #5721cc;
   color: white;
 }
 
@@ -3041,7 +3041,7 @@ textarea.form-control.is-invalid {
 .btn:focus,
 .btn.focus {
   outline: 0;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  /*box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);*/
 }
 
 .btn.disabled,
@@ -3056,14 +3056,14 @@ fieldset:disabled a.btn {
 
 .btn-primary {
   color: #fff;
-  background-color: #007bff;
-  border-color: #007bff;
+  background-color: #5721cc;
+  border-color: #5721cc #5721cc #331673;
 }
 
 .btn-primary:hover {
   color: #fff;
-  background-color: #0069d9;
-  border-color: #0062cc;
+  background-color: #331673;
+  border-color: #331673;
 }
 
 .btn-primary:focus,
@@ -3074,16 +3074,16 @@ fieldset:disabled a.btn {
 .btn-primary.disabled,
 .btn-primary:disabled {
   color: #fff;
-  background-color: #007bff;
-  border-color: #007bff;
+  background-color: #5721cc;
+  border-color: #5721cc;
 }
 
 .btn-primary:not(:disabled):not(.disabled):active,
 .btn-primary:not(:disabled):not(.disabled).active,
 .show > .btn-primary.dropdown-toggle {
   color: #fff;
-  background-color: #0062cc;
-  border-color: #005cbf;
+  background-color: #5721cc;
+  border-color: #5721cc;
 }
 
 .btn-primary:not(:disabled):not(.disabled):active:focus,
@@ -5762,7 +5762,7 @@ a.badge:focus {
 a.badge-primary:hover,
 a.badge-primary:focus {
   color: #fff;
-  background-color: #0062cc;
+  background-color: #5721cc;
 }
 
 a.badge-primary:focus,
@@ -7398,7 +7398,7 @@ a.bg-primary:hover,
 a.bg-primary:focus,
 button.bg-primary:hover,
 button.bg-primary:focus {
-  background-color: #0062cc !important;
+  background-color: #5721cc !important;
 }
 
 .bg-secondary {
