@@ -75,6 +75,7 @@ const authenRd = (state = initialState, action) =>
         break;
       case typesAuthen.CHANGE_TOKEN_INPUT_WORKPLACE:
         draft.tokenWorkPlace = action.payload;
+        draft.messageErrorWorkPlace = '';
         if (action.payload) draft.isValidToken = true;
         break;
       case typesAuthen.SET_DEFAULT_PROTOCOL_WORKPLACE:

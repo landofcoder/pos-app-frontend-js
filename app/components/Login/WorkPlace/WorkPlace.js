@@ -77,7 +77,7 @@ class WorkPlace extends Component {
                               onChange={this.handleChangeToken}
                               type="text"
                               placeholder="access token"
-                              className={`form-control ${this.checkValidateToken()}`}
+                              className="form-control"
                               aria-label="Text input with dropdown button"
                               required
                             />
@@ -96,8 +96,17 @@ class WorkPlace extends Component {
                         <div className="form-group text-right">
                           <button className="btn btn-primary" type="submit">
                             {loading ? (
-                              <div className="spinner-border" role="status">
-                                <span className="sr-only">Loading...</span>
+                              <div
+                                className="btn btn-primary"
+                                type="button"
+                                disabled
+                              >
+                                <span
+                                  className="spinner-border spinner-border-sm"
+                                  role="status"
+                                  aria-hidden="true"
+                                ></span>
+                                <span className="sr-only">Next</span>
                               </div>
                             ) : (
                               <>Next</>
