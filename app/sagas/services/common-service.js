@@ -195,14 +195,15 @@ export async function getAllCategoriesService() {
   let error = false;
   let response = {};
   try {
-    response = await fetch(`${window.mainUrl}index.php/rest/V1/categories`, {
+    response = await fetch(`${apiGatewayPath}/category/get-all`, {
       method: 'GET',
       mode: 'cors',
       cache: 'no-cache',
       credentials: 'same-origin',
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${window.liveToken}`
+        url: window.mainUrl,
+        platform: window.platform,
+        token: window.liveToken
       },
       redirect: 'follow',
       referrer: 'no-referrer'
