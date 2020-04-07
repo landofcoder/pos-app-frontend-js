@@ -7,7 +7,10 @@ import {
   counterProduct
 } from '../../reducers/db/products';
 import { getCategories } from '../../reducers/db/categories';
-import { getAllTblCustomProduct, deleteByKey } from '../../reducers/db/sync_custom_product';
+import {
+  getAllTblCustomProduct,
+  deleteByKey
+} from '../../reducers/db/sync_custom_product';
 import {
   getGraphqlPath,
   getOfflineMode,
@@ -18,6 +21,7 @@ import {
   QUERY_SEARCH_PRODUCT
 } from '../../constants/product-query';
 import { updateCurrentPosCommand } from './common-service';
+import { apiGatewayPath } from '../../../configs/env/config.main';
 
 /**
  * Search product service
@@ -41,6 +45,7 @@ export function* searchProductService(payload) {
   }
 
   const data = yield querySearchProduct(searchValue, currentPage);
+  console.log(data);
   return data;
 }
 
@@ -70,211 +75,27 @@ export function* getProductBySkuFromScanner(payload) {
  */
 export async function querySearchProduct(searchValue, currentPage) {
   try {
-    let itemResult = [];
     // Full text search by product name
-    const response = await fetch(getGraphqlPath(), {
+    const response = await fetch(`${apiGatewayPath}/graphql/gateway`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${window.liveToken}`
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         query: `{
-          products(${
-            searchValue.length > 0 ? `search: "${searchValue}",` : ''
-          } filter: {}, pageSize: ${defaultPageSize}, currentPage: ${currentPage}) {
-            items {
-              id
-              attribute_set_id
-              name
-              sku
-              type_id
-              special_price
-              special_from_date
-              special_to_date
-              tier_prices {
-                qty
-                value
-                customer_group_id
-                percentage_value
-                value
-              }
-              media_gallery_entries {
-                 file
-              }
-              price {
-                regularPrice {
-                  amount {
-                    value
-                    currency
-                  }
-                }
-              }
-              categories {
-                id
-              }
-              ... on ConfigurableProduct {
-                configurable_options {
-                  id
-                  attribute_id
-                  label
-                  position
-                  use_default
-                  attribute_code
-                  values {
-                    value_index
-                    label
-                  }
-                  product_id
-                }
-                variants {
-                  product {
-                    id
-                    name
-                    sku
-                    special_price
-                    special_from_date
-                    special_to_date
-                    tier_prices {
-                      qty
-                      value
-                      customer_group_id
-                      percentage_value
-                      value
-                    }
-                    media_gallery_entries {
-                      file
-                    }
-                    attribute_set_id
-                    ... on PhysicalProductInterface {
-                      weight
-                    }
-                    price {
-                      regularPrice {
-                        amount {
-                          value
-                          currency
-                        }
-                      }
-                    }
-                  }
-                  attributes {
-                    label
-                    code
-                    value_index
-                  }
-                }
-              }
-            }
-          }
-        }`
+                    getProductsBySearching(
+                      appInfo: {token: "${window.liveToken}", url: "${window.mainUrl}", platform: "${window.platform}" },
+                      searchValue: "${searchValue}",
+                      currentPage: ${currentPage}
+                    )
+                }`
       })
     });
     const data = await response.json();
-    if (!data.data.products.items) itemResult = [];
-    else itemResult = data.data.products.items;
-    if (!itemResult || itemResult.length === 0) {
-      const response = await fetch(getGraphqlPath(), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${window.liveToken}`
-        },
-        body: JSON.stringify({
-          query: `{
-          products(filter: { sku: { eq: "${searchValue}" }}, pageSize: ${defaultPageSize}, currentPage: ${currentPage}) {
-            items {
-              id
-              attribute_set_id
-              name
-              sku
-              type_id
-              special_price
-              special_from_date
-              special_to_date
-              tier_prices {
-                qty
-                value
-                customer_group_id
-                percentage_value
-                value
-              }
-              media_gallery_entries {
-                 file
-              }
-              price {
-                regularPrice {
-                  amount {
-                    value
-                    currency
-                  }
-                }
-              }
-              categories {
-                id
-              }
-              ... on ConfigurableProduct {
-                configurable_options {
-                  id
-                  attribute_id
-                  label
-                  position
-                  use_default
-                  attribute_code
-                  values {
-                    value_index
-                    label
-                  }
-                  product_id
-                }
-                variants {
-                  product {
-                    id
-                    name
-                    sku
-                    special_price
-                    special_from_date
-                    special_to_date
-                    tier_prices {
-                      qty
-                      value
-                      customer_group_id
-                      percentage_value
-                      value
-                    }
-                    media_gallery_entries {
-                      file
-                    }
-                    attribute_set_id
-                    ... on PhysicalProductInterface {
-                      weight
-                    }
-                    price {
-                      regularPrice {
-                        amount {
-                          value
-                          currency
-                        }
-                      }
-                    }
-                  }
-                  attributes {
-                    label
-                    code
-                    value_index
-                  }
-                }
-              }
-            }
-          }
-        }`
-        })
-      });
-      const data = await response.json();
-      itemResult = data.data.products.items;
-    }
-
-    return itemResult;
+    console.log(data);
+    console.log(data.data.getProductsBySearching);
+    console.log(JSON.parse(data.data.getProductsBySearching));
+    return JSON.parse(data.data.getProductsBySearching);
   } catch (e) {
     return [];
   }
@@ -545,207 +366,36 @@ export function* getProductByCategoryService({ categoryId, currentPage = 1 }) {
  * @returns array
  */
 async function getProductsByCategory(payload) {
+  console.log('Testing');
   const { categoryId, currentPage } = payload;
   try {
-    const response = await fetch(getGraphqlPath(), {
+    const response = await fetch(`${apiGatewayPath}/graphql/gateway`, {
       method: 'POST',
       mode: 'cors',
       cache: 'no-cache',
       credentials: 'same-origin',
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${window.liveToken}`
+        'Content-Type': 'application/json'
       },
       redirect: 'follow',
       referrer: 'no-referrer',
       body: JSON.stringify({
         query: `{
-  products(
-    filter: { category_id: { eq: "${categoryId}" } }
-    pageSize: ${defaultPageSize}
-    currentPage: ${currentPage}
-  ) {
-    total_count
-    items {
-      id
-      attribute_set_id
-      name
-      sku
-      type_id
-      special_price
-      special_from_date
-      special_to_date
-      media_gallery_entries {
-        file
-      }
-      tier_prices {
-        qty
-        value
-        customer_group_id
-        percentage_value
-        value
-      }
-      price {
-        regularPrice {
-          amount {
-            value
-            currency
-          }
-        }
-      }
-      categories {
-        id
-      }
-      ... on ConfigurableProduct {
-        configurable_options {
-          id
-          attribute_id
-          label
-          position
-          use_default
-          attribute_code
-          values {
-            value_index
-            label
-          }
-          product_id
-        }
-        variants {
-          product {
-            id
-            name
-            sku
-            special_price
-            special_from_date
-            special_to_date
-            tier_prices {
-              qty
-              value
-              customer_group_id
-              percentage_value
-              value
-            }
-            media_gallery_entries {
-              file
-            }
-            attribute_set_id
-            ... on PhysicalProductInterface {
-              weight
-            }
-            price {
-              regularPrice {
-                amount {
-                  value
-                  currency
-                }
-              }
-            }
-          }
-          attributes {
-            label
-            code
-            value_index
-          }
-        }
-      }
-      ... on BundleProduct {
-        dynamic_sku
-        dynamic_price
-        dynamic_weight
-        price_view
-        media_gallery_entries {
-          file
-        }
-        ship_bundle_items
-        items {
-          option_id
-          title
-          required
-          type
-          position
-          sku
-          options {
-            id
-            qty
-            position
-            is_default
-            price
-            price_type
-            can_change_quantity
-            label
-            product {
-              id
-              name
-              sku
-              type_id
-              media_gallery_entries {
-                file
-              }
-              special_price
-              special_from_date
-              special_to_date
-              tier_prices {
-                qty
-                value
-                customer_group_id
-                percentage_value
-                value
-              }
-              price {
-                regularPrice {
-                  amount {
-                    value
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-      ... on GroupedProduct {
-        items {
-          qty
-          position
-          product {
-            id
-            media_gallery_entries {
-              file
-            }
-            sku
-            name
-            special_price
-            special_from_date
-            special_to_date
-            tier_prices {
-              qty
-              value
-              customer_group_id
-              percentage_value
-              value
-            }
-            price {
-              regularPrice {
-                amount {
-                  value
-                  currency
-                }
-              }
-            }
-            type_id
-            url_key
-          }
-        }
-      }
-    }
-  }
-}
-`
+                    getProductsByCategory(
+                      appInfo: {token: "${window.liveToken}", url: "${window.mainUrl}", platform: "${window.platform}" },
+                      categoryId: ${categoryId},
+                      currentPage: ${currentPage}
+                    )
+                }`
       })
     });
     const data = await response.json();
+    console.log('data');
+    const { products } = JSON.parse(data.data.getProductsByCategory);
+
     return {
-      items: data.data.products.items,
-      totalCount: data.data.products.total_count
+      items: products.items,
+      totalCount: products.total_count
     };
   } catch (e) {
     return {
