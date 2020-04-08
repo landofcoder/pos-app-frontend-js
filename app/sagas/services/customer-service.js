@@ -11,18 +11,18 @@ export async function searchCustomer(payload) {
     const response = await fetch(
       `${apiGatewayPath}/cashier/customer/search-customer`,
       {
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
-        mode: 'cors', // no-cors, *cors, same-origin
-        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: 'same-origin', // include, *same-origin, omit
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
         headers: {
           platform: window.platform,
           token: window.liveToken,
           url: window.mainUrl,
           'Content-Type': 'application/json'
         },
-        redirect: 'follow', // manual, *follow, error
-        referrer: 'no-referrer', // no-referrer, *client
+        redirect: 'follow',
+        referrer: 'no-referrer',
         body: JSON.stringify({
           searchValue
         })
@@ -41,18 +41,18 @@ export async function searchCustomerByName(payload) {
     const response = await fetch(
       `${apiGatewayPath}/cashier/customer/search-customer-by-name`,
       {
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
-        mode: 'cors', // no-cors, *cors, same-origin
-        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: 'same-origin', // include, *same-origin, omit
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
         headers: {
           platform: window.platform,
           token: window.liveToken,
           url: window.mainUrl,
           'Content-Type': 'application/json'
         },
-        redirect: 'follow', // manual, *follow, error
-        referrer: 'no-referrer', // no-referrer, *client
+        redirect: 'follow',
+        referrer: 'no-referrer',
         body: JSON.stringify({
           searchValue
         })
@@ -110,7 +110,7 @@ export async function signUpCustomerService(payload) {
     const response = await fetch(
       `${apiGatewayPath}/cashier/customer/create-customer`,
       {
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        method: 'POST',
         headers: {
           platform: window.platform,
           token: window.liveToken,
@@ -122,10 +122,10 @@ export async function signUpCustomerService(payload) {
           lastName: payload.payload.customer.lastname,
           email: payload.payload.customer.email,
           password: payload.payload.password
-        }) // body data type must match "Content-Type" header
+        })
       }
     );
-    data = await response.json(); // parses JSON response into native JavaScript objects
+    data = await response.json();
     if (!data.message && !data.errors) {
       return { data, success: true };
     }

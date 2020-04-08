@@ -17,7 +17,7 @@ import {
   getModuleInstalledService,
   deleteLoggedDb,
   getLoggedDb,
-  workPlaceService
+  getAppInfoService
 } from './services/login-service';
 import {
   getTimeSyncConstant,
@@ -235,9 +235,10 @@ function* workPlaceAction(payloadParams) {
   yield put({ type: types.START_LOADING_WORKPLACE });
   try {
     const { payload } = payloadParams;
-    const result = yield call(workPlaceService, payload);
+    const result = yield call(getAppInfoService, payload);
     console.log(result);
     const { getApp } = result.data;
+    // eslint-disable-next-line camelcase
     const { destination_url } = getApp;
     const { platform } = getApp;
     yield put({

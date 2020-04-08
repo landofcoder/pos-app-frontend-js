@@ -188,7 +188,7 @@ export async function getModuleInstalledService(urlCheck) {
   return { data, error };
 }
 
-export async function workPlaceService(payload) {
+export async function getAppInfoService(payload) {
   let response;
   try {
     response = await fetch(`${apiGatewayPath}/graphql/gateway`, {
