@@ -145,10 +145,10 @@ export default class Pos extends Component<Props, State> {
       : [];
     if (gallery.length > 0) {
       const image = gallery[0].file;
-      return `${window.mainUrl}pub/media/catalog/product/${image}`;
+      return `${window.mainUrl}/pub/media/catalog/product/${image}`;
     }
     // Return default image
-    return `${window.mainUrl}pub/media/catalog/product/`;
+    return `${window.mainUrl}/pub/media/catalog/product/`;
   };
 
   /**
@@ -244,6 +244,7 @@ export default class Pos extends Component<Props, State> {
    */
   renderSwitchPanel = (productList: Array<product>): any => {
     const { mainPanelType } = this.props;
+
 
     if (mainPanelType === HOME_DEFAULT_PRODUCT_LIST) {
       return productList.map(item => {
@@ -646,7 +647,7 @@ export default class Pos extends Component<Props, State> {
                 <span>
                   {' '}
                   {internetConnected ? (
-                    <span className="text-success text-bold font-weight-bolder theme-line">
+                    <span className="text-muted font-weight-bolder theme-line">
                       Online
                     </span>
                   ) : (
