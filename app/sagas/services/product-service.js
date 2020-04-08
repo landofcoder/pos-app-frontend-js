@@ -92,9 +92,6 @@ export async function querySearchProduct(searchValue, currentPage) {
       })
     });
     const data = await response.json();
-    console.log(data);
-    console.log(data.data.getProductsBySearching);
-    console.log(JSON.parse(data.data.getProductsBySearching));
     return JSON.parse(data.data.getProductsBySearching);
   } catch (e) {
     return [];

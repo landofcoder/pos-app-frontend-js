@@ -161,13 +161,12 @@ export async function getDetailOutletService(payload) {
       cache: 'no-cache',
       credentials: 'same-origin',
       headers: {
+        'Content-Type': 'application/json',
         url: window.mainUrl,
         platform: window.platform,
         token: window.liveToken
       },
-      body: JSON.stringify({
-        outletId
-      }),
+      body: JSON.stringify({ outletId }),
       redirect: 'follow',
       referrer: 'no-referrer'
     });
