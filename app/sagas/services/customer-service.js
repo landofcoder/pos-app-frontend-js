@@ -108,34 +108,24 @@ export async function getCustomerCartTokenService(customerId) {
 export async function signUpCustomerService(payload) {
   let data;
   try {
-    const response = await fetch(getGraphqlPath(), {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
-      headers: {
-        'Content-Type': 'application/json'
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: JSON.stringify({
-        query: `mutation {
-        createCustomer(
-          input: {
-            firstname: "${payload.payload.customer.firstname}"
-            lastname: "${payload.payload.customer.lastname}"
-            email: "${payload.payload.customer.email}"
-            password: "${payload.payload.password}"
-            is_subscribed: true
-          }
-        ) {
-          customer {
-            id
-            firstname
-            lastname
-            email
-            is_subscribed
-          }
-        }
-      }`
-      }) // body data type must match "Content-Type" header
-    });
+    const response = await fetch(
+      `${apiGatewayPath}/cashier/customer/create-customer`,
+      {
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        headers: {
+          platform: window.platform,
+          token: window.liveToken,
+          url: window.mainUrl,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          firstName: payload.payload.customer.firstname,
+          lastName: payload.payload.customer.lastname,
+          email: payload.payload.customer.email,
+          password: payload.payload.password
+        }) // body data type must match "Content-Type" header
+      }
+    );
     data = await response.json(); // parses JSON response into native JavaScript objects
     if (!data.message && !data.errors) {
       return { data, success: true };

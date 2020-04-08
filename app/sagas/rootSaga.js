@@ -608,7 +608,11 @@ function* getSearchCustomer(payload) {
   const searchResult = yield call(searchCustomer, payload);
 
   const searchResultByName = yield call(searchCustomerByName, payload);
-  const mergeArray = searchResult.items.concat(searchResultByName.items);
+  const searchDbResult = yield call(searchCustomerDbService, payload);
+  const mergeArray = searchResult.items.concat(
+    searchResultByName.items,
+    searchDbResult
+  );
   searchResult.items = mergeArray;
   console.log('search in customer in db');
   console.log(searchDbResult);
