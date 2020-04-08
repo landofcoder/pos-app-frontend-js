@@ -6,7 +6,7 @@ import {
   learnUrlWorkPlace
 } from '../../actions/authenAction';
 import { setToken } from '../../actions/homeAction';
-import styles from './pagelogin.scss';
+import styles from './login.scss';
 import commonStyles from '../styles/common.scss';
 import Loading from '../commons/Loading';
 import WorkPlace from './WorkPlace/WorkPlace';

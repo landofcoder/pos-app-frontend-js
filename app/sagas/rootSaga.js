@@ -94,8 +94,6 @@ import {
 import { SUCCESS_CHARGE } from '../constants/payment';
 import { getNewToken } from './authenSaga';
 import { sumCartTotalPrice } from '../common/cart';
-import { DETAIL_ORDER_ONLINE } from '../constants/root';
-import { DETAIL_ORDER_OFFLINE } from '../constants/root';
 
 const cartCurrent = state => state.mainRd.cartCurrent.data;
 const cartCurrentObj = state => state.mainRd.cartCurrent;
@@ -993,7 +991,7 @@ function* checkLoginBackgroundSaga() {
       yield bootstrapApplicationSaga();
 
       // If offline enabled and have no product sync => Show sync screen
-      if (offlineMode === 1 && counterProductLocal === 0) {
+      if (counterProductLocal === 0) {
         // Show screen sync
         yield put({ type: types.UPDATE_SWITCHING_MODE, payload: SYNC_SCREEN });
         yield syncData();
@@ -1361,14 +1359,14 @@ function* selectTypeOrderAction() {
       isOpenDetailOrderOnlineResult
     )
   )
-    return DETAIL_ORDER_ONLINE;
+    return types.DETAIL_ORDER_ONLINE;
   if (
     isShowingDetailOrderOffline(
       orderHistoryDetailOfflineResult,
       isOpenDetailOrderOfflineResult
     )
   )
-    return DETAIL_ORDER_OFFLINE;
+    return types.DETAIL_ORDER_OFFLINE;
 }
 
 function* orderAction(params) {
@@ -1426,7 +1424,6 @@ function* cardCheckoutPlaceOrderActionSg() {
 }
 
 function* discountCode(payload) {
-  console.log(payload);
   const data = yield call(getDiscountCodeForQuoteService, payload.payload);
   if (data) {
     // if in offline mode increate amount discount else call checkoutActionSg to check Subtotal with discount code again
@@ -1436,7 +1433,6 @@ function* discountCode(payload) {
         // payload: data
         payload: data
       });
-    } else {
     }
   } else {
     yield put({

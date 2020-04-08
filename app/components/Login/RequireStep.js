@@ -20,7 +20,7 @@ class RequireStep extends Component {
         <div className="container center-loading">
           <div className="card border-warning">
             <div className="card-header">
-              Make sure the following configuration is set
+              Make sure the following has been configured
             </div>
             <div className="card-body">
               <ul className="list-group list-group-flush">

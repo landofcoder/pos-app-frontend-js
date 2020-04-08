@@ -1,0 +1,9 @@
+.wrapSyncInfo {
+  display: flex;
+  flex-direction: column;
+
+  .wrapButton {
+    display: flex;
+    justify-content: flex-end;
+  }
+}

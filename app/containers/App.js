@@ -11,7 +11,7 @@ import {
   SYNC_SCREEN,
   LINK_CASHIER_TO_ADMIN_REQUIRE
 } from '../constants/main-panel-types';
-import SyncFirstScreen from '../components/Login/SyncFirstScreen';
+import SyncFirstScreen from '../components/Login/SyncScreen/SyncScreen';
 
 type Props = {
   children: React.Node,
