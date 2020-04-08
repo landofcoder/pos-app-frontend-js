@@ -244,8 +244,6 @@ export default class Pos extends Component<Props, State> {
    */
   renderSwitchPanel = (productList: Array<product>): any => {
     const { mainPanelType } = this.props;
-
-
     if (mainPanelType === HOME_DEFAULT_PRODUCT_LIST) {
       return productList.map(item => {
         if (!item) return null;

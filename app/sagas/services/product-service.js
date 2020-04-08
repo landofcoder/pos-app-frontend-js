@@ -11,11 +11,7 @@ import {
   getAllTblCustomProduct,
   deleteByKey
 } from '../../reducers/db/sync_custom_product';
-import {
-  getGraphqlPath,
-  getOfflineMode,
-  defaultPageSize
-} from '../../common/settings';
+import { getOfflineMode, defaultPageSize } from '../../common/settings';
 import {
   QUERY_GET_PRODUCT_BY_CATEGORY,
   QUERY_SEARCH_PRODUCT
@@ -96,241 +92,6 @@ export async function querySearchProduct(searchValue, currentPage) {
   } catch (e) {
     return [];
   }
-}
-
-/**
- * Get detail product configurable
- * @param payload
- */
-export async function getDetailProductConfigurableService(payload) {
-  const response = await fetch(getGraphqlPath(), {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${window.liveToken}`
-    },
-    body: JSON.stringify({
-      query: `{
-      products(filter: { sku: { eq: "${payload}" } }) {
-        items {
-          id
-          attribute_set_id
-          name
-          sku
-          type_id
-          price {
-            regularPrice {
-              amount {
-                value
-                currency
-              }
-            }
-          }
-          categories {
-            id
-          }
-          ... on ConfigurableProduct {
-            configurable_options {
-              id
-              attribute_id
-              label
-              position
-              use_default
-              attribute_code
-              values {
-                value_index
-                label
-              }
-              product_id
-            }
-            variants {
-              product {
-                id
-                name
-                sku
-                special_price
-                special_from_date
-                special_to_date
-                attribute_set_id
-                ... on PhysicalProductInterface {
-                  weight
-                }
-                 media_gallery_entries {
-                  file
-                }
-                price {
-                  regularPrice {
-                    amount {
-                      value
-                      currency
-                    }
-                  }
-                }
-              }
-              attributes {
-                label
-                code
-                value_index
-              }
-            }
-          }
-        }
-      }
-    }`
-    })
-  });
-  const data = await response.json();
-  return data;
-}
-
-/**
- * Get detail product bundle service
- * @returns {Promise<void>}
- */
-export async function getDetailProductBundleService(payload) {
-  const response = await fetch(getGraphqlPath(), {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${window.liveToken}`
-    },
-    body: JSON.stringify({
-      query: `{
-        products(filter: {sku:
-          {eq: "${payload}"}
-        })
-         {
-            items{
-               sku
-               type_id
-               id
-               name
-                ... on BundleProduct {
-                dynamic_sku
-                dynamic_price
-                dynamic_weight
-                price_view
-                media_gallery_entries {
-                  file
-                }
-                ship_bundle_items
-                items {
-                  option_id
-                  title
-                  required
-                  type
-                  position
-                  sku
-                  options {
-                    id
-                    qty
-                    position
-                    is_default
-                    price
-                    price_type
-                    can_change_quantity
-                    label
-                    product {
-                      id
-                      name
-                      sku
-                      type_id
-                      media_gallery_entries {
-                        file
-                      }
-                      special_price
-                      special_from_date
-                      special_to_date
-                      tier_prices {
-                        qty
-                        value
-                        customer_group_id
-                        percentage_value
-                        value
-                      }
-                      price {
-                      regularPrice {
-                      amount  {
-                          value
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-         }
-      }
-      `
-    })
-  });
-  const data = await response.json();
-  return data;
-}
-
-/**
- * Get detail product grouped service
- * @returns {Promise<void>}
- */
-export async function getDetailProductGroupedService(payload) {
-  const response = await fetch(getGraphqlPath(), {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${window.liveToken}`
-    },
-    body: JSON.stringify({
-      query: `
-           {
-        products(filter: {sku: {eq: "${payload}"}}) {
-          items {
-            id
-            name
-            sku
-            type_id
-            ... on GroupedProduct {
-              items {
-                qty
-                position
-                 product {
-                    id
-                    media_gallery_entries {
-                      file
-                    }
-                    sku
-                    name
-                    special_price
-                    special_from_date
-                    special_to_date
-                     tier_prices {
-                      qty
-                      value
-                      customer_group_id
-                      percentage_value
-                      value
-                    }
-                    price {
-                      regularPrice {
-                        amount {
-                          value
-                          currency
-                        }
-                      }
-                    }
-                    type_id
-                    url_key
-                  }
-              }
-            }
-          }
-        }
-      }
-      `
-    })
-  });
-  const data = await response.json();
-  return data;
 }
 
 /**
@@ -453,18 +214,19 @@ async function syncAllProductsByCategory(categoryId) {
   if (page > 1) {
     // Get by next page, rounding increases
     const numberPage = Math.ceil(page);
+    const array = new Array(numberPage).fill(0);
 
-    // Get products from n page
-    for (let i = 2; i <= numberPage; i += 1) {
+    array.forEach(async (item, index) => {
       // Sync products
       const productsResult = await getProductsByCategory({
         categoryId,
-        currentPage: i
+        currentPage: index
       });
       await syncProducts(productsResult.items, allParentIds);
-    }
+    });
   }
 }
+
 // Find parents
 export async function findAllParentCategories(
   defaultCategory,
@@ -506,6 +268,7 @@ export async function findAllParentCategories(
 export async function syncCustomProductAPI(payload) {
   console.log(payload);
 }
+
 export async function syncCustomProductService() {
   const data = await getAllTblCustomProduct();
   console.log('sync custom product');

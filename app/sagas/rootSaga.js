@@ -17,9 +17,6 @@ import {
 import { stripeMakePayment } from './services/payments/stripe-payment';
 import { authorizeMakePayment } from './services/payments/authorize-payment';
 import {
-  getDetailProductBundleService,
-  getDetailProductConfigurableService,
-  getDetailProductGroupedService,
   getProductByCategoryService,
   searchProductService,
   syncAllProducts,
@@ -450,15 +447,10 @@ function* searchProductLazy(searchValue, currentPage) {
  */
 function* getDetailProductConfigurable(payload) {
   yield startLoadingProductOption();
-
-  const productDetailSingle = yield getDetailProductOfflineMode(
-    payload.payload.item,
-    CONFIGURABLE
-  );
+  const productDetailSingle = yield cloneDetailProduct(payload.payload.item);
 
   const productDetailReFormat = yield handleProductType(productDetailSingle);
   yield receivedProductOptionValue(productDetailReFormat);
-
   yield getDetailProductEndTask();
 }
 
@@ -469,10 +461,7 @@ function* getDetailProductConfigurable(payload) {
 function* getDetailBundleProduct(payload) {
   yield startLoadingProductOption();
 
-  const productDetailSingle = yield getDetailProductOfflineMode(
-    payload.payload.item,
-    BUNDLE
-  );
+  const productDetailSingle = yield cloneDetailProduct(payload.payload.item);
 
   const productDetailReFormat = yield handleProductType(productDetailSingle);
   yield receivedProductOptionValue(productDetailReFormat);
@@ -487,13 +476,9 @@ function* getDetailBundleProduct(payload) {
 function* getDetailGroupedProduct(payload) {
   yield startLoadingProductOption();
 
-  const products = yield getDetailProductOfflineMode(
-    payload.payload.item,
-    GROUPED
-  );
+  const products = yield cloneDetailProduct(payload.payload.item);
 
   yield receivedProductOptionValue(products);
-
   yield getDetailProductEndTask();
 }
 
@@ -504,44 +489,6 @@ function* getDetailGroupedProduct(payload) {
  */
 function cloneDetailProduct(detailProduct) {
   return JSON.parse(JSON.stringify(detailProduct));
-}
-
-/**
- * Get detail product
- * @param detailProduct
- * @param type
- * @returns product
- */
-function* getDetailProductOfflineMode(detailProduct, type) {
-  // Check offline mode
-  const offlineMode = getOfflineMode();
-  if (offlineMode === 1) {
-    return cloneDetailProduct(detailProduct);
-  }
-
-  let productDetail;
-  switch (type) {
-    case BUNDLE:
-      productDetail = yield call(
-        getDetailProductBundleService,
-        detailProduct.sku
-      );
-      return productDetail.data.products.items[0];
-    case CONFIGURABLE:
-      productDetail = yield call(
-        getDetailProductConfigurableService,
-        detailProduct.sku
-      );
-      return productDetail.data.products.items[0];
-    case GROUPED:
-      productDetail = yield call(
-        getDetailProductGroupedService,
-        detailProduct.sku
-      );
-      return productDetail.data.products.items[0];
-    default:
-      break;
-  }
 }
 
 /**
