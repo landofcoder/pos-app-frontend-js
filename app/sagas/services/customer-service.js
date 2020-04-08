@@ -9,23 +9,56 @@ import { apiGatewayPath } from '../../../configs/env/config.main';
 export async function searchCustomer(payload) {
   const searchValue = payload.payload;
   try {
-    const response = await fetch(`${apiGatewayPath}/customer/search-customer`, {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
-      mode: 'cors', // no-cors, *cors, same-origin
-      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: 'same-origin', // include, *same-origin, omit
-      headers: {
-        platform: window.platform,
-        token: window.liveToken,
-        url: window.mainUrl,
-        'Content-Type': 'application/json'
-      },
-      redirect: 'follow', // manual, *follow, error
-      referrer: 'no-referrer', // no-referrer, *client
-      body: JSON.stringify({
-        searchValue
-      })
-    });
+    const response = await fetch(
+      `${apiGatewayPath}/cashier/customer/search-customer`,
+      {
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors', // no-cors, *cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omit
+        headers: {
+          platform: window.platform,
+          token: window.liveToken,
+          url: window.mainUrl,
+          'Content-Type': 'application/json'
+        },
+        redirect: 'follow', // manual, *follow, error
+        referrer: 'no-referrer', // no-referrer, *client
+        body: JSON.stringify({
+          searchValue
+        })
+      }
+    );
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    return { items: [] };
+  }
+}
+
+export async function searchCustomerByName(payload) {
+  const searchValue = payload.payload;
+  try {
+    const response = await fetch(
+      `${apiGatewayPath}/cashier/customer/search-customer-by-name`,
+      {
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors', // no-cors, *cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omit
+        headers: {
+          platform: window.platform,
+          token: window.liveToken,
+          url: window.mainUrl,
+          'Content-Type': 'application/json'
+        },
+        redirect: 'follow', // manual, *follow, error
+        referrer: 'no-referrer', // no-referrer, *client
+        body: JSON.stringify({
+          searchValue
+        })
+      }
+    );
     const data = await response.json();
     return data;
   } catch (err) {
