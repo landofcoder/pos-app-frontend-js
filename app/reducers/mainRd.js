@@ -36,6 +36,7 @@ const initialState = {
   isLoadingSearchHandle: false, // Main search loading
   isShowHaveNoSearchResultFound: false,
   isLoadingRequireStep: false,
+  isLoadingBackToLogin: false,
   posSystemConfig: {}, // General config for pos
   shopInfoConfig: {}, // Shop info config
   specialConditionSwitchMode: true,
@@ -527,11 +528,13 @@ const mainRd = (state: Object = initialState, action: Object) =>
             getOfflineMode()
           )
         ) {
+          draft.isLoadingBackToLogin = false;
           draft.switchingMode = action.payload;
           draft.specialConditionSwitchMode = true;
         }
         break;
       case types.BACK_TO_LOGIN:
+        draft.isLoadingBackToLogin = true;
         draft.switchingMode = LOGIN_FORM;
         break;
       case types.UPDATE_FLAG_SWITCHING_MODE:

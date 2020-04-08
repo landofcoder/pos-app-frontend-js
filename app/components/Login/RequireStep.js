@@ -6,6 +6,12 @@ import {
   backToLogin
 } from '../../actions/homeAction';
 
+type Props = {
+  reCheckRequireStep: () => void,
+  isLoadingBackToLogin: boolean,
+  isLoadingRequireStep: boolean,
+  backToLogin: () => void
+}
 class RequireStep extends Component {
   props: Props;
 
@@ -13,6 +19,7 @@ class RequireStep extends Component {
     const {
       reCheckRequireStep,
       isLoadingRequireStep,
+      isLoadingBackToLogin,
       backToLogin
     } = this.props;
     return (
@@ -38,15 +45,13 @@ class RequireStep extends Component {
                     className="btn btn-light  "
                     disabled={!!isLoadingRequireStep}
                   >
-                    {isLoadingRequireStep ? (
+                    {isLoadingBackToLogin ? (
                       <span
                         className="spinner-border spinner-border-sm"
                         role="status"
                         aria-hidden="true"
                       ></span>
-                    ) : (
-                      <></>
-                    )}
+                    ) : null}
                     Back to login
                   </button>
                 </div>
@@ -63,9 +68,7 @@ class RequireStep extends Component {
                         role="status"
                         aria-hidden="true"
                       ></span>
-                    ) : (
-                      <></>
-                    )}
+                    ) : null}
                     Re-check
                   </button>
                 </div>
@@ -80,7 +83,8 @@ class RequireStep extends Component {
 
 function mapStateToProps(state) {
   return {
-    isLoadingRequireStep: state.mainRd.isLoadingRequireStep
+    isLoadingRequireStep: state.mainRd.isLoadingRequireStep,
+    isLoadingBackToLogin: state.mainRd.isLoadingBackToLogin
   };
 }
 
