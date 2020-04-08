@@ -92,9 +92,6 @@ export async function querySearchProduct(searchValue, currentPage) {
       })
     });
     const data = await response.json();
-    console.log(data);
-    console.log(data.data.getProductsBySearching);
-    console.log(JSON.parse(data.data.getProductsBySearching));
     return JSON.parse(data.data.getProductsBySearching);
   } catch (e) {
     return [];
@@ -366,7 +363,6 @@ export function* getProductByCategoryService({ categoryId, currentPage = 1 }) {
  * @returns array
  */
 async function getProductsByCategory(payload) {
-  console.log('Testing');
   const { categoryId, currentPage } = payload;
   try {
     const response = await fetch(`${apiGatewayPath}/graphql/gateway`, {
@@ -390,7 +386,6 @@ async function getProductsByCategory(payload) {
       })
     });
     const data = await response.json();
-    console.log('data');
     const { products } = JSON.parse(data.data.getProductsByCategory);
 
     return {
