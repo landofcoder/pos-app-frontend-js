@@ -604,16 +604,14 @@ function* getSearchCustomer(payload) {
   yield put({ type: types.UPDATE_IS_LOADING_SEARCH_CUSTOMER, payload: true });
   console.log(payload);
   const searchResult = yield call(searchCustomer, payload);
+
   const searchResultByName = yield call(searchCustomerByName, payload);
   const searchDbResult = yield call(searchCustomerDbService, payload);
-  console.log(searchResult);
-  console.log(searchResultByName);
   const mergeArray = searchResult.items.concat(
     searchResultByName.items,
     searchDbResult
   );
   searchResult.items = mergeArray;
-
   console.log('search in customer in db');
   console.log(searchDbResult);
 

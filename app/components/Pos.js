@@ -145,10 +145,10 @@ export default class Pos extends Component<Props, State> {
       : [];
     if (gallery.length > 0) {
       const image = gallery[0].file;
-      return `${window.mainUrl}pub/media/catalog/product/${image}`;
+      return `${window.mainUrl}/pub/media/catalog/product/${image}`;
     }
     // Return default image
-    return `${window.mainUrl}pub/media/catalog/product/`;
+    return `${window.mainUrl}/pub/media/catalog/product/`;
   };
 
   /**
