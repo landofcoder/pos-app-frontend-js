@@ -94,23 +94,21 @@ class WorkPlace extends Component {
                           )}
                         </div>
                         <div className="form-group text-right">
-                          <button className="btn btn-primary" type="submit">
+                          <button
+                            disabled={loading}
+                            className="btn btn-primary"
+                            type="submit"
+                          >
                             {loading ? (
-                              <div
-                                className="btn btn-primary"
-                                type="button"
-                                disabled
-                              >
-                                <span
-                                  className="spinner-border spinner-border-sm"
-                                  role="status"
-                                  aria-hidden="true"
-                                ></span>
-                                <span className="sr-only">Next</span>
-                              </div>
+                              <span
+                                className="spinner-border spinner-border-sm"
+                                role="status"
+                                aria-hidden="true"
+                              />
                             ) : (
-                              <>Next</>
+                              <></>
                             )}
+                            Next
                           </button>
                         </div>
                       </form>
