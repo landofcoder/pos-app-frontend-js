@@ -153,27 +153,31 @@ export async function getDetailOutletService(payload) {
   const outletId = payload;
   let data = [];
   let error = false;
+  console.log('outlet ');
   try {
-    const response = await fetch(
-      `${window.mainUrl}index.php/rest/V1/lof-outlet/get-detail-outlet?id=${outletId}`,
-      {
-        method: 'GET',
-        mode: 'cors',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${window.liveToken}`
-        },
-        redirect: 'follow',
-        referrer: 'no-referrer'
-      }
-    );
+    const response = await fetch(`${apiGatewayPath}/cashier/detail-outlet`, {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        url: window.mainUrl,
+        platform: window.platform,
+        token: window.liveToken
+      },
+      body: JSON.stringify({
+        outletId
+      }),
+      redirect: 'follow',
+      referrer: 'no-referrer'
+    });
     data = await response.json();
   } catch (e) {
+    console.log(e);
     data = [];
     error = true;
   }
+  console.log(data);
   if (error) {
     data = await getDetailOutLetLocal();
     if (data.length > 0) {
