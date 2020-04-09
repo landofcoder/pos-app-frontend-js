@@ -211,9 +211,8 @@ export async function getAppInfoService(payload) {
         }`
       })
     });
-    const data = response.json();
-    return data;
+    return response.json();
   } catch (e) {
-    return { data: { appConnected: null } };
+    return { data: { getApp: null } };
   }
 }

@@ -6,53 +6,42 @@ import {
   getMainUrlWorkPlace,
   changeWorkPlaceInput,
   setDefaultProtocolWorkplace,
-  actionSetInfoWorkPlace,
+  getAppByToken,
   getPlatformWorkPlace
 } from '../../../actions/authenAction';
 
 type Props = {
   loading: boolean,
-  getMainUrlWorkPlace: payload => void,
-  getPlatformWorkPlace: () => void,
-  changeWorkPlaceInput: payload => void,
   message: string,
-  tokenWorkPlace: string,
-  isValidToken: boolean,
-  actionSetInfoWorkPlace: payload => void
+  getAppByToken: (payload: string) => void
 };
 
 class WorkPlace extends Component {
   props: Props;
 
+  state = {
+    token: ''
+  };
+
   componentDidMount() {
-    const { getMainUrlWorkPlace, getPlatformWorkPlace } = this.props;
-    getMainUrlWorkPlace();
-    getPlatformWorkPlace();
+    // Get app info and show old token here
   }
 
   handleChangeToken = e => {
     const { value } = e.target;
-    const { changeWorkPlaceInput } = this.props;
-    changeWorkPlaceInput(value);
+    this.setState({ token: value });
   };
-
-  // eslint-disable-next-line class-methods-use-this
-  checkValidateToken() {
-    const { isValidToken, tokenWorkPlace } = this.props;
-    if (tokenWorkPlace.length === 0) return null;
-    if (isValidToken) return 'is-valid';
-    return 'is-invalid';
-  }
 
   loginFormSubmit = e => {
     e.preventDefault();
-    const { tokenWorkPlace, actionSetInfoWorkPlace } = this.props;
-    actionSetInfoWorkPlace(tokenWorkPlace);
+    const { getAppByToken } = this.props;
+    const { token } = this.state;
+    getAppByToken(token);
   };
 
   render() {
-    const { loading, message, tokenWorkPlace } = this.props;
-
+    const { token } = this.state;
+    const { loading, message } = this.props;
     return (
       <>
         <div
@@ -70,24 +59,19 @@ class WorkPlace extends Component {
                         className={`${styles.contentColumn} needs-validation`}
                       >
                         <div className="form-group">
-                          <label>Enter your token</label>
-                          <div className="input-group mb-3">
-                            <input
-                              value={tokenWorkPlace}
-                              onChange={this.handleChangeToken}
-                              type="text"
-                              placeholder="access token"
-                              className="form-control"
-                              aria-label="Text input with dropdown button"
-                              required
-                            />
-                          </div>
-
+                          <label htmlFor="input-token">Enter your token</label>
+                          <input
+                            value={token}
+                            onChange={this.handleChangeToken}
+                            type="text"
+                            id="input-token"
+                            placeholder="access token"
+                            className="form-control"
+                            required
+                          />
                           {message !== '' ? (
                             <>
-                              <span className="error text-danger">
-                                {message}
-                              </span>
+                              <div className="invalid-feedback">{message}</div>
                             </>
                           ) : (
                             <></>
@@ -141,8 +125,7 @@ function mapDispatchToProps(dispatch) {
     changeWorkPlaceInput: payload => dispatch(changeWorkPlaceInput(payload)),
     setDefaultProtocol: payload =>
       dispatch(setDefaultProtocolWorkplace(payload)),
-    actionSetInfoWorkPlace: payload =>
-      dispatch(actionSetInfoWorkPlace(payload)),
+    getAppByToken: payload => dispatch(getAppByToken(payload)),
     getPlatformWorkPlace: () => dispatch(getPlatformWorkPlace())
   };
 }

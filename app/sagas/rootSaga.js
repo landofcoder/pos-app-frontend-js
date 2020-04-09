@@ -876,9 +876,14 @@ function* getDiscountForOfflineCheckoutSaga() {
  */
 function* checkLoginBackgroundSaga() {
   const loggedDb = yield getLoggedDb();
-  console.info('login background checking');
+  console.info('login background is checking');
   // Logged
   if (loggedDb !== false) {
+    // Re-login to get new token, if can't get new token or logged success again,
+    // POS client will not sign out because cashier has been logged before
+
+    // Get appInfo
+
     // Get main url key and set it default window value
     // Get platform key and set it default window value
     let data = yield call(getMainUrlKey);
@@ -913,7 +918,6 @@ function* checkLoginBackgroundSaga() {
 
     // eslint-disable-next-line prefer-destructuring
     window.config = configGeneralResponse[0];
-    const offlineMode = yield getOfflineMode();
     const counterProductLocal = yield counterProduct();
 
     // Call cashier api
@@ -950,7 +954,7 @@ function* checkLoginBackgroundSaga() {
       yield put({ type: STOP_LOADING });
     }
   } else {
-    // Not login yet =
+    // Not login yet
     yield put({ type: types.UPDATE_SWITCHING_MODE, payload: LOGIN_FORM });
   }
 }

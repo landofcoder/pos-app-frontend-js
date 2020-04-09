@@ -32,19 +32,21 @@ import { updateLoggedToken } from '../reducers/db/settings';
 import { syncOrderService } from './services/cart-service';
 
 const urlTokenService = state => state.authenRd.urlTokenService;
+
 function* loginAction(payload) {
   // Start loading
   yield put({ type: types.START_LOADING });
   try {
     const resultLogin = yield call(loginService, payload);
-    if (resultLogin.status) {
-      yield createLoggedDb({ info: payload.payload, token: resultLogin.data });
-      yield put({ type: UPDATE_FLAG_SWITCHING_MODE }); // Update flag login to make App reload and background check
-    } else {
-      yield put({ type: types.ERROR_LOGIN, payload: resultLogin.message });
-      // Set login button loading to false
-      yield put({ type: types.STOP_LOADING });
-    }
+    console.log('result login:', resultLogin);
+    // if (resultLogin.status) {
+    //   yield createLoggedDb({ info: payload.payload, token: resultLogin.data });
+    //   yield put({ type: UPDATE_FLAG_SWITCHING_MODE }); // Update flag login to make App reload and background check
+    // } else {
+    //   yield put({ type: types.ERROR_LOGIN, payload: resultLogin.message });
+    //   // Set login button loading to false
+    //   yield put({ type: types.STOP_LOADING });
+    // }
   } catch (err) {
     console.log(err);
   }
@@ -63,10 +65,10 @@ function* logoutAction() {
 }
 
 function* setMainUrl(payload) {
-  yield put({ type: types.START_LOADING_WORKPLACE });
+  yield put({ type: types.START_LOADING_GET_APP_INFO });
   const url = yield call(setMainUrlKey, payload);
   yield put({ type: types.RECEIVED_MAIN_URL, payload: url });
-  yield put({ type: types.STOP_LOADING_WORKPLACE });
+  yield put({ type: types.STOP_LOADING_GET_APP_INFO });
 }
 
 function* getMainUrl() {
@@ -81,10 +83,10 @@ function* getMainUrl() {
 
 function* setPlatform(payloadParams) {
   const { payload } = payloadParams;
-  yield put({ type: types.START_LOADING_WORKPLACE });
+  yield put({ type: types.START_LOADING_GET_APP_INFO });
   yield call(setPlatformKey, payload);
   yield put({ type: types.RECEIVED_PLATFORM, payload });
-  yield put({ type: types.STOP_LOADING_WORKPLACE });
+  yield put({ type: types.STOP_LOADING_GET_APP_INFO });
 }
 
 function* getPlatform() {
@@ -99,10 +101,10 @@ function* getPlatform() {
 }
 
 function* cleanUrlWorkplace() {
-  yield put({ type: types.START_LOADING_WORKPLACE });
+  yield put({ type: types.START_LOADING_GET_APP_INFO });
   yield call(setMainUrlKey, '');
   yield put({ type: types.RECEIVED_MODULE_INSTALLED, payload: {} });
-  yield put({ type: types.STOP_LOADING_WORKPLACE });
+  yield put({ type: types.STOP_LOADING_GET_APP_INFO });
 }
 
 /**
@@ -231,30 +233,26 @@ function* getListSyncManager() {
   });
 }
 
-function* workPlaceAction(payloadParams) {
-  yield put({ type: types.START_LOADING_WORKPLACE });
-  try {
-    const { payload } = payloadParams;
-    const result = yield call(getAppInfoService, payload);
-    console.log(result);
+function* getAppByTokenSg(payloadParams) {
+  yield put({ type: types.START_LOADING_GET_APP_INFO });
+
+  const { payload } = payloadParams;
+  const result = yield call(getAppInfoService, payload);
+  const getAppResult = result.data.getApp;
+  if (getAppResult) {
     const { getApp } = result.data;
-    // eslint-disable-next-line camelcase
-    const { destination_url } = getApp;
-    const { platform } = getApp;
     yield put({
-      type: types.RECEIVED_WORKPLACE_SERVICE,
-      payload: { destination_url, platform }
+      type: types.RECEIVED_APP_INFO,
+      payload: getApp
     });
-    yield put({ type: types.SET_MAIN_URL, payload: destination_url });
-    yield put({ type: types.SET_PLATFORM, payload: platform });
-  } catch (e) {
-    console.log(e);
+  } else {
     yield put({
-      type: types.ERROR_TOKEN_WORKPLACE,
+      type: types.GET_APP_INFO_FAILURE,
       payload: 'Invalid Token, please try again!'
     });
   }
-  yield put({ type: types.STOP_LOADING_WORKPLACE });
+
+  yield put({ type: types.STOP_LOADING_GET_APP_INFO });
 }
 
 function* authenSaga() {
@@ -272,7 +270,7 @@ function* authenSaga() {
   );
   yield takeEvery(SYNC_CLIENT_DATA, syncClientData);
   yield takeEvery(GET_SYNC_MANAGER, getListSyncManager);
-  yield takeEvery(types.SUBMIT_TOKEN_WORKPLACE_ACTION, workPlaceAction);
+  yield takeEvery(types.GET_APP_BY_TOKEN, getAppByTokenSg);
 }
 
 export default authenSaga;

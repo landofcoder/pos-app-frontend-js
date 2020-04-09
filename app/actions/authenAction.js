@@ -64,9 +64,9 @@ export function getModuleInstalled() {
   };
 }
 
-export function actionSetInfoWorkPlace(payload) {
+export function getAppByToken(payload) {
   return {
-    type: types.SUBMIT_TOKEN_WORKPLACE_ACTION,
+    type: types.GET_APP_BY_TOKEN,
     payload
   };
 }

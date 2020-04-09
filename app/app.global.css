@@ -17,3 +17,6 @@ body {
   align-items: center;
   height: 100vh;
 }
+.invalid-feedback {
+  display: block;
+}

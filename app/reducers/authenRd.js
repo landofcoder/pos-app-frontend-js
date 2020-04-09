@@ -1,6 +1,5 @@
 import produce from 'immer';
 import * as typesAuthen from '../constants/authen';
-import { RECEIVED_PLATFORM } from '../constants/authen';
 
 const initialState = {
   token: '',
@@ -11,11 +10,7 @@ const initialState = {
   isReloadingToken: false,
   loadingWorkPlace: false,
   loadingModuleComponent: true,
-  mainUrl: '',
-  mainPlatform: '',
-  tokenWorkPlace: '',
-  urlTokenService: '',
-  platformTokenService: '',
+  appInfo: {},
   isValidToken: '',
   moduleInstalled: {},
   errorServiceModuleInstalled: false,
@@ -39,10 +34,10 @@ const authenRd = (state = initialState, action) =>
       case typesAuthen.STOP_LOADING:
         draft.loading = false;
         break;
-      case typesAuthen.START_LOADING_WORKPLACE:
+      case typesAuthen.START_LOADING_GET_APP_INFO:
         draft.loadingWorkPlace = true;
         break;
-      case typesAuthen.STOP_LOADING_WORKPLACE:
+      case typesAuthen.STOP_LOADING_GET_APP_INFO:
         draft.loadingWorkPlace = false;
         break;
       case typesAuthen.RECEIVED_TOKEN:
@@ -69,7 +64,7 @@ const authenRd = (state = initialState, action) =>
         window.mainUrl = action.payload;
         draft.mainUrl = action.payload;
         break;
-      case typesAuthen.ERROR_TOKEN_WORKPLACE:
+      case typesAuthen.GET_APP_INFO_FAILURE:
         draft.messageErrorWorkPlace = action.payload;
         draft.isValidToken = false;
         break;
@@ -105,10 +100,8 @@ const authenRd = (state = initialState, action) =>
       case typesAuthen.CHANGE_STATUS_SYNC:
         draft.syncManager.syncStatus = action.payload;
         break;
-      case typesAuthen.RECEIVED_WORKPLACE_SERVICE:
-        draft.urlTokenService = action.payload.destination_url;
-        draft.platformTokenService = action.payload.platform;
-        draft.messageErrorWorkPlace = '';
+      case typesAuthen.RECEIVED_APP_INFO:
+        draft.appInfo = action.payload;
         break;
       case typesAuthen.RECEIVED_PLATFORM:
         window.platform = action.payload;
