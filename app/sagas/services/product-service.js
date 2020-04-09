@@ -79,7 +79,7 @@ export async function querySearchProduct(searchValue, currentPage) {
       },
       body: JSON.stringify({
         query: `{
-                    getProductsBySearching(
+                      getQuerySearchProduct(
                       appInfo: {token: "${window.liveToken}", url: "${window.mainUrl}", platform: "${window.platform}" },
                       searchValue: "${searchValue}",
                       currentPage: ${currentPage}
@@ -88,7 +88,7 @@ export async function querySearchProduct(searchValue, currentPage) {
       })
     });
     const data = await response.json();
-    return JSON.parse(data.data.getProductsBySearching);
+    return JSON.parse(data.data.getQuerySearchProduct);
   } catch (e) {
     return [];
   }
