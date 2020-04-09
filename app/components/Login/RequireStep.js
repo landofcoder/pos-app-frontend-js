@@ -38,7 +38,7 @@ class RequireStep extends Component {
             </div>
             <div className="card-footer">
               <div className="row">
-                <div className="col-md-6">
+                <div className="col-6">
                   <button
                     type="button"
                     onClick={backToLogin}
@@ -55,7 +55,7 @@ class RequireStep extends Component {
                     Back to login
                   </button>
                 </div>
-                <div className="col-md-6 pull-right text-right">
+                <div className="col-6 pull-right text-right">
                   <button
                     type="button"
                     onClick={reCheckRequireStep}
