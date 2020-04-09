@@ -63,7 +63,7 @@ import {
   getDefaultShippingMethod
 } from './common/orderSaga';
 import { calcPrice } from '../common/product-price';
-import { BUNDLE, CONFIGURABLE, GROUPED } from '../constants/product-types';
+import { BUNDLE } from '../constants/product-types';
 import {
   CHECK_LOGIN_BACKGROUND,
   RECEIVED_APP_INFO,
@@ -134,10 +134,7 @@ function* checkLoginBackgroundSaga() {
     // Re-login to get new token, if can't get new token or logged success again,
     // POS client will not sign out because cashier has been logged before
 
-    // Set token first
-    const { token } = loggedDb.value;
-    // Assign to global variables
-    window.liveToken = token;
+    // Re-login for get new token
 
     // Call get system config first
     const configGeneralResponse = yield call(getSystemConfigService);
