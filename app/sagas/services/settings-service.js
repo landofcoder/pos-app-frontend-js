@@ -6,7 +6,6 @@ import {
   deleteByKeyV2
 } from '../../reducers/db/settings';
 
-const syncAllDataLabel = 'sync_all_data';
 const systemConfigLabel = 'system_config';
 const shopInfoKey = 'shop_info_config';
 const cashierInfoLabel = 'cashier_info';
@@ -14,20 +13,6 @@ const receiptInfoLabel = 'receipt_info';
 const timeSyncConstant = 'time_sync_constant';
 const connectedScannerDeviceLabel = 'connected_scanner_device';
 const detailOutlet = 'outlet_config';
-export async function haveToSyncAllData() {
-  const data = await getByKey(syncAllDataLabel);
-  return data;
-}
-
-export async function createSyncAllDataFlag() {
-  // Check exists for create new or update
-  const data = await getByKeyV2(syncAllDataLabel);
-  if (data) {
-    await updateById(data, syncAllDataLabel);
-  } else {
-    await createKey(syncAllDataLabel);
-  }
-}
 
 export async function systemConfigSync(systemConfig) {
   const systemConfigInDb = await getByKey(systemConfigLabel);

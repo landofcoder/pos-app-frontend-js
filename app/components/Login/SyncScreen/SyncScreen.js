@@ -43,24 +43,29 @@ class SyncScreen extends Component {
         <div className="container center-loading">
           <div className={styles.wrapSyncInfo}>
             <div className="row">
-              <span className="text-muted">
-                Products are synchronizing: {productNumber}{' '}
-              </span>
               <div
-                className="ml-2 mt-1 spinner-border spinner-border-sm text-secondary"
+                className="mr-2 mt-1 spinner-border spinner-border-sm text-secondary"
                 role="status"
               >
                 <span className="sr-only">Loading...</span>
               </div>
+              <span className="text-muted">Fetching configuration</span>
             </div>
             <div className="row">
-              <small className="form-text text-muted">
-                You can go head, this task will run as background
-              </small>
+              <div
+                className="mr-2 mt-1 spinner-border spinner-border-sm text-secondary"
+                role="status"
+              >
+                <span className="sr-only">Loading...</span>
+              </div>
+              <span className="text-muted">
+                Products are synchronizing: {productNumber}{' '}
+              </span>
             </div>
             <div className={`row float-right mt-2 ${styles.wrapButton}`}>
               <button
                 type="button"
+                disabled
                 className="btn btn-primary"
                 onClick={this.nextToMainPage}
               >

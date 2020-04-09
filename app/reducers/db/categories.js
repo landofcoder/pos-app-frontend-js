@@ -7,7 +7,7 @@ const table = 'categories';
  * @param mainCategory
  * @returns {Promise<void>}
  */
-export async function syncCategories(mainCategory) {
+export async function writeCategoriesToLocal(mainCategory) {
   // Insert to database
   const categoryTbl = db.table(table);
   const category = await categoryTbl.get(mainCategory.id);

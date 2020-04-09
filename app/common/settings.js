@@ -45,13 +45,14 @@ export function limitLoop(fn, fps = 30, timeOut = null) {
 }
 
 export function formatCurrencyCode(value: number) {
-  if (Number.isNaN(+value)) return value;
-  const locale = LocaleCurrency.getLocales(window.currency)[0];
-  const formatter = new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency: window.currency
-  });
-  return formatter.format(value);
+  // if (Number.isNaN(+value)) return value;
+  // const locale = LocaleCurrency.getLocales(window.currency)[0];
+  // const formatter = new Intl.NumberFormat(locale, {
+  //   style: 'currency',
+  //   currency: window.currency
+  // });
+  // return formatter.format(value);
+  return value;
 }
 
 /**

@@ -24,7 +24,7 @@ class WorkPlace extends Component {
 
   componentDidMount(): void {
     const { appInfo } = this.props;
-    this.setState({ token: appInfo.token });
+    this.setState({ token: appInfo.token ? appInfo.token : '' });
   }
 
   handleChangeToken = e => {
