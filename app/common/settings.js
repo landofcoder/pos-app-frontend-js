@@ -70,3 +70,15 @@ export function getShippingMethodCode(methodShipping) {
       return methodShipping;
   }
 }
+
+/**
+ * Keeping token when logged, not token to get appInfo
+ */
+export function setTokenGlobal(token) {
+  window.liveToken = token;
+}
+
+export function setAppInfoToGlobal(payload) {
+  window.mainUrl = payload.destination_url;
+  window.platform = payload.platform;
+}

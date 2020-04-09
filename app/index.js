@@ -12,9 +12,9 @@ db.open();
 const store = configureStore();
 
 // Global config
-window.config = {};
 window.liveToken = '';
 window.mainUrl = '';
+window.platform = '';
 
 const AppContainer = process.env.PLAIN_HMR ? Fragment : ReactHotAppContainer;
 

@@ -1,23 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {
-  login,
-  setMainUrlWorkPlace,
-  learnUrlWorkPlace
-} from '../../actions/authenAction';
-import { setToken } from '../../actions/homeAction';
+import { login } from '../../actions/authenAction';
+import { backToWorkPlace } from '../../actions/homeAction';
 import styles from './login.scss';
 import commonStyles from '../styles/common.scss';
 import Loading from '../commons/Loading';
-import WorkPlace from './WorkPlace/WorkPlace';
 
 type Props = {
   login: (payload: Object) => void,
+  backToWorkPlace: () => void,
   message: string,
-  loading: boolean,
-  mainUrl: string,
-  setMainUrlWorkPlace: (payload: string) => void,
-  learnUrlWorkPlace: () => void
+  loading: boolean
 };
 
 type State = {
@@ -53,17 +46,14 @@ class Login extends Component<Props, State> {
   };
 
   backToWorkPlace = () => {
-    const { learnUrlWorkPlace, setMainUrlWorkPlace } = this.props;
-    learnUrlWorkPlace();
-    setMainUrlWorkPlace('');
+    const { backToWorkPlace } = this.props;
+    backToWorkPlace();
   };
 
   render() {
-    const { message, loading, mainUrl } = this.props;
+    const { message, loading } = this.props;
     const { valueUser, valuePass } = this.state;
-    if (mainUrl === '' || mainUrl === undefined) {
-      return <WorkPlace />;
-    }
+
     return (
       <>
         <div className={`${commonStyles.contentColumn} ${styles.wrapPage}`}>
@@ -130,9 +120,7 @@ class Login extends Component<Props, State> {
 function mapDispatchToProps(dispatch) {
   return {
     login: payload => dispatch(login(payload)),
-    setToken: payload => dispatch(setToken(payload)),
-    setMainUrlWorkPlace: payload => dispatch(setMainUrlWorkPlace(payload)),
-    learnUrlWorkPlace: () => dispatch(learnUrlWorkPlace())
+    backToWorkPlace: () => dispatch(backToWorkPlace())
   };
 }
 function mapStateToProps(state) {

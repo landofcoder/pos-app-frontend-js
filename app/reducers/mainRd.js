@@ -4,7 +4,8 @@ import {
   CHILDREN,
   HOME_DEFAULT_PRODUCT_LIST,
   LOADING,
-  LOGIN_FORM
+  LOGIN_FORM,
+  WORK_PLACE_FORM
 } from '../constants/main-panel-types';
 import { testCartCurrentForDefaultReceipt } from './common';
 import { getShippingMethodCode } from '../common/settings';
@@ -518,16 +519,12 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.ACCEPT_CONDITION_SWITCH_MODE:
         draft.specialConditionSwitchMode = action.payload;
         break;
+      case types.BACK_TO_WORK_PLACE:
+        draft.switchingMode = WORK_PLACE_FORM;
+        break;
       case types.UPDATE_SWITCHING_MODE:
         // i found a bug in this case that switchingMode in LOGIN_FORM after sync success it auto switch to HOME_PAGE :/
-        if (
-          !(
-            state.switchingMode === LOGIN_FORM &&
-            action.payload === CHILDREN &&
-            state.specialConditionSwitchMode &&
-            getOfflineMode()
-          )
-        ) {
+        if (!(state.switchingMode === LOGIN_FORM && action.payload === CHILDREN && state.specialConditionSwitchMode)) {
           draft.isLoadingBackToLogin = false;
           draft.switchingMode = action.payload;
           draft.specialConditionSwitchMode = true;

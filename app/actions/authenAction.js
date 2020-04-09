@@ -13,31 +13,6 @@ export function login(payload) {
   };
 }
 
-export function getMainUrlWorkPlace() {
-  return {
-    type: types.GET_MAIN_URL
-  };
-}
-
-export function setMainUrlWorkPlace(payload) {
-  return {
-    type: types.SET_MAIN_URL,
-    payload
-  };
-}
-
-export function setPlatformWorkPlace(payload) {
-  return {
-    type: types.SET_PLATFORM,
-    payload
-  };
-}
-export function learnUrlWorkPlace() {
-  return {
-    type: types.CLEAN_URL_WORKPLACE
-  };
-}
-
 export function checkLoginBackground() {
   return {
     type: types.CHECK_LOGIN_BACKGROUND
@@ -68,11 +43,5 @@ export function getAppByToken(payload) {
   return {
     type: types.GET_APP_BY_TOKEN,
     payload
-  };
-}
-
-export function getPlatformWorkPlace() {
-  return {
-    type: types.GET_PLATFORM
   };
 }

@@ -40,9 +40,6 @@ const authenRd = (state = initialState, action) =>
       case typesAuthen.STOP_LOADING_GET_APP_INFO:
         draft.loadingWorkPlace = false;
         break;
-      case typesAuthen.RECEIVED_TOKEN:
-        draft.token = action.payload;
-        break;
       case typesAuthen.ERROR_LOGIN:
         draft.message = action.payload || "Your server didn't response";
         break;
@@ -59,10 +56,6 @@ const authenRd = (state = initialState, action) =>
         break;
       case typesAuthen.SIGN_IN_WORKPLACE_ACTION:
         draft.loadingWorkPlace = action.payload;
-        break;
-      case typesAuthen.RECEIVED_MAIN_URL:
-        window.mainUrl = action.payload;
-        draft.mainUrl = action.payload;
         break;
       case typesAuthen.GET_APP_INFO_FAILURE:
         draft.messageErrorWorkPlace = action.payload;
@@ -102,10 +95,6 @@ const authenRd = (state = initialState, action) =>
         break;
       case typesAuthen.RECEIVED_APP_INFO:
         draft.appInfo = action.payload;
-        break;
-      case typesAuthen.RECEIVED_PLATFORM:
-        window.platform = action.payload;
-        draft.mainPlatform = action.payload;
         break;
       default:
     }

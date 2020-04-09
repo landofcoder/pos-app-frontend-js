@@ -49,10 +49,9 @@ import {
   removeScannerDeviceConnected
 } from './services/settings-service';
 import {
+  getAppInfoFromLocal,
   getInfoCashierService,
-  getLoggedDb,
-  getMainUrlKey,
-  getPlatformKey
+  getLoggedDb
 } from './services/login-service';
 
 import {
@@ -67,22 +66,21 @@ import { calcPrice } from '../common/product-price';
 import { BUNDLE, CONFIGURABLE, GROUPED } from '../constants/product-types';
 import {
   CHECK_LOGIN_BACKGROUND,
-  RECEIVED_TOKEN,
-  RECEIVED_MAIN_URL,
-  RECEIVED_PLATFORM,
+  RECEIVED_APP_INFO,
   STOP_LOADING
 } from '../constants/authen';
 import { syncCategories } from '../reducers/db/categories';
 import { syncCustomers } from '../reducers/db/customers';
 import { getAllOrders } from '../reducers/db/sync_orders';
 import { counterProduct } from '../reducers/db/products';
-import { getOfflineMode } from '../common/settings';
+import { getOfflineMode, setAppInfoToGlobal } from '../common/settings';
 import { createProduct } from '../reducers/db/sync_custom_product';
 import {
   CHILDREN,
   LOGIN_FORM,
   SYNC_SCREEN,
-  LINK_CASHIER_TO_ADMIN_REQUIRE
+  LINK_CASHIER_TO_ADMIN_REQUIRE,
+  WORK_PLACE_FORM
 } from '../constants/main-panel-types';
 import {
   QUERY_GET_PRODUCT_BY_CATEGORY,
@@ -115,6 +113,86 @@ const orderList = state => state.mainRd.orderHistory;
 const detailOutlet = state => state.mainRd.detailOutlet;
 const isOpenDetailOrderOnline = state => state.mainRd.isOpenDetailOrder;
 const isOpenDetailOrderOffline = state => state.mainRd.isOpenDetailOrderOffline;
+
+/**
+ * Check login background
+ * @returns void
+ */
+function* checkLoginBackgroundSaga() {
+  const loggedDb = yield getLoggedDb();
+  console.info('login background is checking');
+
+  // Load appInfo to reducer
+  const appInfo = yield getAppInfoFromLocal();
+  if (appInfo) {
+    yield put({ type: RECEIVED_APP_INFO, payload: appInfo });
+    yield setAppInfoToGlobal(appInfo);
+  }
+
+  // Logged
+  if (loggedDb !== false) {
+    // Re-login to get new token, if can't get new token or logged success again,
+    // POS client will not sign out because cashier has been logged before
+
+    // Set token first
+    const { token } = loggedDb.value;
+    // Assign to global variables
+    window.liveToken = token;
+
+    // Call get system config first
+    const configGeneralResponse = yield call(getSystemConfigService);
+    yield put({
+      type: types.RECEIVED_POST_GENERAL_CONFIG,
+      payload: configGeneralResponse
+    });
+
+    const counterProductLocal = yield counterProduct();
+    // Call cashier api
+    const cashierInfo = yield call(getInfoCashierService);
+    yield put({ type: types.RECEIVED_CASHIER_INFO, payload: cashierInfo });
+
+    // If form invalid
+    if (
+      !cashierInfo.cashier_id ||
+      (!cashierInfo.outlet_id || cashierInfo.outlet_id === 0) ||
+      cashierInfo.active === false
+    ) {
+      // Show form please link cashier to outlet
+      yield put({
+        type: types.UPDATE_SWITCHING_MODE,
+        payload: LINK_CASHIER_TO_ADMIN_REQUIRE
+      });
+    } else {
+      // All it's ok
+      yield bootstrapApplicationSaga();
+
+      // If offline enabled and have no product sync => Show sync screen
+      if (counterProductLocal === 0) {
+        // Show screen sync
+        yield put({ type: types.UPDATE_SWITCHING_MODE, payload: SYNC_SCREEN });
+        yield syncData();
+      } else {
+        yield put({ type: types.ACCEPT_CONDITION_SWITCH_MODE, payload: false });
+        yield put({ type: types.UPDATE_SWITCHING_MODE, payload: CHILDREN });
+        yield syncData();
+      }
+
+      // Stop login loading
+      yield put({ type: STOP_LOADING });
+    }
+  } else {
+    // If appInfo is exists, then show login form, else show work_place form
+    console.log('not logged yet!');
+    if (appInfo) {
+      yield put({ type: types.UPDATE_SWITCHING_MODE, payload: LOGIN_FORM });
+    } else {
+      yield put({
+        type: types.UPDATE_SWITCHING_MODE,
+        payload: WORK_PLACE_FORM
+      });
+    }
+  }
+}
 
 function* startCashCheckoutActionSg(payload) {
   // Show cash modal
@@ -871,95 +949,6 @@ function* getDiscountForOfflineCheckoutSaga() {
 }
 
 /**
- * Check login background
- * @returns void
- */
-function* checkLoginBackgroundSaga() {
-  const loggedDb = yield getLoggedDb();
-  console.info('login background is checking');
-  // Logged
-  if (loggedDb !== false) {
-    // Re-login to get new token, if can't get new token or logged success again,
-    // POS client will not sign out because cashier has been logged before
-
-    // Get appInfo
-
-    // Get main url key and set it default window value
-    // Get platform key and set it default window value
-    let data = yield call(getMainUrlKey);
-    if (data.status) {
-      const { url } = data.payload.value;
-      yield put({ type: RECEIVED_MAIN_URL, payload: url });
-      window.mainUrl = url;
-    }
-    data = yield call(getPlatformKey);
-    console.log(data);
-    if (data.status) {
-      const { value } = data.payload.value;
-      yield put({ type: RECEIVED_PLATFORM, payload: value });
-      window.platform = value;
-    }
-
-    // Set token first
-    const { token } = loggedDb.value;
-
-    // Assign to global variables
-    window.liveToken = token;
-
-    // Set token to reducers
-    yield put({ type: RECEIVED_TOKEN, payload: token });
-
-    // Call get system config first
-    const configGeneralResponse = yield call(getSystemConfigService);
-    yield put({
-      type: types.RECEIVED_POST_GENERAL_CONFIG,
-      payload: configGeneralResponse
-    });
-
-    // eslint-disable-next-line prefer-destructuring
-    window.config = configGeneralResponse[0];
-    const counterProductLocal = yield counterProduct();
-
-    // Call cashier api
-    const cashierInfo = yield call(getInfoCashierService);
-    yield put({ type: types.RECEIVED_CASHIER_INFO, payload: cashierInfo });
-
-    // If form invalid
-    if (
-      !cashierInfo.cashier_id ||
-      (!cashierInfo.outlet_id || cashierInfo.outlet_id === 0) ||
-      cashierInfo.active === false
-    ) {
-      // Show form please link cashier to outlet
-      yield put({
-        type: types.UPDATE_SWITCHING_MODE,
-        payload: LINK_CASHIER_TO_ADMIN_REQUIRE
-      });
-    } else {
-      // All it's ok
-      yield bootstrapApplicationSaga();
-
-      // If offline enabled and have no product sync => Show sync screen
-      if (counterProductLocal === 0) {
-        // Show screen sync
-        yield put({ type: types.UPDATE_SWITCHING_MODE, payload: SYNC_SCREEN });
-        yield syncData();
-      } else {
-        yield put({ type: types.ACCEPT_CONDITION_SWITCH_MODE, payload: false });
-        yield put({ type: types.UPDATE_SWITCHING_MODE, payload: CHILDREN });
-        yield syncData();
-      }
-
-      // Stop login loading
-      yield put({ type: STOP_LOADING });
-    }
-  } else {
-    // Not login yet
-    yield put({ type: types.UPDATE_SWITCHING_MODE, payload: LOGIN_FORM });
-  }
-}
-
-/**
  * Skip sync form and go to main POS
  * @returns void
  */
@@ -1121,6 +1110,7 @@ function* createCustomizeProduct(payload) {
     yield put({ type: types.ADD_TO_CART, payload: payload.payload });
   }
 }
+
 function* showAllDevicesSaga() {
   const allDevices = yield getDevices();
 
@@ -1332,6 +1322,7 @@ function* orderAction(params) {
     default:
   }
 }
+
 /**
  * Accept payment card
  * @returns void
@@ -1391,6 +1382,7 @@ function* discountCode(payload) {
     });
   }
 }
+
 /**
  * Default root saga
  * @returns void

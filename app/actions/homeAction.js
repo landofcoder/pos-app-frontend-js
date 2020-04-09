@@ -220,13 +220,6 @@ export function closeReceiptModal() {
   };
 }
 
-export function setToken(payload) {
-  return {
-    type: typesAuthen.RECEIVED_TOKEN,
-    payload
-  };
-}
-
 export function getProductByCategory(payload) {
   return {
     type: types.GET_PRODUCT_BY_CATEGORY,
@@ -402,5 +395,11 @@ export function setDiscountCodeAction(payload) {
   return {
     type: types.SET_DISCOUNT_CODE_ACTION,
     payload
+  };
+}
+
+export function backToWorkPlace() {
+  return {
+    type: types.BACK_TO_WORK_PLACE
   };
 }

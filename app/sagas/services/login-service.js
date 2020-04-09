@@ -9,17 +9,32 @@ import { apiGatewayPath } from '../../../configs/env/config.main';
 
 const loggedInfoKey = 'logged_info';
 const mainUrlKey = 'main_url';
-const platformKey = 'platform';
+const appInfoKey = 'app_info';
 
-export async function createLoggedDb(payload) {
+export async function writeLoggedInfoToLocal(payload) {
   const loggedDb = await getByKeyV2(loggedInfoKey);
   if (loggedDb) {
-    // Update
     await updateById(loggedDb.id, payload);
   } else {
-    // Create new
     await createKey(loggedInfoKey, payload);
   }
+}
+
+export async function writeAppInfoToLocal(payload) {
+  const result = await getByKeyV2(appInfoKey);
+  if (result) {
+    await updateById(result.id, payload);
+  } else {
+    await createKey(appInfoKey, payload);
+  }
+}
+
+export async function getAppInfoFromLocal() {
+  const data = await getByKeyV2(appInfoKey);
+  if (data) {
+    return data.value;
+  }
+  return false;
 }
 
 export async function deleteLoggedDb() {
@@ -122,38 +137,6 @@ export async function setMainUrlKey(payload) {
   return data.url;
 }
 
-export async function getMainUrlKey() {
-  const payload = await getByKeyV2(mainUrlKey);
-  if (payload) {
-    return { status: true, payload };
-  }
-  return { status: false };
-}
-
-export async function setPlatformKey(payload) {
-  const data = {
-    key: platformKey,
-    value: payload
-  };
-  const platform = await getByKeyV2(platformKey);
-  if (platform) {
-    console.log('update');
-    await updateById(platform.id, data);
-  } else {
-    console.log('create by key');
-    await createKey(platformKey, data);
-  }
-  return platform;
-}
-
-export async function getPlatformKey() {
-  const payload = await getByKeyV2(platformKey);
-  if (payload) {
-    return { status: true, payload };
-  }
-  return { status: false };
-}
-
 /**
  * Get module installed
  * @returns void
@@ -206,7 +189,9 @@ export async function getAppInfoService(payload) {
           getApp(token: "${payload}") {
             _id,
             platform,
-            destination_url
+            destination_url,
+            product_image_base_url,
+            token
           }
         }`
       })

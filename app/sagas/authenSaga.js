@@ -7,22 +7,22 @@ import {
   SYNC_CLIENT_DATA,
   GET_SYNC_MANAGER
 } from '../constants/root.json';
+import { LOGIN_FORM } from '../constants/main-panel-types.json';
 import {
   loginService,
-  createLoggedDb,
-  getMainUrlKey,
-  setPlatformKey,
-  getPlatformKey,
+  writeLoggedInfoToLocal,
   setMainUrlKey,
   getModuleInstalledService,
   deleteLoggedDb,
   getLoggedDb,
-  getAppInfoService
+  getAppInfoService,
+  writeAppInfoToLocal
 } from './services/login-service';
 import {
   getTimeSyncConstant,
   resetTimeSyncConstant
 } from './services/settings-service';
+import { setAppInfoToGlobal, setTokenGlobal } from '../common/settings';
 import { syncCustomProductService } from './services/product-service';
 import { getAllTbl, deleteByKey } from '../reducers/db/sync_customers';
 import { getAllTblCustomProduct } from '../reducers/db/sync_custom_product';
@@ -39,14 +39,20 @@ function* loginAction(payload) {
   try {
     const resultLogin = yield call(loginService, payload);
     console.log('result login:', resultLogin);
-    // if (resultLogin.status) {
-    //   yield createLoggedDb({ info: payload.payload, token: resultLogin.data });
-    //   yield put({ type: UPDATE_FLAG_SWITCHING_MODE }); // Update flag login to make App reload and background check
-    // } else {
-    //   yield put({ type: types.ERROR_LOGIN, payload: resultLogin.message });
-    //   // Set login button loading to false
-    //   yield put({ type: types.STOP_LOADING });
-    // }
+    const token = resultLogin.data;
+    setTokenGlobal(token);
+
+    if (resultLogin.status) {
+      yield writeLoggedInfoToLocal({
+        info: payload.payload,
+        token: resultLogin.data
+      });
+      yield put({ type: UPDATE_FLAG_SWITCHING_MODE });
+    } else {
+      yield put({ type: types.ERROR_LOGIN, payload: resultLogin.message });
+      // Set login button loading to false
+      yield put({ type: types.STOP_LOADING });
+    }
   } catch (err) {
     console.log(err);
   }
@@ -62,42 +68,6 @@ function* logoutAction() {
   yield deleteLoggedDb({});
   yield put({ type: LOGOUT_POS_ACTION });
   yield put({ type: types.CHECK_LOGIN_BACKGROUND });
-}
-
-function* setMainUrl(payload) {
-  yield put({ type: types.START_LOADING_GET_APP_INFO });
-  const url = yield call(setMainUrlKey, payload);
-  yield put({ type: types.RECEIVED_MAIN_URL, payload: url });
-  yield put({ type: types.STOP_LOADING_GET_APP_INFO });
-}
-
-function* getMainUrl() {
-  const data = yield call(getMainUrlKey);
-  if (data.status) {
-    yield put({
-      type: types.RECEIVED_MAIN_URL,
-      payload: data.payload.value.url
-    });
-  }
-}
-
-function* setPlatform(payloadParams) {
-  const { payload } = payloadParams;
-  yield put({ type: types.START_LOADING_GET_APP_INFO });
-  yield call(setPlatformKey, payload);
-  yield put({ type: types.RECEIVED_PLATFORM, payload });
-  yield put({ type: types.STOP_LOADING_GET_APP_INFO });
-}
-
-function* getPlatform() {
-  const data = yield call(getPlatformKey);
-  if (data.status) {
-    console.log(data);
-    yield put({
-      type: types.RECEIVED_PLATFORM,
-      payload: data.payload.value.value
-    });
-  }
 }
 
 function* cleanUrlWorkplace() {
@@ -185,7 +155,7 @@ function* syncOrder() {
     for (let i = 0; i < data.length; i += 1) {
       const dataResult = yield call(syncOrderService, data[i]);
       if (!dataResult.errors && !dataResult.message) {
-        console.log('compelete sync order');
+        console.log('completed sync orders');
         yield deleteOrder(data[i].id);
       } else {
         console.log(dataResult);
@@ -213,19 +183,19 @@ function* autoLoginToGetNewTokenSaga() {
 }
 
 function* getListSyncManager() {
-  // get all order in localdb
+  // get all order in local db
   const payloadResultOrder = yield getAllOrders();
   yield put({
     type: types.RECEIVED_LIST_SYNC_ORDER,
     payload: payloadResultOrder
   });
-  // get all custom product in localdb
+  // get all custom product in local db
   const payloadResultCustomProduct = yield getAllTblCustomProduct();
   yield put({
     type: types.RECEIVED_LIST_SYNC_CUSTOM_PRODUCT,
     payload: payloadResultCustomProduct
   });
-  // get all customer in localdb
+  // get all customer in local db
   const payloadResultCustomer = yield getAllTbl();
   yield put({
     type: types.RECEIVED_LIST_SYNC_CUSTOMER,
@@ -245,6 +215,15 @@ function* getAppByTokenSg(payloadParams) {
       type: types.RECEIVED_APP_INFO,
       payload: getApp
     });
+
+    // Set app info to global
+    yield setAppInfoToGlobal(getApp);
+
+    // Write app info to local
+    yield writeAppInfoToLocal(getApp);
+
+    // Update view to login_form
+    yield put({ type: types.UPDATE_SWITCHING_MODE, payload: LOGIN_FORM });
   } else {
     yield put({
       type: types.GET_APP_INFO_FAILURE,
@@ -258,10 +237,6 @@ function* getAppByTokenSg(payloadParams) {
 function* authenSaga() {
   yield takeEvery(types.LOGIN_ACTION, loginAction);
   yield takeEvery(types.LOGOUT_ACTION, logoutAction);
-  yield takeLatest(types.SET_MAIN_URL, setMainUrl);
-  yield takeLatest(types.SET_PLATFORM, setPlatform);
-  yield takeEvery(types.GET_PLATFORM, getPlatform);
-  yield takeEvery(types.GET_MAIN_URL, getMainUrl);
   yield takeEvery(types.CLEAN_URL_WORKPLACE, cleanUrlWorkplace);
   yield takeLatest(types.GET_MODULE_INSTALLED, getModuleInstalled);
   yield takeEvery(

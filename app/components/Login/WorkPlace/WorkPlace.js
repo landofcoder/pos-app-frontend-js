@@ -3,17 +3,16 @@ import { connect } from 'react-redux';
 import commonStyles from '../../styles/common.scss';
 import styles from './workplace.scss';
 import {
-  getMainUrlWorkPlace,
   changeWorkPlaceInput,
   setDefaultProtocolWorkplace,
-  getAppByToken,
-  getPlatformWorkPlace
+  getAppByToken
 } from '../../../actions/authenAction';
 
 type Props = {
   loading: boolean,
   message: string,
-  getAppByToken: (payload: string) => void
+  getAppByToken: (payload: string) => void,
+  appInfo: Object
 };
 
 class WorkPlace extends Component {
@@ -23,8 +22,9 @@ class WorkPlace extends Component {
     token: ''
   };
 
-  componentDidMount() {
-    // Get app info and show old token here
+  componentDidMount(): void {
+    const { appInfo } = this.props;
+    this.setState({ token: appInfo.token });
   }
 
   handleChangeToken = e => {
@@ -112,21 +112,16 @@ function mapStateToProps(state) {
   return {
     loading: state.authenRd.loadingWorkPlace,
     message: state.authenRd.messageErrorWorkPlace,
-    tokenWorkPlace: state.authenRd.tokenWorkPlace,
-    isValidToken: state.authenRd.isValidToken,
-    urlTokenService: state.authenRd.urlTokenService,
-    platformTokenService: state.authenRd.platformTokenService
+    appInfo: state.authenRd.appInfo
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    getMainUrlWorkPlace: () => dispatch(getMainUrlWorkPlace()),
     changeWorkPlaceInput: payload => dispatch(changeWorkPlaceInput(payload)),
     setDefaultProtocol: payload =>
       dispatch(setDefaultProtocolWorkplace(payload)),
-    getAppByToken: payload => dispatch(getAppByToken(payload)),
-    getPlatformWorkPlace: () => dispatch(getPlatformWorkPlace())
+    getAppByToken: payload => dispatch(getAppByToken(payload))
   };
 }
 

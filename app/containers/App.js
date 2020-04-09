@@ -9,9 +9,11 @@ import {
   LOGIN_FORM,
   LOADING,
   SYNC_SCREEN,
-  LINK_CASHIER_TO_ADMIN_REQUIRE
+  LINK_CASHIER_TO_ADMIN_REQUIRE,
+  WORK_PLACE_FORM
 } from '../constants/main-panel-types';
 import SyncFirstScreen from '../components/Login/SyncScreen/SyncScreen';
+import WorkPlace from '../components/Login/WorkPlace/WorkPlace';
 
 type Props = {
   children: React.Node,
@@ -80,6 +82,8 @@ class App extends React.Component<Props> {
               return <div className="container-fluid">{children}</div>;
             case SYNC_SCREEN:
               return <SyncFirstScreen />;
+            case WORK_PLACE_FORM:
+              return <WorkPlace />;
             case LINK_CASHIER_TO_ADMIN_REQUIRE:
               return <RequireStep />;
             default:
