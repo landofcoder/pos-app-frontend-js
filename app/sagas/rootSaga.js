@@ -391,64 +391,14 @@ function* cashCheckoutPlaceOrder() {
   // Start cash place order loading
   yield put({ type: types.UPDATE_CASH_PLACE_ORDER_LOADING, payload: true });
 
-  // Get offline mode
-  const offlineMode = yield getOfflineMode();
+  const cartCurrentResult = yield select(cartCurrent);
+  const orderPreparingCheckoutResult = yield select(
+    orderPreparingCheckoutState
+  );
+  yield createOrderLocal({ cartCurrentResult, orderPreparingCheckoutResult });
 
-  if (offlineMode === 1) {
-    const cartCurrentResult = yield select(cartCurrent);
-    const orderPreparingCheckoutResult = yield select(
-      orderPreparingCheckoutState
-    );
-    yield createOrderLocal({ cartCurrentResult, orderPreparingCheckoutResult });
-
-    // Copy cart current to cart in receipt
-    yield put({ type: types.COPY_CART_CURRENT_TO_RECEIPT });
-  } else {
-    const cartCurrentTokenResult = yield select(cartCurrentToken);
-    const isGuestCustomer = yield select(cartIsGuestCustomer);
-    const cartIdResult = yield select(cartId);
-    const posSystemConfigResult = yield select(posSystemConfig);
-    const posSystemConfigCustomer = posSystemConfigResult[3];
-
-    const defaultShippingMethod = yield getDefaultShippingMethod();
-
-    // Default payment
-    const defaultPaymentMethod = yield getDefaultPaymentMethod();
-
-    const cashierInfoResult = yield select(cashierInfo);
-
-    // Step 1: Create order
-    const placeOrderResult = yield call(
-      placeCashOrderService,
-      cartCurrentTokenResult,
-      {
-        cartIdResult,
-        isGuestCustomer,
-        customerToken: cartCurrentTokenResult,
-        defaultShippingMethod,
-        defaultPaymentMethod,
-        posSystemConfigCustomer,
-        cashierInfo: cashierInfoResult
-      }
-    );
-    if (placeOrderResult.message !== undefined) {
-      // Stop cash loading order loading
-      yield put({
-        type: types.UPDATE_CASH_PLACE_ORDER_LOADING,
-        payload: false
-      });
-      yield put({ type: types.PLACE_ORDER_ERROR, payload: placeOrderResult });
-    } else {
-      // Step 2: Create invoice
-      yield call(createInvoiceService, placeOrderResult);
-
-      // Step 3: Create shipment
-      yield call(createShipmentService, placeOrderResult);
-
-      // Place order success, let show receipt and copy current cart to cartForReceipt
-      yield put({ type: types.PLACE_ORDER_SUCCESS, placeOrderResult });
-    }
-  }
+  // Copy cart current to cart in receipt
+  yield put({ type: types.COPY_CART_CURRENT_TO_RECEIPT });
 
   // Stop cash loading order loading
   yield put({ type: types.UPDATE_CASH_PLACE_ORDER_LOADING, payload: false });
