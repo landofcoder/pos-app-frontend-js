@@ -474,9 +474,6 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.RECEIVED_ORDER_HISTORY_DETAIL_OFFLINE_ACTION:
         draft.orderHistoryDetailOffline = action.payload;
         break;
-      case types.RECEIVED_CUSTOM_RECEIPT:
-        draft.customReceipt = action.payload;
-        break;
       case types.RECEIVED_ALL_CATEGORIES:
         draft.allCategories = action.payload;
         break;
