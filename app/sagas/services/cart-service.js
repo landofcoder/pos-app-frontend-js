@@ -2,6 +2,7 @@ import { format } from 'date-fns';
 import { BUNDLE } from '../../constants/product-types';
 import { getBundleOption } from '../../common/product';
 import { createOrders } from '../../reducers/db/sync_orders';
+import { apiGatewayPath } from '../../../configs/env/config.main';
 
 /**
  * Add product to quote
@@ -105,7 +106,7 @@ export async function placeCashOrderService(cartToken, payloadCart) {
  */
 export async function createGuestCartService() {
   const response = await fetch(
-    `${window.mainUrl}index.php/rest/V1/guest-carts/`,
+    `${apiGatewayPath}/cashier/customer-checkout/get-guest-card-token`,
     {
       method: 'POST',
       mode: 'cors',
@@ -113,7 +114,9 @@ export async function createGuestCartService() {
       credentials: 'same-origin',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${window.liveToken}`
+        platform: window.platform,
+        url: window.mainUrl,
+        token: window.liveToken
       },
       redirect: 'follow',
       referrer: 'no-referrer',
@@ -305,7 +308,7 @@ export async function getDiscountForQuoteService(payload) {
   const { config } = payload;
   try {
     const response = await fetch(
-      `${window.mainUrl}index.php/rest/V1/pos/get-discount-quote`,
+      `${apiGatewayPath}/cashier/customer-checkout/get-discount-quote`,
       {
         method: 'POST',
         mode: 'cors',
@@ -313,7 +316,9 @@ export async function getDiscountForQuoteService(payload) {
         credentials: 'same-origin',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${window.liveToken}`
+          platform: window.platform,
+          token: window.liveToken,
+          url: window.mainUrl
         },
         redirect: 'follow',
         referrer: 'no-referrer',
