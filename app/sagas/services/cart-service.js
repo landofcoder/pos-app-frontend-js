@@ -322,7 +322,7 @@ export async function getDiscountForQuoteService(payload) {
         },
         redirect: 'follow',
         referrer: 'no-referrer',
-        body: JSON.stringify({ param: JSON.stringify({ cart, config }) })
+        body: JSON.stringify({ params: JSON.stringify({ cart, config }) })
       }
     );
     data = await response.json();
