@@ -158,6 +158,9 @@ function* checkLoginBackgroundSaga() {
     //   // Stop login loading
     //   yield put({ type: STOP_LOADING });
     // }
+
+    // Get default product and go to POS panel
+    yield getDefaultProductFromLocal();
     yield put({ type: types.UPDATE_SWITCHING_MODE, payload: CHILDREN });
   } else {
     // If appInfo is exists, then show login form, else show work_place form
