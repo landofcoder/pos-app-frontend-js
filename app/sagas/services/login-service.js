@@ -1,4 +1,3 @@
-import { cashierInfoSync, getCashierInfoLocal } from './settings-service';
 import {
   getByKeyV2,
   createKey,
@@ -10,6 +9,7 @@ import { apiGatewayPath } from '../../../configs/env/config.main';
 const loggedInfoKey = 'logged_info';
 const mainUrlKey = 'main_url';
 const appInfoKey = 'app_info';
+const generalConfigKey = 'genera_config';
 
 export async function writeLoggedInfoToLocal(payload) {
   const loggedDb = await getByKeyV2(loggedInfoKey);
@@ -18,6 +18,23 @@ export async function writeLoggedInfoToLocal(payload) {
   } else {
     await createKey(loggedInfoKey, payload);
   }
+}
+
+export async function writeGeneralConfigToLocal(payload) {
+  const result = await getByKeyV2(generalConfigKey);
+  if (result) {
+    await updateById(result.id, payload);
+  } else {
+    await createKey(generalConfigKey, payload);
+  }
+}
+
+export async function getGeneralFromLocal() {
+  const data = await getByKeyV2(generalConfigKey);
+  if (data) {
+    return data.value;
+  }
+  return null;
 }
 
 export async function writeAppInfoToLocal(payload) {
@@ -74,51 +91,6 @@ export async function loginService(payload) {
     console.log(e);
   }
   return null;
-}
-
-/**
- * Get info cashier
- * @returns void
- */
-export async function getInfoCashierService() {
-  let data;
-  let error = false;
-  try {
-    const response = await fetch(`${apiGatewayPath}/cashier/cashier-info`, {
-      method: 'GET',
-      mode: 'cors',
-      cache: 'no-cache',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json',
-        platform: window.platform,
-        token: window.liveToken,
-        url: window.mainUrl
-      },
-      redirect: 'follow',
-      referrer: 'no-referrer'
-    });
-    const { status } = response;
-    if (status === 401) {
-      error = true;
-    } else {
-      data = await response.json();
-    }
-  } catch (e) {
-    data = [];
-    error = true;
-  }
-  if (error) {
-    // Query to local
-    data = await getCashierInfoLocal();
-    if (data.length > 0) {
-      return data[0].value;
-    }
-  } else {
-    // Sync now
-    await cashierInfoSync(data);
-  }
-  return data;
 }
 
 export async function setMainUrlKey(payload) {

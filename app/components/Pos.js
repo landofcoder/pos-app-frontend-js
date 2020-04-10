@@ -44,7 +44,6 @@ type Props = {
   isShowCashPaymentModel: boolean,
   isShowCardPaymentModal: boolean,
   updateIsShowingProductOption: (payload: boolean) => void,
-  autoLoginToGetNewToken: () => void,
   autoSyncGroupCheckout: () => void,
   mainProductListLoading: boolean,
   isOpenReceiptModal: boolean,
@@ -54,7 +53,6 @@ type Props = {
   updateTriggerScannerBarcodeTriggerToFalse: (payload: boolean) => void,
   startCashCheckoutAction: () => void,
   emptyCart: () => void,
-  currencyCode: string,
   isLoadingSearchHandle: boolean,
   isShowHaveNoSearchResultFound: boolean,
   isOpenSignUpCustomer: boolean,
@@ -63,7 +61,8 @@ type Props = {
   posCommandIsFetchingProduct: boolean,
   defaultColor: string,
   hidDevice: Object,
-  history: payload => void
+  history: (payload: string) => void,
+  appInfo: Object
 };
 
 type State = {
@@ -88,16 +87,11 @@ export default class Pos extends Component<Props, State> {
   }
 
   componentDidMount(): void {
-    const {
-      autoLoginToGetNewToken,
-      autoSyncGroupCheckout,
-      hidDevice
-    } = this.props;
+    const { autoSyncGroupCheckout, hidDevice } = this.props;
 
     const loopStep = 100000;
     limitLoop(
       () => {
-        autoLoginToGetNewToken();
         autoSyncGroupCheckout();
       },
       30,
@@ -140,15 +134,18 @@ export default class Pos extends Component<Props, State> {
   };
 
   getFirstMedia = (item: Object) => {
+    const { appInfo } = this.props;
+    // eslint-disable-next-line camelcase
+    const baseImage = appInfo.product_image_base_url;
     const gallery = item.media_gallery_entries
       ? item.media_gallery_entries
       : [];
     if (gallery.length > 0) {
       const image = gallery[0].file;
-      return `${window.mainUrl}/pub/media/catalog/product/${image}`;
+      return `${baseImage}/pub/media/catalog/product/${image}`;
     }
     // Return default image
-    return `${window.mainUrl}/pub/media/catalog/product/`;
+    return `${baseImage}/pub/media/catalog/product/`;
   };
 
   /**

@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { counterProduct } from '../../../reducers/db/products';
 import { limitLoop } from '../../../common/settings';
-import { gotoChildrenPanel } from '../../../actions/homeAction';
+import { gotoPOS } from '../../../actions/homeAction';
 import styles from './sync-screen.scss';
+import CheckCircle from '../../commons/CheckCircle/CheckCircle';
 
 type Props = {
-  gotoChildrenPanel: () => void
+  gotoPOS: () => void,
+  setup: Object
 };
 
 class SyncScreen extends Component {
@@ -31,36 +33,61 @@ class SyncScreen extends Component {
   }
 
   nextToMainPage = () => {
-    const { gotoChildrenPanel } = this.props;
-    gotoChildrenPanel();
+    const { gotoPOS } = this.props;
+    gotoPOS();
   };
 
   render() {
     const loading = true;
     const { productNumber } = this.state;
+    const { setup } = this.props;
+    const {
+      stateFetchingConfig,
+      stateSynchronizingCategoriesAndProducts
+    } = setup;
+    const allowNextButton =
+      stateFetchingConfig === 1 &&
+      stateSynchronizingCategoriesAndProducts === 1;
     return loading ? (
       <div>
         <div className="container center-loading">
           <div className={styles.wrapSyncInfo}>
             <div className="row">
+              {stateFetchingConfig === 0 ? (
+                <div
+                  className="mr-2 mt-1 spinner-border spinner-border-sm text-secondary"
+                  role="status"
+                >
+                  <span className="sr-only">Loading...</span>
+                </div>
+              ) : (
+                <div className="mr-1">
+                  <CheckCircle dimension={20} />
+                </div>
+              )}
+              <span className="text-muted">Fetching configuration</span>
+            </div>
+            <div className="row">
+              {stateSynchronizingCategoriesAndProducts === 0 ? (
+                <div
+                  className="mr-2 mt-1 spinner-border spinner-border-sm text-secondary"
+                  role="status"
+                >
+                  <span className="sr-only">Loading...</span>
+                </div>
+              ) : (
+                <div>
+                  <CheckCircle dimension={20} />
+                </div>
+              )}
               <span className="text-muted">
                 Products are synchronizing: {productNumber}{' '}
               </span>
-              <div
-                className="ml-2 mt-1 spinner-border spinner-border-sm text-secondary"
-                role="status"
-              >
-                <span className="sr-only">Loading...</span>
-              </div>
-            </div>
-            <div className="row">
-              <small className="form-text text-muted">
-                You can go head, this task will run as background
-              </small>
             </div>
             <div className={`row float-right mt-2 ${styles.wrapButton}`}>
               <button
                 type="button"
+                disabled={allowNextButton !== true}
                 className="btn btn-primary"
                 onClick={this.nextToMainPage}
               >
@@ -78,11 +105,15 @@ class SyncScreen extends Component {
 
 function mapDispatchToProps(dispatch) {
   return {
-    gotoChildrenPanel: () => dispatch(gotoChildrenPanel())
+    gotoPOS: () => dispatch(gotoPOS())
   };
 }
-
+function mapStateToProps(state) {
+  return {
+    setup: state.mainRd.setup
+  };
+}
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(SyncScreen);

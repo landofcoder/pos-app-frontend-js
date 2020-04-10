@@ -21,6 +21,10 @@ const cartCurrentDefaultData = {
 const initialState = {
   switchingMode: LOADING, // LOADING, LOGIN_FORM, CHILDREN, SYNC_SCREEN
   flagSwitchModeCounter: 1, // When this flag counter up, render in App.js will re-render and backgroundLogin will re-check
+  setup: {
+    stateFetchingConfig: 0, // 0 = loading, 1 = succeed
+    stateSynchronizingCategoriesAndProducts: 0 // 0 = loading, 1 = succeed
+  },
   currentPosCommand: {
     query: {
       categoryId: 0, // For product type
@@ -38,9 +42,8 @@ const initialState = {
   isShowHaveNoSearchResultFound: false,
   isLoadingRequireStep: false,
   isLoadingBackToLogin: false,
-  posSystemConfig: {}, // General config for pos
+  posSystemConfig: {}, // General config for pos <= must remove soon
   shopInfoConfig: {}, // Shop info config
-  specialConditionSwitchMode: true,
   mainPanelType: HOME_DEFAULT_PRODUCT_LIST, // Main panel type for switching all main panel
   mainProductListLoading: false, // Main product list loading
   messageSignUpCustomer: null,
@@ -137,7 +140,6 @@ const initialState = {
     tax_display: '0',
     tax_label: null
   },
-  detailOutlet: {},
   orderHistory: [],
   orderHistoryDetail: {},
   orderHistoryDetailOffline: {},
@@ -183,8 +185,13 @@ const initialState = {
 const mainRd = (state: Object = initialState, action: Object) =>
   produce(state, draft => {
     switch (action.type) {
+      case types.SETUP_UPDATE_STATE_FETCHING_CONFIG:
+        draft.setup.stateFetchingConfig = action.payload;
+        break;
+      case types.SETUP_UPDATE_STATE_SYNCHRONIZING_CATEGORIES_AND_PRODUCTS:
+        draft.setup.stateSynchronizingCategoriesAndProducts = action.payload;
+        break;
       case types.RECEIVED_ORDER_PREPARING_CHECKOUT:
-        console.log('totals:', action.payload.totals);
         const totals = action.payload.totals;
         const discount_amount = totals.base_discount_amount;
         const base_subtotal = totals.base_subtotal;
@@ -361,10 +368,6 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.UPDATE_MAIN_PRODUCT_LOADING:
         draft.mainProductListLoading = action.payload;
         break;
-      case types.RECEIVED_POST_GENERAL_CONFIG:
-        // eslint-disable-next-line prefer-destructuring
-        draft.posSystemConfig = action.payload[0];
-        break;
       case types.UPDATE_IS_LOADING_SYSTEM_CONFIG:
         draft.isLoadingSystemConfig = action.payload;
         break;
@@ -474,9 +477,6 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.RECEIVED_CUSTOM_RECEIPT:
         draft.customReceipt = action.payload;
         break;
-      case types.RECEIVED_DETAIL_OUTLET:
-        draft.detailOutlet = action.payload;
-        break;
       case types.RECEIVED_ALL_CATEGORIES:
         draft.allCategories = action.payload;
         break;
@@ -516,19 +516,11 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.checkout.orderPreparingCheckout.totals.grand_total = baseGrandTotal;
         draft.checkout.orderPreparingCheckout.totals.tax_amount = shippingAndTaxAmount;
         break;
-      case types.ACCEPT_CONDITION_SWITCH_MODE:
-        draft.specialConditionSwitchMode = action.payload;
-        break;
       case types.BACK_TO_WORK_PLACE:
         draft.switchingMode = WORK_PLACE_FORM;
         break;
       case types.UPDATE_SWITCHING_MODE:
-        // i found a bug in this case that switchingMode in LOGIN_FORM after sync success it auto switch to HOME_PAGE :/
-        if (!(state.switchingMode === LOGIN_FORM && action.payload === CHILDREN && state.specialConditionSwitchMode)) {
-          draft.isLoadingBackToLogin = false;
-          draft.switchingMode = action.payload;
-          draft.specialConditionSwitchMode = true;
-        }
+        draft.switchingMode = action.payload;
         break;
       case types.BACK_TO_LOGIN:
         draft.isLoadingBackToLogin = true;
@@ -537,8 +529,8 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.UPDATE_FLAG_SWITCHING_MODE:
         draft.flagSwitchModeCounter = draft.flagSwitchModeCounter + 1;
         break;
-      case types.RECEIVED_CASHIER_INFO:
-        draft.cashierInfo = action.payload;
+      case types.GO_TO_POS_PANEL:
+        draft.switchingMode = CHILDREN;
         break;
       case types.UPDATE_IS_SHOW_MODEL_EDITING_CART_ITEM: {
         const open = action.payload.open;

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
-  gotoChildrenPanel,
+  gotoPOS,
   reCheckRequireStep,
   backToLogin
 } from '../../actions/homeAction';
@@ -90,7 +90,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    gotoChildrenPanel: () => dispatch(gotoChildrenPanel()),
+    gotoChildrenPanel: () => dispatch(gotoPOS()),
     reCheckRequireStep: () => dispatch(reCheckRequireStep()),
     backToLogin: () => dispatch(backToLogin())
   };

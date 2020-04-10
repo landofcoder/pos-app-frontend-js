@@ -164,7 +164,7 @@ async function getProductsByCategory(payload) {
  * Sync all products
  * @param listCategories
  */
-export async function syncAllProducts(listCategories) {
+export async function writeProductsToLocal(listCategories) {
   const childCategories = listCategories.children_data;
 
   if (childCategories.length > 0) {
@@ -182,7 +182,7 @@ export async function syncAllProducts(listCategories) {
       // Check children and recall this syncAllProducts
       if (cate.children_data.length > 0) {
         // eslint-disable-next-line no-await-in-loop
-        await syncAllProducts(cate);
+        await writeProductsToLocal(cate);
       }
     }
   }

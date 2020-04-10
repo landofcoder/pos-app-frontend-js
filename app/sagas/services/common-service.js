@@ -1,14 +1,4 @@
 import { put } from 'redux-saga/effects';
-import {
-  systemConfigSync,
-  getSystemConfigLocal,
-  shopInfoSync,
-  getShopInfoLocal,
-  receiptInfoSync,
-  getReceiptInfoLocal,
-  getDetailOutLetLocal,
-  outLetConfigSync
-} from './settings-service';
 import { getCategories } from '../../reducers/db/categories';
 import { deleteOrder } from '../../reducers/db/sync_orders';
 import { UPDATE_CURRENT_POS_COMMAND } from '../../constants/root';
@@ -16,177 +6,30 @@ import { getOfflineMode } from '../../common/settings';
 import { apiGatewayPath } from '../../../configs/env/config.main';
 
 /**
- * Data from systemConfig will always get latest settings from api,
- * if have no internet connect, data from local db will be returned
+ * Get shop info
  * @returns array
  */
-export async function getSystemConfigService() {
-  let data = null;
-  let getError = false;
+export async function getShopInfoService() {
   try {
-    const response = await fetch(`${apiGatewayPath}/cashier/system-config`, {
+    const response = await fetch(`${apiGatewayPath}/cashier/shop-info`, {
       method: 'GET',
       mode: 'cors',
       cache: 'no-cache',
       credentials: 'same-origin',
       headers: {
-        platform: window.platform,
-        url: window.mainUrl,
         'Content-Type': 'application/json',
-        token: window.liveToken
+        Authorization: `Bearer ${window.liveToken}`,
+        platform: window.platform,
+        url: window.mainUrl
       },
       redirect: 'follow',
       referrer: 'no-referrer'
     });
-    data = await response.json();
-  } catch (e) {
-    getError = true;
-  }
-
-  console.log('config error:', getError);
-
-  // Check data result is ok, then save to local db
-  if (getError) {
-    // Query to local
-    data = await getSystemConfigLocal();
-    data = data.value;
-  } else {
-    // Sync it now
-    await systemConfigSync(data);
-  }
-
-  return data;
-}
-
-/**
- * Get ship info
- * @returns array
- */
-export async function getShopInfoService() {
-  let data;
-  let error = false;
-  try {
-    const response = await fetch(
-      // `${apiGatewayPath}index.php/rest/V1/pos/getShopInfo`,
-      `${apiGatewayPath}/cashier/shop-info`,
-      {
-        method: 'GET',
-        mode: 'cors',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${window.liveToken}`,
-          platform: window.platform,
-          url: window.mainUrl
-        },
-        redirect: 'follow',
-        referrer: 'no-referrer'
-      }
-    );
-    data = await response.json();
-  } catch (e) {
-    data = [];
-    error = true;
-  }
-
-  if (error) {
-    // Query to local
-    data = await getShopInfoLocal();
-    if (data.length > 0) {
-      data = data[0].value;
-    }
-  } else {
-    // Sync now
-    await shopInfoSync(data);
-  }
-  return data;
-}
-
-/**
- * Get custom receipt
- * @returns array
- */
-export async function getCustomReceiptService(outletId) {
-  let data;
-  let error = false;
-  try {
-    const response = await fetch(
-      `${window.mainUrl}index.php/rest/V1/lof-posreceipt/pos/${outletId}`,
-      {
-        method: 'GET',
-        mode: 'cors',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        headers: {
-          platform: window.platform,
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${window.liveToken}`
-        },
-        redirect: 'follow',
-        referrer: 'no-referrer'
-      }
-    );
-    data = await response.json();
-  } catch (e) {
-    data = [];
-    error = true;
-  }
-
-  if (error) {
-    // Query to local
-    const data = await getReceiptInfoLocal();
-    return data.value;
-  }
-  // Sync now
-  await receiptInfoSync(data);
-
-  return data;
-}
-
-/**
- * Get detail outlet
- * @param payload
- * @returns object
- */
-export async function getDetailOutletService(payload) {
-  const outletId = payload;
-  let data = [];
-  let error = false;
-  console.log('outlet ');
-  try {
-    const response = await fetch(`${apiGatewayPath}/cashier/detail-outlet`, {
-      method: 'POST',
-      mode: 'cors',
-      cache: 'no-cache',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json',
-        url: window.mainUrl,
-        platform: window.platform,
-        token: window.liveToken
-      },
-      body: JSON.stringify({ outletId }),
-      redirect: 'follow',
-      referrer: 'no-referrer'
-    });
-    data = await response.json();
+    return await response.json();
   } catch (e) {
     console.log(e);
-    data = [];
-    error = true;
   }
-  console.log(data);
-  if (error) {
-    data = await getDetailOutLetLocal();
-    if (data.length > 0) {
-      data = data[0].value;
-    }
-  } else {
-    console.log(data);
-    await outLetConfigSync(data);
-  }
-  return data;
+  return null;
 }
 
 /**
