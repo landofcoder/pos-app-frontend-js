@@ -1030,11 +1030,6 @@ function* bootstrapApplicationSaga() {
     type: types.SETUP_UPDATE_STATE_SYNCHRONIZING_CATEGORIES_AND_PRODUCTS,
     payload: 1
   });
-
-  // yield writeLoggedInfoToLocal({
-  //   info: payload.payload,
-  //   token: resultLogin.data
-  // });
 }
 
 /**
@@ -1354,6 +1349,9 @@ function* loginAction(payload) {
 
       // Start setup data
       yield bootstrapApplicationSaga();
+
+      // Write logged info to local
+      yield writeLoggedInfoToLocal(resultLogin.data);
     } else {
       yield put({
         type: typesAuthen.ERROR_LOGIN,
