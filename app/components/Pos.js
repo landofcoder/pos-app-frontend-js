@@ -94,7 +94,7 @@ export default class Pos extends Component<Props, State> {
       hidDevice
     } = this.props;
 
-    const loopStep = 10000;
+    const loopStep = 100000;
     limitLoop(
       () => {
         autoLoginToGetNewToken();

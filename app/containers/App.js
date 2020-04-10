@@ -76,7 +76,7 @@ class App extends React.Component<Props> {
                   </div>
                 </div>
               );
-            case LOGIN_FORM:
+            case LOGIN_FORM || LINK_CASHIER_TO_ADMIN_REQUIRE:
               return <Login />;
             case CHILDREN:
               return <div className="container-fluid">{children}</div>;
@@ -85,7 +85,7 @@ class App extends React.Component<Props> {
             case WORK_PLACE_FORM:
               return <WorkPlace />;
             case LINK_CASHIER_TO_ADMIN_REQUIRE:
-              return <RequireStep />;
+              return <Login />;
             default:
               return <></>;
           }

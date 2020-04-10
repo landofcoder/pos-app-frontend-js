@@ -504,7 +504,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.customerSearchResult = [];
         draft.cashierInfo = {};
         break;
-      case types.RECEIVED_CHECKOUT_OFFLINE_CART_INFO:
+      case types.RECEIVED_CHECKOUT_CART_INFO:
         const ordersInfo = action.payload[0];
         // Update to preparing checkout
         const baseDiscountAmount = ordersInfo.base_discount_amount;
