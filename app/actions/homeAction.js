@@ -267,9 +267,9 @@ export function updateQtyEditCart(payload) {
   };
 }
 
-export function gotoChildrenPanel() {
+export function gotoPOS() {
   return {
-    type: types.GO_TO_CHILDREN_PANEL_TRIGGER
+    type: types.GO_TO_POS_PANEL
   };
 }
 

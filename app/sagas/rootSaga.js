@@ -53,17 +53,35 @@ import {
   writeLoggedInfoToLocal
 } from './services/login-service';
 
-import { handleProductType, reformatConfigurableProduct } from '../common/product';
-import { getDefaultPaymentMethod, getDefaultShippingMethod } from './common/orderSaga';
+import {
+  handleProductType,
+  reformatConfigurableProduct
+} from '../common/product';
+import {
+  getDefaultPaymentMethod,
+  getDefaultShippingMethod
+} from './common/orderSaga';
 import { calcPrice } from '../common/product-price';
 import { BUNDLE } from '../constants/product-types';
 import { writeCategoriesToLocal } from '../reducers/db/categories';
 import { syncCustomers } from '../reducers/db/customers';
 import { getAllOrders } from '../reducers/db/sync_orders';
-import { getOfflineMode, setAppInfoToGlobal, setTokenGlobal } from '../common/settings';
+import {
+  getOfflineMode,
+  setAppInfoToGlobal,
+  setTokenGlobal
+} from '../common/settings';
 import { createProduct } from '../reducers/db/sync_custom_product';
-import { CHILDREN, LOGIN_FORM, SYNC_SCREEN, WORK_PLACE_FORM } from '../constants/main-panel-types';
-import { QUERY_GET_PRODUCT_BY_CATEGORY, QUERY_SEARCH_PRODUCT } from '../constants/product-query';
+import {
+  CHILDREN,
+  LOGIN_FORM,
+  SYNC_SCREEN,
+  WORK_PLACE_FORM
+} from '../constants/main-panel-types';
+import {
+  QUERY_GET_PRODUCT_BY_CATEGORY,
+  QUERY_SEARCH_PRODUCT
+} from '../constants/product-query';
 import { SUCCESS_CHARGE } from '../constants/payment';
 import { sumCartTotalPrice } from '../common/cart';
 
@@ -991,10 +1009,12 @@ function* bootstrapApplicationSaga() {
   // Get all config
   yield getPostConfigGeneralConfig();
 
+  // Done get all config update to state in config
+  yield put({ type: types.SETUP_UPDATE_STATE_FETCHING_CONFIG, payload: 1 });
+
   // Auto connect scanner device
   autoConnectScannerDevice();
-
-   // Apply all main settings
+  // Apply all main settings
   // const posSystemConfigResult = yield select(posSystemConfig);
   // const generalConfig = posSystemConfigResult.general_configuration;
   // document.title = generalConfig.pos_title;
@@ -1004,6 +1024,12 @@ function* bootstrapApplicationSaga() {
 
   // Get default products
   yield getDefaultProductFromLocal();
+
+  // Done sync categories and products
+  yield put({
+    type: types.SETUP_UPDATE_STATE_SYNCHRONIZING_CATEGORIES_AND_PRODUCTS,
+    payload: 1
+  });
 
   // yield writeLoggedInfoToLocal({
   //   info: payload.payload,
