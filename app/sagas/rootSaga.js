@@ -8,8 +8,8 @@ import {
   createGuestCartService,
   createInvoiceService,
   createShipmentService,
-  getDiscountForQuoteService,
   placeCashOrderService,
+  getDiscountForQuoteService,
   createOrderLocal,
   getDiscountCodeForQuoteService,
   noteOrderActionService

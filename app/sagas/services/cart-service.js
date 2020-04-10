@@ -306,6 +306,7 @@ export async function getDiscountForQuoteService(payload) {
   let data;
   const { cart } = payload;
   const { config } = payload;
+  const customerId = config.default_guest_checkout.customer_id || null;
   try {
     const response = await fetch(
       `${apiGatewayPath}/cashier/customer-checkout/get-discount-quote`,
@@ -322,7 +323,7 @@ export async function getDiscountForQuoteService(payload) {
         },
         redirect: 'follow',
         referrer: 'no-referrer',
-        body: JSON.stringify({ params: JSON.stringify({ cart, config }) })
+        body: JSON.stringify({ params: JSON.stringify({ cart, customerId }) })
       }
     );
     data = await response.json();
