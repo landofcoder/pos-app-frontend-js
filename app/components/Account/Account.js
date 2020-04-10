@@ -123,14 +123,7 @@ class Account extends Component {
                       href="#"
                       onClick={this.syncManagerAction}
                     >
-                      Sync Status{' '}
-                      {syncStatus ? (
-                        <span
-                          className="spinner-border spinner-border-sm"
-                          role="status"
-                          aria-hidden="true"
-                        ></span>
-                      ) : null}
+                      Sync Status
                     </a>
                   </li>
                   <li className="nav-item">

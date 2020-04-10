@@ -364,7 +364,7 @@ export async function syncOrderService(payload) {
   console.log(payload);
   try {
     const response = await fetch(
-      `${window.mainUrl}index.php/rest/V1/lof-sync-orders/`,
+      `${apiGatewayPath}/cashier/customer-checkout/lof-sync-orders/`,
       {
         method: 'POST',
         headers: {
