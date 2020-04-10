@@ -34,22 +34,20 @@ import { createCustomerCartService } from './services/customer-cart-service';
 import {
   cancelOrderService,
   getAllCategoriesService,
-  getCustomReceiptService,
-  getDetailOutletService,
   getOrderHistoryService,
   getOrderHistoryServiceDetails,
   getShopInfoService
 } from './services/common-service';
 import {
   createConnectedDeviceSettings,
-  getConnectedDeviceSettings,
   removeScannerDeviceConnected
 } from './services/settings-service';
 import {
   getAppInfoFromLocal,
-  getInfoCashierService,
   getLoggedDb,
   loginService,
+  writeGeneralConfigToLocal,
+  getGeneralFromLocal,
   writeLoggedInfoToLocal
 } from './services/login-service';
 
@@ -126,40 +124,13 @@ function* checkLoginBackgroundSaga() {
 
   // Logged
   if (loggedDb !== false) {
-    console.log('run here');
-    // Re-login to get new token, if can't get new token or logged success again,
-    // POS client will not sign out because cashier has been logged before
-    // // Call get system config first
-    // const configGeneralResponse = yield call(getSystemConfigService);
-    // yield put({
-    //   type: types.RECEIVED_POST_GENERAL_CONFIG,
-    //   payload: configGeneralResponse
-    // });
-    // const counterProductLocal = yield counterProduct();
-    // Call cashier api
-    // const cashierInfo = yield call(getInfoCashierService);
-    // yield put({ type: types.RECEIVED_CASHIER_INFO, payload: cashierInfo });
-    // All it's ok
-    // yield bootstrapApplicationSaga();
-    // yield syncData();
-    //
-    // // If form invalid
-    // if (
-    //   !cashierInfo.cashier_id ||
-    //   (!cashierInfo.outlet_id || cashierInfo.outlet_id === 0) ||
-    //   cashierInfo.active === false
-    // ) {
-    //   // Show form please link cashier to outlet
-    //   yield put({
-    //     type: types.UPDATE_SWITCHING_MODE,
-    //     payload: LINK_CASHIER_TO_ADMIN_REQUIRE
-    //   });
-    // } else {
-    //   // Stop login loading
-    //   yield put({ type: STOP_LOADING });
-    // }
-
     // Get default product and go to POS panel
+    yield getDefaultProductFromLocal();
+
+    // Get shopInfo from local
+    const config = yield getGeneralFromLocal();
+    yield receivedGeneralConfig(config);
+
     yield getDefaultProductFromLocal();
     yield put({ type: types.UPDATE_SWITCHING_MODE, payload: CHILDREN });
   } else {
@@ -174,6 +145,19 @@ function* checkLoginBackgroundSaga() {
       });
     }
   }
+}
+
+/**
+ * Received shopInfo to set to reducer and settings all variables needed
+ * @param payload
+ * @returns void
+ */
+function* receivedGeneralConfig(payload) {
+  yield put({
+    type: types.RECEIVED_SHOP_INFO_CONFIG,
+    payload
+  });
+  window.currency = payload.currency_code;
 }
 
 function* startCashCheckoutActionSg(payload) {
@@ -700,41 +684,6 @@ function updateQtyProduct(product) {
   return productAssign;
 }
 
-function* getCustomReceipt(outletId) {
-  const customReceiptResult = yield call(getCustomReceiptService, outletId);
-  if (customReceiptResult.length > 0) {
-    const result = customReceiptResult[0];
-    yield put({ type: types.RECEIVED_CUSTOM_RECEIPT, payload: result.data });
-  }
-}
-
-/**
- * Get pos general config
- * @returns void
- */
-function* getPostConfigGeneralConfig() {
-  // Get shop info
-  const shopInfoResponse = yield call(getShopInfoService);
-  yield put({
-    type: types.RECEIVED_SHOP_INFO_CONFIG,
-    payload: shopInfoResponse
-  });
-
-  // eslint-disable-next-line prefer-destructuring
-  window.currency = shopInfoResponse[0];
-
-  // Get all cashier info
-  const cashierInfo = yield call(getInfoCashierService);
-  yield put({ type: types.RECEIVED_CASHIER_INFO, payload: cashierInfo });
-
-  const outletId = cashierInfo.outlet_id;
-  const detailOutlet = yield call(getDetailOutletService, outletId);
-  yield put({ type: types.RECEIVED_DETAIL_OUTLET, payload: detailOutlet });
-
-  // Get custom receipt
-  yield getCustomReceipt(outletId);
-}
-
 /**
  * Get product by category
  * @param payload
@@ -872,17 +821,6 @@ function* getDiscountForOfflineCheckoutSaga() {
   }
 }
 
-/**
- * Skip sync form and go to main POS
- * @returns void
- */
-function* gotoChildrenPanelTriggerSaga() {
-  yield getDefaultProductFromLocal();
-  yield put({ type: types.UPDATE_SWITCHING_MODE, payload: CHILDREN });
-  // Update counter for switch detect
-  yield put({ type: types.UPDATE_FLAG_SWITCHING_MODE });
-}
-
 function* reCheckRequireStepSaga() {
   // Start loading
   yield put({
@@ -1000,39 +938,6 @@ function* updateQtyCartItemSaga(payload) {
 
   // Reset itemCartEditing
   yield put({ type: types.RESET_ITEM_CART_EDITING });
-}
-
-/**
- * Bootstrap application and load all config
- * @returns void
- */
-function* bootstrapApplicationSaga() {
-  console.log('begin start boots now');
-
-  // Get all config
-  yield getPostConfigGeneralConfig();
-
-  // Done get all config update to state in config
-  yield put({ type: types.SETUP_UPDATE_STATE_FETCHING_CONFIG, payload: 1 });
-
-  // Auto connect scanner device
-  autoConnectScannerDevice();
-  // Apply all main settings
-  // const posSystemConfigResult = yield select(posSystemConfig);
-  // const generalConfig = posSystemConfigResult.general_configuration;
-  // document.title = generalConfig.pos_title;
-
-  // Sync data
-  yield writeCategoriesAndProductsToLocal();
-
-  // Get default products
-  yield getDefaultProductFromLocal();
-
-  // Done sync categories and products
-  yield put({
-    type: types.SETUP_UPDATE_STATE_SYNCHRONIZING_CATEGORIES_AND_PRODUCTS,
-    payload: 1
-  });
 }
 
 /**
@@ -1338,34 +1243,68 @@ function* discountCode(payload) {
 function* loginAction(payload) {
   // Start loading
   yield put({ type: typesAuthen.START_LOADING });
-  try {
-    const resultLogin = yield call(loginService, payload);
-    const token = resultLogin.data;
-    setTokenGlobal(token);
+  const resultLogin = yield call(loginService, payload);
+  const token = resultLogin.data;
+  setTokenGlobal(token);
 
-    if (resultLogin.status) {
-      // Update to sync component
-      yield put({
-        type: typesAuthen.UPDATE_SWITCHING_MODE,
-        payload: SYNC_SCREEN
-      });
+  if (resultLogin.status) {
+    // Update to sync component
+    yield put({
+      type: typesAuthen.UPDATE_SWITCHING_MODE,
+      payload: SYNC_SCREEN
+    });
 
-      // Start setup data
-      yield bootstrapApplicationSaga();
+    // Start setup step 1
+    yield setupFetchingAppInfo();
 
-      // Write logged info to local
-      yield writeLoggedInfoToLocal(resultLogin.data);
-    } else {
-      yield put({
-        type: typesAuthen.ERROR_LOGIN,
-        payload: resultLogin.message
-      });
-      // Set login button loading to false
-      yield put({ type: typesAuthen.STOP_LOADING });
-    }
-  } catch (err) {
-    console.log(err);
+    // Start setup step 2
+    yield setupSyncCategoriesAndProducts();
+
+    // Write logged info to local
+    yield writeLoggedInfoToLocal(resultLogin.data);
+  } else {
+    yield put({
+      type: typesAuthen.ERROR_LOGIN,
+      payload: resultLogin.message
+    });
+    // Set login button loading to false
+    yield put({ type: typesAuthen.STOP_LOADING });
   }
+}
+
+/**
+ * Bootstrap application and load all config
+ * @returns void
+ */
+function* setupFetchingAppInfo() {
+  const shopInfoResponse = yield call(getShopInfoService);
+  yield receivedGeneralConfig(shopInfoResponse);
+
+  // Write appInfo to local and update fetching appInfo to done
+  yield writeGeneralConfigToLocal(shopInfoResponse);
+  // Auto connect scanner device
+  autoConnectScannerDevice();
+
+  // Done step 1
+  yield put({ type: types.SETUP_UPDATE_STATE_FETCHING_CONFIG, payload: 1 });
+}
+
+/**
+ * Setup sync categories and products to local
+ * @returns void
+ */
+function* setupSyncCategoriesAndProducts() {
+  // Write categories and products to local
+  yield writeCategoriesAndProductsToLocal();
+
+  // Get default products
+  yield getDefaultProductFromLocal();
+
+  // Done step 2
+  yield put({
+    type: types.SETUP_UPDATE_STATE_SYNCHRONIZING_CATEGORIES_AND_PRODUCTS,
+    payload: 1
+  });
 }
 
 /**

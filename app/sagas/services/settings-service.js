@@ -6,31 +6,12 @@ import {
   deleteByKeyV2
 } from '../../reducers/db/settings';
 
-const systemConfigLabel = 'system_config';
 const shopInfoKey = 'shop_info_config';
 const cashierInfoLabel = 'cashier_info';
-const receiptInfoLabel = 'receipt_info';
 const timeSyncConstant = 'time_sync_constant';
 const connectedScannerDeviceLabel = 'connected_scanner_device';
-const detailOutlet = 'outlet_config';
 
-export async function systemConfigSync(systemConfig) {
-  const systemConfigInDb = await getByKey(systemConfigLabel);
-  if (systemConfigInDb.length === 0) {
-    await createKey(systemConfigLabel, systemConfig);
-  } else {
-    // Update
-    const { id } = systemConfigInDb[0];
-    await updateById(id, systemConfig);
-  }
-}
-
-export async function getSystemConfigLocal() {
-  const data = await getByKeyV2(systemConfigLabel);
-  return data;
-}
-
-export async function shopInfoSync(shopInfo) {
+export async function writeShopInfoToLocal(shopInfo) {
   const shopInfoDb = await getByKey(shopInfoKey);
   if (shopInfoDb.length === 0) {
     // Create key
@@ -41,39 +22,8 @@ export async function shopInfoSync(shopInfo) {
   }
 }
 
-export async function outLetConfigSync(outletInfo) {
-  const outletInfoDb = await getByKey(detailOutlet);
-  if (outletInfoDb.length === 0) {
-    // Create key
-    await createKey(detailOutlet, outletInfo);
-  } else {
-    // Update shopInfo
-    await updateById(outletInfoDb[0].id, outletInfo);
-  }
-}
-
-export async function receiptInfoSync(receipt) {
-  const receiptInfo = await getByKeyV2(receiptInfoLabel);
-  if (!receiptInfo) {
-    // Create new
-    await createKey(receiptInfoLabel, receipt);
-  } else {
-    // Update by key
-    await updateById(receiptInfo.id, receipt);
-  }
-}
-
 export async function getShopInfoLocal() {
   const data = await getByKey(shopInfoKey);
-  return data;
-}
-
-export async function getDetailOutLetLocal() {
-  const data = await getByKey(detailOutlet);
-  return data;
-}
-export async function getReceiptInfoLocal() {
-  const data = await getByKeyV2(cashierInfoLabel);
   return data;
 }
 

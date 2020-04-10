@@ -11,7 +11,7 @@ type Props = {
   cartCurrent: Array,
   deleteItemCart: (payload: Object) => void,
   updateIsShowModelEditingCartItem: (payload: Object) => void,
-  currencyCode: string
+  appInfo: Object
 };
 
 class ListCart extends Component<Props> {
@@ -23,25 +23,24 @@ class ListCart extends Component<Props> {
   };
 
   getFirstMedia = item => {
+    const { appInfo } = this.props;
+    // eslint-disable-next-line camelcase
+    const baseImage = appInfo.product_image_base_url;
     const gallery = item.media_gallery_entries
       ? item.media_gallery_entries
       : [];
     if (gallery.length > 0) {
       const image = gallery[0].file;
-      return `${window.mainUrl}/pub/media/catalog/product/${image}`;
+      return `${baseImage}/pub/media/catalog/product/${image}`;
     }
     // Return default image
-    return `${window.mainUrl}/pub/media/catalog/product/`;
+    return `${baseImage}/pub/media/catalog/product/`;
   };
 
   renderItemPrice = item => {
-    const { currencyCode } = this.props;
     if (!item.type_id || item.type_id !== 'bundle') {
       if (item.price.regularPrice) {
-        return formatCurrencyCode(
-          item.price.regularPrice.amount.value,
-          currencyCode
-        );
+        return formatCurrencyCode(item.price.regularPrice.amount.value);
       }
       return item.price;
     }
@@ -119,6 +118,7 @@ class ListCart extends Component<Props> {
                     </div>
                   </div>
                   <div
+                    role="presentation"
                     className={styles.wrapClose}
                     onClick={() => this.deleteAction(index)}
                   >
@@ -142,7 +142,7 @@ class ListCart extends Component<Props> {
 
 const mapStateToProps = state => ({
   cartCurrent: state.mainRd.cartCurrent,
-  currencyCode: state.mainRd.shopInfoConfig[0]
+  appInfo: state.authenRd.appInfo
 });
 
 const mapDispatchToProps = dispatch => {

@@ -42,9 +42,8 @@ const initialState = {
   isShowHaveNoSearchResultFound: false,
   isLoadingRequireStep: false,
   isLoadingBackToLogin: false,
-  posSystemConfig: {}, // General config for pos
+  posSystemConfig: {}, // General config for pos <= must remove soon
   shopInfoConfig: {}, // Shop info config
-  // specialConditionSwitchMode: true,
   mainPanelType: HOME_DEFAULT_PRODUCT_LIST, // Main panel type for switching all main panel
   mainProductListLoading: false, // Main product list loading
   messageSignUpCustomer: null,
@@ -141,7 +140,6 @@ const initialState = {
     tax_display: '0',
     tax_label: null
   },
-  detailOutlet: {},
   orderHistory: [],
   orderHistoryDetail: {},
   orderHistoryDetailOffline: {},
@@ -370,10 +368,6 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.UPDATE_MAIN_PRODUCT_LOADING:
         draft.mainProductListLoading = action.payload;
         break;
-      case types.RECEIVED_POST_GENERAL_CONFIG:
-        // eslint-disable-next-line prefer-destructuring
-        draft.posSystemConfig = action.payload[0];
-        break;
       case types.UPDATE_IS_LOADING_SYSTEM_CONFIG:
         draft.isLoadingSystemConfig = action.payload;
         break;
@@ -483,9 +477,6 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.RECEIVED_CUSTOM_RECEIPT:
         draft.customReceipt = action.payload;
         break;
-      case types.RECEIVED_DETAIL_OUTLET:
-        draft.detailOutlet = action.payload;
-        break;
       case types.RECEIVED_ALL_CATEGORIES:
         draft.allCategories = action.payload;
         break;
@@ -540,9 +531,6 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.GO_TO_POS_PANEL:
         draft.switchingMode = CHILDREN;
-        break;
-      case types.RECEIVED_CASHIER_INFO:
-        draft.cashierInfo = action.payload;
         break;
       case types.UPDATE_IS_SHOW_MODEL_EDITING_CART_ITEM: {
         const open = action.payload.open;

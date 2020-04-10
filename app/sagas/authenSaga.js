@@ -1,19 +1,15 @@
 import { takeEvery, call, put, takeLatest, select } from 'redux-saga/effects';
-import { differenceInMinutes } from 'date-fns';
 import * as types from '../constants/authen';
 import {
   LOGOUT_POS_ACTION,
   SYNC_CLIENT_DATA,
   GET_SYNC_MANAGER
 } from '../constants/root.json';
-import { LOGIN_FORM, SYNC_SCREEN } from '../constants/main-panel-types.json';
+import { LOGIN_FORM } from '../constants/main-panel-types.json';
 import {
-  loginService,
-  writeLoggedInfoToLocal,
   setMainUrlKey,
   getModuleInstalledService,
   deleteLoggedDb,
-  getLoggedDb,
   getAppInfoService,
   writeAppInfoToLocal
 } from './services/login-service';
@@ -21,21 +17,15 @@ import {
   getTimeSyncConstant,
   resetTimeSyncConstant
 } from './services/settings-service';
-import { setAppInfoToGlobal, setTokenGlobal } from '../common/settings';
+import { setAppInfoToGlobal } from '../common/settings';
 import { syncCustomProductService } from './services/product-service';
 import { getAllTbl, deleteByKey } from '../reducers/db/sync_customers';
 import { getAllTblCustomProduct } from '../reducers/db/sync_custom_product';
 import { getAllOrders, deleteOrder } from '../reducers/db/sync_orders';
 import { signUpCustomerService } from './services/customer-service';
-import { updateLoggedToken } from '../reducers/db/settings';
 import { syncOrderService } from './services/cart-service';
 
 const urlTokenService = state => state.authenRd.urlTokenService;
-
-function* getNewTokenFromApi(payload) {
-  const resultLogin = yield call(loginService, payload);
-  return resultLogin.data;
-}
 
 function* logoutAction() {
   yield put({ type: types.LOGOUT_AUTHEN_ACTION });
@@ -120,7 +110,6 @@ function* syncClientData(payload) {
     yield put({ type: GET_SYNC_MANAGER });
   }
 }
-
 
 function* getListSyncManager() {
   // get all order in local db

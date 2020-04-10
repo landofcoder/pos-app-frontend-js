@@ -44,7 +44,6 @@ type Props = {
   isShowCashPaymentModel: boolean,
   isShowCardPaymentModal: boolean,
   updateIsShowingProductOption: (payload: boolean) => void,
-  autoLoginToGetNewToken: () => void,
   autoSyncGroupCheckout: () => void,
   mainProductListLoading: boolean,
   isOpenReceiptModal: boolean,
@@ -88,16 +87,11 @@ export default class Pos extends Component<Props, State> {
   }
 
   componentDidMount(): void {
-    const {
-      autoLoginToGetNewToken,
-      autoSyncGroupCheckout,
-      hidDevice
-    } = this.props;
+    const { autoSyncGroupCheckout, hidDevice } = this.props;
 
     const loopStep = 10000;
     limitLoop(
       () => {
-        autoLoginToGetNewToken();
         autoSyncGroupCheckout();
       },
       30,

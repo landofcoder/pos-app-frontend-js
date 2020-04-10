@@ -63,24 +63,24 @@ async function makeCategoriesArraySimple(product) {
   return productAssign;
 }
 
-/**
- * Get default product without any condition
- * @returns array
- */
-export async function getDefaultProductLocal() {
-  // If use offset(), eg: offer(50) make sure we have more than 50 records or equal
-  let data;
-  try {
-    data = await db
-      .table(table)
-      .offset(0)
-      .limit(50)
-      .toArray();
-  } catch (e) {
-    data = [];
-  }
-  return data;
-}
+// /**
+//  * Get default product without any condition
+//  * @returns array
+//  */
+// export async function getDefaultProductLocal() {
+//   // If use offset(), eg: offer(50) make sure we have more than 50 records or equal
+//   let data;
+//   try {
+//     data = await db
+//       .table(table)
+//       .offset(0)
+//       .limit(50)
+//       .toArray();
+//   } catch (e) {
+//     data = [];
+//   }
+//   return data;
+// }
 
 export async function getProductBySkuLocal(payload) {
   console.log(payload);
