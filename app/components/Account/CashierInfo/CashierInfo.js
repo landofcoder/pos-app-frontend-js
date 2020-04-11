@@ -21,45 +21,55 @@ class CashierInfo extends Component<Props> {
 
   render() {
     const { cashierInfo } = this.props;
+    // eslint-disable-next-line camelcase
     const { first_name, last_name, phone, email } = cashierInfo;
     return (
       <>
         <div className="row">
-          <div className="col-md-3"></div>
           <div className="col-md-6">
             <div className="card">
               <h5 className="card-header">Cashier Information</h5>
               <div className="card-body">
                 <div className="form-group">
-                  <p className="card-text font-weight-bold">First Name</p>
                   <div className="form-group">
-                    <label className="">{first_name}</label>
+                    {/* eslint-disable-next-line camelcase */}
+                    <label htmlFor="first_name">First Name:</label>
+                    <span id="first_name" className="">
+                      {/* eslint-disable-next-line camelcase */}
+                      {first_name}
+                    </span>
                   </div>
-                  <p className="card-text font-weight-bold">Last Name</p>
                   <div className="form-group">
-                    <label className="">{last_name}</label>
+                    {/* eslint-disable-next-line camelcase */}
+                    <label htmlFor="last_name">Last Name:</label>
+                    <span id="last_name" className="">
+                      {/* eslint-disable-next-line camelcase */}
+                      {last_name}
+                    </span>
                   </div>
-                  <p className="card-text font-weight-bold">Email Adrdress</p>
                   <div className="form-group">
-                    <label className="">{email}</label>
+                    <label htmlFor="email">Email Address:</label>
+                    <span id="email" className="">
+                      {email}
+                    </span>
                   </div>
-                  <p className="card-text font-weight-bold">Phone</p>
                   <div className="form-group">
-                    <label className="">{phone}</label>
+                    <label htmlFor="phone">Phone:</label>
+                    <span id="phone" className="">
+                      {phone}
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="card mt-3">
-              <div className="card-body">
-                <button
-                  type="button"
-                  className="btn btn-danger"
-                  onClick={this.handleSignOut}
-                >
-                  Sign out
-                </button>
-              </div>
+            <div className="mt-3">
+              <button
+                type="button"
+                className="btn btn-outline-danger"
+                onClick={this.handleSignOut}
+              >
+                Sign out
+              </button>
             </div>
           </div>
         </div>

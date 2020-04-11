@@ -157,6 +157,8 @@ function* receivedGeneralConfig(payload) {
     type: types.RECEIVED_GENERAL_CONFIG,
     payload
   });
+  window.enableOffline =
+    payload.common_config.general_configuration.enable_offline_mode;
   window.currency = payload.currency_code;
 }
 
