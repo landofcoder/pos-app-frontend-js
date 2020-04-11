@@ -154,7 +154,7 @@ function* checkLoginBackgroundSaga() {
  */
 function* receivedGeneralConfig(payload) {
   yield put({
-    type: types.RECEIVED_SHOP_INFO_CONFIG,
+    type: types.RECEIVED_GENERAL_CONFIG,
     payload
   });
   window.currency = payload.currency_code;

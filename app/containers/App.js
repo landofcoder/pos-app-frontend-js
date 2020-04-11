@@ -97,7 +97,6 @@ class App extends React.Component<Props> {
 
 function mapStateToProps(state) {
   return {
-    isLoadingSystemConfig: state.mainRd.isLoadingSystemConfig,
     token: state.authenRd.token,
     switchingMode: state.mainRd.switchingMode,
     flagSwitchModeCounter: state.mainRd.flagSwitchModeCounter

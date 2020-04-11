@@ -9,22 +9,16 @@ import {
 import Calculator from '../Calculator/Calculator';
 import SubTotal from '../Subtotal/SubTotal';
 import { formatCurrencyCode } from '../../../common/settings';
-import { validateShippingAddress } from '../../../common/customer';
 
 type Props = {
   loadingPreparingOrder: boolean,
   cashPlaceOrderAction: () => void,
   updateShowCashModal: () => void,
   isLoadingCashPlaceOrder: boolean,
-  posSystemConfig: Object,
   toggleModalCalculatorStatus: boolean,
   toggleModalCalculator: (payload: boolean) => void,
   orderPreparingCheckout: Object,
-  currencyCode: string,
-  cartCurrent: Object,
-  messageOrderError: string,
-  sendMessagePlaceOrderError: payload => void,
-  detailOutlet: Object
+  currencyCode: string
 };
 
 class CashPayment extends Component<Props> {
@@ -64,30 +58,7 @@ class CashPayment extends Component<Props> {
   };
 
   considerOrder = () => {
-    const {
-      loadingPreparingOrder,
-      posSystemConfig,
-      cartCurrent,
-      sendMessagePlaceOrderError,
-      detailOutlet
-    } = this.props;
-    // check validate place order in here
-    // If offline mode != 1 check value order
-    // if loading don't consider
-
-    if (loadingPreparingOrder) return false;
-
-    const result = validateShippingAddress(
-      detailOutlet[0].data,
-      posSystemConfig.default_guest_checkout,
-      cartCurrent.isGuestCustomer
-    );
-    if (!result.status) {
-      sendMessagePlaceOrderError(result);
-      return false;
-    }
-    if (loadingPreparingOrder === false) return true;
-    return false;
+    return true;
   };
 
   transactionCustomer = () => {
@@ -109,7 +80,6 @@ class CashPayment extends Component<Props> {
         </label>
         <div className="col-sm-7 pb-1">
           <input
-            // ref={input => input && input.focus()}
             type="number"
             placeholder="Input Customer's Cash"
             className="form-control"
@@ -145,9 +115,7 @@ class CashPayment extends Component<Props> {
 
   escFunction = event => {
     if (event.keyCode === 27) {
-      // Do whatever when esc is pressed
       const { updateShowCashModal } = this.props;
-      // Hide any modal
       updateShowCashModal(false);
     }
   };
@@ -162,15 +130,8 @@ class CashPayment extends Component<Props> {
       cashPlaceOrderAction,
       updateShowCashModal,
       isLoadingCashPlaceOrder,
-      posSystemConfig,
-      toggleModalCalculatorStatus,
-      messageOrderError
+      toggleModalCalculatorStatus
     } = this.props;
-    const enableOfflineMode = Number(
-      posSystemConfig.general_configuration.enable_offline_mode
-    );
-
-    console.log('enable offline mode:', enableOfflineMode);
     return (
       <div className="row">
         <div
@@ -194,7 +155,6 @@ class CashPayment extends Component<Props> {
           <div className="modal-body">
             <SubTotal />
             {this.considerOrder() ? this.transactionCustomer() : null}
-            <span className="text-danger">{messageOrderError}</span>
           </div>
           <div className="modal-footer">
             <button
@@ -241,13 +201,9 @@ function mapStateToProps(state) {
   return {
     loadingPreparingOrder: state.mainRd.checkout.loadingPreparingOrder,
     isLoadingCashPlaceOrder: state.mainRd.isLoadingCashPlaceOrder,
-    currencyCode: state.mainRd.shopInfoConfig[0],
-    posSystemConfig: state.mainRd.posSystemConfig,
     toggleModalCalculatorStatus: state.mainRd.isOpenCalculator,
     orderPreparingCheckout: state.mainRd.checkout.orderPreparingCheckout,
-    messageOrderError: state.mainRd.messageOrderError,
-    cartCurrent: state.mainRd.cartCurrent,
-    detailOutlet: state.mainRd.detailOutlet
+    cartCurrent: state.mainRd.cartCurrent
   };
 }
 

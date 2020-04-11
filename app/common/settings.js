@@ -5,10 +5,6 @@ import LocaleCurrency from 'locale-currency';
  * @returns number
  */
 export function getOfflineMode() {
-  // const posSystemConfigResult = window.config;
-  // return Number(
-  //   posSystemConfigResult.general_configuration.enable_offline_mode
-  // );
   return 1;
 }
 

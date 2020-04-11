@@ -37,17 +37,15 @@ const initialState = {
     reachedLimit: false
   }, // Current POS product filter by to paging
   internetConnected: false,
-  isLoadingSystemConfig: true,
   isLoadingSearchHandle: false, // Main search loading
   isShowHaveNoSearchResultFound: false,
   isLoadingRequireStep: false,
   isLoadingBackToLogin: false,
   posSystemConfig: {}, // General config for pos <= must remove soon
-  shopInfoConfig: {}, // Shop info config
+  generalConfig: {},
   mainPanelType: HOME_DEFAULT_PRODUCT_LIST, // Main panel type for switching all main panel
   mainProductListLoading: false, // Main product list loading
   messageSignUpCustomer: null,
-  messageOrderError: '',
   productList: [],
   cartCurrent: cartCurrentDefaultData,
   switchHoldCartIndex: -1,
@@ -185,6 +183,9 @@ const initialState = {
 const mainRd = (state: Object = initialState, action: Object) =>
   produce(state, draft => {
     switch (action.type) {
+      case types.RECEIVED_GENERAL_CONFIG:
+        draft.generalConfig = action.payload;
+        break;
       case types.SETUP_UPDATE_STATE_FETCHING_CONFIG:
         draft.setup.stateFetchingConfig = action.payload;
         break;
@@ -348,7 +349,6 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.cartCurrent.cartId = action.payload;
         break;
       case types.UPDATE_SHOW_CASH_MODAL:
-        draft.messageOrderError = '';
         draft.checkout.isShowCashPaymentModel = action.payload;
         break;
       case types.UPDATE_CASH_PLACE_ORDER_LOADING:
@@ -367,9 +367,6 @@ const mainRd = (state: Object = initialState, action: Object) =>
       }
       case types.UPDATE_MAIN_PRODUCT_LOADING:
         draft.mainProductListLoading = action.payload;
-        break;
-      case types.UPDATE_IS_LOADING_SYSTEM_CONFIG:
-        draft.isLoadingSystemConfig = action.payload;
         break;
       case types.HOLD_ACTION: {
         // Clone current cart and push to cart hold
@@ -405,11 +402,6 @@ const mainRd = (state: Object = initialState, action: Object) =>
           break;
         }
       }
-      case types.PLACE_ORDER_ERROR:
-        const { message } = action.payload;
-        console.log(message);
-        draft.messageOrderError = message;
-        break;
       case types.COPY_CART_CURRENT_TO_RECEIPT:
         draft.receipt.cartForReceipt = draft.cartCurrent;
         break;
@@ -419,9 +411,6 @@ const mainRd = (state: Object = initialState, action: Object) =>
       }
       case types.CLOSE_RECEIPT_MODAL:
         draft.receipt.isOpenReceiptModal = false;
-        break;
-      case types.RECEIVED_SHOP_INFO_CONFIG:
-        draft.shopInfoConfig = action.payload;
         break;
       case types.UPDATE_IS_LOADING_SEARCH_HANDLE:
         draft.isLoadingSearchHandle = action.payload;
@@ -473,9 +462,6 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.RECEIVED_ORDER_HISTORY_DETAIL_OFFLINE_ACTION:
         draft.orderHistoryDetailOffline = action.payload;
-        break;
-      case types.RECEIVED_CUSTOM_RECEIPT:
-        draft.customReceipt = action.payload;
         break;
       case types.RECEIVED_ALL_CATEGORIES:
         draft.allCategories = action.payload;

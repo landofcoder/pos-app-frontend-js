@@ -11,8 +11,7 @@ type Props = {
   item: Object,
   index: number,
   onBundleSelectedSelectChange: (payload: Object) => void,
-  onBundleProductQtyOnChange: (payload: Object) => void,
-  currencyCode: string
+  onBundleProductQtyOnChange: (payload: Object) => void
 };
 
 class Select extends Component<Props> {
@@ -37,10 +36,9 @@ class Select extends Component<Props> {
   };
 
   renderOptionPrice = item => {
-    const { currencyCode } = this.props;
     const { product } = item;
     const price = product.price.regularPrice.amount.value;
-    return formatCurrencyCode(price, currencyCode);
+    return formatCurrencyCode(price);
   };
 
   render() {
@@ -84,8 +82,7 @@ class Select extends Component<Props> {
 
 function mapStateToProps(state) {
   return {
-    optionValue: state.mainRd.productOption.optionValue,
-    currencyCode: state.mainRd.shopInfoConfig[0]
+    optionValue: state.mainRd.productOption.optionValue
   };
 }
 
