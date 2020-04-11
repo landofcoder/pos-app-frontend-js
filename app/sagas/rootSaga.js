@@ -38,48 +38,27 @@ import {
   getOrderHistoryServiceDetails,
   getShopInfoService
 } from './services/common-service';
-import {
-  createConnectedDeviceSettings,
-  removeScannerDeviceConnected
-} from './services/settings-service';
+import { createConnectedDeviceSettings, removeScannerDeviceConnected } from './services/settings-service';
 import {
   getAppInfoFromLocal,
+  getGeneralFromLocal,
   getLoggedDb,
   loginService,
   writeGeneralConfigToLocal,
-  getGeneralFromLocal,
   writeLoggedInfoToLocal
 } from './services/login-service';
 
-import {
-  handleProductType,
-  reformatConfigurableProduct
-} from '../common/product';
-import {
-  getDefaultPaymentMethod,
-  getDefaultShippingMethod
-} from './common/orderSaga';
+import { handleProductType, reformatConfigurableProduct } from '../common/product';
+import { getDefaultPaymentMethod, getDefaultShippingMethod } from './common/orderSaga';
 import { calcPrice } from '../common/product-price';
 import { BUNDLE } from '../constants/product-types';
-import { writeCategoriesToLocal } from '../reducers/db/categories';
+import { getCategoriesFromLocal, writeCategoriesToLocal } from '../reducers/db/categories';
 import { syncCustomers } from '../reducers/db/customers';
 import { getAllOrders } from '../reducers/db/sync_orders';
-import {
-  getOfflineMode,
-  setAppInfoToGlobal,
-  setTokenGlobal
-} from '../common/settings';
+import { getOfflineMode, setAppInfoToGlobal, setTokenGlobal } from '../common/settings';
 import { createProduct } from '../reducers/db/sync_custom_product';
-import {
-  CHILDREN,
-  LOGIN_FORM,
-  SYNC_SCREEN,
-  WORK_PLACE_FORM
-} from '../constants/main-panel-types';
-import {
-  QUERY_GET_PRODUCT_BY_CATEGORY,
-  QUERY_SEARCH_PRODUCT
-} from '../constants/product-query';
+import { CHILDREN, LOGIN_FORM, SYNC_SCREEN, WORK_PLACE_FORM } from '../constants/main-panel-types';
+import { QUERY_GET_PRODUCT_BY_CATEGORY, QUERY_SEARCH_PRODUCT } from '../constants/product-query';
 import { SUCCESS_CHARGE } from '../constants/payment';
 import { sumCartTotalPrice } from '../common/cart';
 
@@ -124,14 +103,15 @@ function* checkLoginBackgroundSaga() {
 
   // Logged
   if (loggedDb !== false) {
-    // Get default product and go to POS panel
-    yield getDefaultProductFromLocal();
+    // Get all categories from local
+    yield getAllCategoriesFromLocal();
+
+    // Get default products from local
+    yield getDefaultProductsFromLocal();
 
     // Get shopInfo from local
     const config = yield getGeneralFromLocal();
     yield receivedGeneralConfig(config);
-
-    yield getDefaultProductFromLocal();
     yield put({ type: types.UPDATE_SWITCHING_MODE, payload: CHILDREN });
   } else {
     // If appInfo is exists, then show login form, else show work_place form
@@ -336,11 +316,8 @@ function* updateIsGuestCustomer(isGuestCustomer) {
  * Get default product
  * @returns void
  */
-function* getDefaultProductFromLocal() {
-  // Start loading
-  yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: true });
-
-  // Set empty if want get default response from magento2
+function* getDefaultProductsFromLocal() {
+  // Get default products
   const searchValue = '';
   const response = yield call(searchProductService, {
     searchValue,
@@ -349,9 +326,11 @@ function* getDefaultProductFromLocal() {
 
   const productResult = response.length > 0 ? response : [];
   yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productResult });
+}
 
-  // Stop loading
-  yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: false });
+function* getAllCategoriesFromLocal() {
+  const allCategories = yield getCategoriesFromLocal();
+  yield put({ type: types.RECEIVED_ALL_CATEGORIES, payload: allCategories });
 }
 
 /**
@@ -1299,8 +1278,11 @@ function* setupSyncCategoriesAndProducts() {
   // Write categories and products to local
   yield writeCategoriesAndProductsToLocal();
 
-  // Get default products
-  yield getDefaultProductFromLocal();
+  // Get all categories from local
+  yield getAllCategoriesFromLocal();
+
+  // Get default products from local
+  yield getDefaultProductsFromLocal();
 
   // Done step 2
   yield put({
@@ -1329,7 +1311,7 @@ function* rootSaga() {
   yield takeEvery(types.ADD_TO_CART, addToCart);
   yield takeEvery(types.GET_ORDER_HISTORY_ACTION, getOrderHistory);
   yield takeEvery(types.GET_PRODUCT_BY_CATEGORY, getProductByCategory);
-  yield takeEvery(types.GET_DEFAULT_PRODUCT, getDefaultProductFromLocal);
+  yield takeEvery(types.GET_DEFAULT_PRODUCT, getDefaultProductsFromLocal);
   yield takeEvery(types.SIGN_UP_CUSTOMER, signUpAction);
   yield takeEvery(types.GET_ORDER_HISTORY_DETAIL_ACTION, getOrderHistoryDetail);
   yield takeEvery(typesAuthen.CHECK_LOGIN_BACKGROUND, checkLoginBackgroundSaga);

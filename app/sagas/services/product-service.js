@@ -1,17 +1,17 @@
 import { call } from 'redux-saga/effects';
 import {
-  searchProductsLocal,
+  counterProduct,
   getProductBySku,
   getProductsByCategoryLocal,
-  syncProducts,
-  counterProduct
+  searchProductsLocal,
+  syncProducts
 } from '../../reducers/db/products';
-import { getCategories } from '../../reducers/db/categories';
+import { getCategoriesFromLocal } from '../../reducers/db/categories';
 import {
-  getAllTblCustomProduct,
-  deleteByKey
+  deleteByKey,
+  getAllTblCustomProduct
 } from '../../reducers/db/sync_custom_product';
-import { getOfflineMode, defaultPageSize } from '../../common/settings';
+import { defaultPageSize, getOfflineMode } from '../../common/settings';
 import {
   QUERY_GET_PRODUCT_BY_CATEGORY,
   QUERY_SEARCH_PRODUCT
@@ -24,9 +24,7 @@ import { apiGatewayPath } from '../../../configs/env/config.main';
  * @returns array
  */
 export function* searchProductService(payload) {
-  const offlineMode = yield getOfflineMode();
   const { searchValue, currentPage } = payload;
-
   // Update to current command
   yield updateCurrentPosCommand(
     QUERY_SEARCH_PRODUCT,
@@ -35,14 +33,7 @@ export function* searchProductService(payload) {
     currentPage
   );
 
-  if (offlineMode === 1) {
-    const data = yield searchProductsLocal(searchValue, currentPage);
-    return data;
-  }
-
-  const data = yield querySearchProduct(searchValue, currentPage);
-  console.log(data);
-  return data;
+  return yield searchProductsLocal(searchValue, currentPage);
 }
 
 /**
@@ -99,8 +90,6 @@ export async function querySearchProduct(searchValue, currentPage) {
  * @returns array
  */
 export function* getProductByCategoryService({ categoryId, currentPage = 1 }) {
-  const offlineMode = yield getOfflineMode();
-
   // Update to current command
   yield updateCurrentPosCommand(
     QUERY_GET_PRODUCT_BY_CATEGORY,
@@ -108,16 +97,10 @@ export function* getProductByCategoryService({ categoryId, currentPage = 1 }) {
     '',
     currentPage
   );
-
-  if (offlineMode === 1) {
-    const data = yield call(getProductsByCategoryLocal, {
-      categoryId,
-      currentPage
-    });
-    return data;
-  }
-  const data = yield call(getProductsByCategory, { categoryId, currentPage });
-  return data.items;
+  return yield call(getProductsByCategoryLocal, {
+    categoryId,
+    currentPage
+  });
 }
 
 /**
@@ -200,7 +183,7 @@ async function syncAllProductsByCategory(categoryId) {
     currentPage
   });
   // Let all parents categories of this category
-  const defaultCategory = await getCategories();
+  const defaultCategory = await getCategoriesFromLocal();
   const allParentIds = await findAllParentCategories(
     defaultCategory[0].children_data,
     categoryId
@@ -243,7 +226,7 @@ export async function findAllParentCategories(
       const newParentId = item.parent_id;
       // Đã tìm thấy parent, sẽ tìm lại từ đầu dựa trên mảng danh mục từ đầu
       // eslint-disable-next-line no-await-in-loop
-      const defaultCategory = await getCategories();
+      const defaultCategory = await getCategoriesFromLocal();
       // eslint-disable-next-line no-await-in-loop
       await findAllParentCategories(
         defaultCategory[0].children_data,

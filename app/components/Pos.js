@@ -453,10 +453,10 @@ export default class Pos extends Component<Props, State> {
                 data-id="mainPosProduct"
                 onScroll={this.handleScroll}
               >
-                <div className="col-md-2">
+                <div className="col-md-1">
                   <Categories />
                 </div>
-                <div className="col-md-9 mb-0 pr-0">
+                <div className="col-md-11 mb-0 pr-0">
                   <div className="input-group flex-nowrap">
                     <div className="input-group mb-3">
                       <div className="input-group-prepend">
