@@ -593,7 +593,7 @@ export default class Pos extends Component<Props, State> {
             <div className="col-md-1 pl-0 pr-1">
               <button
                 type="button"
-                className="btn btn-outline-secondary btn-lg btn-block"
+                className="btn btn-outline-dark btn-lg btn-block"
                 onClick={this.handleRedirectToAccount}
               >
                 Account
