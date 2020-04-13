@@ -185,7 +185,7 @@ async function syncAllProductsByCategory(categoryId) {
   // Let all parents categories of this category
   const defaultCategory = await getCategoriesFromLocal();
   const allParentIds = await findAllParentCategories(
-    defaultCategory[0].children_data,
+    defaultCategory.children_data,
     categoryId
   );
 
@@ -229,7 +229,7 @@ export async function findAllParentCategories(
       const defaultCategory = await getCategoriesFromLocal();
       // eslint-disable-next-line no-await-in-loop
       await findAllParentCategories(
-        defaultCategory[0].children_data,
+        defaultCategory.children_data,
         newParentId,
         parentIds
       );
