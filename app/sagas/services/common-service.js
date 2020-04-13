@@ -18,7 +18,7 @@ export async function getShopInfoService() {
       credentials: 'same-origin',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${window.liveToken}`,
+        token: window.liveToken,
         platform: window.platform,
         url: window.mainUrl
       },
