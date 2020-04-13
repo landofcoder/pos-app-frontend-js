@@ -21,9 +21,7 @@ import {
   PRINT_ACTION_ORDER,
   SHIPMENT_ACTION_ORDER,
   CANCEL_ACTION_ORDER,
-  REFUND_ACTION_ORDER,
-  DETAIL_ORDER_ONLINE,
-  DETAIL_ORDER_OFFLINE
+  REFUND_ACTION_ORDER
 } from '../../../constants/root';
 import AddNoteOrder from './AddNoteOrder/AddNoteOrder';
 
@@ -93,13 +91,9 @@ class OrderHistory extends Component<Props> {
     // check have detail order to consider show action detail
     if (this.isShowingDetailOrder() || this.isShowingDetailOrderOffline()) {
       return (
-        <div
-          className={`${Styles.wrapOrderAction} ${StylesPos.wrapFooterAction} `}
-        >
+        <div>
           {isOpenAddNote ? <AddNoteOrder /> : null}
-          <div
-            className={`${StylesPos.wrapActionFirstLine} ${Styles.fixMarginRow} row`}
-          >
+          <div>
             <div className="col-md-2 pl-1 pr-0">
               <button
                 type="button"
@@ -211,9 +205,9 @@ class OrderHistory extends Component<Props> {
     const { orderHistory, isLoading } = this.props;
     return (
       <>
-        <div className={`row mr-0 ml-0 ${Styles.wrapOrderHistory}`}>
-          <div className="col-3 p-0">
-            <div className={`card ${Styles.wrapListOrder}`}>
+        <div className='row'>
+          <div className="col-12">
+            <div className='card'>
               {isLoading ? (
                 <div className="form-group mt-3">
                   <div className="text-center">
@@ -228,7 +222,7 @@ class OrderHistory extends Component<Props> {
               ) : null}
               <table className="table">
                 <thead>
-                  <tr className={Styles.fixBorderTop}>
+                  <tr>
                     <th scope="col">#</th>
                     <th scope="col">Id</th>
                     <th scope="col">Total</th>
@@ -242,7 +236,6 @@ class OrderHistory extends Component<Props> {
                     return (
                       <tr
                         key={index}
-                        className={Styles.tableRowList}
                         onClick={() =>
                           item.local
                             ? this.getOrderHistoryDetailOffline(item)

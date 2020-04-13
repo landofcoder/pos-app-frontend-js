@@ -453,10 +453,10 @@ export default class Pos extends Component<Props, State> {
                 data-id="mainPosProduct"
                 onScroll={this.handleScroll}
               >
-                <div className="col-md-2">
+                <div className="col-md-1">
                   <Categories />
                 </div>
-                <div className="col-md-9 mb-0 pr-0">
+                <div className="col-md-11 mb-0 pr-0">
                   <div className="input-group flex-nowrap">
                     <div className="input-group mb-3">
                       <div className="input-group-prepend">
@@ -593,7 +593,7 @@ export default class Pos extends Component<Props, State> {
             <div className="col-md-1 pl-0 pr-1">
               <button
                 type="button"
-                className="btn btn-outline-secondary btn-lg btn-block"
+                className="btn btn-outline-dark btn-lg btn-block"
                 onClick={this.handleRedirectToAccount}
               >
                 Account

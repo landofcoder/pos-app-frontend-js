@@ -1,5 +1,5 @@
 import { put } from 'redux-saga/effects';
-import { getCategories } from '../../reducers/db/categories';
+import { getCategoriesFromLocal } from '../../reducers/db/categories';
 import { deleteOrder } from '../../reducers/db/sync_orders';
 import { UPDATE_CURRENT_POS_COMMAND } from '../../constants/root';
 import { getOfflineMode } from '../../common/settings';
@@ -18,7 +18,7 @@ export async function getShopInfoService() {
       credentials: 'same-origin',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${window.liveToken}`,
+        token: window.liveToken,
         platform: window.platform,
         url: window.mainUrl
       },
@@ -62,7 +62,7 @@ export async function getAllCategoriesService() {
   if (error || response.status === 401) {
     if (getOfflineMode() === 1) {
       // Get from local
-      data = await getCategories();
+      data = await getCategoriesFromLocal();
       // eslint-disable-next-line prefer-destructuring
       data = data[0];
     }

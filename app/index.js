@@ -15,6 +15,7 @@ const store = configureStore();
 window.liveToken = '';
 window.mainUrl = '';
 window.platform = '';
+window.enableOffline = 1;
 
 const AppContainer = process.env.PLAIN_HMR ? Fragment : ReactHotAppContainer;
 

@@ -20,7 +20,8 @@ export async function writeCategoriesToLocal(mainCategory) {
   }
 }
 
-export async function getCategories() {
+export async function getCategoriesFromLocal() {
   const data = await db.table(table).toArray();
-  return data;
+  // Because by default table categories just have one record
+  return data[0];
 }

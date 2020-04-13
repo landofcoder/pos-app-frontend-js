@@ -9,12 +9,10 @@ import {
 import { formatCurrencyCode } from '../../common/settings';
 
 type Props = {
-  optionValue: Object,
   updateIsShowingProductOption: (payload: string) => void,
   onGroupedChangeQty: (payload: string) => void,
-  addToCart: (payload: Object) => void,
   currencyCode: string,
-  createCustomizeProduct: payload => void
+  createCustomizeProduct: (payload: object) => void
 };
 
 class CustomizeProduct extends Component<Props> {
@@ -67,13 +65,9 @@ class CustomizeProduct extends Component<Props> {
    */
   preAddToCart = (product, qty) => {
     const productReAssign = Object.assign({}, product);
-    const { addToCart, createCustomizeProduct } = this.props;
+    const { createCustomizeProduct } = this.props;
     productReAssign.qty = qty;
-    console.log(productReAssign);
-    // move it into saga
-    // addToCart(productReAssign);
     createCustomizeProduct(productReAssign);
-    // addToCart(productReAssign);
   };
 
   qtyOnChange = (index, evt) => {
@@ -258,13 +252,6 @@ class CustomizeProduct extends Component<Props> {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    optionValue: state.mainRd.productOption.optionValue,
-    currencyCode: state.mainRd.shopInfoConfig[0]
-  };
-}
-
 function mapDispatchToProps(dispatch) {
   return {
     updateIsShowingProductOption: payload =>
@@ -275,6 +262,6 @@ function mapDispatchToProps(dispatch) {
   };
 }
 export default connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps
 )(CustomizeProduct);

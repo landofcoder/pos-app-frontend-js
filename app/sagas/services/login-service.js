@@ -9,7 +9,7 @@ import { apiGatewayPath } from '../../../configs/env/config.main';
 const loggedInfoKey = 'logged_info';
 const mainUrlKey = 'main_url';
 const appInfoKey = 'app_info';
-const generalConfigKey = 'genera_config';
+const generalConfigKey = 'general_config';
 
 export async function writeLoggedInfoToLocal(payload) {
   const loggedDb = await getByKeyV2(loggedInfoKey);

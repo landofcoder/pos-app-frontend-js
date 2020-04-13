@@ -4,6 +4,7 @@ import {
   getProductByCategory,
   getDefaultCategory
 } from '../../../actions/homeAction';
+import Styles from './categories.scss';
 
 type Props = {
   allCategories: Object,
@@ -76,9 +77,12 @@ class Categories extends Component<Props> {
   render() {
     const { allCategories, getDefaultCategory } = this.props;
     const { openNavigation } = this.state;
+    console.log('dd1:', allCategories);
     /* eslint-disable */
     const children_data = (allCategories && allCategories.children_data) ? allCategories.children_data : [];
     /* eslint-enable */
+
+    console.log('dd2:', children_data);
     return (
       <div>
         <nav className="navbar navbar-light navbar-expand-lg mainmenu">
@@ -100,20 +104,34 @@ class Categories extends Component<Props> {
             }`}
             id="navbarSupportedContent"
           >
-            <ul className="navbar-nav mr-auto">
+            <ul className="navbar-nav">
               <li className="dropdown">
                 <a
-                  className="dropdown-toggle"
                   href="#"
-                  id="navbarDropdown"
                   role="button"
                   data-toggle="dropdown"
                   aria-haspopup="true"
                   aria-expanded="false"
                   onClick={() => getDefaultCategory()}
                 >
-                  Default category
+                  <div className={Styles.menuCategory}>
+                    <svg
+                      className="bi bi-list"
+                      width="1em"
+                      height="1em"
+                      viewBox="0 0 16 16"
+                      fill="currentColor"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M2.5 11.5A.5.5 0 013 11h10a.5.5 0 010 1H3a.5.5 0 01-.5-.5zm0-4A.5.5 0 013 7h10a.5.5 0 010 1H3a.5.5 0 01-.5-.5zm0-4A.5.5 0 013 3h10a.5.5 0 010 1H3a.5.5 0 01-.5-.5z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
                 </a>
+
                 <ul
                   className="dropdown-menu"
                   data-naviga-redirect={openNavigation}

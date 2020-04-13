@@ -1,13 +1,7 @@
-.wrapFullHeight {
-  height: 97vh;
-  background-color: #fff;
-}
-.greyColor {
-  color: grey;
-}
-.radiusButton {
-  border-radius: 1px;
-}
-.wrapFullHeightList {
-  height: calc(100vh - 65px);
+.list-group {
+  a {
+    &:hover {
+      cursor: pointer;
+    }
+  }
 }

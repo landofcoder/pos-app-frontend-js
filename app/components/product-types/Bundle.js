@@ -158,8 +158,7 @@ class Bundle extends Component<Props> {
 
 function mapStateToProps(state) {
   return {
-    optionValue: state.mainRd.productOption.optionValue,
-    currencyCode: state.mainRd.shopInfoConfig[0]
+    optionValue: state.mainRd.productOption.optionValue
   };
 }
 
