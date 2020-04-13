@@ -3,8 +3,7 @@ import { connect } from 'react-redux';
 import {
   updateShowCashModal,
   toggleModalCalculator,
-  cashPlaceOrderAction,
-  messagePlaceOrderError
+  cashPlaceOrderAction
 } from '../../../actions/homeAction';
 import Calculator from '../Calculator/Calculator';
 import SubTotal from '../Subtotal/SubTotal';
@@ -211,9 +210,7 @@ function mapDispatchToProps(dispatch) {
   return {
     cashPlaceOrderAction: () => dispatch(cashPlaceOrderAction()),
     updateShowCashModal: payload => dispatch(updateShowCashModal(payload)),
-    toggleModalCalculator: payload => dispatch(toggleModalCalculator(payload)),
-    sendMessagePlaceOrderError: payload =>
-      dispatch(messagePlaceOrderError(payload))
+    toggleModalCalculator: payload => dispatch(toggleModalCalculator(payload))
   };
 }
 

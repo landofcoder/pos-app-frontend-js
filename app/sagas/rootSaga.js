@@ -38,7 +38,10 @@ import {
   getOrderHistoryServiceDetails,
   getShopInfoService
 } from './services/common-service';
-import { createConnectedDeviceSettings, removeScannerDeviceConnected } from './services/settings-service';
+import {
+  createConnectedDeviceSettings,
+  removeScannerDeviceConnected
+} from './services/settings-service';
 import {
   getAppInfoFromLocal,
   getGeneralFromLocal,
@@ -48,17 +51,38 @@ import {
   writeLoggedInfoToLocal
 } from './services/login-service';
 
-import { handleProductType, reformatConfigurableProduct } from '../common/product';
-import { getDefaultPaymentMethod, getDefaultShippingMethod } from './common/orderSaga';
+import {
+  handleProductType,
+  reformatConfigurableProduct
+} from '../common/product';
+import {
+  getDefaultPaymentMethod,
+  getDefaultShippingMethod
+} from './common/orderSaga';
 import { calcPrice } from '../common/product-price';
 import { BUNDLE } from '../constants/product-types';
-import { getCategoriesFromLocal, writeCategoriesToLocal } from '../reducers/db/categories';
+import {
+  getCategoriesFromLocal,
+  writeCategoriesToLocal
+} from '../reducers/db/categories';
 import { syncCustomers } from '../reducers/db/customers';
 import { getAllOrders } from '../reducers/db/sync_orders';
-import { getOfflineMode, setAppInfoToGlobal, setTokenGlobal } from '../common/settings';
+import {
+  getOfflineMode,
+  setAppInfoToGlobal,
+  setTokenGlobal
+} from '../common/settings';
 import { createProduct } from '../reducers/db/sync_custom_product';
-import { CHILDREN, LOGIN_FORM, SYNC_SCREEN, WORK_PLACE_FORM } from '../constants/main-panel-types';
-import { QUERY_GET_PRODUCT_BY_CATEGORY, QUERY_SEARCH_PRODUCT } from '../constants/product-query';
+import {
+  CHILDREN,
+  LOGIN_FORM,
+  SYNC_SCREEN,
+  WORK_PLACE_FORM
+} from '../constants/main-panel-types';
+import {
+  QUERY_GET_PRODUCT_BY_CATEGORY,
+  QUERY_SEARCH_PRODUCT
+} from '../constants/product-query';
 import { SUCCESS_CHARGE } from '../constants/payment';
 import { sumCartTotalPrice } from '../common/cart';
 
@@ -69,20 +93,20 @@ const cartId = state => state.mainRd.cartCurrent.cartId;
 const cartIsGuestCustomer = state => state.mainRd.cartCurrent.isGuestCustomer;
 const optionValue = state => state.mainRd.productOption.optionValue;
 const customer = state => state.mainRd.cartCurrent.customer;
-const posSystemConfig = state => state.mainRd.posSystemConfig;
+const posSystemConfig = state => state.mainRd.generalConfig.common_config;
 const cashierInfo = state => state.authenRd.cashierInfo;
 const itemCartEditing = state => state.mainRd.itemCartEditing;
 const currentPosCommand = state => state.mainRd.currentPosCommand;
 const orderPreparingCheckoutState = state =>
   state.mainRd.checkout.orderPreparingCheckout;
-const defaultOutletShippingAddress = state => state.mainRd.detailOutlet;
-const guestInfo = state => state.mainRd.posSystemConfig.default_guest_checkout;
+const guestInfo = state =>
+  state.mainRd.generalConfig.common_config.default_guest_checkout;
 const allDevices = state => state.mainRd.hidDevice.allDevices;
 const orderDetailLocalDb = state => state.mainRd.orderHistoryDetailOffline;
 const orderDetailOnline = state => state.mainRd.orderHistoryDetail;
 const cardPayment = state => state.mainRd.checkout.cardPayment;
 const orderList = state => state.mainRd.orderHistory;
-const detailOutlet = state => state.mainRd.detailOutlet;
+const detailOutlet = state => state.mainRd.generalConfig.detail_outlet;
 const isOpenDetailOrderOnline = state => state.mainRd.isOpenDetailOrder;
 const isOpenDetailOrderOffline = state => state.mainRd.isOpenDetailOrderOffline;
 
@@ -106,12 +130,13 @@ function* checkLoginBackgroundSaga() {
     // Get all categories from local
     yield getAllCategoriesFromLocal();
 
-    // Get default products from local
-    yield getDefaultProductsFromLocal();
-
     // Get shopInfo from local
     const config = yield getGeneralFromLocal();
     yield receivedGeneralConfig(config);
+
+    // Get default products from local
+    yield getDefaultProductsFromLocal();
+
     yield put({ type: types.UPDATE_SWITCHING_MODE, payload: CHILDREN });
   } else {
     // If appInfo is exists, then show login form, else show work_place form
@@ -155,18 +180,14 @@ function* startCashCheckoutActionSg(payload) {
  * @returns void
  */
 function* applyCustomerOrQuestAndShippingCheckout() {
-  const defaultOutletShippingAddressResult = yield select(
-    defaultOutletShippingAddress
-  );
+  const defaultOutletShippingAddressResult = yield select(detailOutlet);
 
   console.log(
     'default shipping address result:',
     defaultOutletShippingAddressResult
   );
 
-  const shippingAddress = defaultOutletShippingAddressResult[0]
-    ? defaultOutletShippingAddressResult[0].data
-    : null;
+  const shippingAddress = defaultOutletShippingAddressResult || null;
 
   const posSystemConfigResult = yield select(posSystemConfig);
   const cartCurrentObjResult = yield select(cartCurrentObj);
@@ -184,7 +205,9 @@ function* applyCustomerOrQuestAndShippingCheckout() {
     const cartCurrentObjResult = yield select(cartCurrentObj);
     customerInfo = cartCurrentObjResult.customer;
   }
-
+  console.log(customerInfo);
+  console.log(shippingAddress);
+  console.log(posSystemConfigResult);
   yield put({
     type: types.UPDATE_CUSTOMER_INFO_AND_SHIPPING_ADDRESS_PREPARING_CHECKOUT,
     payload: {
@@ -387,7 +410,6 @@ function* cashCheckoutPlaceOrder() {
         type: types.UPDATE_CASH_PLACE_ORDER_LOADING,
         payload: false
       });
-      yield put({ type: types.PLACE_ORDER_ERROR, payload: placeOrderResult });
     } else {
       // Step 2: Create invoice
       yield call(createInvoiceService, placeOrderResult);

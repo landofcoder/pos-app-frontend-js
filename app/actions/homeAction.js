@@ -370,13 +370,6 @@ export function updatePaymentResultCode(payload) {
   };
 }
 
-export function messagePlaceOrderError(payload) {
-  return {
-    type: types.PLACE_ORDER_ERROR,
-    payload
-  };
-}
-
 export function getDiscountCodeAction(payload) {
   return {
     type: types.DISCOUNT_CODE_ACTION,
