@@ -379,7 +379,7 @@ export function messagePlaceOrderError(payload) {
 
 export function getDiscountCodeAction(payload) {
   return {
-    type: types.DISCOUNT_CODE_ACTION,
+    type: types.CHECKOUT_ACTION,
     payload
   };
 }

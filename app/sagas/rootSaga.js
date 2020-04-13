@@ -7,12 +7,12 @@ import {
   addShippingInformationService,
   createGuestCartService,
   createInvoiceService,
-  createOrderLocal,
   createShipmentService,
-  getDiscountCodeForQuoteService,
+  placeCashOrderService,
   getDiscountForQuoteService,
+  createOrderLocal,
+  getDiscountCodeForQuoteService,
   noteOrderActionService,
-  placeCashOrderService
 } from './services/cart-service';
 import { stripeMakePayment } from './services/payments/stripe-payment';
 import { authorizeMakePayment } from './services/payments/authorize-payment';
@@ -85,7 +85,7 @@ const orderList = state => state.mainRd.orderHistory;
 const detailOutlet = state => state.mainRd.detailOutlet;
 const isOpenDetailOrderOnline = state => state.mainRd.isOpenDetailOrder;
 const isOpenDetailOrderOffline = state => state.mainRd.isOpenDetailOrderOffline;
-
+const internetConnected = state => state.mainRd.internetConnected;
 /**
  * Check login background
  * @returns void
@@ -202,49 +202,11 @@ function* checkoutActionSg() {
   // Show loading pre order
   yield put({ type: types.UPDATE_LOADING_PREPARING_ORDER, payload: true });
 
-  const offlineMode = yield getOfflineMode();
   yield applyCustomerOrQuestAndShippingCheckout();
   // refresh input discount code
-  yield put({ type: types.REFRESH_DISCOUNT_CODE });
-  if (offlineMode === 1) {
-    yield getDiscountForOfflineCheckoutSaga();
-  } else {
-    // Handles for online mode
-    const detailOutletResult = yield select(detailOutlet);
-    const outletConfigDefaultCustomer = detailOutletResult[0].data;
-    const defaultShippingMethod = yield getDefaultShippingMethod();
-    const cartCurrentResult = yield select(cartCurrent);
+  // yield put({ type: types.REFRESH_DISCOUNT_CODE });
 
-    const {
-      cartId,
-      isGuestCustomer,
-      customerToken,
-      defaultGuestCheckout
-    } = yield getCustomerCart();
-
-    yield all(
-      cartCurrentResult.map(item =>
-        call(addProductToQuote, cartId, item, {
-          isGuestCustomer,
-          customerToken
-        })
-      )
-    );
-
-    // Add shipping and get detail order
-    const response = yield call(addShippingInformationService, cartId, {
-      isGuestCustomer,
-      customerToken,
-      defaultShippingMethod,
-      outletConfigDefaultCustomer,
-      defaultGuestCheckout
-    });
-
-    yield put({
-      type: types.RECEIVED_ORDER_PREPARING_CHECKOUT,
-      payload: response
-    });
-  }
+  yield getDiscountForCheckoutSaga();
 
   // Hide cash loading pre order
   yield put({
@@ -341,64 +303,14 @@ function* cashCheckoutPlaceOrder() {
   // Start cash place order loading
   yield put({ type: types.UPDATE_CASH_PLACE_ORDER_LOADING, payload: true });
 
-  // Get offline mode
-  const offlineMode = yield getOfflineMode();
+  const cartCurrentResult = yield select(cartCurrent);
+  const orderPreparingCheckoutResult = yield select(
+    orderPreparingCheckoutState
+  );
+  yield createOrderLocal({ cartCurrentResult, orderPreparingCheckoutResult });
 
-  if (offlineMode === 1) {
-    const cartCurrentResult = yield select(cartCurrent);
-    const orderPreparingCheckoutResult = yield select(
-      orderPreparingCheckoutState
-    );
-    yield createOrderLocal({ cartCurrentResult, orderPreparingCheckoutResult });
-
-    // Copy cart current to cart in receipt
-    yield put({ type: types.COPY_CART_CURRENT_TO_RECEIPT });
-  } else {
-    const cartCurrentTokenResult = yield select(cartCurrentToken);
-    const isGuestCustomer = yield select(cartIsGuestCustomer);
-    const cartIdResult = yield select(cartId);
-    const posSystemConfigResult = yield select(posSystemConfig);
-    const posSystemConfigCustomer = posSystemConfigResult[3];
-
-    const defaultShippingMethod = yield getDefaultShippingMethod();
-
-    // Default payment
-    const defaultPaymentMethod = yield getDefaultPaymentMethod();
-
-    const cashierInfoResult = yield select(cashierInfo);
-
-    // Step 1: Create order
-    const placeOrderResult = yield call(
-      placeCashOrderService,
-      cartCurrentTokenResult,
-      {
-        cartIdResult,
-        isGuestCustomer,
-        customerToken: cartCurrentTokenResult,
-        defaultShippingMethod,
-        defaultPaymentMethod,
-        posSystemConfigCustomer,
-        cashierInfo: cashierInfoResult
-      }
-    );
-    if (placeOrderResult.message !== undefined) {
-      // Stop cash loading order loading
-      yield put({
-        type: types.UPDATE_CASH_PLACE_ORDER_LOADING,
-        payload: false
-      });
-      yield put({ type: types.PLACE_ORDER_ERROR, payload: placeOrderResult });
-    } else {
-      // Step 2: Create invoice
-      yield call(createInvoiceService, placeOrderResult);
-
-      // Step 3: Create shipment
-      yield call(createShipmentService, placeOrderResult);
-
-      // Place order success, let show receipt and copy current cart to cartForReceipt
-      yield put({ type: types.PLACE_ORDER_SUCCESS, placeOrderResult });
-    }
-  }
+  // Copy cart current to cart in receipt
+  yield put({ type: types.COPY_CART_CURRENT_TO_RECEIPT });
 
   // Stop cash loading order loading
   yield put({ type: types.UPDATE_CASH_PLACE_ORDER_LOADING, payload: false });
@@ -768,7 +680,7 @@ function* signUpAction(payload) {
  * Get discount when show cash checkout for offline mode
  * @returns void
  */
-function* getDiscountForOfflineCheckoutSaga() {
+function* getDiscountForCheckoutSaga() {
   const cartCurrentObjResult = yield select(cartCurrentObj);
   // Handles for offline mode
   const posSystemConfigResult = yield select(posSystemConfig);
@@ -780,7 +692,7 @@ function* getDiscountForOfflineCheckoutSaga() {
   // If json type returned, that mean get discount success
   if (typeOfResult !== 'string' && result.message === undefined) {
     yield put({
-      type: types.RECEIVED_CHECKOUT_OFFLINE_CART_INFO,
+      type: types.RECEIVED_CHECKOUT_CART_INFO,
       payload: result
     });
   } else {
@@ -796,7 +708,7 @@ function* getDiscountForOfflineCheckoutSaga() {
       }
     ];
     yield put({
-      type: types.RECEIVED_CHECKOUT_OFFLINE_CART_INFO,
+      type: types.RECEIVED_CHECKOUT_CART_INFO,
       payload: result
     });
   }
@@ -1339,7 +1251,6 @@ function* rootSaga() {
     types.CASH_CHECKOUT_PLACE_ORDER_ACTION,
     cashCheckoutPlaceOrder
   );
-  yield takeEvery(types.DISCOUNT_CODE_ACTION, discountCode);
   yield takeEvery(typesAuthen.LOGIN_ACTION, loginAction);
 }
 
