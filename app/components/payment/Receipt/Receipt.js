@@ -243,7 +243,7 @@ function mapStateToProps(state) {
   return {
     receipt: state.mainRd.receipt,
     customReceipt: state.mainRd.customReceipt,
-    detailOutlet: state.mainRd.detailOutlet
+    detailOutlet: state.mainRd.generalConfig.detail_outlet
   };
 }
 
