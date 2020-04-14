@@ -12,7 +12,7 @@ import {
   getDiscountForQuoteService,
   createOrderLocal,
   getDiscountCodeForQuoteService,
-  noteOrderActionService,
+  noteOrderActionService
 } from './services/cart-service';
 import { stripeMakePayment } from './services/payments/stripe-payment';
 import { authorizeMakePayment } from './services/payments/authorize-payment';
@@ -707,9 +707,16 @@ function* getDiscountForCheckoutSaga() {
   const cartCurrentObjResult = yield select(cartCurrentObj);
   // Handles for offline mode
   const posSystemConfigResult = yield select(posSystemConfig);
+
+  const orderPreparingCheckoutStateResult = yield select(
+    orderPreparingCheckoutState
+  );
+  const discountCode = orderPreparingCheckoutStateResult.totals.discount_code;
+
   const result = yield call(getDiscountForQuoteService, {
     cart: cartCurrentObjResult.data,
-    config: posSystemConfigResult
+    config: posSystemConfigResult,
+    discountCode
   });
   const typeOfResult = typeof result;
   // If json type returned, that mean get discount success

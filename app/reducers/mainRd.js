@@ -82,7 +82,7 @@ const initialState = {
         grand_total: 0,
         tax_amount: 0,
         base_shipping_amount: 0,
-        discount_code: 0,
+        discount_code: "",
         amount_discount_code: 0
       }
     },
