@@ -1,18 +1,13 @@
-import { all, call, put, select, takeEvery } from 'redux-saga/effects';
+import { call, put, select, takeEvery } from 'redux-saga/effects';
 import { getDevices, UsbScanner } from 'usb-barcode-scanner-brainos';
 import * as types from '../constants/root';
 import * as typesAuthen from '../constants/authen.json';
 import {
-  addProductToQuote,
-  addShippingInformationService,
   createGuestCartService,
-  createInvoiceService,
-  createShipmentService,
-  placeCashOrderService,
   getDiscountForQuoteService,
   createOrderLocal,
   getDiscountCodeForQuoteService,
-  noteOrderActionService,
+  noteOrderActionService
 } from './services/cart-service';
 import { stripeMakePayment } from './services/payments/stripe-payment';
 import { authorizeMakePayment } from './services/payments/authorize-payment';
@@ -86,15 +81,10 @@ import {
 import { SUCCESS_CHARGE } from '../constants/payment';
 import { sumCartTotalPrice } from '../common/cart';
 
-const cartCurrent = state => state.mainRd.cartCurrent.data;
-const cartCurrentObj = state => state.mainRd.cartCurrent;
-const cartCurrentToken = state => state.mainRd.cartCurrent.customerToken;
-const cartId = state => state.mainRd.cartCurrent.cartId;
-const cartIsGuestCustomer = state => state.mainRd.cartCurrent.isGuestCustomer;
+const cartCurrent = state => state.mainRd.cartCurrent;
 const optionValue = state => state.mainRd.productOption.optionValue;
 const customer = state => state.mainRd.cartCurrent.customer;
 const posSystemConfig = state => state.mainRd.generalConfig.common_config;
-const cashierInfo = state => state.authenRd.cashierInfo;
 const itemCartEditing = state => state.mainRd.itemCartEditing;
 const currentPosCommand = state => state.mainRd.currentPosCommand;
 const orderPreparingCheckoutState = state =>
@@ -127,6 +117,8 @@ function* checkLoginBackgroundSaga() {
 
   // Logged
   if (loggedDb !== false) {
+    const { value } = loggedDb;
+    setTokenGlobal(value);
     // Get all categories from local
     yield getAllCategoriesFromLocal();
 
@@ -190,7 +182,7 @@ function* applyCustomerOrQuestAndShippingCheckout() {
   const shippingAddress = defaultOutletShippingAddressResult || null;
 
   const posSystemConfigResult = yield select(posSystemConfig);
-  const cartCurrentObjResult = yield select(cartCurrentObj);
+  const cartCurrentObjResult = yield select(cartCurrent);
 
   if (!shippingAddress) {
     console.error('shipping address is null');
@@ -202,7 +194,7 @@ function* applyCustomerOrQuestAndShippingCheckout() {
     customerInfo = yield select(guestInfo);
   } else {
     // Get customer in cartCurrent
-    const cartCurrentObjResult = yield select(cartCurrentObj);
+    const cartCurrentObjResult = yield select(cartCurrent);
     customerInfo = cartCurrentObjResult.customer;
   }
   console.log(customerInfo);
@@ -704,7 +696,7 @@ function* signUpAction(payload) {
  * @returns void
  */
 function* getDiscountForCheckoutSaga() {
-  const cartCurrentObjResult = yield select(cartCurrentObj);
+  const cartCurrentObjResult = yield select(cartCurrent);
   // Handles for offline mode
   const posSystemConfigResult = yield select(posSystemConfig);
   const result = yield call(getDiscountForQuoteService, {

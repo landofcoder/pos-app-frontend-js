@@ -359,21 +359,26 @@ export async function createOrderLocal(payload) {
   console.log('response:', res);
 }
 
-export async function syncOrderService(payload) {
+export async function syncOrderService(params) {
   console.log('payload in sync order service ');
-  console.log(payload);
+  console.log(params);
   try {
     const response = await fetch(
       `${apiGatewayPath}/cashier/customer-checkout/sync-order`,
       {
         method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
         headers: {
-          'Content-Type': 'application/json',
-          token: window.liveToken,
           platform: window.platform,
-          url: window.mainUrl
+          token: window.liveToken,
+          url: window.mainUrl,
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify(payload)
+        redirect: 'follow',
+        referrer: 'no-referrer',
+        body: JSON.stringify({ params })
       }
     );
     const data = await response.json();
