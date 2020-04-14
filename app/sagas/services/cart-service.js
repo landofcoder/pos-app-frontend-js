@@ -369,7 +369,9 @@ export async function syncOrderService(payload) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${window.liveToken}`
+          token: window.liveToken,
+          platform: window.platform,
+          url: window.mainUrl
         },
         body: JSON.stringify(payload)
       }
