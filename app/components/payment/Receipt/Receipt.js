@@ -216,7 +216,7 @@ class Receipt extends Component<Props> {
                 <button
                   type="button"
                   onClick={closeReceiptModal}
-                  className="btn btn-outline-secondary btn-lg btn-block"
+                  className="btn btn-outline-dark btn-lg btn-block"
                 >
                   CLOSE
                 </button>

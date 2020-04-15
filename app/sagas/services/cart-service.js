@@ -326,7 +326,7 @@ export async function getDiscountForQuoteService(payload) {
           params: JSON.stringify({
             cart,
             customerId,
-            discountCode: JSON.stringify(discountCode)
+            discountCode
           })
         })
       }

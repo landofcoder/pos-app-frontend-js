@@ -230,7 +230,7 @@ class CustomizeProduct extends Component<Props> {
               <button
                 type="button"
                 onClick={() => updateIsShowingProductOption(false)}
-                className="btn btn-outline-secondary btn-lg btn-block"
+                className="btn btn-outline-dark btn-lg btn-block"
               >
                 CANCEL
               </button>

@@ -137,7 +137,7 @@ class OrderHistory extends Component<Props> {
             <div className="col-md-2 pl-1 pr-0">
               <button
                 type="button"
-                className="btn btn-outline-secondary btn-lg btn-block"
+                className="btn btn-outline-dark btn-lg btn-block"
                 onClick={() => {
                   orderAction({
                     action: SHIPMENT_ACTION_ORDER
