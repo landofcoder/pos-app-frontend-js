@@ -168,6 +168,8 @@ function* reloadTokenFromLoggedLocalDB() {
   if (diffMinutes > 60) {
     const payload = loggedDb.login;
     yield singleLoginAction(payload);
+  } else {
+    setTokenGlobal(loggedDb.token);
   }
 }
 
@@ -723,6 +725,9 @@ function* signUpAction(payload) {
  * @returns void
  */
 function* getDiscountForCheckoutSaga() {
+  // Reload token first
+  yield reloadTokenFromLoggedLocalDB();
+
   const cartCurrentObjResult = yield select(cartCurrentObj);
   // Handles for offline mode
   const posSystemConfigResult = yield select(posSystemConfig);
