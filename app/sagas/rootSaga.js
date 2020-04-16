@@ -129,9 +129,6 @@ function* checkLoginBackgroundSaga() {
 
   // Logged
   if (loggedDb !== false) {
-    // For test
-    yield reloadTokenFromLoggedLocalDB();
-
     // Get all categories from local
     yield getAllCategoriesFromLocal();
 
