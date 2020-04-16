@@ -226,11 +226,6 @@ export function getProductByCategory(payload) {
   };
 }
 
-export function getDefaultCategory() {
-  return {
-    type: types.GET_DEFAULT_PRODUCT
-  };
-}
 export function signUpCustomer(payload) {
   return {
     type: types.SIGN_UP_CUSTOMER,

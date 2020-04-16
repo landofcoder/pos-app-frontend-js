@@ -87,6 +87,8 @@ export default class Pos extends Component<Props, State> {
   }
 
   componentDidMount(): void {
+    // Get default product
+
     const { autoSyncGroupCheckout, hidDevice } = this.props;
 
     const loopStep = 100000;
