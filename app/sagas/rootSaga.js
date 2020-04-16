@@ -197,15 +197,15 @@ function* applyCustomerOrQuestAndShippingCheckout() {
     'default shipping address result:',
     defaultOutletShippingAddressResult
   );
-
-  const shippingAddress = defaultOutletShippingAddressResult || null;
+  let shippingAddress = null;
+  if (!defaultOutletShippingAddressResult) {
+    console.error('shipping address is null');
+  } else {
+    shippingAddress = defaultOutletShippingAddressResult.data;
+  }
 
   const posSystemConfigResult = yield select(posSystemConfig);
   const cartCurrentObjResult = yield select(cartCurrent);
-
-  if (!shippingAddress) {
-    console.error('shipping address is null');
-  }
 
   // Get customer info
   let customerInfo;
@@ -216,9 +216,6 @@ function* applyCustomerOrQuestAndShippingCheckout() {
     const cartCurrentObjResult = yield select(cartCurrent);
     customerInfo = cartCurrentObjResult.customer;
   }
-  console.log(customerInfo);
-  console.log(shippingAddress);
-  console.log(posSystemConfigResult);
   yield put({
     type: types.UPDATE_CUSTOMER_INFO_AND_SHIPPING_ADDRESS_PREPARING_CHECKOUT,
     payload: {
@@ -718,7 +715,7 @@ function* getDiscountForCheckoutSaga() {
   // Reload token first
   yield reloadTokenFromLoggedLocalDB();
 
-  const cartCurrentObjResult = yield select(cartCurrentObj);
+  const cartCurrentObjResult = yield select(cartCurrent);
   // Handles for offline mode
   const posSystemConfigResult = yield select(posSystemConfig);
 

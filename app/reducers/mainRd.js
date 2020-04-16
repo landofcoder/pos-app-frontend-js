@@ -491,12 +491,14 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.cashierInfo = {};
         break;
       case types.RECEIVED_CHECKOUT_CART_INFO:
-        const ordersInfo = action.payload[0];
+        const ordersInfo = action.payload;
         // Update to preparing checkout
-        const baseDiscountAmount = ordersInfo.base_discount_amount;
-        const baseGrandTotal = ordersInfo.base_grand_total;
-        const baseSubTotal = ordersInfo.base_sub_total;
-        const shippingAndTaxAmount = ordersInfo.shipping_and_tax_amount;
+        const cartId = ordersInfo.cartId;
+        const baseDiscountAmount = ordersInfo.cartTotals.discount_amount;
+        const baseGrandTotal = ordersInfo.cartTotals.base_grand_total;
+        const baseSubTotal = ordersInfo.cartTotals.base_subtotal;
+        const shippingAndTaxAmount = ordersInfo.cartTotals.tax_amount;
+        draft.cartCurrent.cartId = cartId;
         draft.checkout.orderPreparingCheckout.totals.base_discount_amount = baseDiscountAmount;
         draft.checkout.orderPreparingCheckout.totals.base_subtotal = baseSubTotal;
         draft.checkout.orderPreparingCheckout.totals.grand_total = baseGrandTotal;
