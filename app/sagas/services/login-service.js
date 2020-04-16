@@ -1,3 +1,4 @@
+import { format } from 'date-fns';
 import {
   getByKeyV2,
   createKey,
@@ -12,12 +13,27 @@ const appInfoKey = 'app_info';
 const generalConfigKey = 'general_config';
 
 export async function writeLoggedInfoToLocal(payload) {
+  const payloadAssign = payload;
+  // Write as last time update
+  payloadAssign.last_time = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
   const loggedDb = await getByKeyV2(loggedInfoKey);
   if (loggedDb) {
-    await updateById(loggedDb.id, payload);
+    await updateById(loggedDb.id, payloadAssign);
   } else {
-    await createKey(loggedInfoKey, payload);
+    await createKey(loggedInfoKey, payloadAssign);
   }
+}
+
+export async function deleteLoggedDb() {
+  await deleteByKey(loggedInfoKey);
+}
+
+export async function readLoggedDbFromLocal() {
+  const data = await getByKeyV2(loggedInfoKey);
+  if (data) {
+    return data.value;
+  }
+  return false;
 }
 
 export async function writeGeneralConfigToLocal(payload) {
@@ -50,18 +66,6 @@ export async function getAppInfoFromLocal() {
   const data = await getByKeyV2(appInfoKey);
   if (data) {
     return data.value;
-  }
-  return false;
-}
-
-export async function deleteLoggedDb() {
-  await deleteByKey(loggedInfoKey);
-}
-
-export async function getLoggedDb() {
-  const data = await getByKeyV2(loggedInfoKey);
-  if (data) {
-    return data;
   }
   return false;
 }

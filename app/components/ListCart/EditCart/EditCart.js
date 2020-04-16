@@ -120,7 +120,7 @@ class EditCart extends Component<Props, State> {
               <div className="col-md-6 p-0">
                 <button
                   type="button"
-                  className="btn btn-outline-secondary btn-lg btn-block"
+                  className="btn btn-outline-dark btn-lg btn-block"
                   onClick={() =>
                     updateIsShowModelEditingCartItem({ open: false })
                   }

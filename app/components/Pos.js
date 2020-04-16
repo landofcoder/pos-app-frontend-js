@@ -571,7 +571,7 @@ export default class Pos extends Component<Props, State> {
                   <button
                     type="button"
                     onClick={() => switchToHoldItemCart(index)}
-                    className="btn btn-outline-secondary btn-lg btn-block"
+                    className="btn btn-outline-dark btn-lg btn-block"
                   >
                     {index + 1}
                   </button>
@@ -590,7 +590,7 @@ export default class Pos extends Component<Props, State> {
             </div>
           </div>
           <div className={Styles.wrapActionSecondLine}>
-            <div className="col-md-1 pl-0 pr-1">
+            <div className="col-md-2 pl-0 pr-1">
               <button
                 type="button"
                 className="btn btn-outline-dark btn-lg btn-block"
