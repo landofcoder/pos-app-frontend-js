@@ -1,5 +1,6 @@
 import { all, call, put, select, takeEvery } from 'redux-saga/effects';
 import { getDevices, UsbScanner } from 'usb-barcode-scanner-brainos';
+import { differenceInMinutes } from 'date-fns';
 import * as types from '../constants/root';
 import * as typesAuthen from '../constants/authen.json';
 import {
@@ -45,7 +46,7 @@ import {
 import {
   getAppInfoFromLocal,
   getGeneralFromLocal,
-  getLoggedDb,
+  readLoggedDbFromLocal,
   loginService,
   writeGeneralConfigToLocal,
   writeLoggedInfoToLocal
@@ -110,12 +111,13 @@ const detailOutlet = state => state.mainRd.generalConfig.detail_outlet;
 const isOpenDetailOrderOnline = state => state.mainRd.isOpenDetailOrder;
 const isOpenDetailOrderOffline = state => state.mainRd.isOpenDetailOrderOffline;
 const internetConnected = state => state.mainRd.internetConnected;
+
 /**
  * Check login background
  * @returns void
  */
 function* checkLoginBackgroundSaga() {
-  const loggedDb = yield getLoggedDb();
+  const loggedDb = yield readLoggedDbFromLocal();
   console.info('login background is checking');
 
   // Load appInfo to reducer
@@ -127,6 +129,9 @@ function* checkLoginBackgroundSaga() {
 
   // Logged
   if (loggedDb !== false) {
+    // For test
+    yield reloadTokenFromLoggedLocalDB();
+
     // Get all categories from local
     yield getAllCategoriesFromLocal();
 
@@ -149,6 +154,23 @@ function* checkLoginBackgroundSaga() {
         payload: WORK_PLACE_FORM
       });
     }
+  }
+}
+
+/**
+ * Call this function first in all feature related to gateway api, this function
+ * will re-login and set new liveToken
+ * @returns void
+ */
+function* reloadTokenFromLoggedLocalDB() {
+  const loggedDb = yield readLoggedDbFromLocal();
+  const lastTime = loggedDb.last_time;
+  const dateLastTime = new Date(lastTime);
+  const diffMinutes = differenceInMinutes(new Date(), dateLastTime);
+  // Re-login to get new live token
+  if (diffMinutes > 60) {
+    const payload = loggedDb.login;
+    yield singleLoginAction(payload);
   }
 }
 
@@ -1163,6 +1185,27 @@ function* discountCode(payload) {
   }
 }
 
+/**
+ * For auto login to get new token
+ * @param _payload
+ * @returns void
+ */
+function* singleLoginAction(_payload) {
+  const payload = { payload: _payload };
+  const resultLogin = yield call(loginService, payload);
+  if (resultLogin.status) {
+    // Write logged info to local
+    yield writeLoggedInfoToLocal({
+      login: payload.payload,
+      token: resultLogin.data
+    });
+
+    // Write token to local
+    const token = resultLogin.data;
+    setTokenGlobal(token);
+  }
+}
+
 function* loginAction(payload) {
   // Start loading
   yield put({ type: typesAuthen.START_LOADING });
@@ -1184,7 +1227,10 @@ function* loginAction(payload) {
     yield setupSyncCategoriesAndProducts();
 
     // Write logged info to local
-    yield writeLoggedInfoToLocal(resultLogin.data);
+    yield writeLoggedInfoToLocal({
+      login: payload.payload,
+      token: resultLogin.data
+    });
   } else {
     yield put({
       type: typesAuthen.ERROR_LOGIN,
