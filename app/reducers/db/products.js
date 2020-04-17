@@ -20,25 +20,34 @@ export function syncProducts(productList, allParentIds = []) {
     const productTbl = db.table(table);
 
     productList.forEach(async item => {
-      // Convert categories to categoryIds first
-      const itemRemake = await makeCategoriesArraySimple(item);
+      // Check null item
+      if (item) {
+        // Convert categories to categoryIds first
+        const itemRemake = await makeCategoriesArraySimple(item);
 
-      // Merged all parentIds to item
-      const listDifference = _.difference(allParentIds, itemRemake.categoryIds);
+        // Merged all parentIds to item
+        const listDifference = _.difference(
+          allParentIds,
+          itemRemake.categoryIds
+        );
 
-      // Push parentIds with regular categoryIds
-      itemRemake.categoryIds = _.concat(itemRemake.categoryIds, listDifference);
+        // Push parentIds with regular categoryIds
+        itemRemake.categoryIds = _.concat(
+          itemRemake.categoryIds,
+          listDifference
+        );
 
-      const product = await productTbl.get(itemRemake.id);
-      // Check exists
-      if (product) {
-        // Update with pos_sync_updated_at
-        itemRemake.pos_sync_updated_at = new Date();
-        await productTbl.update(itemRemake.id, itemRemake);
-      } else {
-        // Add new
-        itemRemake.pos_sync_create_at = new Date();
-        await productTbl.add(itemRemake);
+        const product = await productTbl.get(itemRemake.id);
+        // Check exists
+        if (product) {
+          // Update with pos_sync_updated_at
+          itemRemake.pos_sync_updated_at = new Date();
+          await productTbl.update(itemRemake.id, itemRemake);
+        } else {
+          // Add new
+          itemRemake.pos_sync_create_at = new Date();
+          await productTbl.add(itemRemake);
+        }
       }
     });
   }
@@ -62,25 +71,6 @@ async function makeCategoriesArraySimple(product) {
   }
   return productAssign;
 }
-
-// /**
-//  * Get default product without any condition
-//  * @returns array
-//  */
-// export async function getDefaultProductLocal() {
-//   // If use offset(), eg: offer(50) make sure we have more than 50 records or equal
-//   let data;
-//   try {
-//     data = await db
-//       .table(table)
-//       .offset(0)
-//       .limit(50)
-//       .toArray();
-//   } catch (e) {
-//     data = [];
-//   }
-//   return data;
-// }
 
 export async function getProductBySkuLocal(payload) {
   console.log(payload);

@@ -113,7 +113,7 @@ export async function loginService(payload) {
   } catch (e) {
     console.log(e);
   }
-  return null;
+  return { message: 'Cannot connect server, please try again.' };
 }
 
 export async function setMainUrlKey(payload) {

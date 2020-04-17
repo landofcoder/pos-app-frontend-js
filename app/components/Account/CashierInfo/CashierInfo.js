@@ -26,6 +26,7 @@ class CashierInfo extends Component<Props> {
     return (
       <>
         <div className="row">
+          <div className="col-md-2"></div>
           <div className="col-md-6">
             <div className="card">
               <h5 className="card-header">Cashier Information</h5>

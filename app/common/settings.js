@@ -16,29 +16,34 @@ export function getGraphqlPath() {
 /**
  * Limit loop using requestAnimationFrame if timeOut have param, interval will by timeOut config
  * @param fn
- * @param fps : number = 30 fps
- * @param timeOut
+ * @param delay
  */
-export function limitLoop(fn, fps = 30, timeOut = null) {
-  // Use var then = Date.now(); if you
-  // don't care about targeting < IE9
-  let then = new Date().getTime();
-  const interval = timeOut || 1000 / fps;
-
-  return (function loop() {
-    window.requestAnimationFrame(loop);
-    // again, Date.now() if it's available
-    const now = new Date().getTime();
-    const delta = now - then;
-    if (delta > interval) {
-      // Update time
-      // now - (delta % interval) is an improvement over just
-      // using then = now, which can end up lowering overall fps
-      then = now - (delta % interval);
-      // call the fn
-      fn();
+export function startLoop(fn, delay = null) {
+  const requestAnimFrame = (() => {
+    return (
+      window.requestAnimationFrame ||
+      function(callback) {
+        window.setTimeout(callback, 1000 / 60);
+      }
+    );
+  })();
+  let start = new Date().getTime();
+  const handle = {};
+  function loop() {
+    handle.value = requestAnimFrame(loop);
+    const current = new Date().getTime();
+    const delta = current - start;
+    if (delta >= delay) {
+      fn.call();
+      start = new Date().getTime();
     }
-  })(0);
+  }
+  handle.value = requestAnimFrame(loop);
+  return handle;
+}
+
+export function stopLoop(frameId) {
+  window.cancelAnimationFrame(frameId.value);
 }
 
 export function formatCurrencyCode(value: number) {

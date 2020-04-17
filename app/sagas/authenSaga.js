@@ -1,10 +1,6 @@
 import { takeEvery, call, put, takeLatest, select } from 'redux-saga/effects';
 import * as types from '../constants/authen';
-import {
-  LOGOUT_POS_ACTION,
-  SYNC_CLIENT_DATA,
-  GET_SYNC_MANAGER
-} from '../constants/root.json';
+import { SYNC_CLIENT_DATA, GET_SYNC_MANAGER } from '../constants/root.json';
 import { LOGIN_FORM } from '../constants/main-panel-types.json';
 import {
   setMainUrlKey,
@@ -28,11 +24,10 @@ import { syncOrderService } from './services/cart-service';
 const urlTokenService = state => state.authenRd.urlTokenService;
 
 function* logoutAction() {
-  yield put({ type: types.LOGOUT_AUTHEN_ACTION });
+  // Update view to login_form
+  yield put({ type: types.UPDATE_SWITCHING_MODE, payload: LOGIN_FORM });
   yield writeLastTimeLogoutToLocal();
   yield deleteLoggedDb();
-  yield put({ type: LOGOUT_POS_ACTION });
-  yield put({ type: types.CHECK_LOGIN_BACKGROUND });
 }
 
 function* syncCustomer() {
@@ -130,7 +125,7 @@ function* getAppByTokenSg(payloadParams) {
   } else {
     yield put({
       type: types.GET_APP_INFO_FAILURE,
-      payload: 'Invalid Token, please try again!'
+      payload: 'Invalid Token, please try again.'
     });
   }
 

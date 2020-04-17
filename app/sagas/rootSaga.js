@@ -1101,10 +1101,10 @@ function* loginAction(payload) {
   // Start loading
   yield put({ type: typesAuthen.START_LOADING });
   const resultLogin = yield call(loginService, payload);
-  const token = resultLogin.data;
-  setTokenGlobal(token);
 
-  if (resultLogin.status) {
+  if (resultLogin && resultLogin.status) {
+    const token = resultLogin.data;
+    setTokenGlobal(token);
     // Kiểm tra key last_time_logout nếu có thì có nghĩa là đã đăng nhập và các
     // sản phẩm đã được sync rồi nên không cần thiết phải sync lại
     const lastTimeLogout = yield readLastTimeLogoutFromLocal();
@@ -1138,14 +1138,20 @@ function* loginAction(payload) {
       login: payload.payload,
       token: resultLogin.data
     });
+    // Setup empty error message
+    yield put({
+      type: typesAuthen.ERROR_LOGIN,
+      payload: ''
+    });
   } else {
     yield put({
       type: typesAuthen.ERROR_LOGIN,
       payload: resultLogin.message
     });
-    // Set login button loading to false
-    yield put({ type: typesAuthen.STOP_LOADING });
   }
+
+  // Stop loading
+  yield put({ type: typesAuthen.STOP_LOADING });
 }
 
 /**

@@ -2,7 +2,6 @@ import produce from 'immer';
 import * as typesAuthen from '../constants/authen';
 
 const initialState = {
-  token: '',
   loading: false,
   message: '',
   messageErrorWorkPlace: '',
@@ -35,15 +34,10 @@ const authenRd = (state = initialState, action) =>
         draft.loadingWorkPlace = false;
         break;
       case typesAuthen.ERROR_LOGIN:
-        draft.message = action.payload || "Your server didn't response";
+        draft.message = action.payload;
         break;
       case typesAuthen.SUCCESS_LOGIN:
         draft.message = 'SUCCESS';
-        break;
-      case typesAuthen.LOGOUT_AUTHEN_ACTION:
-        draft.token = '';
-        draft.message = '';
-        draft.cashierInfo = {};
         break;
       case typesAuthen.GET_APP_INFO_FAILURE:
         draft.messageErrorWorkPlace = action.payload;

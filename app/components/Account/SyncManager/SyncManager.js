@@ -53,99 +53,28 @@ class SyncManager extends Component {
 
   render() {
     const { viewSelected } = this.state;
-    const { syncStatus } = this.props;
-    console.log(syncStatus);
+    console.log(viewSelected);
     return (
       <>
-        <div className="row mr-0 ml-0">
-          <div className="col-3 p-0">
+        <div className="row">
+          <div className="col-md-2"></div>
+          <div className="col-md-6">
             <ul className="list-group">
-              <li className="list-group-item ">
-                <a
-                  className={`nav-link  ${
-                    viewSelected === 'syncOrder' ? 'active' : ''
-                  }`}
-                  id="v-pills-profile-tab"
-                  data-toggle="pill"
-                  href="#"
-                  role="tab"
-                  aria-controls="v-pills-profile"
-                  onClick={e => {
-                    e.preventDefault();
-                    this.viewSelectedAction('syncOrder');
-                  }}
-                >
-                  Sync Order
-                </a>
+              <li className="list-group-item d-flex justify-content-between align-items-center">
+                Cras justo odio
+                <span className="badge badge-primary badge-pill">14</span>
               </li>
-              <li className="list-group-item ">
-                <a
-                  className={`nav-link  ${
-                    viewSelected === 'syncCustomer' ? 'active' : ''
-                  }`}
-                  id="v-pills-profile-tab"
-                  data-toggle="pill"
-                  href="#"
-                  role="tab"
-                  aria-controls="v-pills-profile"
-                  onClick={e => {
-                    e.preventDefault();
-                    this.viewSelectedAction('syncCustomer');
-                  }}
-                >
-                  Sync Customer
-                </a>
+              <li className="list-group-item d-flex justify-content-between align-items-center">
+                Dapibus ac facilisis in
+                <span className="badge badge-primary badge-pill">2</span>
               </li>
-              <li className="list-group-item">
-                <a
-                  className={`nav-link  ${
-                    viewSelected === 'syncCustomProduct' ? 'active' : ''
-                  }`}
-                  id="v-pills-profile-tab"
-                  data-toggle="pill"
-                  href="#"
-                  role="tab"
-                  aria-controls="v-pills-profile"
-                  onClick={e => {
-                    e.preventDefault();
-                    this.viewSelectedAction('syncCustomProduct');
-                  }}
-                >
-                  Sync Custom Product
-                </a>
+              <li className="list-group-item d-flex justify-content-between align-items-center">
+                Morbi leo risus
+                <span className="badge badge-primary badge-pill">1</span>
               </li>
             </ul>
-            <div className="row form-group mt-2">
-              <div className="col-md-1"></div>
-              <div className="col-md-5">
-                {syncStatus ? (
-                  <>
-                    <div
-                      className="spinner-border spinner-border-sm"
-                      role="status"
-                    ></div>
-                    <span>&nbsp; Syncing...</span>
-                  </>
-                ) : (
-                  <>
-                    <a
-                      href="#"
-                      onClick={e => {
-                        this.syncStartAction(e);
-                      }}
-                    >
-                      <i className="fas fa-sync fa-1x"></i>
-                      <span>&nbsp; Not sync yet</span>
-                    </a>
-                  </>
-                )}
-              </div>
-              <div className="col-md-5"></div>
-            </div>
           </div>
-          <div className="col-9">
-            <div className="card">{this.renderSwitchShowUpSync()}</div>
-          </div>
+          <div className="col-md-4"></div>
         </div>
       </>
     );
