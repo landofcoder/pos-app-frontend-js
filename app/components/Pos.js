@@ -92,7 +92,7 @@ export default class Pos extends Component<Props, State> {
 
     const { autoSyncGroupCheckout, hidDevice } = this.props;
 
-    const loopStep = 100000;
+    const loopStep = 20000;
     const frameId = startLoop(autoSyncGroupCheckout, loopStep);
     this.setState({ frameId });
 

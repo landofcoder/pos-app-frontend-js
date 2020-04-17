@@ -62,6 +62,7 @@ const initialState = {
       currency_id: '',
       email: '',
       posSystemConfigResult: {},
+      detailOutletResult: {},
       shipping_address: {
         country_id: '',
         street: [],
@@ -573,10 +574,13 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.isOpenDetailOrderOffline = false;
         break;
       case types.UPDATE_CUSTOMER_INFO_AND_SHIPPING_ADDRESS_PREPARING_CHECKOUT: {
-        const customerInfo = action.payload.customer;
-        const shippingAddress = action.payload.shippingAddress;
-        const posSystemConfigResult = action.payload.posSystemConfigResult;
-        const { email } = customerInfo;
+        const {
+          customer,
+          posSystemConfigResult,
+          shippingAddress,
+          detailOutletResult
+        } = action.payload;
+        const { email } = customer;
         const shippingMethod = getShippingMethodCode(
           posSystemConfigResult.shipping_method
         );
@@ -601,6 +605,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.checkout.orderPreparingCheckout.shipping_address.shipping_method = shippingMethod;
         draft.checkout.orderPreparingCheckout.shipping_address.method = paymentForPos;
         draft.checkout.orderPreparingCheckout.posSystemConfigResult = posSystemConfigResult;
+        draft.checkout.orderPreparingCheckout.detailOutletResult = detailOutletResult;
         break;
       }
       case types.ON_CARD_PAYMENT_FIELD_ONCHANGE:
