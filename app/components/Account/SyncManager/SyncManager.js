@@ -107,7 +107,7 @@ class SyncManager extends Component {
                 </tr>
                 <tr>
                   <th scope="row">4</th>
-                  <td>Customer sync</td>
+                  <td>Customers sync</td>
                   <td>20 minutes ago</td>
                   <td>
                     <span className="badge badge-danger badge-pill">
