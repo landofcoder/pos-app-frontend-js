@@ -153,7 +153,7 @@ function* getAppByTokenSg(payloadParams) {
   } else {
     yield put({
       type: types.GET_APP_INFO_FAILURE,
-      payload: 'Invalid Token, please try again!'
+      payload: 'Invalid Token, please try again.'
     });
   }
 

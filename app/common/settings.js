@@ -43,7 +43,6 @@ export function startLoop(fn, delay = null) {
 }
 
 export function stopLoop(frameId) {
-  console.log('top frame:', frameId);
   window.cancelAnimationFrame(frameId.value);
 }
 

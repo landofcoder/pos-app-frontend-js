@@ -1204,10 +1204,10 @@ function* loginAction(payload) {
   // Start loading
   yield put({ type: typesAuthen.START_LOADING });
   const resultLogin = yield call(loginService, payload);
-  const token = resultLogin.data;
-  setTokenGlobal(token);
 
-  if (resultLogin.status) {
+  if (resultLogin && resultLogin.status) {
+    const token = resultLogin.data;
+    setTokenGlobal(token);
     // Kiểm tra key last_time_logout nếu có thì có nghĩa là đã đăng nhập và các
     // sản phẩm đã được sync rồi nên không cần thiết phải sync lại
     const lastTimeLogout = yield readLastTimeLogoutFromLocal();
