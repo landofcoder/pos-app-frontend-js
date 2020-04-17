@@ -72,7 +72,7 @@ class SyncManager extends Component {
                 <tr>
                   <th scope="row">1</th>
                   <td>All products sync</td>
-                  <td>Otto</td>
+                  <td>30 minutes ago</td>
                   <td>
                     <span className="badge badge-success badge-pill">
                       success
@@ -90,7 +90,7 @@ class SyncManager extends Component {
                 <tr>
                   <th scope="row">2</th>
                   <td>Custom products sync</td>
-                  <td>Thornton</td>
+                  <td>15 minutes ago</td>
                   <td>
                     <span className="badge badge-success badge-pill">
                       success
@@ -108,7 +108,7 @@ class SyncManager extends Component {
                 <tr>
                   <th scope="row">4</th>
                   <td>Customer sync</td>
-                  <td>the Bird</td>
+                  <td>20 minutes ago</td>
                   <td>
                     <span className="badge badge-danger badge-pill">
                       2 errors
@@ -126,7 +126,7 @@ class SyncManager extends Component {
                 <tr>
                   <th scope="row">3</th>
                   <td>General config sync</td>
-                  <td>the Bird</td>
+                  <td>a few seconds</td>
                   <td>
                     <span className="badge badge-danger badge-pill">
                       2 errors

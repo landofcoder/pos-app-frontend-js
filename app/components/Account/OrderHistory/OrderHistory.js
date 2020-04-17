@@ -232,7 +232,7 @@ class OrderHistory extends Component<Props> {
                     <th scope="row">{index + 1}</th>
                     <td>{item.sales_order_id ? item.sales_order_id : '--'}</td>
                     <td>{formatCurrencyCode(item.grand_total)}</td>
-                    <td>{item.created_at}</td>
+                    <td>{item.created_at ? '5 minutes ago' : ''}</td>
                     <td>{item.order_status ? item.order_status : '--'}</td>
                     <td>
                       {item.local ? (
