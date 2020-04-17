@@ -2,11 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import commonStyles from '../../styles/common.scss';
 import styles from './workplace.scss';
-import {
-  changeWorkPlaceInput,
-  setDefaultProtocolWorkplace,
-  getAppByToken
-} from '../../../actions/authenAction';
+import { getAppByToken } from '../../../actions/authenAction';
 
 type Props = {
   loading: boolean,
@@ -118,9 +114,6 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    changeWorkPlaceInput: payload => dispatch(changeWorkPlaceInput(payload)),
-    setDefaultProtocol: payload =>
-      dispatch(setDefaultProtocolWorkplace(payload)),
     getAppByToken: payload => dispatch(getAppByToken(payload))
   };
 }

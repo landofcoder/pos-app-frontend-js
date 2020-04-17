@@ -19,26 +19,6 @@ export function checkLoginBackground() {
   };
 }
 
-export function changeWorkPlaceInput(payload) {
-  return {
-    type: types.CHANGE_TOKEN_INPUT_WORKPLACE,
-    payload
-  };
-}
-
-export function setDefaultProtocolWorkplace(payload) {
-  return {
-    type: types.SET_DEFAULT_PROTOCOL_WORKPLACE,
-    payload
-  };
-}
-
-export function getModuleInstalled() {
-  return {
-    type: types.GET_MODULE_INSTALLED
-  };
-}
-
 export function getAppByToken(payload) {
   return {
     type: types.GET_APP_BY_TOKEN,

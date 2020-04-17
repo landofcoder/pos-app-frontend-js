@@ -6,21 +6,15 @@ const initialState = {
   message: '',
   messageErrorWorkPlace: '',
   cashierInfo: {},
-  isReloadingToken: false,
   loadingWorkPlace: false,
-  loadingModuleComponent: true,
   appInfo: {},
-  isValidToken: '',
   moduleInstalled: {},
-  errorServiceModuleInstalled: false,
-  senseUrl: '',
   syncManager: {
     syncCustomProduct: null,
     syncCustomer: null,
     syncOrder: null,
     syncStatus: false
-  },
-  toModuleInstalled: false
+  }
 };
 
 /*  eslint no-param-reassign: "error" */
@@ -45,26 +39,12 @@ const authenRd = (state = initialState, action) =>
       case typesAuthen.SUCCESS_LOGIN:
         draft.message = 'SUCCESS';
         break;
-      case typesAuthen.SIGN_IN_WORKPLACE_ACTION:
-        draft.loadingWorkPlace = action.payload;
-        break;
       case typesAuthen.GET_APP_INFO_FAILURE:
         draft.messageErrorWorkPlace = action.payload;
-        draft.isValidToken = false;
         break;
       case typesAuthen.CHANGE_TOKEN_INPUT_WORKPLACE:
         draft.tokenWorkPlace = action.payload;
         draft.messageErrorWorkPlace = '';
-        if (action.payload) draft.isValidToken = true;
-        break;
-      case typesAuthen.SET_DEFAULT_PROTOCOL_WORKPLACE:
-        draft.defaultProtocol = action.payload;
-        break;
-      case typesAuthen.LOADING_MODULE_COMPONENT:
-        draft.loadingModuleComponent = action.payload;
-        break;
-      case typesAuthen.RECEIVED_MODULE_INSTALLED:
-        draft.moduleInstalled = action.payload;
         break;
       case typesAuthen.RECEIVED_LIST_SYNC_ORDER:
         draft.syncManager.syncOrder = action.payload;
@@ -75,13 +55,7 @@ const authenRd = (state = initialState, action) =>
       case typesAuthen.RECEIVED_LIST_SYNC_CUSTOMER:
         draft.syncManager.syncCustomer = action.payload;
         break;
-      case typesAuthen.ERROR_SERVICE_MODULES_INSTALLED:
-        draft.errorServiceModuleInstalled = action.payload;
-        break;
-      case typesAuthen.CHANGE_SENSE_URL:
-        draft.senseUrl = action.payload;
-        break;
-      case typesAuthen.CHANGE_STATUS_SYNC:
+      case typesAuthen.STATUS_SYNC:
         draft.syncManager.syncStatus = action.payload;
         break;
       case typesAuthen.RECEIVED_APP_INFO:
