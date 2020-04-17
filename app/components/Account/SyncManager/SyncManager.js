@@ -57,24 +57,93 @@ class SyncManager extends Component {
     return (
       <>
         <div className="row">
-          <div className="col-md-2"></div>
-          <div className="col-md-6">
-            <ul className="list-group">
-              <li className="list-group-item d-flex justify-content-between align-items-center">
-                Products sync
-                <span className="badge badge-success badge-pill">success</span>
-              </li>
-              <li className="list-group-item d-flex justify-content-between align-items-center">
-                Customers sync
-                <span className="badge badge-success badge-pill">success</span>
-              </li>
-              <li className="list-group-item d-flex justify-content-between align-items-center">
-                General config sync
-                <span className="badge badge-danger badge-pill">2 errors</span>
-              </li>
-            </ul>
+          <div className="col-md-12">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Service name</th>
+                  <th scope="col">Last time sync</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">1</th>
+                  <td>All products sync</td>
+                  <td>Otto</td>
+                  <td>
+                    <span className="badge badge-success badge-pill">
+                      success
+                    </span>
+                  </td>
+                  <td>
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary btn-sm"
+                    >
+                      Sync now
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">2</th>
+                  <td>Custom products sync</td>
+                  <td>Thornton</td>
+                  <td>
+                    <span className="badge badge-success badge-pill">
+                      success
+                    </span>
+                  </td>
+                  <td>
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary btn-sm"
+                    >
+                      Sync now
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">4</th>
+                  <td>Customer sync</td>
+                  <td>the Bird</td>
+                  <td>
+                    <span className="badge badge-danger badge-pill">
+                      2 errors
+                    </span>
+                  </td>
+                  <td>
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary btn-sm"
+                    >
+                      Sync now
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">3</th>
+                  <td>General config sync</td>
+                  <td>the Bird</td>
+                  <td>
+                    <span className="badge badge-danger badge-pill">
+                      2 errors
+                    </span>
+                  </td>
+                  <td>
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary btn-sm"
+                    >
+                      Sync now
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <div className="col-md-4"></div>
         </div>
       </>
     );
