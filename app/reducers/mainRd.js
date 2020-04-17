@@ -483,13 +483,6 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.MESSAGE_SIGN_UP_CUSTOMER:
         draft.messageSignUpCustomer = action.payload;
         break;
-      case types.LOGOUT_POS_ACTION:
-        draft.cartCurrent.data = [];
-        draft.cartHoldList = [];
-        draft.orderHistory = [];
-        draft.customerSearchResult = [];
-        draft.cashierInfo = {};
-        break;
       case types.RECEIVED_CHECKOUT_CART_INFO:
         const ordersInfo = action.payload[0];
         // Update to preparing checkout

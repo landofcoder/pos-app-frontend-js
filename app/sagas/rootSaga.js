@@ -1241,14 +1241,20 @@ function* loginAction(payload) {
       login: payload.payload,
       token: resultLogin.data
     });
+    // Setup empty error message
+    yield put({
+      type: typesAuthen.ERROR_LOGIN,
+      payload: ''
+    });
   } else {
     yield put({
       type: typesAuthen.ERROR_LOGIN,
       payload: resultLogin.message
     });
-    // Set login button loading to false
-    yield put({ type: typesAuthen.STOP_LOADING });
   }
+
+  // Stop loading
+  yield put({ type: typesAuthen.STOP_LOADING });
 }
 
 /**
