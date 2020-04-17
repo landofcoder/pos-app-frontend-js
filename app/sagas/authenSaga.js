@@ -70,9 +70,7 @@ function* syncOrder() {
 function* syncClientData(payload) {
   const dbTime = yield getTimeSyncConstant();
   const nowTime = Date.now();
-  console.log(nowTime - dbTime > 1200000);
-  console.log(nowTime - dbTime < 1200000);
-  if (nowTime - dbTime < 1200000 || payload.payload === true) {
+  if (nowTime - dbTime > 1200000 || payload.payload === true) {
     yield put({ type: types.STATUS_SYNC, payload: true });
     yield resetTimeSyncConstant();
     yield syncCustomProduct();
