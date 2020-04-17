@@ -13,7 +13,7 @@ class Account extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      viewSelected: 'cashierInfo'
+      viewSelected: 'syncManager'
     };
   }
 
@@ -49,12 +49,13 @@ class Account extends Component {
         <div>
           <div className="row pt-4">
             <div className="col-3">
-              <div className="mb-4">
-                <Link to={POS} className="text-muted ml-1">
+              <div className="list-group">
+                <Link
+                  to={POS}
+                  className="list-group-item-light list-group-item list-group-item-action"
+                >
                   Back
                 </Link>
-              </div>
-              <div className="list-group">
                 <button
                   type="button"
                   onClick={() => this.switchingComponent('cashierInfo')}
@@ -72,6 +73,15 @@ class Account extends Component {
                   }`}
                 >
                   Orders History
+                </button>
+                <button
+                  type="button"
+                  onClick={() => this.switchingComponent('syncManager')}
+                  className={`list-group-item list-group-item-action ${
+                    viewSelected === 'syncManager' ? 'active' : ''
+                  }`}
+                >
+                  Sync data
                 </button>
                 <button
                   type="button"

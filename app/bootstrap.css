@@ -5748,7 +5748,7 @@ a.badge:focus {
 
 .badge-primary {
   color: #fff;
-  background-color: #007bff;
+  background-color: #5721cc;
 }
 
 a.badge-primary:hover,
@@ -6187,8 +6187,8 @@ a.badge-dark.focus {
 .list-group-item.active {
   z-index: 2;
   color: #fff;
-  background-color: #007bff;
-  border-color: #007bff;
+  border-color: #5721cc #5721cc #331673 !important;
+  background-color: #5721cc;
 }
 
 .list-group-horizontal {

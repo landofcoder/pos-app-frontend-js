@@ -19,6 +19,10 @@ class Categories extends Component<Props> {
     window.addEventListener('resize', this.windowDimensionChange);
   }
 
+  componentWillUnmount(): void {
+    window.removeEventListener('resize', this.windowDimensionChange);
+  }
+
   getProductByCategory = item => {
     const categoryId = item.id;
     const { getProductByCategory } = this.props;

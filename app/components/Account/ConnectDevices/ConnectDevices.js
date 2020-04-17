@@ -47,6 +47,7 @@ class ConnectDevices extends Component<Props> {
     return (
       <div>
         <div className="row">
+          <div className="col-md-2"></div>
           <div className="col-md-6">
             <div className="card">
               <h5 className="card-header">Barcode scanner</h5>

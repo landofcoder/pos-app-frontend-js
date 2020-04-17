@@ -40,7 +40,7 @@ const authenRd = (state = initialState, action) =>
         draft.loadingWorkPlace = false;
         break;
       case typesAuthen.ERROR_LOGIN:
-        draft.message = action.payload || "Your server didn't response";
+        draft.message = action.payload;
         break;
       case typesAuthen.SUCCESS_LOGIN:
         draft.message = 'SUCCESS';
