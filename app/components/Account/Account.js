@@ -13,7 +13,7 @@ class Account extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      viewSelected: 'syncManager'
+      viewSelected: 'ordersHistory'
     };
   }
 
