@@ -11,6 +11,7 @@ const loggedInfoKey = 'logged_info';
 const mainUrlKey = 'main_url';
 const appInfoKey = 'app_info';
 const generalConfigKey = 'general_config';
+const logoutKey = 'las_time_logout';
 
 export async function writeLoggedInfoToLocal(payload) {
   const payloadAssign = payload;
@@ -30,6 +31,24 @@ export async function deleteLoggedDb() {
 
 export async function readLoggedDbFromLocal() {
   const data = await getByKeyV2(loggedInfoKey);
+  if (data) {
+    return data.value;
+  }
+  return false;
+}
+
+export async function writeLastTimeLogoutToLocal() {
+  const result = await getByKeyV2(logoutKey);
+  const payload = { time: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx") };
+  if (result) {
+    await updateById(result.id, payload);
+  } else {
+    await createKey(logoutKey, payload);
+  }
+}
+
+export async function readLastTimeLogoutFromLocal() {
+  const data = await getByKeyV2(logoutKey);
   if (data) {
     return data.value;
   }

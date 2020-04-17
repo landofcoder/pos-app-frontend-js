@@ -73,12 +73,9 @@ class Categories extends Component<Props> {
   render() {
     const { allCategories } = this.props;
     const { openNavigation } = this.state;
-    console.log('dd1:', allCategories);
     /* eslint-disable */
     const children_data = (allCategories && allCategories.children_data) ? allCategories.children_data : [];
     /* eslint-enable */
-
-    console.log('dd2:', children_data);
     return (
       <div>
         <nav className="navbar navbar-light navbar-expand-lg mainmenu">

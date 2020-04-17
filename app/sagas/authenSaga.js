@@ -11,7 +11,8 @@ import {
   getModuleInstalledService,
   deleteLoggedDb,
   getAppInfoService,
-  writeAppInfoToLocal
+  writeAppInfoToLocal,
+  writeLastTimeLogoutToLocal
 } from './services/login-service';
 import {
   getTimeSyncConstant,
@@ -29,7 +30,8 @@ const urlTokenService = state => state.authenRd.urlTokenService;
 
 function* logoutAction() {
   yield put({ type: types.LOGOUT_AUTHEN_ACTION });
-  yield deleteLoggedDb({});
+  yield writeLastTimeLogoutToLocal();
+  yield deleteLoggedDb();
   yield put({ type: LOGOUT_POS_ACTION });
   yield put({ type: types.CHECK_LOGIN_BACKGROUND });
 }
