@@ -1,9 +1,8 @@
-import { takeEvery, call, put, takeLatest, select } from 'redux-saga/effects';
+import { takeEvery, call, put } from 'redux-saga/effects';
 import * as types from '../constants/authen';
 import { SYNC_CLIENT_DATA, GET_SYNC_MANAGER } from '../constants/root.json';
 import { LOGIN_FORM } from '../constants/main-panel-types.json';
 import {
-  setMainUrlKey,
   deleteLoggedDb,
   getAppInfoService,
   writeAppInfoToLocal,
@@ -20,8 +19,6 @@ import { getAllTblCustomProduct } from '../reducers/db/sync_custom_product';
 import { getAllOrders, deleteOrder } from '../reducers/db/sync_orders';
 import { signUpCustomerService } from './services/customer-service';
 import { syncOrderService } from './services/cart-service';
-
-const urlTokenService = state => state.authenRd.urlTokenService;
 
 function* logoutAction() {
   // Update view to login_form
