@@ -1,18 +1,11 @@
-import { all, call, put, select, takeEvery } from 'redux-saga/effects';
+import { call, put, select, takeEvery } from 'redux-saga/effects';
 import { getDevices, UsbScanner } from 'usb-barcode-scanner-brainos';
 import { differenceInMinutes } from 'date-fns';
 import * as types from '../constants/root';
 import * as typesAuthen from '../constants/authen.json';
 import {
-  addProductToQuote,
-  addShippingInformationService,
-  createGuestCartService,
-  createInvoiceService,
-  createShipmentService,
-  placeCashOrderService,
   getDiscountForQuoteService,
   createOrderLocal,
-  getDiscountCodeForQuoteService,
   noteOrderActionService
 } from './services/cart-service';
 import { stripeMakePayment } from './services/payments/stripe-payment';
@@ -24,14 +17,12 @@ import {
   writeProductsToLocal
 } from './services/product-service';
 import {
-  getCustomerCartTokenService,
   searchCustomer,
   searchCustomerByName,
   searchCustomerDbService,
   signUpCustomerService,
   signUpCustomerServiceDb
 } from './services/customer-service';
-import { createCustomerCartService } from './services/customer-cart-service';
 import {
   cancelOrderService,
   getAllCategoriesService,
@@ -57,10 +48,6 @@ import {
   handleProductType,
   reformatConfigurableProduct
 } from '../common/product';
-import {
-  getDefaultPaymentMethod,
-  getDefaultShippingMethod
-} from './common/orderSaga';
 import { calcPrice } from '../common/product-price';
 import { BUNDLE } from '../constants/product-types';
 import {
@@ -88,15 +75,10 @@ import {
 import { SUCCESS_CHARGE } from '../constants/payment';
 import { sumCartTotalPrice } from '../common/cart';
 
-const cartCurrent = state => state.mainRd.cartCurrent.data;
-const cartCurrentObj = state => state.mainRd.cartCurrent;
-const cartCurrentToken = state => state.mainRd.cartCurrent.customerToken;
-const cartId = state => state.mainRd.cartCurrent.cartId;
-const cartIsGuestCustomer = state => state.mainRd.cartCurrent.isGuestCustomer;
+const cartCurrent = state => state.mainRd.cartCurrent;
 const optionValue = state => state.mainRd.productOption.optionValue;
 const customer = state => state.mainRd.cartCurrent.customer;
 const posSystemConfig = state => state.mainRd.generalConfig.common_config;
-const cashierInfo = state => state.authenRd.cashierInfo;
 const itemCartEditing = state => state.mainRd.itemCartEditing;
 const currentPosCommand = state => state.mainRd.currentPosCommand;
 const orderPreparingCheckoutState = state =>
@@ -194,20 +176,15 @@ function* startCashCheckoutActionSg(payload) {
  */
 function* applyCustomerOrQuestAndShippingCheckout() {
   const defaultOutletShippingAddressResult = yield select(detailOutlet);
-
-  console.log(
-    'default shipping address result:',
-    defaultOutletShippingAddressResult
-  );
-
-  const shippingAddress = defaultOutletShippingAddressResult || null;
+  let shippingAddress = null;
+  if (!defaultOutletShippingAddressResult) {
+    console.error('shipping address is null');
+  } else {
+    shippingAddress = defaultOutletShippingAddressResult.data;
+  }
 
   const posSystemConfigResult = yield select(posSystemConfig);
-  const cartCurrentObjResult = yield select(cartCurrentObj);
-
-  if (!shippingAddress) {
-    console.error('shipping address is null');
-  }
+  const cartCurrentObjResult = yield select(cartCurrent);
 
   // Get customer info
   let customerInfo;
@@ -215,12 +192,9 @@ function* applyCustomerOrQuestAndShippingCheckout() {
     customerInfo = yield select(guestInfo);
   } else {
     // Get customer in cartCurrent
-    const cartCurrentObjResult = yield select(cartCurrentObj);
+    const cartCurrentObjResult = yield select(cartCurrent);
     customerInfo = cartCurrentObjResult.customer;
   }
-  console.log(customerInfo);
-  console.log(shippingAddress);
-  console.log(posSystemConfigResult);
   yield put({
     type: types.UPDATE_CUSTOMER_INFO_AND_SHIPPING_ADDRESS_PREPARING_CHECKOUT,
     payload: {
@@ -248,65 +222,6 @@ function* checkoutActionSg() {
   yield put({
     type: types.UPDATE_LOADING_PREPARING_ORDER,
     payload: false
-  });
-}
-
-/**
- * Create cart token for guest or customer user
- * @returns void
- */
-function* getCustomerCart() {
-  const customerRdResult = yield select(customer);
-  const posSystemConfigResult = yield select(posSystemConfig);
-  const defaultGuestCheckout = posSystemConfigResult.default_guest_checkout;
-
-  let isGuestCustomer = true;
-  if (customerRdResult !== null) {
-    // Customer logged
-    isGuestCustomer = false;
-  }
-
-  let cartId;
-  let customerToken;
-
-  // Update isGuestCustomer to reducer
-  yield updateIsGuestCustomer(isGuestCustomer);
-
-  if (isGuestCustomer) {
-    // Get guest cart customer
-    cartId = yield call(createGuestCartService);
-  } else {
-    // Create customer cart
-    const customerId = customerRdResult.id;
-    customerToken = yield call(getCustomerCartTokenService, customerId);
-    cartId = yield call(createCustomerCartService, customerToken);
-  }
-
-  // Update cartId to reducer
-  yield put({ type: types.UPDATE_CART_ID_TO_CURRENT_CART, payload: cartId });
-
-  // Update cart token to current quote
-  yield put({
-    type: types.UPDATE_CART_TOKEN_TO_CURRENT_CART,
-    payload: customerToken
-  });
-
-  return {
-    cartId,
-    isGuestCustomer,
-    customerToken,
-    defaultGuestCheckout
-  };
-}
-
-/**
- * Update isGuestCustomer to reducer
- * @returns void
- */
-function* updateIsGuestCustomer(isGuestCustomer) {
-  yield put({
-    type: types.UPDATE_IS_GUEST_CUSTOMER_CURRENT_CART,
-    payload: isGuestCustomer
   });
 }
 
@@ -343,7 +258,10 @@ function* cashCheckoutPlaceOrder() {
   const orderPreparingCheckoutResult = yield select(
     orderPreparingCheckoutState
   );
-  yield createOrderLocal({ cartCurrentResult, orderPreparingCheckoutResult });
+  yield createOrderLocal({
+    cartCurrentResult,
+    orderPreparingCheckoutResult
+  });
 
   // Copy cart current to cart in receipt
   yield put({ type: types.COPY_CART_CURRENT_TO_RECEIPT });
@@ -718,9 +636,10 @@ function* signUpAction(payload) {
  */
 function* getDiscountForCheckoutSaga() {
   // Reload token first
+  const internetConnectedResult = yield select(internetConnected);
   yield reloadTokenFromLoggedLocalDB();
 
-  const cartCurrentObjResult = yield select(cartCurrentObj);
+  const cartCurrentObjResult = yield select(cartCurrent);
   // Handles for offline mode
   const posSystemConfigResult = yield select(posSystemConfig);
 
@@ -729,35 +648,33 @@ function* getDiscountForCheckoutSaga() {
   );
   const discountCode = orderPreparingCheckoutStateResult.totals.discount_code;
 
-  const result = yield call(getDiscountForQuoteService, {
-    cart: cartCurrentObjResult.data,
-    config: posSystemConfigResult,
-    discountCode
-  });
-  const typeOfResult = typeof result;
+  let result;
+  // const typeOfResult = typeof result;
   // If json type returned, that mean get discount success
-  if (typeOfResult !== 'string' && result.message === undefined) {
-    yield put({
-      type: types.RECEIVED_CHECKOUT_CART_INFO,
-      payload: result
+  if (internetConnectedResult && typeof result !== 'string') {
+    result = yield call(getDiscountForQuoteService, {
+      cart: cartCurrentObjResult.data,
+      config: posSystemConfigResult,
+      discountCode
     });
   } else {
-    // caclculator total checkout when offline in here
     console.log(cartCurrentObjResult);
     const sumTotalPriceResult = sumCartTotalPrice(cartCurrentObjResult);
-    const result = [
-      {
-        base_discount_amount: 0,
+    result = {
+      cartTotals: {
+        discount_amount: 0,
         base_grand_total: sumTotalPriceResult,
-        base_sub_total: sumTotalPriceResult,
-        shipping_and_tax_amount: 0
+        base_subtotal: sumTotalPriceResult,
+        tax_amount: 0
       }
-    ];
-    yield put({
-      type: types.RECEIVED_CHECKOUT_CART_INFO,
-      payload: result
-    });
+    };
   }
+  console.log('result get discount');
+  console.log(result);
+  yield put({
+    type: types.RECEIVED_CHECKOUT_CART_INFO,
+    payload: result
+  });
 }
 
 function* reCheckRequireStepSaga() {
@@ -1156,26 +1073,6 @@ function* cardCheckoutPlaceOrderActionSg() {
   if (resultCode === SUCCESS_CHARGE) {
     // Show receipt after charged
     yield finalCheckoutStep();
-  }
-}
-
-function* discountCode(payload) {
-  const data = yield call(getDiscountCodeForQuoteService, payload.payload);
-  if (data) {
-    // if in offline mode increate amount discount else call checkoutActionSg to check Subtotal with discount code again
-    if (getOfflineMode() === 1) {
-      yield put({
-        type: types.RECEIVED_AMOUNT_DISCOUNT_OF_DISCOUNT_CODE,
-        // payload: data
-        payload: data
-      });
-    }
-  } else {
-    yield put({
-      type: types.RECEIVED_AMOUNT_DISCOUNT_OF_DISCOUNT_CODE,
-      // payload: 0
-      payload: 0
-    });
   }
 }
 

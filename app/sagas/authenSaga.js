@@ -8,7 +8,6 @@ import {
 import { LOGIN_FORM } from '../constants/main-panel-types.json';
 import {
   setMainUrlKey,
-  getModuleInstalledService,
   deleteLoggedDb,
   getAppInfoService,
   writeAppInfoToLocal,
@@ -36,40 +35,6 @@ function* logoutAction() {
   yield put({ type: types.CHECK_LOGIN_BACKGROUND });
 }
 
-function* cleanUrlWorkplace() {
-  yield put({ type: types.START_LOADING_GET_APP_INFO });
-  yield call(setMainUrlKey, '');
-  yield put({ type: types.RECEIVED_MODULE_INSTALLED, payload: {} });
-  yield put({ type: types.STOP_LOADING_GET_APP_INFO });
-}
-
-/**
- * Get all module installed or not
- * @returns void
- */
-function* getModuleInstalled() {
-  // Start loading
-  yield put({ type: types.LOADING_MODULE_COMPONENT, payload: true });
-  const urlResult = yield select(urlTokenService);
-  const data = yield call(getModuleInstalledService, urlResult);
-  if (data.error) {
-    yield put({
-      type: types.ERROR_SERVICE_MODULES_INSTALLED,
-      payload: true
-    });
-    yield put({ type: types.RECEIVED_MODULE_INSTALLED, payload: [] });
-  } else {
-    yield put({
-      type: types.ERROR_SERVICE_MODULES_INSTALLED,
-      payload: false
-    });
-    yield put({ type: types.RECEIVED_MODULE_INSTALLED, payload: data.data[0] });
-  }
-
-  // Stop loading
-  yield put({ type: types.LOADING_MODULE_COMPONENT, payload: false });
-}
-
 function* syncCustomer() {
   const data = yield getAllTbl();
   for (let i = 0; i < data.length; i += 1) {
@@ -89,7 +54,7 @@ function* syncOrder() {
   if (data.length > 0) {
     for (let i = 0; i < data.length; i += 1) {
       const dataResult = yield call(syncOrderService, data[i]);
-      if (!dataResult.errors && !dataResult.message) {
+      if (dataResult.status === true) {
         console.log('completed sync orders');
         yield deleteOrder(data[i].id);
       } else {
@@ -98,17 +63,20 @@ function* syncOrder() {
     }
   }
 }
-
+/**
+ * sync all data from state to server can bind with payload
+ * @param {*} payload
+ */
 function* syncClientData(payload) {
   const dbTime = yield getTimeSyncConstant();
   const nowTime = Date.now();
   if (nowTime - dbTime > 1200000 || payload.payload === true) {
-    yield put({ type: types.CHANGE_STATUS_SYNC, payload: true });
+    yield put({ type: types.STATUS_SYNC, payload: true });
     yield resetTimeSyncConstant();
     yield syncCustomProduct();
     yield syncCustomer();
     yield syncOrder();
-    yield put({ type: types.CHANGE_STATUS_SYNC, payload: false });
+    yield put({ type: types.STATUS_SYNC, payload: false });
     yield put({ type: GET_SYNC_MANAGER });
   }
 }
@@ -134,6 +102,10 @@ function* getListSyncManager() {
   });
 }
 
+/**
+ * get all data from localdb to state
+ * @param {*} payloadParams
+ */
 function* getAppByTokenSg(payloadParams) {
   yield put({ type: types.START_LOADING_GET_APP_INFO });
 
@@ -167,8 +139,6 @@ function* getAppByTokenSg(payloadParams) {
 
 function* authenSaga() {
   yield takeEvery(types.LOGOUT_ACTION, logoutAction);
-  yield takeEvery(types.CLEAN_URL_WORKPLACE, cleanUrlWorkplace);
-  yield takeLatest(types.GET_MODULE_INSTALLED, getModuleInstalled);
   yield takeEvery(SYNC_CLIENT_DATA, syncClientData);
   yield takeEvery(GET_SYNC_MANAGER, getListSyncManager);
   yield takeEvery(types.GET_APP_BY_TOKEN, getAppByTokenSg);

@@ -61,6 +61,7 @@ const initialState = {
     orderPreparingCheckout: {
       currency_id: '',
       email: '',
+      posSystemConfigResult: {},
       shipping_address: {
         country_id: '',
         street: [],
@@ -82,7 +83,7 @@ const initialState = {
         grand_total: 0,
         tax_amount: 0,
         base_shipping_amount: 0,
-        discount_code: "",
+        discount_code: '',
         amount_discount_code: 0
       }
     },
@@ -191,20 +192,6 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.SETUP_UPDATE_STATE_SYNCHRONIZING_CATEGORIES_AND_PRODUCTS:
         draft.setup.stateSynchronizingCategoriesAndProducts = action.payload;
-        break;
-      case types.RECEIVED_ORDER_PREPARING_CHECKOUT:
-        const totals = action.payload.totals;
-        const discount_amount = totals.base_discount_amount;
-        const base_subtotal = totals.base_subtotal;
-        const grand_total = totals.grand_total;
-        const tax_amount = totals.tax_amount;
-        const base_shipping_amount = totals.base_shipping_amount;
-
-        draft.checkout.orderPreparingCheckout.totals.base_discount_amount = discount_amount;
-        draft.checkout.orderPreparingCheckout.totals.base_subtotal = base_subtotal;
-        draft.checkout.orderPreparingCheckout.totals.grand_total = grand_total;
-        draft.checkout.orderPreparingCheckout.totals.tax_amount = tax_amount;
-        draft.checkout.orderPreparingCheckout.totals.base_shipping_amount = base_shipping_amount;
         break;
       case types.UPDATE_IS_SHOW_CARD_PAYMENT_MODAL:
         draft.checkout.isShowCardPaymentModal = action.payload;
@@ -332,10 +319,9 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.checkout.orderPreparingCheckout.totals.discount_code = 0;
         break;
       case types.SELECT_CUSTOMER_FOR_CURRENT_CART:
-        if(action.payload.synced === false)
+        if (action.payload.synced === false)
           draft.cartCurrent.customer = action.payload.payload.customer;
-        else
-          draft.cartCurrent.customer = action.payload;
+        else draft.cartCurrent.customer = action.payload;
         draft.cartCurrent.isGuestCustomer = false;
         break;
       case types.UN_SELECT_CUSTOMER_FOR_CURRENT_CART:
@@ -471,9 +457,6 @@ const mainRd = (state: Object = initialState, action: Object) =>
           action.payload;
         draft.checkout.orderPreparingCheckout.totals.amount_discount_code = 0;
         break;
-      case types.RECEIVED_AMOUNT_DISCOUNT_OF_DISCOUNT_CODE:
-        draft.checkout.orderPreparingCheckout.totals.amount_discount_code = +action.payload;
-        break;
       case types.IS_INTERNET_CONNECTED:
         draft.internetConnected = action.payload;
         break;
@@ -491,12 +474,14 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.cashierInfo = {};
         break;
       case types.RECEIVED_CHECKOUT_CART_INFO:
-        const ordersInfo = action.payload[0];
+        const ordersInfo = action.payload;
         // Update to preparing checkout
-        const baseDiscountAmount = ordersInfo.base_discount_amount;
-        const baseGrandTotal = ordersInfo.base_grand_total;
-        const baseSubTotal = ordersInfo.base_sub_total;
-        const shippingAndTaxAmount = ordersInfo.shipping_and_tax_amount;
+        const cartId = ordersInfo.cartId;
+        const baseDiscountAmount = ordersInfo.cartTotals.discount_amount;
+        const baseGrandTotal = ordersInfo.cartTotals.base_grand_total;
+        const baseSubTotal = ordersInfo.cartTotals.base_subtotal;
+        const shippingAndTaxAmount = ordersInfo.cartTotals.tax_amount;
+        draft.cartCurrent.cartId = cartId;
         draft.checkout.orderPreparingCheckout.totals.base_discount_amount = baseDiscountAmount;
         draft.checkout.orderPreparingCheckout.totals.base_subtotal = baseSubTotal;
         draft.checkout.orderPreparingCheckout.totals.grand_total = baseGrandTotal;
@@ -622,6 +607,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.checkout.orderPreparingCheckout.shipping_address.sameAsBilling = 1;
         draft.checkout.orderPreparingCheckout.shipping_address.shipping_method = shippingMethod;
         draft.checkout.orderPreparingCheckout.shipping_address.method = paymentForPos;
+        draft.checkout.orderPreparingCheckout.posSystemConfigResult = posSystemConfigResult;
         break;
       }
       case types.ON_CARD_PAYMENT_FIELD_ONCHANGE:

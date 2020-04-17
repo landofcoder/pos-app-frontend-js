@@ -157,7 +157,6 @@ export async function writeProductsToLocal(listCategories) {
       // eslint-disable-next-line no-await-in-loop
       const productQty = await counterProduct();
       console.log('qty:', productQty);
-
       // Call api to get large products
       // eslint-disable-next-line no-await-in-loop
       await syncAllProductsByCategory(cate.id);

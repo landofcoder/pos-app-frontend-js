@@ -74,31 +74,6 @@ export async function searchCustomerDbService(payload) {
     return [];
   }
 }
-
-/**
- * Create customer cart service
- * @returns {Promise<any>}
- */
-export async function getCustomerCartTokenService(customerId) {
-  const response = await fetch(
-    `${window.mainUrl}index.php/rest/V1/pos/${customerId}/customer/token`,
-    {
-      method: 'GET',
-      mode: 'cors',
-      cache: 'no-cache',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${window.liveToken}`
-      },
-      redirect: 'follow',
-      referrer: 'no-referrer'
-    }
-  );
-  const data = await response.json();
-  return data;
-}
-
 /**
  * Sign up customer
  * @param payload
