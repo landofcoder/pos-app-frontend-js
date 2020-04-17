@@ -193,20 +193,6 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.SETUP_UPDATE_STATE_SYNCHRONIZING_CATEGORIES_AND_PRODUCTS:
         draft.setup.stateSynchronizingCategoriesAndProducts = action.payload;
         break;
-      case types.RECEIVED_ORDER_PREPARING_CHECKOUT:
-        const totals = action.payload.totals;
-        const discount_amount = totals.base_discount_amount;
-        const base_subtotal = totals.base_subtotal;
-        const grand_total = totals.grand_total;
-        const tax_amount = totals.tax_amount;
-        const base_shipping_amount = totals.base_shipping_amount;
-
-        draft.checkout.orderPreparingCheckout.totals.base_discount_amount = discount_amount;
-        draft.checkout.orderPreparingCheckout.totals.base_subtotal = base_subtotal;
-        draft.checkout.orderPreparingCheckout.totals.grand_total = grand_total;
-        draft.checkout.orderPreparingCheckout.totals.tax_amount = tax_amount;
-        draft.checkout.orderPreparingCheckout.totals.base_shipping_amount = base_shipping_amount;
-        break;
       case types.UPDATE_IS_SHOW_CARD_PAYMENT_MODAL:
         draft.checkout.isShowCardPaymentModal = action.payload;
         break;
@@ -470,9 +456,6 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.checkout.orderPreparingCheckout.totals.discount_code =
           action.payload;
         draft.checkout.orderPreparingCheckout.totals.amount_discount_code = 0;
-        break;
-      case types.RECEIVED_AMOUNT_DISCOUNT_OF_DISCOUNT_CODE:
-        draft.checkout.orderPreparingCheckout.totals.amount_discount_code = +action.payload;
         break;
       case types.IS_INTERNET_CONNECTED:
         draft.internetConnected = action.payload;
