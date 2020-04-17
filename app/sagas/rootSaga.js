@@ -40,7 +40,8 @@ import {
   readLoggedDbFromLocal,
   loginService,
   writeGeneralConfigToLocal,
-  writeLoggedInfoToLocal
+  writeLoggedInfoToLocal,
+  readLastTimeLogoutFromLocal
 } from './services/login-service';
 
 import {
@@ -111,16 +112,7 @@ function* checkLoginBackgroundSaga() {
 
   // Logged
   if (loggedDb !== false) {
-    // Get all categories from local
-    yield getAllCategoriesFromLocal();
-
-    // Get shopInfo from local
-    const config = yield getGeneralFromLocal();
-    yield receivedGeneralConfig(config);
-
-    // Get default products from local
-    yield getDefaultProductsFromLocal();
-
+    yield getDefaultDataFromLocal();
     yield put({ type: types.UPDATE_SWITCHING_MODE, payload: CHILDREN });
   } else {
     // If appInfo is exists, then show login form, else show work_place form
@@ -1113,17 +1105,33 @@ function* loginAction(payload) {
   setTokenGlobal(token);
 
   if (resultLogin.status) {
-    // Update to sync component
-    yield put({
-      type: typesAuthen.UPDATE_SWITCHING_MODE,
-      payload: SYNC_SCREEN
-    });
+    // Kiểm tra key last_time_logout nếu có thì có nghĩa là đã đăng nhập và các
+    // sản phẩm đã được sync rồi nên không cần thiết phải sync lại
+    const lastTimeLogout = yield readLastTimeLogoutFromLocal();
+    if (lastTimeLogout === false) {
+      // Update to sync component
+      yield put({
+        type: typesAuthen.UPDATE_SWITCHING_MODE,
+        payload: SYNC_SCREEN
+      });
+      // Start setup step 1
+      yield setupFetchingAppInfo();
 
-    // Start setup step 1
-    yield setupFetchingAppInfo();
+      // Start setup step 2
+      yield setupSyncCategoriesAndProducts();
 
-    // Start setup step 2
-    yield setupSyncCategoriesAndProducts();
+      // Get default data from local
+      yield getDefaultDataFromLocal();
+    } else {
+      // Get default data from local
+      yield getDefaultDataFromLocal();
+
+      // Go to POS page
+      yield put({
+        type: typesAuthen.UPDATE_SWITCHING_MODE,
+        payload: CHILDREN
+      });
+    }
 
     // Write logged info to local
     yield writeLoggedInfoToLocal({
@@ -1146,8 +1154,6 @@ function* loginAction(payload) {
  */
 function* setupFetchingAppInfo() {
   const shopInfoResponse = yield call(getShopInfoService);
-  yield receivedGeneralConfig(shopInfoResponse);
-
   // Write appInfo to local and update fetching appInfo to done
   yield writeGeneralConfigToLocal(shopInfoResponse);
   // Auto connect scanner device
@@ -1165,17 +1171,25 @@ function* setupSyncCategoriesAndProducts() {
   // Write categories and products to local
   yield writeCategoriesAndProductsToLocal();
 
-  // Get all categories from local
-  yield getAllCategoriesFromLocal();
-
-  // Get default products from local
-  yield getDefaultProductsFromLocal();
+  yield getDefaultDataFromLocal();
 
   // Done step 2
   yield put({
     type: types.SETUP_UPDATE_STATE_SYNCHRONIZING_CATEGORIES_AND_PRODUCTS,
     payload: 1
   });
+}
+
+function* getDefaultDataFromLocal() {
+  // Get all categories from local
+  yield getAllCategoriesFromLocal();
+
+  // Get shopInfo from local
+  const config = yield getGeneralFromLocal();
+  yield receivedGeneralConfig(config);
+
+  // Get default products from local
+  yield getDefaultProductsFromLocal();
 }
 
 /**

@@ -1,15 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {
-  getProductByCategory,
-  getDefaultCategory
-} from '../../../actions/homeAction';
+import { getProductByCategory } from '../../../actions/homeAction';
 import Styles from './categories.scss';
 
 type Props = {
   allCategories: Object,
-  getProductByCategory: (payload: string) => void,
-  getDefaultCategory: () => void
+  getProductByCategory: (payload: string) => void
 };
 
 class Categories extends Component<Props> {
@@ -75,14 +71,11 @@ class Categories extends Component<Props> {
   };
 
   render() {
-    const { allCategories, getDefaultCategory } = this.props;
+    const { allCategories } = this.props;
     const { openNavigation } = this.state;
-    console.log('dd1:', allCategories);
     /* eslint-disable */
     const children_data = (allCategories && allCategories.children_data) ? allCategories.children_data : [];
     /* eslint-enable */
-
-    console.log('dd2:', children_data);
     return (
       <div>
         <nav className="navbar navbar-light navbar-expand-lg mainmenu">
@@ -112,7 +105,6 @@ class Categories extends Component<Props> {
                   data-toggle="dropdown"
                   aria-haspopup="true"
                   aria-expanded="false"
-                  onClick={() => getDefaultCategory()}
                 >
                   <div className={Styles.menuCategory}>
                     <svg
@@ -176,8 +168,7 @@ class Categories extends Component<Props> {
 
 function mapDispatchToProps(dispatch) {
   return {
-    getProductByCategory: payload => dispatch(getProductByCategory(payload)),
-    getDefaultCategory: () => dispatch(getDefaultCategory())
+    getProductByCategory: payload => dispatch(getProductByCategory(payload))
   };
 }
 
