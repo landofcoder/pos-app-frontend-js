@@ -87,7 +87,7 @@ function* syncOrder() {
   if (data.length > 0) {
     for (let i = 0; i < data.length; i += 1) {
       const dataResult = yield call(syncOrderService, data[i]);
-      if (!dataResult.errors && !dataResult.message) {
+      if (dataResult.status === true) {
         console.log('completed sync orders');
         yield deleteOrder(data[i].id);
       } else {
@@ -100,7 +100,9 @@ function* syncOrder() {
 function* syncClientData(payload) {
   const dbTime = yield getTimeSyncConstant();
   const nowTime = Date.now();
-  if (nowTime - dbTime > 1200000 || payload.payload === true) {
+  console.log(nowTime - dbTime > 1200000);
+  console.log(nowTime - dbTime < 1200000);
+  if (nowTime - dbTime < 1200000 || payload.payload === true) {
     yield put({ type: types.CHANGE_STATUS_SYNC, payload: true });
     yield resetTimeSyncConstant();
     yield syncCustomProduct();

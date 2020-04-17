@@ -338,7 +338,10 @@ function* cashCheckoutPlaceOrder() {
   const orderPreparingCheckoutResult = yield select(
     orderPreparingCheckoutState
   );
-  yield createOrderLocal({ cartCurrentResult, orderPreparingCheckoutResult });
+  yield createOrderLocal({
+    cartCurrentResult,
+    orderPreparingCheckoutResult
+  });
 
   // Copy cart current to cart in receipt
   yield put({ type: types.COPY_CART_CURRENT_TO_RECEIPT });

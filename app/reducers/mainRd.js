@@ -61,6 +61,7 @@ const initialState = {
     orderPreparingCheckout: {
       currency_id: '',
       email: '',
+      posSystemConfigResult: {},
       shipping_address: {
         country_id: '',
         street: [],
@@ -82,7 +83,7 @@ const initialState = {
         grand_total: 0,
         tax_amount: 0,
         base_shipping_amount: 0,
-        discount_code: "",
+        discount_code: '',
         amount_discount_code: 0
       }
     },
@@ -332,10 +333,9 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.checkout.orderPreparingCheckout.totals.discount_code = 0;
         break;
       case types.SELECT_CUSTOMER_FOR_CURRENT_CART:
-        if(action.payload.synced === false)
+        if (action.payload.synced === false)
           draft.cartCurrent.customer = action.payload.payload.customer;
-        else
-          draft.cartCurrent.customer = action.payload;
+        else draft.cartCurrent.customer = action.payload;
         draft.cartCurrent.isGuestCustomer = false;
         break;
       case types.UN_SELECT_CUSTOMER_FOR_CURRENT_CART:
@@ -624,6 +624,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.checkout.orderPreparingCheckout.shipping_address.sameAsBilling = 1;
         draft.checkout.orderPreparingCheckout.shipping_address.shipping_method = shippingMethod;
         draft.checkout.orderPreparingCheckout.shipping_address.method = paymentForPos;
+        draft.checkout.orderPreparingCheckout.posSystemConfigResult = posSystemConfigResult;
         break;
       }
       case types.ON_CARD_PAYMENT_FIELD_ONCHANGE:
