@@ -27,7 +27,21 @@ class CashierInfo extends Component<Props> {
       <>
         <div className="row">
           <div className="col-md-2"></div>
-          <div className="col-md-6">
+          <div className="col-md-9 text-right">
+            <div className="mb-2">
+              <button
+                type="button"
+                className="btn btn-outline-danger"
+                onClick={this.handleSignOut}
+              >
+                Sign out
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-md-2"></div>
+          <div className="col-md-9">
             <div className="card">
               <h5 className="card-header">Cashier Information</h5>
               <div className="card-body">
@@ -63,31 +77,26 @@ class CashierInfo extends Component<Props> {
                 </div>
               </div>
             </div>
-            <div className="mt-3">
-              <button
-                type="button"
-                className="btn btn-outline-danger"
-                onClick={this.handleSignOut}
-              >
-                Sign out
-              </button>
-            </div>
           </div>
+          <div className="col-md-1"></div>
         </div>
       </>
     );
   }
 }
+
 function mapStateToProps(state) {
   return {
     cashierInfo: state.authenRd.cashierInfo
   };
 }
+
 function mapDispatchToProps(dispatch) {
   return {
     logout: () => dispatch(logout())
   };
 }
+
 export default withRouter(
   connect(
     mapStateToProps,

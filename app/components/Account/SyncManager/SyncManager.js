@@ -61,16 +61,16 @@ class SyncManager extends Component {
           <div className="col-md-6">
             <ul className="list-group">
               <li className="list-group-item d-flex justify-content-between align-items-center">
-                Cras justo odio
-                <span className="badge badge-primary badge-pill">14</span>
+                Products sync
+                <span className="badge badge-success badge-pill">success</span>
               </li>
               <li className="list-group-item d-flex justify-content-between align-items-center">
-                Dapibus ac facilisis in
-                <span className="badge badge-primary badge-pill">2</span>
+                Customers sync
+                <span className="badge badge-success badge-pill">success</span>
               </li>
               <li className="list-group-item d-flex justify-content-between align-items-center">
-                Morbi leo risus
-                <span className="badge badge-primary badge-pill">1</span>
+                General config sync
+                <span className="badge badge-danger badge-pill">2 errors</span>
               </li>
             </ul>
           </div>

@@ -54,7 +54,7 @@ class ConnectDevices extends Component<Props> {
               <div className="card-body">
                 {connectedDeviceStatus ? (
                   <>
-                    <hr />
+                    <hr/>
                     <span>Connected:</span>&nbsp;
                     <span className="font-weight-bold">
                       {connectedDeviceItem.product}
@@ -73,7 +73,7 @@ class ConnectDevices extends Component<Props> {
                   <>
                     <div className="list-group">
                       <div className="form-group row">
-                        <div className="col-5">
+                        <div className="col-12">
                           <select
                             onChange={this.handleChangeDevice}
                             value={deviceSelected}
@@ -91,9 +91,9 @@ class ConnectDevices extends Component<Props> {
                           </select>
                         </div>
                       </div>
-                      <div className="form-group">
-                        {errorConnect ? (
-                          <>
+                      {errorConnect ? (
+                        <>
+                          <div className="form-group">
                             <p className="text-danger">
                               Error connect to device, please try the following:
                             </p>
@@ -101,12 +101,12 @@ class ConnectDevices extends Component<Props> {
                               <li>Run app with root permission</li>
                               <li>Remove and re-plug the device</li>
                             </ul>
-                          </>
-                        ) : (
-                          <p></p>
-                        )}
-                      </div>
-                      <div className="mt-4 text-right">
+                          </div>
+                        </>
+                      ) : (
+                        <span></span>
+                      )}
+                      <div className="text-right">
                         <button
                           type="button"
                           className="btn btn-primary"
