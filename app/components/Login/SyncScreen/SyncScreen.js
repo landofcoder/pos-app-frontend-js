@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { counterProduct } from '../../../reducers/db/products';
-import { limitLoop } from '../../../common/settings';
+import { startLoop, stopLoop } from '../../../common/settings';
 import { gotoPOS } from '../../../actions/homeAction';
 import styles from './sync-screen.scss';
 import CheckCircle from '../../commons/CheckCircle/CheckCircle';
@@ -20,11 +20,18 @@ class SyncScreen extends Component {
   }
 
   state = {
-    productNumber: 0
+    productNumber: 0,
+    frameId: null
   };
 
   componentDidMount(): void {
-    limitLoop(this.showCounter, 30, 1000);
+    const frameId = startLoop(this.showCounter, 1000);
+    this.setState({ frameId });
+  }
+
+  componentWillUnmount(): void {
+    const { frameId } = this.state;
+    stopLoop(frameId);
   }
 
   async showCounter() {

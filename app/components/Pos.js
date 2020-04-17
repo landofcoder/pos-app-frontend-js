@@ -22,7 +22,7 @@ import Receipt from './payment/Receipt/Receipt';
 import EditCart from './ListCart/EditCart/EditCart';
 import { sumCartTotalPrice } from '../common/cart';
 import Categories from './commons/Categories/Categories';
-import { limitLoop } from '../common/settings';
+import { startLoop, stopLoop } from '../common/settings';
 import Custom from './product-types/Custom';
 import routes from '../constants/routes';
 
@@ -82,7 +82,8 @@ export default class Pos extends Component<Props, State> {
     this.state = {
       delayTimer: {},
       typeId: '',
-      mainWrapProductPanel: 'main-wrap-product-panel'
+      mainWrapProductPanel: 'main-wrap-product-panel',
+      frameId: null
     };
   }
 
@@ -92,13 +93,8 @@ export default class Pos extends Component<Props, State> {
     const { autoSyncGroupCheckout, hidDevice } = this.props;
 
     const loopStep = 100000;
-    limitLoop(
-      () => {
-        autoSyncGroupCheckout();
-      },
-      30,
-      loopStep
-    );
+    const frameId = startLoop(autoSyncGroupCheckout, loopStep);
+    this.setState({ frameId });
 
     // Uncomment below code for testing scanner device working
     // const { getProductBySkuFromScanner } = this.props;
@@ -123,6 +119,11 @@ export default class Pos extends Component<Props, State> {
       updateTriggerScannerBarcodeTriggerToFalse(false);
       this.preAddToCart(product);
     }
+  }
+
+  componentWillUnmount(): void {
+    const { frameId } = this.state;
+    stopLoop(frameId);
   }
 
   addCustomProduct = () => {
