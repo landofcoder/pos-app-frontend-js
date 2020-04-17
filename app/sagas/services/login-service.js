@@ -113,40 +113,6 @@ export async function setMainUrlKey(payload) {
   return data.url;
 }
 
-/**
- * Get module installed
- * @returns void
- */
-export async function getModuleInstalledService(urlCheck) {
-  let data;
-  let error = false;
-  try {
-    const response = await fetch(
-      `${apiGatewayPath}/cashier/get-all-module-installed`,
-      {
-        method: 'GET',
-        headers: {
-          platform: 'magento2',
-          destination_url: urlCheck
-        }
-      }
-    );
-    data = await response.json();
-    if (data.length === 0) {
-      data = [
-        {
-          'module-all': false,
-          'module-pos': false
-        }
-      ];
-    }
-  } catch (e) {
-    data = {};
-    error = true;
-  }
-  return { data, error };
-}
-
 export async function getAppInfoService(payload) {
   let response;
   try {

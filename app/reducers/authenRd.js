@@ -9,11 +9,9 @@ const initialState = {
   cashierInfo: {},
   isReloadingToken: false,
   loadingWorkPlace: false,
-  loadingModuleComponent: true,
   appInfo: {},
   isValidToken: '',
   moduleInstalled: {},
-  errorServiceModuleInstalled: false,
   senseUrl: '',
   syncManager: {
     syncCustomProduct: null,
@@ -51,9 +49,6 @@ const authenRd = (state = initialState, action) =>
         draft.message = '';
         draft.cashierInfo = {};
         break;
-      case typesAuthen.SIGN_IN_WORKPLACE_ACTION:
-        draft.loadingWorkPlace = action.payload;
-        break;
       case typesAuthen.GET_APP_INFO_FAILURE:
         draft.messageErrorWorkPlace = action.payload;
         draft.isValidToken = false;
@@ -66,12 +61,6 @@ const authenRd = (state = initialState, action) =>
       case typesAuthen.SET_DEFAULT_PROTOCOL_WORKPLACE:
         draft.defaultProtocol = action.payload;
         break;
-      case typesAuthen.LOADING_MODULE_COMPONENT:
-        draft.loadingModuleComponent = action.payload;
-        break;
-      case typesAuthen.RECEIVED_MODULE_INSTALLED:
-        draft.moduleInstalled = action.payload;
-        break;
       case typesAuthen.RECEIVED_LIST_SYNC_ORDER:
         draft.syncManager.syncOrder = action.payload;
         break;
@@ -81,13 +70,10 @@ const authenRd = (state = initialState, action) =>
       case typesAuthen.RECEIVED_LIST_SYNC_CUSTOMER:
         draft.syncManager.syncCustomer = action.payload;
         break;
-      case typesAuthen.ERROR_SERVICE_MODULES_INSTALLED:
-        draft.errorServiceModuleInstalled = action.payload;
-        break;
       case typesAuthen.CHANGE_SENSE_URL:
         draft.senseUrl = action.payload;
         break;
-      case typesAuthen.CHANGE_STATUS_SYNC:
+      case typesAuthen.STATUS_SYNC:
         draft.syncManager.syncStatus = action.payload;
         break;
       case typesAuthen.RECEIVED_APP_INFO:
