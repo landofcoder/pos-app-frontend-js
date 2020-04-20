@@ -184,8 +184,9 @@ function* applyCustomerOrQuestAndShippingCheckout() {
   }
 
   const posSystemConfigResult = yield select(posSystemConfig);
+  const detailOutletData = yield select(detailOutlet);
   const cartCurrentObjResult = yield select(cartCurrent);
-
+  const detailOutletResult = detailOutletData.data;
   // Get customer info
   let customerInfo;
   if (cartCurrentObjResult.isGuestCustomer === true) {
@@ -200,7 +201,8 @@ function* applyCustomerOrQuestAndShippingCheckout() {
     payload: {
       customer: customerInfo,
       shippingAddress,
-      posSystemConfigResult
+      posSystemConfigResult,
+      detailOutletResult
     }
   });
 }
