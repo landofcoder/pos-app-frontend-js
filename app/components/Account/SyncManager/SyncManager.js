@@ -7,7 +7,6 @@ import { autoSyncGroupCheckout } from '../../../actions/homeAction';
 import { getSyncManager } from '../../../actions/accountAction';
 
 type Props = {
-  syncStatus: boolean,
   autoSyncGroupCheckout: payload => void,
   getSyncManager: () => void
 };
@@ -52,8 +51,6 @@ class SyncManager extends Component {
   };
 
   render() {
-    const { viewSelected } = this.state;
-    console.log(viewSelected);
     return (
       <>
         <div className="row">
@@ -150,12 +147,6 @@ class SyncManager extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    syncStatus: state.authenRd.syncManager.syncStatus
-  };
-}
-
 function mapDispatchToProps(dispatch) {
   return {
     autoSyncGroupCheckout: payload => dispatch(autoSyncGroupCheckout(payload)),
@@ -163,6 +154,6 @@ function mapDispatchToProps(dispatch) {
   };
 }
 export default connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps
 )(SyncManager);
