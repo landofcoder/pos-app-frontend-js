@@ -285,10 +285,11 @@ export function loadProductPaging() {
   };
 }
 
-export function autoSyncGroupCheckout(payload) {
+export function syncDataClient(payload) {
   return {
     type: types.SYNC_CLIENT_DATA,
-    payload
+    payload: payload.type,
+    id: payload.id
   };
 }
 

@@ -61,8 +61,8 @@ export function orderAction(payload) {
   };
 }
 
-export function getSyncManager() {
+export function getListSyncOrder() {
   return {
-    type: type.GET_SYNC_MANAGER
+    type: type.GET_LIST_SYNC_ORDER
   };
 }

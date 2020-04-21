@@ -44,7 +44,7 @@ type Props = {
   isShowCashPaymentModel: boolean,
   isShowCardPaymentModal: boolean,
   updateIsShowingProductOption: (payload: boolean) => void,
-  autoSyncGroupCheckout: () => void,
+  syncDataClient: () => void,
   mainProductListLoading: boolean,
   isOpenReceiptModal: boolean,
   isShowModalItemEditCart: boolean,
@@ -90,10 +90,10 @@ export default class Pos extends Component<Props, State> {
   componentDidMount(): void {
     // Get default product
 
-    const { autoSyncGroupCheckout, hidDevice } = this.props;
+    const { syncDataClient, hidDevice } = this.props;
 
     const loopStep = 20000;
-    const frameId = startLoop(autoSyncGroupCheckout, loopStep);
+    const frameId = startLoop(syncDataClient, loopStep);
     this.setState({ frameId });
 
     // Uncomment below code for testing scanner device working

@@ -3,12 +3,13 @@ import { connect } from 'react-redux';
 import SyncCustomProductManager from './SyncCustomProductManager/SyncCustomProductManager';
 import SyncCustomerManager from './SyncCustomerManager/SyncCustomerManager';
 import SyncOrderManager from './SyncOrderManager/SyncOrderManager';
-import { autoSyncGroupCheckout } from '../../../actions/homeAction';
-import { getSyncManager } from '../../../actions/accountAction';
+import { syncDataClient } from '../../../actions/homeAction';
+import { getListSyncOrder } from '../../../actions/accountAction';
+import { ALL_PRODUCT_SYNC,CUSTOM_PRODUCT_SYNC,CUSTOMERS_SYNC,GENERAL_CONFIG_SYNC} from '../../../constants/authen.json';
 
 type Props = {
-  autoSyncGroupCheckout: payload => void,
-  getSyncManager: () => void
+  syncDataClient: payload => void,
+  getListSyncOrder: () => void
 };
 class SyncManager extends Component {
   props: Props;
@@ -21,8 +22,8 @@ class SyncManager extends Component {
   }
 
   componentDidMount(): void {
-    const { getSyncManager } = this.props;
-    getSyncManager();
+    const { getListSyncOrder } = this.props;
+    getListSyncOrder();
   }
 
   renderSwitchShowUpSync = () => {
@@ -40,11 +41,16 @@ class SyncManager extends Component {
   };
 
   syncStartAction = e => {
-    const { autoSyncGroupCheckout, getSyncManager } = this.props;
+    const { syncDataClient, getListSyncOrder } = this.props;
     e.preventDefault();
-    autoSyncGroupCheckout(true);
-    getSyncManager();
+    syncDataClient(true);
+    getListSyncOrder();
   };
+
+  syncDataClientAction = (type) => {
+    const { syncDataClient } = this.props;
+    syncDataClient(type);
+  }
 
   viewSelectedAction = payload => {
     this.setState({ viewSelected: payload });
@@ -79,6 +85,9 @@ class SyncManager extends Component {
                     <button
                       type="button"
                       className="btn btn-outline-secondary btn-sm"
+                      onClick={()=> {
+                        this.syncDataClientAction(ALL_PRODUCT_SYNC)
+                      }}
                     >
                       Sync now
                     </button>
@@ -97,6 +106,9 @@ class SyncManager extends Component {
                     <button
                       type="button"
                       className="btn btn-outline-secondary btn-sm"
+                      onClick={()=> {
+                        this.syncDataClientAction(CUSTOM_PRODUCT_SYNC)
+                      }}
                     >
                       Sync now
                     </button>
@@ -115,6 +127,9 @@ class SyncManager extends Component {
                     <button
                       type="button"
                       className="btn btn-outline-secondary btn-sm"
+                      onClick={()=> {
+                        this.syncDataClientAction(CUSTOMERS_SYNC)
+                      }}
                     >
                       Sync now
                     </button>
@@ -133,6 +148,9 @@ class SyncManager extends Component {
                     <button
                       type="button"
                       className="btn btn-outline-secondary btn-sm"
+                      onClick={()=> {
+                        this.syncDataClientAction(GENERAL_CONFIG_SYNC)
+                      }}
                     >
                       Sync now
                     </button>
@@ -149,8 +167,8 @@ class SyncManager extends Component {
 
 function mapDispatchToProps(dispatch) {
   return {
-    autoSyncGroupCheckout: payload => dispatch(autoSyncGroupCheckout(payload)),
-    getSyncManager: () => dispatch(getSyncManager())
+    syncDataClient: payload => dispatch(syncDataClient(payload)),
+    getListSyncOrder: () => dispatch(getListSyncOrder())
   };
 }
 export default connect(

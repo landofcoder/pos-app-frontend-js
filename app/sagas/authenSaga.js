@@ -1,6 +1,6 @@
 import { takeEvery, call, put } from 'redux-saga/effects';
 import * as types from '../constants/authen';
-import { SYNC_CLIENT_DATA, GET_SYNC_MANAGER } from '../constants/root.json';
+import { SYNC_CLIENT_DATA, GET_LIST_SYNC_ORDER } from '../constants/root.json';
 import { LOGIN_FORM } from '../constants/main-panel-types.json';
 import {
   deleteLoggedDb,
@@ -60,20 +60,39 @@ function* syncOrder() {
  * @param {*} payload
  */
 function* syncClientData(payload) {
+  const payloadType = payload.payload;
   const dbTime = yield getTimeSyncConstant();
   const nowTime = Date.now();
-  if (nowTime - dbTime > 1200000 || payload.payload === true) {
-    yield put({ type: types.STATUS_SYNC, payload: true });
-    yield resetTimeSyncConstant();
-    yield syncCustomProduct();
-    yield syncCustomer();
-    yield syncOrder();
-    yield put({ type: types.STATUS_SYNC, payload: false });
-    yield put({ type: GET_SYNC_MANAGER });
+  switch (payloadType) {
+    case types.ALL_PRODUCT_SYNC:
+      console.log("sync all product service");
+      break;
+    case types.CUSTOM_PRODUCT_SYNC :
+      console.log("sync custom product service");
+      break;
+    case types.CUSTOMERS_SYNC:
+      console.log("sync customers product service");
+      break;
+    case types.GENERAL_CONFIG_SYNC:
+      console.log("sync config service");
+      break;
+    case types.SYNC_ORDER_LIST:
+      console.log("sync order list service");
+      break;
+    default:
+      if (nowTime - dbTime > 1200000 || payloadType === true) {
+        yield put({ type: types.STATUS_SYNC, payload: true });
+        yield resetTimeSyncConstant();
+        yield syncCustomProduct();
+        yield syncCustomer();
+        yield syncOrder();
+        yield put({ type: types.STATUS_SYNC, payload: false });
+        yield put({ type: GET_LIST_SYNC_ORDER });
+      }
   }
 }
 
-function* getListSyncManager() {
+function* getListSyncOrder() {
   // get all order in local db
   const payloadResultOrder = yield getAllOrders();
   yield put({
@@ -132,7 +151,7 @@ function* getAppByTokenSg(payloadParams) {
 function* authenSaga() {
   yield takeEvery(types.LOGOUT_ACTION, logoutAction);
   yield takeEvery(SYNC_CLIENT_DATA, syncClientData);
-  yield takeEvery(GET_SYNC_MANAGER, getListSyncManager);
+  yield takeEvery(GET_LIST_SYNC_ORDER, getListSyncOrder);
   yield takeEvery(types.GET_APP_BY_TOKEN, getAppByTokenSg);
 }
 
