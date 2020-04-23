@@ -39,6 +39,7 @@ export function checkoutAction() {
   };
 }
 
+
 export function startCashCheckoutAction(payload) {
   return {
     type: types.START_CASH_CHECKOUT_ACTION,
@@ -365,13 +366,6 @@ export function updatePaymentResultCode(payload) {
   };
 }
 
-export function getDiscountCodeAction(payload) {
-  return {
-    type: types.CHECKOUT_ACTION,
-    payload
-  };
-}
-
 export function setDiscountCodeAction(payload) {
   return {
     type: types.SET_DISCOUNT_CODE_ACTION,
@@ -379,6 +373,12 @@ export function setDiscountCodeAction(payload) {
   };
 }
 
+export function setGiftCardAction(payload) {
+  return {
+    type: types.SET_GIFT_CARD_ACTION,
+    payload
+  }
+}
 export function backToWorkPlace() {
   return {
     type: types.BACK_TO_WORK_PLACE
