@@ -805,7 +805,6 @@ function* updateQtyCartItemSaga(payload) {
 function* writeCategoriesAndProductsToLocal() {
   // Get all categories
   const allCategories = yield call(getAllCategoriesService);
-
   // Sync categories to local db
   yield call(writeCategoriesToLocal, allCategories);
 
@@ -1160,7 +1159,7 @@ function* loginAction(payload) {
  * Bootstrap application and load all config
  * @returns void
  */
-function* setupFetchingAppInfo() {
+export function* setupFetchingAppInfo() {
   const shopInfoResponse = yield call(getShopInfoService);
   // Write appInfo to local and update fetching appInfo to done
   yield writeGeneralConfigToLocal(shopInfoResponse);
@@ -1175,7 +1174,7 @@ function* setupFetchingAppInfo() {
  * Setup sync categories and products to local
  * @returns void
  */
-function* setupSyncCategoriesAndProducts() {
+export function* setupSyncCategoriesAndProducts() {
   // Write categories and products to local
   yield writeCategoriesAndProductsToLocal();
 
@@ -1188,7 +1187,7 @@ function* setupSyncCategoriesAndProducts() {
   });
 }
 
-function* getDefaultDataFromLocal() {
+export function* getDefaultDataFromLocal() {
   // Get all categories from local
   yield getAllCategoriesFromLocal();
 

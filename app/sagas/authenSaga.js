@@ -19,7 +19,11 @@ import { getAllTblCustomProduct } from '../reducers/db/sync_custom_product';
 import { getAllOrders, deleteOrder } from '../reducers/db/sync_orders';
 import { signUpCustomerService } from './services/customer-service';
 import { syncOrderService } from './services/cart-service';
-
+import {
+  setupFetchingAppInfo,
+  setupSyncCategoriesAndProducts,
+  getDefaultDataFromLocal
+} from './rootSaga';
 function* logoutAction() {
   // Update view to login_form
   yield put({ type: types.UPDATE_SWITCHING_MODE, payload: LOGIN_FORM });
@@ -63,21 +67,42 @@ function* syncClientData(payload) {
   const payloadType = payload.payload;
   const dbTime = yield getTimeSyncConstant();
   const nowTime = Date.now();
+  console.log(payloadType);
   switch (payloadType) {
     case types.ALL_PRODUCT_SYNC:
-      console.log("sync all product service");
+      console.log('sync all product service');
+      try {
+        yield setupSyncCategoriesAndProducts();
+      } catch (e) {
+        console.log(e);
+      }
       break;
-    case types.CUSTOM_PRODUCT_SYNC :
-      console.log("sync custom product service");
+    case types.CUSTOM_PRODUCT_SYNC:
+      console.log('sync custom product service');
+      try {
+        yield syncCustomProduct();
+      } catch (e) {
+        console.log(e);
+      }
       break;
     case types.CUSTOMERS_SYNC:
-      console.log("sync customers product service");
+      console.log('sync customers product service');
+      try {
+        yield syncCustomer();
+      } catch (e) {
+        console.log(e);
+      }
       break;
     case types.GENERAL_CONFIG_SYNC:
-      console.log("sync config service");
+      console.log('sync config service');
+      try {
+        yield setupFetchingAppInfo();
+      } catch (e) {
+        console.log(e);
+      }
       break;
     case types.SYNC_ORDER_LIST:
-      console.log("sync order list service");
+      console.log('sync order list service');
       break;
     default:
       if (nowTime - dbTime > 1200000 || payloadType === true) {

@@ -170,7 +170,7 @@ class SyncManager extends Component {
 
 function mapDispatchToProps(dispatch) {
   return {
-    syncDataClient: payload => dispatch(syncDataClient(payload)),
+    syncDataClient: payload => dispatch(syncDataClient({type: payload})),
     getListSyncOrder: () => dispatch(getListSyncOrder())
   };
 }

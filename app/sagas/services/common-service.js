@@ -56,16 +56,13 @@ export async function getAllCategoriesService() {
     });
     data = await response.json();
   } catch (e) {
+    throw "error connection to server";
     data = [];
     error = true;
   }
-  if (error || response.status === 401) {
-    if (getOfflineMode() === 1) {
-      // Get from local
-      data = await getCategoriesFromLocal();
-      // eslint-disable-next-line prefer-destructuring
-      data = data[0];
-    }
+  if (error || data.message) {
+    console.log("go error");
+    throw data.message;
   }
   return data;
 }
