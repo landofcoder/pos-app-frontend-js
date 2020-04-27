@@ -250,18 +250,3 @@ export async function findAllParentCategories(
 export async function syncCustomProductAPI(payload) {
   console.log(payload);
 }
-
-export async function syncCustomProductService() {
-  const data = await getAllTblCustomProduct();
-  console.log('sync custom product');
-  console.log(data);
-  for (let i = 0; i < data.length; i += 1) {
-    // eslint-disable-next-line no-await-in-loop
-    const status = await syncCustomProductAPI(data[i]);
-    if (status) {
-      // delete db
-      // eslint-disable-next-line no-await-in-loop
-      await deleteByKey({ name: data[i].name });
-    }
-  }
-}

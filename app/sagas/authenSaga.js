@@ -13,16 +13,16 @@ import {
   resetTimeSyncConstant
 } from './services/settings-service';
 import { setAppInfoToGlobal } from '../common/settings';
-import { syncCustomProductService } from './services/product-service';
+import { syncCustomProductAPI } from './services/product-service';
 import { getAllTbl, deleteByKey } from '../reducers/db/sync_customers';
 import { getAllTblCustomProduct } from '../reducers/db/sync_custom_product';
 import { getAllOrders, deleteOrder } from '../reducers/db/sync_orders';
+import { successLoadService } from '../reducers/db/sync_data_manager';
 import { signUpCustomerService } from './services/customer-service';
 import { syncOrderService } from './services/cart-service';
 import {
   setupFetchingAppInfo,
-  setupSyncCategoriesAndProducts,
-  getDefaultDataFromLocal
+  setupSyncCategoriesAndProducts
 } from './rootSaga';
 function* logoutAction() {
   // Update view to login_form
@@ -32,31 +32,57 @@ function* logoutAction() {
 }
 
 function* syncCustomer() {
-  const data = yield getAllTbl();
-  for (let i = 0; i < data.length; i += 1) {
-    const result = yield call(signUpCustomerService, data[i]);
+  const customers = yield getAllTbl();
+  let checkAllSync = true;
+  for (const customer of customers) {
+    const result = yield call(signUpCustomerService, customer);
+
     if (result.ok === true) {
-      yield deleteByKey(data[i].id);
+      yield deleteByKey(customer.id);
+    } else {
+      checkAllSync = false;
     }
+  }
+  if (checkAllSync) {
+    yield call(successLoadService, types.CUSTOMERS_SYNC);
   }
 }
 
 function* syncCustomProduct() {
-  yield call(syncCustomProductService);
+  const products = yield call(getAllTblCustomProduct);
+  let checkAllSync = true;
+  // eslint-disable-next-line no-restricted-syntax
+  for (const product of products) {
+    const status = yield call(syncCustomProductAPI, product);
+    if (status) {
+      // delete db
+      // eslint-disable-next-line no-await-in-loop
+      yield call(deleteByKey, { name: product.name }); // ? delete or not ?
+    } else {
+      checkAllSync = false;
+    }
+  }
+  if (checkAllSync) {
+    // Add Sync manager success
+    yield call(successLoadService, typeAuthen.CUSTOM_PRODUCT_SYNC);
+  }
 }
 
 function* syncOrder() {
-  const data = yield getAllOrders();
-  if (data.length > 0) {
-    for (let i = 0; i < data.length; i += 1) {
-      const dataResult = yield call(syncOrderService, data[i]);
-      if (dataResult.status === true) {
-        console.log('completed sync orders');
-        yield deleteOrder(data[i].id);
-      } else {
-        console.log(dataResult);
-      }
+  const orders = yield getAllOrders();
+  const checkAllSync = true;
+  for (const order of orders) {
+    const dataResult = yield call(syncOrderService, order);
+
+    if (dataResult.status === true) {
+      console.log('completed sync orders');
+      yield deleteOrder(order.id);
+    } else {
+      checkAllSync = false;
     }
+  }
+  if(checkAllSync) {
+    yield call(successLoadService,typeAuthen.)
   }
 }
 /**
@@ -72,7 +98,7 @@ function* syncClientData(payload) {
     case types.ALL_PRODUCT_SYNC:
       console.log('sync all product service');
       try {
-        yield setupSyncCategoriesAndProducts();
+        yield setupSyncCategoriesAndProducts(); // added sync manager success
       } catch (e) {
         console.log(e);
       }
@@ -80,7 +106,7 @@ function* syncClientData(payload) {
     case types.CUSTOM_PRODUCT_SYNC:
       console.log('sync custom product service');
       try {
-        yield syncCustomProduct();
+        yield syncCustomProduct(); // added sync manager success
       } catch (e) {
         console.log(e);
       }
@@ -88,7 +114,7 @@ function* syncClientData(payload) {
     case types.CUSTOMERS_SYNC:
       console.log('sync customers product service');
       try {
-        yield syncCustomer();
+        yield syncCustomer(); // added sync manager success
       } catch (e) {
         console.log(e);
       }
@@ -96,13 +122,14 @@ function* syncClientData(payload) {
     case types.GENERAL_CONFIG_SYNC:
       console.log('sync config service');
       try {
-        yield setupFetchingAppInfo();
+        yield setupFetchingAppInfo(); // added sync manager success
       } catch (e) {
         console.log(e);
       }
       break;
     case types.SYNC_ORDER_LIST:
       console.log('sync order list service');
+      yield syncOrder(); // added sync manager success
       break;
     default:
       if (nowTime - dbTime > 1200000 || payloadType === true) {

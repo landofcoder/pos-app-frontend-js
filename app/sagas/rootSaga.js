@@ -62,6 +62,7 @@ import {
   setTokenGlobal
 } from '../common/settings';
 import { createProduct } from '../reducers/db/sync_custom_product';
+import { successLoadService } from '../reducers/db/sync_data_manager';
 import {
   CHILDREN,
   LOGIN_FORM,
@@ -810,6 +811,9 @@ function* writeCategoriesAndProductsToLocal() {
 
   // Sync products by categories
   yield call(writeProductsToLocal, allCategories);
+
+  // Add Sync manager success
+  yield call(successLoadService, typesAuthen.ALL_PRODUCT_SYNC);
 }
 
 function* createCustomizeProduct(payload) {
@@ -1116,10 +1120,10 @@ function* loginAction(payload) {
         payload: SYNC_SCREEN
       });
       // Start setup step 1
-      yield setupFetchingAppInfo();
+      yield setupFetchingAppInfo(); // added sync manager success
 
       // Start setup step 2
-      yield setupSyncCategoriesAndProducts();
+      yield setupSyncCategoriesAndProducts(); // added sync manager success
 
       // Get default data from local
       yield getDefaultDataFromLocal();
@@ -1163,6 +1167,9 @@ export function* setupFetchingAppInfo() {
   const shopInfoResponse = yield call(getShopInfoService);
   // Write appInfo to local and update fetching appInfo to done
   yield writeGeneralConfigToLocal(shopInfoResponse);
+
+  // Add Sync manager success
+  yield call(successLoadService, typesAuthen.GENERAL_CONFIG_SYNC);
   // Auto connect scanner device
   autoConnectScannerDevice();
 
