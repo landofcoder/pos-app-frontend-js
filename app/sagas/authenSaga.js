@@ -17,7 +17,10 @@ import { syncCustomProductAPI } from './services/product-service';
 import { getAllTbl, deleteByKey } from '../reducers/db/sync_customers';
 import { getAllTblCustomProduct } from '../reducers/db/sync_custom_product';
 import { getAllOrders, deleteOrder } from '../reducers/db/sync_orders';
-import { successLoadService } from '../reducers/db/sync_data_manager';
+import {
+  successLoadService,
+  failedLoadService
+} from '../reducers/db/sync_data_manager';
 import { signUpCustomerService } from './services/customer-service';
 import { syncOrderService } from './services/cart-service';
 import {
@@ -34,6 +37,7 @@ function* logoutAction() {
 function* syncCustomer() {
   const customers = yield getAllTbl();
   let checkAllSync = true;
+  // eslint-disable-next-line no-restricted-syntax
   for (const customer of customers) {
     const result = yield call(signUpCustomerService, customer);
 
@@ -55,7 +59,6 @@ function* syncCustomProduct() {
   for (const product of products) {
     const status = yield call(syncCustomProductAPI, product);
     if (status) {
-      // delete db
       // eslint-disable-next-line no-await-in-loop
       yield call(deleteByKey, { name: product.name }); // ? delete or not ?
     } else {
@@ -64,13 +67,14 @@ function* syncCustomProduct() {
   }
   if (checkAllSync) {
     // Add Sync manager success
-    yield call(successLoadService, typeAuthen.CUSTOM_PRODUCT_SYNC);
+    yield call(successLoadService, types.CUSTOM_PRODUCT_SYNC);
   }
 }
 
 function* syncOrder() {
   const orders = yield getAllOrders();
-  const checkAllSync = true;
+  let checkAllSync = true;
+  // eslint-disable-next-line no-restricted-syntax
   for (const order of orders) {
     const dataResult = yield call(syncOrderService, order);
 
@@ -81,8 +85,8 @@ function* syncOrder() {
       checkAllSync = false;
     }
   }
-  if(checkAllSync) {
-    yield call(successLoadService,typeAuthen.)
+  if (checkAllSync) {
+    yield call(successLoadService, types.SYNC_ORDER_LIST);
   }
 }
 /**
@@ -101,6 +105,7 @@ function* syncClientData(payload) {
         yield setupSyncCategoriesAndProducts(); // added sync manager success
       } catch (e) {
         console.log(e);
+        yield failedLoadService(e);
       }
       break;
     case types.CUSTOM_PRODUCT_SYNC:
