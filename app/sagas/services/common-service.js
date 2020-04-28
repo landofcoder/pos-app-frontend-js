@@ -31,10 +31,28 @@ export async function getShopInfoService() {
     // eslint-disable-next-line no-throw-literal
     throw { message: 'Server not response', data };
   }
-  if (data.message) {
+
+  const { cashier_info, common_config, currency_code, receipt } = data;
+
+  // du lieu data tra ve bao gom thong tin cashier_info common config, currency code
+  // kiem tra du lieu co hop le khong
+  if (
+    data.message ||
+    cashier_info.message ||
+    common_config.message ||
+    currency_code.message ||
+    receipt.message
+  ) {
+    const message =
+      data.message ||
+      cashier_info.message ||
+      common_config.message ||
+      currency_code.message ||
+      receipt.message;
     // eslint-disable-next-line no-throw-literal
-    throw { message: data.message, data };
+    throw { message, data };
   }
+
   return data;
 }
 

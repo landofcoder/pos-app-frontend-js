@@ -27,6 +27,7 @@ import {
   setupFetchingAppInfo,
   setupSyncCategoriesAndProducts
 } from './rootSaga';
+import { serviceTypeGroupManager } from '../common/sync-group-manager';
 function* logoutAction() {
   // Update view to login_form
   yield put({ type: types.UPDATE_SWITCHING_MODE, payload: LOGIN_FORM });
@@ -83,6 +84,9 @@ function* syncOrder() {
       yield deleteOrder(order.id);
     } else {
       checkAllSync = false;
+      yield failedLoadService(
+        serviceTypeGroupManager(types.SYNC_ORDER_LIST, e)
+      );
     }
   }
   if (checkAllSync) {
@@ -105,7 +109,9 @@ function* syncClientData(payload) {
         yield setupSyncCategoriesAndProducts(); // added sync manager success
       } catch (e) {
         console.log(e);
-        yield failedLoadService(e);
+        yield failedLoadService(
+          serviceTypeGroupManager(types.ALL_PRODUCT_SYNC, e)
+        );
       }
       break;
     case types.CUSTOM_PRODUCT_SYNC:
@@ -114,6 +120,9 @@ function* syncClientData(payload) {
         yield syncCustomProduct(); // added sync manager success
       } catch (e) {
         console.log(e);
+        yield failedLoadService(
+          serviceTypeGroupManager(types.CUSTOM_PRODUCT_SYNC, e)
+        );
       }
       break;
     case types.CUSTOMERS_SYNC:
@@ -122,6 +131,9 @@ function* syncClientData(payload) {
         yield syncCustomer(); // added sync manager success
       } catch (e) {
         console.log(e);
+        yield failedLoadService(
+          serviceTypeGroupManager(types.CUSTOMERS_SYNC, e)
+        );
       }
       break;
     case types.GENERAL_CONFIG_SYNC:
@@ -130,16 +142,27 @@ function* syncClientData(payload) {
         yield setupFetchingAppInfo(); // added sync manager success
       } catch (e) {
         console.log(e);
+        yield failedLoadService(
+          serviceTypeGroupManager(types.GENERAL_CONFIG_SYNC, e)
+        );
       }
       break;
     case types.SYNC_ORDER_LIST:
       console.log('sync order list service');
-      yield syncOrder(); // added sync manager success
+      try {
+        yield syncOrder(); // added sync manager success
+      } catch (e) {
+        console.log(e);
+        yield failedLoadService(
+          serviceTypeGroupManager(types.SYNC_ORDER_LIST, e)
+        );
+      }
       break;
     default:
       if (nowTime - dbTime > 1200000 || payloadType === true) {
         yield put({ type: types.STATUS_SYNC, payload: true });
         yield resetTimeSyncConstant();
+        //
         yield syncCustomProduct();
         yield syncCustomer();
         yield syncOrder();
