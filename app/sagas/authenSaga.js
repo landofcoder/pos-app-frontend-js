@@ -19,7 +19,8 @@ import { getAllTblCustomProduct } from '../reducers/db/sync_custom_product';
 import { getAllOrders, deleteOrder } from '../reducers/db/sync_orders';
 import {
   successLoadService,
-  failedLoadService
+  failedLoadService,
+  getServiceByName
 } from '../reducers/db/sync_data_manager';
 import { signUpCustomerService } from './services/customer-service';
 import { syncOrderService } from './services/cart-service';
@@ -170,6 +171,48 @@ function* syncClientData(payload) {
         yield put({ type: GET_LIST_SYNC_ORDER });
       }
   }
+
+  // reupdate sync manager from localdb to reducer
+  const productSyncStatus = yield call(
+    getServiceByName,
+    types.ALL_PRODUCT_SYNC
+  );
+  const customerSyncStatus = yield call(getServiceByName, types.CUSTOMERS_SYNC);
+  const customProductSyncStatus = yield call(
+    getServiceByName,
+    types.CUSTOM_PRODUCT_SYNC
+  );
+  const configSyncStatus = yield call(
+    getServiceByName,
+    types.GENERAL_CONFIG_SYNC
+  );
+  const orderSyncStatus = yield call(getServiceByName, types.SYNC_ORDER_LIST);
+
+  // order sync
+  yield put({
+    type: types.RECEIVED_LIST_SYNC_ORDER,
+    payload: orderSyncStatus
+  });
+  // customer sync
+  yield put({
+    type: types.RECEIVED_LIST_SYNC_CUSTOMER,
+    payload: customerSyncStatus
+  });
+  // custom product sync
+  yield put({
+    type: types.RECEIVED_LIST_SYNC_CUSTOM_PRODUCT,
+    payload: customProductSyncStatus
+  });
+  // general config sync
+  yield put({
+    type: types.RECEIVED_LIST_SYNC_GENERAL_CONFIG,
+    payload: configSyncStatus
+  });
+  // all product sync
+  yield put({
+    type: types.RECEIVED_LIST_SYNC_ALL_PRODUCT,
+    payload: productSyncStatus
+  });
 }
 
 function* getListSyncOrder() {

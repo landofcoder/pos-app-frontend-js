@@ -15,7 +15,7 @@ function initService(
 }
 
 export async function getServiceByName(name) {
-  console.log("get service name");
+  console.log('get service name');
   console.log(name);
   const productTbl = db.table(table);
   const result = await productTbl.get({ name });
@@ -51,7 +51,7 @@ export async function updateService(service) {
 }
 
 export async function failedLoadService(service) {
-  console.log("failed load service");
+  console.log('failed load service');
   console.log(service);
   let serviceData = await getServiceByName(service.name);
 
@@ -69,14 +69,14 @@ export async function failedLoadService(service) {
 }
 
 export async function successLoadService(serviceName) {
-  console.log("success load service");
+  console.log('success load service');
   const serviceData = await getServiceByName(serviceName);
   console.log(serviceData);
   if (serviceData) {
-    console.log("update");
+    console.log('update');
     await updateService(serviceData);
   } else {
-    console.log("tao");
+    console.log('tao');
     await createService(initService(serviceName));
   }
 }

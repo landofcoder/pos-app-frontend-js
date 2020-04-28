@@ -10,10 +10,12 @@ const initialState = {
   appInfo: {},
   moduleInstalled: {},
   syncManager: {
-    syncCustomProduct: null,
-    syncCustomer: null,
-    syncOrder: null,
-    syncStatus: false
+    syncCustomProduct: [],
+    syncCustomer: [],
+    syncOrder: [],
+    syncStatus: [],
+    syncConfig: [],
+    syncAllProduct: []
   }
 };
 
@@ -54,6 +56,12 @@ const authenRd = (state = initialState, action) =>
         break;
       case typesAuthen.RECEIVED_LIST_SYNC_CUSTOMER:
         draft.syncManager.syncCustomer = action.payload;
+        break;
+      case typesAuthen.RECEIVED_LIST_SYNC_GENERAL_CONFIG:
+        draft.syncManager.syncConfig = action.payload;
+        break;
+      case typesAuthen.RECEIVED_LIST_SYNC_ALL_PRODUCT:
+        draft.syncManager.syncAllProduct = action.payload;
         break;
       case typesAuthen.STATUS_SYNC:
         draft.syncManager.syncStatus = action.payload;
