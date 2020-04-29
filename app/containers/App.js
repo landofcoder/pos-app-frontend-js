@@ -2,6 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { updateIsInternetConnected } from '../actions/homeAction';
 import { checkLoginBackground } from '../actions/authenAction';
+import { runCron } from '../actions/accountAction';
 import Login from '../components/Login/Login';
 import {
   CHILDREN,
@@ -12,10 +13,12 @@ import {
 } from '../constants/main-panel-types';
 import SyncFirstScreen from '../components/Login/SyncScreen/SyncScreen';
 import WorkPlace from '../components/Login/WorkPlace/WorkPlace';
+import { startLoop, stopLoop } from '../common/settings';
 
 type Props = {
   children: React.Node,
   updateIsInternetConnected: (payload: any) => void,
+  runCron: () => void,
   checkLoginBackground: () => void,
   switchingMode: string,
   flagSwitchModeCounter: number
@@ -25,17 +28,28 @@ class App extends React.Component<Props> {
   props: Props;
 
   state = {
-    counterMode: 0
+    counterMode: 0,
+    frameId: null
   };
 
   componentDidMount() {
-    const { updateIsInternetConnected } = this.props;
+    const { updateIsInternetConnected, runCron } = this.props;
     // Listen online and offline mode
     window.addEventListener('online', this.alertOnlineStatus);
     window.addEventListener('offline', this.alertOnlineStatus);
 
     // Get current online mode
     updateIsInternetConnected(navigator.onLine);
+
+    const loopStep = 1000;
+    // Start cron
+    const frameId = startLoop(runCron, loopStep);
+    this.setState({ frameId });
+  }
+
+  componentWillUnmount(): void {
+    const { frameId } = this.state;
+    stopLoop(frameId);
   }
 
   alertOnlineStatus = event => {
@@ -103,7 +117,8 @@ function mapDispatchToProps(dispatch) {
   return {
     updateIsInternetConnected: payload =>
       dispatch(updateIsInternetConnected(payload)),
-    checkLoginBackground: () => dispatch(checkLoginBackground())
+    checkLoginBackground: () => dispatch(checkLoginBackground()),
+    runCron: () => dispatch(runCron())
   };
 }
 

@@ -8,13 +8,9 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProp(dispatch) {
-  return {};
-}
-
 export default withRouter(
   connect(
     mapStateToProps,
-    mapDispatchToProp
+    null
   )(Settings)
 );
