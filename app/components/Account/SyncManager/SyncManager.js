@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { formatDistance } from 'date-fns';
 import { connect } from 'react-redux';
 import SyncCustomProductManager from './SyncCustomProductManager/SyncCustomProductManager';
 import SyncCustomerManager from './SyncCustomerManager/SyncCustomerManager';
@@ -70,10 +71,10 @@ class SyncManager extends Component {
 
   renderLastTime = manager => {
     if (manager.update_at) {
-      return manager.update_at.toLocaleDateString();
+      return formatDistance(manager.update_at, new Date());
     }
     console.log(manager);
-    return 'never synced';
+    return 'not synced';
   };
 
   renderStatusSync = manager => {
