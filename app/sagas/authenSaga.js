@@ -152,6 +152,10 @@ function* syncClientData(payload) {
   switch (payloadType) {
     case types.ALL_PRODUCT_SYNC:
       console.log('sync all product service');
+      yield put({
+        type: types.LOADING_SYNC_ACTION,
+        payload: { type: types.ALL_PRODUCT_SYNC, status: true }
+      });
       try {
         yield setupSyncCategoriesAndProducts(); // added sync manager success
       } catch (e) {
@@ -160,9 +164,17 @@ function* syncClientData(payload) {
           serviceTypeGroupManager(types.ALL_PRODUCT_SYNC, e)
         );
       }
+      yield put({
+        type: types.LOADING_SYNC_ACTION,
+        payload: { type: types.ALL_PRODUCT_SYNC, status: false }
+      });
       break;
     case types.CUSTOM_PRODUCT_SYNC:
       console.log('sync custom product service');
+      yield put({
+        type: types.LOADING_SYNC_ACTION,
+        payload: { type: types.CUSTOM_PRODUCT_SYNC, status: true }
+      });
       try {
         yield syncCustomProduct(); // added sync manager success
       } catch (e) {
@@ -171,9 +183,17 @@ function* syncClientData(payload) {
           serviceTypeGroupManager(types.CUSTOM_PRODUCT_SYNC, e)
         );
       }
+      yield put({
+        type: types.LOADING_SYNC_ACTION,
+        payload: { type: types.CUSTOM_PRODUCT_SYNC, status: false }
+      });
       break;
     case types.CUSTOMERS_SYNC:
       console.log('sync customers product service');
+      yield put({
+        type: types.LOADING_SYNC_ACTION,
+        payload: { type: types.CUSTOMERS_SYNC, status: true }
+      });
       try {
         yield syncCustomer(); // added sync manager success
       } catch (e) {
@@ -182,9 +202,17 @@ function* syncClientData(payload) {
           serviceTypeGroupManager(types.CUSTOMERS_SYNC, e)
         );
       }
+      yield put({
+        type: types.LOADING_SYNC_ACTION,
+        payload: { type: types.CUSTOMERS_SYNC, status: false }
+      });
       break;
     case types.GENERAL_CONFIG_SYNC:
       console.log('sync config service');
+      yield put({
+        type: types.LOADING_SYNC_ACTION,
+        payload: { type: types.GENERAL_CONFIG_SYNC, status: true }
+      });
       try {
         yield setupFetchingAppInfo(); // added sync manager success
       } catch (e) {
@@ -193,9 +221,17 @@ function* syncClientData(payload) {
           serviceTypeGroupManager(types.GENERAL_CONFIG_SYNC, e)
         );
       }
+      yield put({
+        type: types.LOADING_SYNC_ACTION,
+        payload: { type: types.GENERAL_CONFIG_SYNC, status: false }
+      });
       break;
     case types.SYNC_ORDER_LIST:
       console.log('sync order list service');
+      yield put({
+        type: types.LOADING_SYNC_ACTION,
+        payload: { type: types.SYNC_ORDER_LIST, status: true }
+      });
       try {
         yield syncOrder(); // added sync manager success
       } catch (e) {
@@ -204,6 +240,10 @@ function* syncClientData(payload) {
           serviceTypeGroupManager(types.SYNC_ORDER_LIST, e)
         );
       }
+      yield put({
+        type: types.LOADING_SYNC_ACTION,
+        payload: { type: types.SYNC_ORDER_LIST, status: false }
+      });
       break;
     default:
       if (nowTime - dbTime > 1200000 || payloadType === true) {

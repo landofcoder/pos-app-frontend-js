@@ -93,6 +93,23 @@ class SyncManager extends Component {
     return <span className="badge badge-success badge-pill">success</span>;
   };
 
+  actionSyncStatus = manager => {
+    const { syncManager } = this.props;
+    console.log('manager');
+    console.log(manager);
+    switch (manager.name) {
+      case CUSTOMERS_SYNC:
+        return syncManager.loadingSyncCustomer;
+      case ALL_PRODUCT_SYNC:
+        return syncManager.loadingSyncAllProduct;
+      case CUSTOM_PRODUCT_SYNC:
+        return syncManager.loadingSyncCustomProducts;
+      case CUSTOMERS_SYNC:
+        return syncManager.loadingSyncCustomer;
+      case GENERAL_CONFIG_SYNC:
+        return syncManager.loadingSyncConfig;
+    }
+  };
   render() {
     const { syncManager } = this.props;
     console.log(syncManager);
@@ -130,15 +147,27 @@ class SyncManager extends Component {
                 <td>{this.renderLastTime(syncAllProduct)}</td>
                 <td>{this.renderStatusSync(syncAllProduct)}</td>
                 <td>
-                  <button
-                    type="button"
-                    className="btn btn-outline-secondary btn-sm"
-                    onClick={() => {
-                      this.syncDataClientAction(ALL_PRODUCT_SYNC);
-                    }}
-                  >
-                    Sync now
-                  </button>
+                  {this.actionSyncStatus(syncAllProduct) ? (
+                    <div>
+                      <div
+                        class="spinner-border spinner-border-sm"
+                        role="status"
+                      >
+                        <span class="sr-only">Loading...</span>
+                      </div>
+                      Syncing
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary btn-sm"
+                      onClick={() => {
+                        this.syncDataClientAction(ALL_PRODUCT_SYNC);
+                      }}
+                    >
+                      Sync now
+                    </button>
+                  )}
                 </td>
               </tr>
               <tr>
@@ -147,15 +176,27 @@ class SyncManager extends Component {
                 <td>{this.renderLastTime(syncCustomProduct)}</td>
                 <td>{this.renderStatusSync(syncCustomProduct)}</td>
                 <td>
-                  <button
-                    type="button"
-                    className="btn btn-outline-secondary btn-sm"
-                    onClick={() => {
-                      this.syncDataClientAction(CUSTOM_PRODUCT_SYNC);
-                    }}
-                  >
-                    Sync now
-                  </button>
+                  {this.actionSyncStatus(syncCustomProduct) ? (
+                    <div>
+                      <div
+                        class="spinner-border spinner-border-sm"
+                        role="status"
+                      >
+                        <span class="sr-only">Loading...</span>
+                      </div>
+                      Syncing
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary btn-sm"
+                      onClick={() => {
+                        this.syncDataClientAction(CUSTOM_PRODUCT_SYNC);
+                      }}
+                    >
+                      Sync now
+                    </button>
+                  )}
                 </td>
               </tr>
               <tr>
@@ -164,15 +205,27 @@ class SyncManager extends Component {
                 <td>{this.renderLastTime(syncCustomer)}</td>
                 <td>{this.renderStatusSync(syncCustomer)}</td>
                 <td>
-                  <button
-                    type="button"
-                    className="btn btn-outline-secondary btn-sm"
-                    onClick={() => {
-                      this.syncDataClientAction(CUSTOMERS_SYNC);
-                    }}
-                  >
-                    Sync now
-                  </button>
+                  {this.actionSyncStatus(syncCustomer) ? (
+                    <div>
+                      <div
+                        class="spinner-border spinner-border-sm"
+                        role="status"
+                      >
+                        <span class="sr-only">Loading...</span>
+                      </div>
+                      Syncing
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary btn-sm"
+                      onClick={() => {
+                        this.syncDataClientAction(CUSTOMERS_SYNC);
+                      }}
+                    >
+                      Sync now
+                    </button>
+                  )}
                 </td>
               </tr>
               <tr>
@@ -182,15 +235,27 @@ class SyncManager extends Component {
                 <td>{this.renderStatusSync(syncConfig)}</td>
 
                 <td>
-                  <button
-                    type="button"
-                    className="btn btn-outline-secondary btn-sm"
-                    onClick={() => {
-                      this.syncDataClientAction(GENERAL_CONFIG_SYNC);
-                    }}
-                  >
-                    Sync now
-                  </button>
+                  {this.actionSyncStatus(syncConfig) ? (
+                    <div>
+                      <div
+                        class="spinner-border spinner-border-sm"
+                        role="status"
+                      >
+                        <span class="sr-only">Loading...</span>
+                      </div>
+                      Syncing
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary btn-sm"
+                      onClick={() => {
+                        this.syncDataClientAction(GENERAL_CONFIG_SYNC);
+                      }}
+                    >
+                      Sync now
+                    </button>
+                  )}
                 </td>
               </tr>
             </tbody>

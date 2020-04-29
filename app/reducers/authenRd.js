@@ -15,7 +15,13 @@ const initialState = {
     syncOrder: [],
     syncStatus: [],
     syncConfig: [],
-    syncAllProduct: []
+    syncAllProduct: [],
+    loadingSyncCustomProducts: false,
+    loadingSyncCustomer: false,
+    loadingSyncOrder: false,
+    loadingSyncStatus: false,
+    loadingSyncConfig: false,
+    loadingSyncAllProduct: false
   }
 };
 
@@ -68,6 +74,22 @@ const authenRd = (state = initialState, action) =>
         break;
       case typesAuthen.RECEIVED_APP_INFO:
         draft.appInfo = action.payload;
+        break;
+      case typesAuthen.LOADING_SYNC_ACTION:
+        switch (action.payload.type) {
+          case typesAuthen.ALL_PRODUCT_SYNC:
+            draft.syncManager.loadingSyncAllProduct = action.payload.status;
+            break;
+          case typesAuthen.CUSTOM_PRODUCT_SYNC:
+            draft.syncManager.loadingSyncCustomProducts = action.payload.status;
+            break;
+          case typesAuthen.CUSTOMERS_SYNC:
+            draft.syncManager.loadingSyncCustomer = action.payload.status;
+            break;
+          case typesAuthen.GENERAL_CONFIG_SYNC:
+            draft.syncManager.loadingSyncConfig = action.payload.status;
+            break;
+        }
         break;
       default:
     }
