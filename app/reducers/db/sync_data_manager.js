@@ -18,8 +18,11 @@ export async function getServiceByName(name) {
   console.log('get service name');
   console.log(name);
   const productTbl = db.table(table);
-  const result = await productTbl.get({ name });
-  console.log(result);
+  let result = await productTbl.get({ name });
+  if (!result) {
+    await createService(initService(name));
+    result = await productTbl.get({ name });
+  }
   return result;
 }
 

@@ -1,5 +1,5 @@
 import * as type from '../constants/root.json';
-
+import { GET_SYNC_DATA_FROM_LOCAL } from '../constants/authen.json';
 export function getOrderHistory() {
   return {
     type: type.GET_ORDER_HISTORY_ACTION
@@ -64,5 +64,11 @@ export function orderAction(payload) {
 export function getListSyncOrder() {
   return {
     type: type.GET_LIST_SYNC_ORDER
+  };
+}
+
+export function getSyncDataFromLocal() {
+  return {
+    type: GET_SYNC_DATA_FROM_LOCAL
   };
 }

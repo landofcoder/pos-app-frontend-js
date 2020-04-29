@@ -29,6 +29,7 @@ import {
   setupSyncCategoriesAndProducts
 } from './rootSaga';
 import { serviceTypeGroupManager } from '../common/sync-group-manager';
+
 function* logoutAction() {
   // Update view to login_form
   yield put({ type: types.UPDATE_SWITCHING_MODE, payload: LOGIN_FORM });
@@ -93,6 +94,51 @@ function* syncOrder() {
   if (checkAllSync) {
     yield call(successLoadService, types.SYNC_ORDER_LIST);
   }
+}
+
+function* getSyncDataFromLocal() {
+  const productSyncStatus = yield call(
+    getServiceByName,
+    types.ALL_PRODUCT_SYNC
+  );
+  const customerSyncStatus = yield call(getServiceByName, types.CUSTOMERS_SYNC);
+  const customProductSyncStatus = yield call(
+    getServiceByName,
+    types.CUSTOM_PRODUCT_SYNC
+  );
+  const configSyncStatus = yield call(
+    getServiceByName,
+    types.GENERAL_CONFIG_SYNC
+  );
+  const orderSyncStatus = yield call(getServiceByName, types.SYNC_ORDER_LIST);
+
+  // order sync
+  yield put({
+    type: types.RECEIVED_LIST_SYNC_ORDER,
+    payload: orderSyncStatus
+  });
+  // customer sync
+  yield put({
+    type: types.RECEIVED_LIST_SYNC_CUSTOMER,
+    payload: customerSyncStatus
+  });
+  // custom product sync
+  console.log('custom product sync in service');
+  console.log(customProductSyncStatus);
+  yield put({
+    type: types.RECEIVED_LIST_SYNC_CUSTOM_PRODUCT,
+    payload: customProductSyncStatus
+  });
+  // general config sync
+  yield put({
+    type: types.RECEIVED_LIST_SYNC_GENERAL_CONFIG,
+    payload: configSyncStatus
+  });
+  // all product sync
+  yield put({
+    type: types.RECEIVED_LIST_SYNC_ALL_PRODUCT,
+    payload: productSyncStatus
+  });
 }
 /**
  * sync all data from state to server can bind with payload
@@ -173,46 +219,8 @@ function* syncClientData(payload) {
   }
 
   // reupdate sync manager from localdb to reducer
-  const productSyncStatus = yield call(
-    getServiceByName,
-    types.ALL_PRODUCT_SYNC
-  );
-  const customerSyncStatus = yield call(getServiceByName, types.CUSTOMERS_SYNC);
-  const customProductSyncStatus = yield call(
-    getServiceByName,
-    types.CUSTOM_PRODUCT_SYNC
-  );
-  const configSyncStatus = yield call(
-    getServiceByName,
-    types.GENERAL_CONFIG_SYNC
-  );
-  const orderSyncStatus = yield call(getServiceByName, types.SYNC_ORDER_LIST);
 
-  // order sync
-  yield put({
-    type: types.RECEIVED_LIST_SYNC_ORDER,
-    payload: orderSyncStatus
-  });
-  // customer sync
-  yield put({
-    type: types.RECEIVED_LIST_SYNC_CUSTOMER,
-    payload: customerSyncStatus
-  });
-  // custom product sync
-  yield put({
-    type: types.RECEIVED_LIST_SYNC_CUSTOM_PRODUCT,
-    payload: customProductSyncStatus
-  });
-  // general config sync
-  yield put({
-    type: types.RECEIVED_LIST_SYNC_GENERAL_CONFIG,
-    payload: configSyncStatus
-  });
-  // all product sync
-  yield put({
-    type: types.RECEIVED_LIST_SYNC_ALL_PRODUCT,
-    payload: productSyncStatus
-  });
+  yield getSyncDataFromLocal();
 }
 
 function* getListSyncOrder() {
@@ -276,6 +284,7 @@ function* authenSaga() {
   yield takeEvery(SYNC_CLIENT_DATA, syncClientData);
   yield takeEvery(GET_LIST_SYNC_ORDER, getListSyncOrder);
   yield takeEvery(types.GET_APP_BY_TOKEN, getAppByTokenSg);
+  yield takeEvery(types.GET_SYNC_DATA_FROM_LOCAL, getSyncDataFromLocal);
 }
 
 export default authenSaga;

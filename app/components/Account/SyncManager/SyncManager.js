@@ -4,7 +4,11 @@ import SyncCustomProductManager from './SyncCustomProductManager/SyncCustomProdu
 import SyncCustomerManager from './SyncCustomerManager/SyncCustomerManager';
 import SyncOrderManager from './SyncOrderManager/SyncOrderManager';
 import { syncDataClient } from '../../../actions/homeAction';
-import { getListSyncOrder } from '../../../actions/accountAction';
+import {
+  getListSyncOrder,
+  getSyncDataFromLocal
+} from '../../../actions/accountAction';
+
 import {
   ALL_PRODUCT_SYNC,
   CUSTOM_PRODUCT_SYNC,
@@ -14,7 +18,9 @@ import {
 
 type Props = {
   syncDataClient: payload => void,
-  getListSyncOrder: () => void
+  getListSyncOrder: () => void,
+  syncManager: Object,
+  getDataSync: () => void
 };
 class SyncManager extends Component {
   props: Props;
@@ -27,8 +33,9 @@ class SyncManager extends Component {
   }
 
   componentDidMount(): void {
-    const { getListSyncOrder } = this.props;
-    getListSyncOrder();
+    const { getListSyncOrder, getDataSync } = this.props;
+    getDataSync();
+    // getListSyncOrder();
   }
 
   renderSwitchShowUpSync = () => {
@@ -61,7 +68,47 @@ class SyncManager extends Component {
     this.setState({ viewSelected: payload });
   };
 
+  renderLastTime = manager => {
+    if (manager.update_at) {
+      return manager.update_at.toLocaleDateString();
+    }
+    console.log(manager);
+    return 'never synced';
+  };
+
+  renderStatusSync = manager => {
+    if (!manager.update_at) {
+      return (
+        <span className="badge badge-pill badge-secondary">not synced</span>
+      );
+    }
+    if (manager.errors) {
+      return (
+        <span className="badge badge-danger badge-pill">
+          {manager.errors} errors
+        </span>
+      );
+    }
+    return <span className="badge badge-success badge-pill">success</span>;
+  };
+
   render() {
+    const { syncManager } = this.props;
+    console.log(syncManager);
+    const {
+      syncOrder,
+      syncCustomer,
+      syncCustomProduct,
+      syncConfig,
+      syncAllProduct
+    } = syncManager;
+    console.log(
+      syncCustomer,
+      syncOrder,
+      syncConfig,
+      syncAllProduct,
+      syncCustomProduct
+    );
     return (
       <div className="row">
         <div className="col-md-12">
@@ -79,12 +126,8 @@ class SyncManager extends Component {
               <tr>
                 <th scope="row">1</th>
                 <td>All products sync</td>
-                <td>30 minutes ago</td>
-                <td>
-                  <span className="badge badge-success badge-pill">
-                    success
-                  </span>
-                </td>
+                <td>{this.renderLastTime(syncAllProduct)}</td>
+                <td>{this.renderStatusSync(syncAllProduct)}</td>
                 <td>
                   <button
                     type="button"
@@ -100,12 +143,8 @@ class SyncManager extends Component {
               <tr>
                 <th scope="row">2</th>
                 <td>Custom products sync</td>
-                <td>15 minutes ago</td>
-                <td>
-                  <span className="badge badge-success badge-pill">
-                    success
-                  </span>
-                </td>
+                <td>{this.renderLastTime(syncCustomProduct)}</td>
+                <td>{this.renderStatusSync(syncCustomProduct)}</td>
                 <td>
                   <button
                     type="button"
@@ -121,12 +160,8 @@ class SyncManager extends Component {
               <tr>
                 <th scope="row">4</th>
                 <td>Customers sync</td>
-                <td>20 minutes ago</td>
-                <td>
-                  <span className="badge badge-danger badge-pill">
-                    2 errors
-                  </span>
-                </td>
+                <td>{this.renderLastTime(syncCustomer)}</td>
+                <td>{this.renderStatusSync(syncCustomer)}</td>
                 <td>
                   <button
                     type="button"
@@ -142,12 +177,9 @@ class SyncManager extends Component {
               <tr>
                 <th scope="row">3</th>
                 <td>General config sync</td>
-                <td>a few seconds</td>
-                <td>
-                  <span className="badge badge-danger badge-pill">
-                    2 errors
-                  </span>
-                </td>
+                <td>{this.renderLastTime(syncConfig)}</td>
+                <td>{this.renderStatusSync(syncConfig)}</td>
+
                 <td>
                   <button
                     type="button"
@@ -167,14 +199,19 @@ class SyncManager extends Component {
     );
   }
 }
-
 function mapDispatchToProps(dispatch) {
   return {
-    syncDataClient: payload => dispatch(syncDataClient({type: payload})),
-    getListSyncOrder: () => dispatch(getListSyncOrder())
+    syncDataClient: payload => dispatch(syncDataClient({ type: payload })),
+    getListSyncOrder: () => dispatch(getListSyncOrder()),
+    getDataSync: () => dispatch(getSyncDataFromLocal())
+  };
+}
+function mapStateToProps(state) {
+  return {
+    syncManager: state.authenRd.syncManager
   };
 }
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(SyncManager);
