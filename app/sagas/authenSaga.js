@@ -16,7 +16,12 @@ import { setAppInfoToGlobal } from '../common/settings';
 import { syncCustomProductAPI } from './services/product-service';
 import { getAllTbl, deleteByKey } from '../reducers/db/sync_customers';
 import { getAllTblCustomProduct } from '../reducers/db/sync_custom_product';
-import { getAllOrders, deleteOrder } from '../reducers/db/sync_orders';
+import {
+  getAllOrders,
+  deleteOrder,
+  getOrderById,
+  updateOrder
+} from '../reducers/db/sync_orders';
 import {
   successLoadService,
   failedLoadService,
@@ -74,25 +79,41 @@ function* syncCustomProduct() {
   }
 }
 
-function* syncOrder() {
-  const orders = yield getAllOrders();
-  let checkAllSync = true;
-  // eslint-disable-next-line no-restricted-syntax
-  for (const order of orders) {
+function* syncOrder(id) {
+  // if syncOrder call with haven't id means sync all
+  if (id) {
+    const order = yield getOrderById(id);
+    console.log(order);
     const dataResult = yield call(syncOrderService, order);
-
     if (dataResult.status === true) {
       console.log('completed sync orders');
       yield deleteOrder(order.id);
     } else {
-      checkAllSync = false;
+      yield updateOrder(order);
       yield failedLoadService(
-        serviceTypeGroupManager(types.SYNC_ORDER_LIST, e)
+        serviceTypeGroupManager(types.SYNC_ORDER_LIST, dataResult)
       );
     }
-  }
-  if (checkAllSync) {
-    yield call(successLoadService, types.SYNC_ORDER_LIST);
+  } else {
+    const orders = yield getAllOrders();
+    let checkAllSync = true;
+    // eslint-disable-next-line no-restricted-syntax
+    for (const order of orders) {
+      const dataResult = yield call(syncOrderService, order);
+
+      if (dataResult.status === true) {
+        console.log('completed sync orders');
+        yield deleteOrder(order.id);
+      } else {
+        checkAllSync = false;
+        yield failedLoadService(
+          serviceTypeGroupManager(types.SYNC_ORDER_LIST, dataResult)
+        );
+      }
+    }
+    if (checkAllSync) {
+      yield call(successLoadService, types.SYNC_ORDER_LIST);
+    }
   }
 }
 
@@ -233,7 +254,7 @@ function* syncClientData(payload) {
         payload: { type: types.SYNC_ORDER_LIST, status: true }
       });
       try {
-        yield syncOrder(); // added sync manager success
+        yield syncOrder(payload.id); // added sync manager success
       } catch (e) {
         console.log(e);
         yield failedLoadService(

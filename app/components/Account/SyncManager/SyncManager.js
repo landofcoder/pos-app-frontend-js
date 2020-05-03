@@ -34,9 +34,8 @@ class SyncManager extends Component {
   }
 
   componentDidMount(): void {
-    const { getListSyncOrder, getDataSync } = this.props;
+    const { getDataSync } = this.props;
     getDataSync();
-    // getListSyncOrder();
   }
 
   renderSwitchShowUpSync = () => {
@@ -104,12 +103,13 @@ class SyncManager extends Component {
         return syncManager.loadingSyncAllProduct;
       case CUSTOM_PRODUCT_SYNC:
         return syncManager.loadingSyncCustomProducts;
-      case CUSTOMERS_SYNC:
-        return syncManager.loadingSyncCustomer;
       case GENERAL_CONFIG_SYNC:
         return syncManager.loadingSyncConfig;
+      default:
+        return null;
     }
   };
+
   render() {
     const { syncManager } = this.props;
     console.log(syncManager);
@@ -150,10 +150,10 @@ class SyncManager extends Component {
                   {this.actionSyncStatus(syncAllProduct) ? (
                     <div>
                       <div
-                        class="spinner-border spinner-border-sm"
+                        className="spinner-border spinner-border-sm"
                         role="status"
                       >
-                        <span class="sr-only">Loading...</span>
+                        <span className="sr-only">Loading...</span>
                       </div>
                       Syncing
                     </div>
@@ -179,10 +179,10 @@ class SyncManager extends Component {
                   {this.actionSyncStatus(syncCustomProduct) ? (
                     <div>
                       <div
-                        class="spinner-border spinner-border-sm"
+                        className="spinner-border spinner-border-sm"
                         role="status"
                       >
-                        <span class="sr-only">Loading...</span>
+                        <span className="sr-only">Loading...</span>
                       </div>
                       Syncing
                     </div>
@@ -208,10 +208,10 @@ class SyncManager extends Component {
                   {this.actionSyncStatus(syncCustomer) ? (
                     <div>
                       <div
-                        class="spinner-border spinner-border-sm"
+                        className="spinner-border spinner-border-sm"
                         role="status"
                       >
-                        <span class="sr-only">Loading...</span>
+                        <span className="sr-only">Loading...</span>
                       </div>
                       Syncing
                     </div>
@@ -238,10 +238,10 @@ class SyncManager extends Component {
                   {this.actionSyncStatus(syncConfig) ? (
                     <div>
                       <div
-                        class="spinner-border spinner-border-sm"
+                        className="spinner-border spinner-border-sm"
                         role="status"
                       >
-                        <span class="sr-only">Loading...</span>
+                        <span className="sr-only">Loading...</span>
                       </div>
                       Syncing
                     </div>

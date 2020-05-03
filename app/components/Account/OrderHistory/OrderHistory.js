@@ -313,7 +313,7 @@ function mapDispatchToProps(dispatch) {
     getOrderHistoryDetail: id => dispatch(getOrderHistoryDetail(id)),
     orderAction: payload => dispatch(orderAction(payload)),
     toggleModalAddNote: payload => dispatch(toggleModalAddNote(payload)),
-    syncDataClient: payload => dispatch(syncDataClient(payload)),
+    syncDataClient: payload => dispatch(syncDataClient(payload))
   };
 }
 
