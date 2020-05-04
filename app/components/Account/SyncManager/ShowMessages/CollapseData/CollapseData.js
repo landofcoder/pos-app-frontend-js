@@ -12,6 +12,7 @@ class CollapseData extends Component {
     const data = this.props.data;
     console.log('collapse');
     console.log(data);
+    if (!data) return null;
     return (
       <>
         {data.map((item, index) => {
@@ -19,6 +20,7 @@ class CollapseData extends Component {
             <tr>
               <th scope="row">{index + 1}</th>
               <td>{item.message}</td>
+              <CollapseData data={item.data} />
             </tr>
           );
         })}
