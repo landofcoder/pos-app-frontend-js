@@ -72,3 +72,10 @@ export function getSyncDataFromLocal() {
     type: GET_SYNC_DATA_FROM_LOCAL
   };
 }
+
+export function showLogsAction(payload) {
+  return {
+    type: type.TOOGLE_MODAL_SHOW_SYNC_LOGS,
+    payload: { type: payload.type, status: payload.status }
+  };
+}

@@ -7,7 +7,8 @@ import SyncOrderManager from './SyncOrderManager/SyncOrderManager';
 import { syncDataClient } from '../../../actions/homeAction';
 import {
   getListSyncOrder,
-  getSyncDataFromLocal
+  getSyncDataFromLocal,
+  showLogsAction
 } from '../../../actions/accountAction';
 
 import {
@@ -21,7 +22,8 @@ type Props = {
   syncDataClient: payload => void,
   getListSyncOrder: () => void,
   syncManager: Object,
-  getDataSync: () => void
+  getDataSync: () => void,
+  showLogsAction: (payload: Object) => void
 };
 class SyncManager extends Component {
   props: Props;
@@ -110,6 +112,11 @@ class SyncManager extends Component {
     }
   };
 
+  actionToggleShowLogs = type => {
+    const { showLogsAction } = this.props;
+    showLogsAction({ type, status: true });
+  };
+
   render() {
     const { syncManager } = this.props;
     console.log(syncManager);
@@ -141,7 +148,11 @@ class SyncManager extends Component {
               </tr>
             </thead>
             <tbody>
-              <tr>
+              <tr
+                onClick={() => {
+                  this.actionToggleShowLogs(ALL_PRODUCT_SYNC);
+                }}
+              >
                 <th scope="row">1</th>
                 <td>All products sync</td>
                 <td>{this.renderLastTime(syncAllProduct)}</td>
@@ -170,7 +181,11 @@ class SyncManager extends Component {
                   )}
                 </td>
               </tr>
-              <tr>
+              <tr
+                onClick={() => {
+                  this.actionToggleShowLogs(CUSTOM_PRODUCT_SYNC);
+                }}
+              >
                 <th scope="row">2</th>
                 <td>Custom products sync</td>
                 <td>{this.renderLastTime(syncCustomProduct)}</td>
@@ -199,7 +214,11 @@ class SyncManager extends Component {
                   )}
                 </td>
               </tr>
-              <tr>
+              <tr
+                onClick={() => {
+                  this.actionToggleShowLogs(CUSTOMERS_SYNC);
+                }}
+              >
                 <th scope="row">4</th>
                 <td>Customers sync</td>
                 <td>{this.renderLastTime(syncCustomer)}</td>
@@ -228,7 +247,11 @@ class SyncManager extends Component {
                   )}
                 </td>
               </tr>
-              <tr>
+              <tr
+                onClick={() => {
+                  this.actionToggleShowLogs(GENERAL_CONFIG_SYNC);
+                }}
+              >
                 <th scope="row">3</th>
                 <td>General config sync</td>
                 <td>{this.renderLastTime(syncConfig)}</td>
@@ -269,7 +292,8 @@ function mapDispatchToProps(dispatch) {
   return {
     syncDataClient: payload => dispatch(syncDataClient({ type: payload })),
     getListSyncOrder: () => dispatch(getListSyncOrder()),
-    getDataSync: () => dispatch(getSyncDataFromLocal())
+    getDataSync: () => dispatch(getSyncDataFromLocal()),
+    showLogsAction: payload => dispatch(showLogsAction(payload))
   };
 }
 function mapStateToProps(state) {
