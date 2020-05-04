@@ -1,6 +1,5 @@
 import produce from 'immer';
 import * as typesAuthen from '../constants/authen';
-
 const initialState = {
   loading: false,
   message: '',
@@ -21,7 +20,7 @@ const initialState = {
     loadingSyncOrder: false,
     loadingSyncStatus: false,
     loadingSyncConfig: false,
-    loadingSyncAllProduct: false
+    loadingSyncAllProduct: false,
   }
 };
 

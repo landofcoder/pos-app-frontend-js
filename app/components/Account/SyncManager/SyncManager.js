@@ -17,7 +17,7 @@ import {
   CUSTOMERS_SYNC,
   GENERAL_CONFIG_SYNC
 } from '../../../constants/authen.json';
-
+import Style from './sync-manager.scss';
 type Props = {
   syncDataClient: payload => void,
   getListSyncOrder: () => void,
@@ -54,16 +54,10 @@ class SyncManager extends Component {
     }
   };
 
-  syncStartAction = e => {
-    const { syncDataClient, getListSyncOrder } = this.props;
-    e.preventDefault();
-    syncDataClient(true);
-    getListSyncOrder();
-  };
-
   syncDataClientAction = type => {
-    const { syncDataClient } = this.props;
+    const { syncDataClient, showLogsAction } = this.props;
     syncDataClient(type);
+    showLogsAction({ status: false });
   };
 
   viewSelectedAction = payload => {
@@ -149,6 +143,7 @@ class SyncManager extends Component {
             </thead>
             <tbody>
               <tr
+                className={Style.cursorPointer}
                 onClick={() => {
                   this.actionToggleShowLogs(ALL_PRODUCT_SYNC);
                 }}
@@ -172,7 +167,8 @@ class SyncManager extends Component {
                     <button
                       type="button"
                       className="btn btn-outline-secondary btn-sm"
-                      onClick={() => {
+                      onClick={e => {
+                        e.stopPropagation();
                         this.syncDataClientAction(ALL_PRODUCT_SYNC);
                       }}
                     >
@@ -182,6 +178,7 @@ class SyncManager extends Component {
                 </td>
               </tr>
               <tr
+                className={Style.cursorPointer}
                 onClick={() => {
                   this.actionToggleShowLogs(CUSTOM_PRODUCT_SYNC);
                 }}
@@ -205,7 +202,8 @@ class SyncManager extends Component {
                     <button
                       type="button"
                       className="btn btn-outline-secondary btn-sm"
-                      onClick={() => {
+                      onClick={e => {
+                        e.stopPropagation();
                         this.syncDataClientAction(CUSTOM_PRODUCT_SYNC);
                       }}
                     >
@@ -215,6 +213,7 @@ class SyncManager extends Component {
                 </td>
               </tr>
               <tr
+                className={Style.cursorPointer}
                 onClick={() => {
                   this.actionToggleShowLogs(CUSTOMERS_SYNC);
                 }}
@@ -238,7 +237,8 @@ class SyncManager extends Component {
                     <button
                       type="button"
                       className="btn btn-outline-secondary btn-sm"
-                      onClick={() => {
+                      onClick={e => {
+                        e.stopPropagation();
                         this.syncDataClientAction(CUSTOMERS_SYNC);
                       }}
                     >
@@ -248,6 +248,7 @@ class SyncManager extends Component {
                 </td>
               </tr>
               <tr
+                className={Style.cursorPointer}
                 onClick={() => {
                   this.actionToggleShowLogs(GENERAL_CONFIG_SYNC);
                 }}
@@ -272,7 +273,8 @@ class SyncManager extends Component {
                     <button
                       type="button"
                       className="btn btn-outline-secondary btn-sm"
-                      onClick={() => {
+                      onClick={e => {
+                        e.stopPropagation();
                         this.syncDataClientAction(GENERAL_CONFIG_SYNC);
                       }}
                     >
@@ -298,6 +300,8 @@ function mapDispatchToProps(dispatch) {
 }
 function mapStateToProps(state) {
   return {
+    isShowLogsMessages: state.mainRd.isShowLogsMessages,
+    typeShowLogsMessages: state.mainRd.typeShowLogsMessages,
     syncManager: state.authenRd.syncManager
   };
 }

@@ -1,19 +1,91 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { showLogsAction } from '../../../../../actions/accountAction';
-import { TOOGLE_MODAL_SHOW_SYNC_LOGS } from '../../../../../constants/root.json';
+import { TOOGLE_MODAL_SHOW_SYNC_LOGS } from '../../../../constants/root.json';
+import ModalStyle from '../../../styles/modal.scss';
+import CollapseData from './CollapseData/CollapseData';
+import {
+  ALL_PRODUCT_SYNC,
+  CUSTOM_PRODUCT_SYNC,
+  CUSTOMERS_SYNC,
+  GENERAL_CONFIG_SYNC
+} from '../../../../constants/authen.json';
+import { showLogsAction } from '../../../../actions/accountAction';
 type Props = {
-  ListSyncCustomer: Array,
+  isShowLogsMessages: boolean,
+  typeShowLogsMessages: string,
+  syncManager: object,
   showLogsAction: (payload: Object) => void
 };
-type Props = {};
 class ShowMessages extends Component {
   props: Props;
 
-  render() {
+  close = () => {
+    const { showLogsAction } = this.props;
+    showLogsAction({ status: false });
+  };
+
+  showLog = () => {
+    let data;
+    const { typeShowLogsMessages, syncManager } = this.props;
+    switch (typeShowLogsMessages) {
+      case ALL_PRODUCT_SYNC:
+        data = syncManager.syncAllProduct;
+        break;
+      case CUSTOM_PRODUCT_SYNC:
+        data = syncManager.syncCustomProduct;
+        break;
+      case CUSTOMERS_SYNC:
+        data = syncManager.syncCustomer;
+        break;
+      case GENERAL_CONFIG_SYNC:
+        data = syncManager.syncConfig;
+        break;
+      default:
+        break;
+    }
+    console.log(data);
+    if (!data) return null;
     return (
-      <div>
-        <p>helo world</p>
+      <table className="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Message</th>
+          </tr>
+        </thead>
+        <tbody>
+          <CollapseData data={data.actionErrors} />
+        </tbody>
+      </table>
+    );
+  };
+
+  render() {
+    const { isShowLogsMessages } = this.props;
+    return (
+      <div
+        className={ModalStyle.modal}
+        style={{ display: isShowLogsMessages ? 'block' : 'none' }}
+      >
+        <div className={ModalStyle.modalContent}>
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">Message Logs</h5>
+            </div>
+            <div className="modal-body">{this.showLog()}</div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => {
+                  this.close();
+                }}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -21,7 +93,9 @@ class ShowMessages extends Component {
 
 function mapStateToProps(state) {
   return {
-    ListSyncCustomer: state.authenRd.syncManager.syncCustomer
+    isShowLogsMessages: state.mainRd.isShowLogsMessages,
+    typeShowLogsMessages: state.mainRd.typeShowLogsMessages,
+    syncManager: state.authenRd.syncManager
   };
 }
 function mapDispatchToProps(dispatch) {
