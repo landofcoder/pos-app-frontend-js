@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { TOOGLE_MODAL_SHOW_SYNC_LOGS } from '../../../../constants/root.json';
 import ModalStyle from '../../../styles/modal.scss';
 import CollapseData from './CollapseData/CollapseData';
 import {
@@ -10,6 +9,7 @@ import {
   GENERAL_CONFIG_SYNC
 } from '../../../../constants/authen.json';
 import { showLogsAction } from '../../../../actions/accountAction';
+
 type Props = {
   isShowLogsMessages: boolean,
   typeShowLogsMessages: string,
@@ -19,12 +19,30 @@ type Props = {
 class ShowMessages extends Component {
   props: Props;
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      collapseData: {}
+    };
+  }
+
   close = () => {
     const { showLogsAction } = this.props;
     showLogsAction({ status: false });
   };
 
+  actionCollapseData = index => {
+    const { collapseData } = this.state;
+    if (collapseData[index]) {
+      collapseData[index] = !collapseData[index];
+    } else {
+      collapseData[index] = true;
+    }
+    this.setState({ collapseData });
+  };
+
   showLog = () => {
+    const { collapseData } = this.state;
     let data;
     const { typeShowLogsMessages, syncManager } = this.props;
     switch (typeShowLogsMessages) {
@@ -54,7 +72,32 @@ class ShowMessages extends Component {
           </tr>
         </thead>
         <tbody>
-          <CollapseData data={data.actionErrors} />
+          {data.actionErrors.map((item, index) => {
+            return (
+              <>
+                <tr
+                  key={index}
+                  onClick={() => {
+                    this.actionCollapseData(index);
+                  }}
+                >
+                  <th scope="row">{index + 1}</th>
+                  <td>{item.message}</td>
+                </tr>
+
+                {collapseData[index] ? (
+                  <>
+                    <tr style={{ backgroundColor: '#fff' }}>
+                      <th scope="row"></th>
+                      <td>
+                        <CollapseData data={item.data} />
+                      </td>
+                    </tr>
+                  </>
+                ) : null}
+              </>
+            );
+          })}
         </tbody>
       </table>
     );
@@ -65,10 +108,12 @@ class ShowMessages extends Component {
     return (
       <div
         className={ModalStyle.modal}
-        style={{ display: isShowLogsMessages ? 'block' : 'none' }}
+        style={{
+          display: isShowLogsMessages ? 'block' : 'none'
+        }}
       >
         <div className={ModalStyle.modalContent}>
-          <div className="modal-content">
+          <div className="modal-content" style={{ backgroundColor: '#F7F8FA' }}>
             <div className="modal-header">
               <h5 className="modal-title">Message Logs</h5>
             </div>
