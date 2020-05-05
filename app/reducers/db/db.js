@@ -16,4 +16,12 @@ db.version(13).stores({
   module_sync_history: '++id, *key'
 });
 
+db.version(14).stores({
+  barcode_index: '++id, *product_id, *bar_code'
+});
+
+db.version(14).stores({
+  inventory_index: '++id, *product_id'
+});
+
 export default db;
