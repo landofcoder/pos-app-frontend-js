@@ -66,7 +66,7 @@ class SyncManager extends Component {
 
   renderLastTime = manager => {
     if (manager.update_at) {
-      return formatDistance(manager.update_at, new Date());
+      return formatDistance(manager.update_at, new Date()) + ' ago';
     }
     console.log(manager);
     return 'not synced';

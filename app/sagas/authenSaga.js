@@ -34,6 +34,7 @@ import {
 } from './rootSaga';
 import { serviceTypeGroupManager } from '../common/sync-group-manager';
 
+const syncManager = state => state.authenRd.syncManager;
 function* logoutAction() {
   // Update view to login_form
   yield put({ type: types.UPDATE_SWITCHING_MODE, payload: LOGIN_FORM });
@@ -174,28 +175,49 @@ function* runSyncWithSettingTime() {
     types.GENERAL_CONFIG_SYNC
   );
   const timeSyncResult = yield select(timeSyncConfig);
+  const syncManagerResult = yield select(syncManager);
+
+  // truong hop sync dang hoat dong va chua duoc hoan tat, ham check sync khong nen chay them ham sync them lan nua
   const {
+    loadingSyncAllProduct,
+    loadingSyncConfig,
+    loadingSyncCustomProducts,
+    loadingSyncCustomer
+  } = syncManagerResult;
+  const {
+    all_products,
     all_custom_product,
     all_customers_sync,
-    all_products,
     general_config_sync
   } = timeSyncResult;
-  if (nowTime - syncTimeAllProduct > all_custom_product * 60000) {
+  if (
+    nowTime - syncTimeAllProduct > all_products * 60000 &&
+    !loadingSyncAllProduct
+  ) {
     console.log('go  auto sync all product');
     payload.payload = types.ALL_PRODUCT_SYNC;
     yield syncClientData(payload);
   }
-  if (nowTime - syncTimeCustomProduct > all_customers_sync * 60000) {
+  if (
+    nowTime - syncTimeCustomProduct > all_custom_product * 60000 &&
+    !loadingSyncCustomProducts
+  ) {
     console.log('go  auto sync custom product');
     payload.payload = types.CUSTOM_PRODUCT_SYNC;
     yield syncClientData(payload);
   }
-  if (nowTime - syncTimeCustomer > all_products * 60000) {
+  if (
+    nowTime - syncTimeCustomer > all_customers_sync * 60000 &&
+    !loadingSyncCustomer
+  ) {
     console.log('go  auto sync customer');
     payload.payload = types.CUSTOMERS_SYNC;
     yield syncClientData(payload);
   }
-  if (nowTime - syncTimeGeneralConfig > general_config_sync * 60000) {
+  if (
+    nowTime - syncTimeGeneralConfig > general_config_sync * 60000 &&
+    !loadingSyncConfig
+  ) {
     console.log('go  auto sync general config');
     payload.payload = types.GENERAL_CONFIG_SYNC;
     yield syncClientData(payload);
