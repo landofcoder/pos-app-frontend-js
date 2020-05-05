@@ -23,3 +23,22 @@ export async function deleteOrder(id) {
   const tbl = db.table(table);
   await tbl.delete(id);
 }
+
+export async function getOrderById(id) {
+  const tbl =  db.table(table);
+  const result = await tbl.where({ id }).toArray();
+  if (result) {
+    console.log(result);
+    return result[0];
+  }
+  return null;
+}
+
+export async function updateOrder(order) {
+  console.log('update order');
+  console.log(order);
+  const updateOrder = order;
+  updateOrder.update_at = new Date();
+  const tbl = db.table(table);
+  await tbl.update(order.id, updateOrder);
+}

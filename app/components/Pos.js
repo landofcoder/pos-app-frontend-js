@@ -44,7 +44,6 @@ type Props = {
   isShowCashPaymentModel: boolean,
   isShowCardPaymentModal: boolean,
   updateIsShowingProductOption: (payload: boolean) => void,
-  autoSyncGroupCheckout: () => void,
   mainProductListLoading: boolean,
   isOpenReceiptModal: boolean,
   isShowModalItemEditCart: boolean,
@@ -90,12 +89,7 @@ export default class Pos extends Component<Props, State> {
   componentDidMount(): void {
     // Get default product
 
-    const { autoSyncGroupCheckout, hidDevice } = this.props;
-
-    const loopStep = 20000;
-    const frameId = startLoop(autoSyncGroupCheckout, loopStep);
-    this.setState({ frameId });
-
+    const { hidDevice } = this.props;
     // Uncomment below code for testing scanner device working
     // const { getProductBySkuFromScanner } = this.props;
     // getProductBySkuFromScanner('MH11');
@@ -119,11 +113,6 @@ export default class Pos extends Component<Props, State> {
       updateTriggerScannerBarcodeTriggerToFalse(false);
       this.preAddToCart(product);
     }
-  }
-
-  componentWillUnmount(): void {
-    const { frameId } = this.state;
-    stopLoop(frameId);
   }
 
   addCustomProduct = () => {

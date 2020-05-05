@@ -27,7 +27,6 @@ class SyncCustomProductManager extends Component {
           <tbody>
             {ListSyncCustomProduct
               ? ListSyncCustomProduct.map((item, index) => {
-                  console.log(item);
                   return (
                     <tr key={index} className={Styles.tableRowList}>
                       <th scope="row">{index + 1}</th>

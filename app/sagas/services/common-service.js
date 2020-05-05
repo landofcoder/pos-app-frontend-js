@@ -10,6 +10,7 @@ import { apiGatewayPath } from '../../../configs/env/config.main';
  * @returns array
  */
 export async function getShopInfoService() {
+  let data;
   try {
     const response = await fetch(`${apiGatewayPath}/cashier/shop-info`, {
       method: 'GET',
@@ -25,11 +26,34 @@ export async function getShopInfoService() {
       redirect: 'follow',
       referrer: 'no-referrer'
     });
-    return await response.json();
-  } catch (e) {
-    console.log(e);
+    data = await response.json();
+  } catch (data) {
+    // eslint-disable-next-line no-throw-literal
+    throw { message: 'Server not response', data };
   }
-  return null;
+
+  const { cashier_info, common_config, currency_code, receipt } = data;
+
+  // du lieu data tra ve bao gom thong tin cashier_info common config, currency code
+  // kiem tra du lieu co hop le khong
+  if (
+    data.message ||
+    cashier_info.message ||
+    common_config.message ||
+    currency_code.message ||
+    receipt.message
+  ) {
+    const message =
+      data.message ||
+      cashier_info.message ||
+      common_config.message ||
+      currency_code.message ||
+      receipt.message;
+    // eslint-disable-next-line no-throw-literal
+    throw { message, data };
+  }
+
+  return data;
 }
 
 /**
@@ -38,7 +62,6 @@ export async function getShopInfoService() {
  */
 export async function getAllCategoriesService() {
   let data;
-  let error = false;
   let response = {};
   try {
     response = await fetch(`${apiGatewayPath}/category/get-all`, {
@@ -56,16 +79,12 @@ export async function getAllCategoriesService() {
     });
     data = await response.json();
   } catch (e) {
-    data = [];
-    error = true;
+    // eslint-disable-next-line no-throw-literal
+    throw { message: 'error connection to server', data: {} };
   }
-  if (error || response.status === 401) {
-    if (getOfflineMode() === 1) {
-      // Get from local
-      data = await getCategoriesFromLocal();
-      // eslint-disable-next-line prefer-destructuring
-      data = data[0];
-    }
+  if (data.message) {
+    // eslint-disable-next-line no-throw-literal
+    throw { message: data.message, data };
   }
   return data;
 }

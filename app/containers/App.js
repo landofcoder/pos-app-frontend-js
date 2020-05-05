@@ -14,14 +14,15 @@ import {
 import SyncFirstScreen from '../components/Login/SyncScreen/SyncScreen';
 import WorkPlace from '../components/Login/WorkPlace/WorkPlace';
 import { startLoop, stopLoop } from '../common/settings';
-
+import { syncDataClient } from '../actions/homeAction';
 type Props = {
   children: React.Node,
   updateIsInternetConnected: (payload: any) => void,
   runCron: () => void,
   checkLoginBackground: () => void,
   switchingMode: string,
-  flagSwitchModeCounter: number
+  flagSwitchModeCounter: number,
+  syncDataClient: () => void
 };
 
 class App extends React.Component<Props> {
@@ -33,7 +34,7 @@ class App extends React.Component<Props> {
   };
 
   componentDidMount() {
-    const { updateIsInternetConnected, runCron } = this.props;
+    const { updateIsInternetConnected, syncDataClient } = this.props;
     // Listen online and offline mode
     window.addEventListener('online', this.alertOnlineStatus);
     window.addEventListener('offline', this.alertOnlineStatus);
@@ -43,7 +44,7 @@ class App extends React.Component<Props> {
 
     const loopStep = 1000;
     // Start cron
-    const frameId = startLoop(runCron, loopStep);
+    const frameId = startLoop(syncDataClient, loopStep);
     this.setState({ frameId });
   }
 
@@ -118,7 +119,7 @@ function mapDispatchToProps(dispatch) {
     updateIsInternetConnected: payload =>
       dispatch(updateIsInternetConnected(payload)),
     checkLoginBackground: () => dispatch(checkLoginBackground()),
-    runCron: () => dispatch(runCron())
+    syncDataClient: () => dispatch(syncDataClient())
   };
 }
 

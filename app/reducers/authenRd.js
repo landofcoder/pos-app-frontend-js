@@ -1,6 +1,5 @@
 import produce from 'immer';
 import * as typesAuthen from '../constants/authen';
-
 const initialState = {
   loading: false,
   message: '',
@@ -10,10 +9,18 @@ const initialState = {
   appInfo: {},
   moduleInstalled: {},
   syncManager: {
-    syncCustomProduct: null,
-    syncCustomer: null,
-    syncOrder: null,
-    syncStatus: false
+    syncCustomProduct: [],
+    syncCustomer: [],
+    syncOrder: [],
+    syncStatus: [],
+    syncConfig: [],
+    syncAllProduct: [],
+    loadingSyncCustomProducts: false,
+    loadingSyncCustomer: false,
+    loadingSyncOrder: false,
+    loadingSyncStatus: false,
+    loadingSyncConfig: false,
+    loadingSyncAllProduct: false,
   }
 };
 
@@ -55,11 +62,33 @@ const authenRd = (state = initialState, action) =>
       case typesAuthen.RECEIVED_LIST_SYNC_CUSTOMER:
         draft.syncManager.syncCustomer = action.payload;
         break;
+      case typesAuthen.RECEIVED_LIST_SYNC_GENERAL_CONFIG:
+        draft.syncManager.syncConfig = action.payload;
+        break;
+      case typesAuthen.RECEIVED_LIST_SYNC_ALL_PRODUCT:
+        draft.syncManager.syncAllProduct = action.payload;
+        break;
       case typesAuthen.STATUS_SYNC:
         draft.syncManager.syncStatus = action.payload;
         break;
       case typesAuthen.RECEIVED_APP_INFO:
         draft.appInfo = action.payload;
+        break;
+      case typesAuthen.LOADING_SYNC_ACTION:
+        switch (action.payload.type) {
+          case typesAuthen.ALL_PRODUCT_SYNC:
+            draft.syncManager.loadingSyncAllProduct = action.payload.status;
+            break;
+          case typesAuthen.CUSTOM_PRODUCT_SYNC:
+            draft.syncManager.loadingSyncCustomProducts = action.payload.status;
+            break;
+          case typesAuthen.CUSTOMERS_SYNC:
+            draft.syncManager.loadingSyncCustomer = action.payload.status;
+            break;
+          case typesAuthen.GENERAL_CONFIG_SYNC:
+            draft.syncManager.loadingSyncConfig = action.payload.status;
+            break;
+        }
         break;
       default:
     }

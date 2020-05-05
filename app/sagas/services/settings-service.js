@@ -8,7 +8,6 @@ import {
 
 const shopInfoKey = 'shop_info_config';
 const cashierInfoLabel = 'cashier_info';
-const timeSyncConstant = 'time_sync_constant';
 const connectedScannerDeviceLabel = 'connected_scanner_device';
 
 export async function writeShopInfoToLocal(shopInfo) {
@@ -49,20 +48,6 @@ export async function getCashierInfoLocal() {
   return cashierInfo;
 }
 
-export async function getTimeSyncConstant() {
-  const timeConstantValue = await getByKey(timeSyncConstant);
-  if (timeConstantValue.length === 0) {
-    const value = Date.now();
-    await createKey(timeSyncConstant, value);
-    return value;
-  }
-  return timeConstantValue[0].value;
-}
-
-export async function resetTimeSyncConstant() {
-  const timeConstantValue = await getByKey(timeSyncConstant);
-  await updateById(timeConstantValue[0].id, Date.now());
-}
 export async function createConnectedDeviceSettings(payload) {
   const connectedDevice = await getByKeyV2(connectedScannerDeviceLabel);
   if (!connectedDevice) {

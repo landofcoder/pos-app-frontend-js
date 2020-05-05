@@ -10,7 +10,6 @@ class SyncCustomerManager extends Component {
 
   render() {
     const { ListSyncCustomer } = this.props;
-    console.log(ListSyncCustomer);
     return (
       <>
         <table className="table" style={{ width: '100%' }}>
@@ -26,7 +25,6 @@ class SyncCustomerManager extends Component {
           <tbody>
             {ListSyncCustomer
               ? ListSyncCustomer.map((item, index) => {
-                  console.log(item);
                   return (
                     <tr key={index} className={Styles.tableRowList}>
                       <th scope="row">{index + 1}</th>
