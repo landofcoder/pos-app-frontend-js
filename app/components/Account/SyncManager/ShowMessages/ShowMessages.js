@@ -41,6 +41,24 @@ class ShowMessages extends Component {
     this.setState({ collapseData });
   };
 
+  showTitleLog = () => {
+    const { collapseData } = this.state;
+    let data;
+    const { typeShowLogsMessages, syncManager } = this.props;
+    switch (typeShowLogsMessages) {
+      case ALL_PRODUCT_SYNC:
+        return 'Sync All Products Logs';
+      case CUSTOM_PRODUCT_SYNC:
+        return 'Sync Custom Products Logs';
+      case CUSTOMERS_SYNC:
+        return 'Customer Logs';
+      case GENERAL_CONFIG_SYNC:
+        return 'Sync Config Logs';
+      default:
+        break;
+    }
+  };
+
   showLog = () => {
     const { collapseData } = this.state;
     let data;
@@ -61,7 +79,6 @@ class ShowMessages extends Component {
       default:
         break;
     }
-    console.log(data);
     if (!data || !data.actionErrors || data.actionErrors.length === 0)
       return <span>Sync update is compelete!!</span>;
     return (
@@ -116,7 +133,7 @@ class ShowMessages extends Component {
         <div className={ModalStyle.modalContent}>
           <div className="modal-content" style={{ backgroundColor: '#F7F8FA' }}>
             <div className="modal-header">
-              <h5 className="modal-title">Message Logs</h5>
+              <h5 className="modal-title">{this.showTitleLog()}</h5>
             </div>
             <div className="modal-body">{this.showLog()}</div>
             <div className="modal-footer">

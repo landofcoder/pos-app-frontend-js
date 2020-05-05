@@ -68,7 +68,6 @@ class SyncManager extends Component {
     if (manager.update_at) {
       return formatDistance(manager.update_at, new Date()) + ' ago';
     }
-    console.log(manager);
     return 'not synced';
   };
 
@@ -90,8 +89,6 @@ class SyncManager extends Component {
 
   actionSyncStatus = manager => {
     const { syncManager } = this.props;
-    console.log('manager');
-    console.log(manager);
     switch (manager.name) {
       case CUSTOMERS_SYNC:
         return syncManager.loadingSyncCustomer;
@@ -113,21 +110,12 @@ class SyncManager extends Component {
 
   render() {
     const { syncManager } = this.props;
-    console.log(syncManager);
     const {
-      syncOrder,
       syncCustomer,
       syncCustomProduct,
       syncConfig,
       syncAllProduct
     } = syncManager;
-    console.log(
-      syncCustomer,
-      syncOrder,
-      syncConfig,
-      syncAllProduct,
-      syncCustomProduct
-    );
     return (
       <div className="row">
         <div className="col-md-12">

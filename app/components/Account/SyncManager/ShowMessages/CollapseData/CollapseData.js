@@ -21,12 +21,9 @@ class CollapseData extends Component {
   renderCollapse = data => {
     if (typeof data === 'object') {
       let toArray = this.collapseObject(data);
-      console.log('to array');
-      console.log(toArray);
       return (
         <>
           {toArray.map((item, key) => {
-            console.log(item);
             return (
               <>
                 <div

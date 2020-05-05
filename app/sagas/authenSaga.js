@@ -83,10 +83,8 @@ function* syncOrder(id) {
   // if syncOrder call with haven't id means sync all
   if (id) {
     const order = yield getOrderById(id);
-    console.log(order);
     const dataResult = yield call(syncOrderService, order);
     if (dataResult.status === true) {
-      console.log('completed sync orders');
       yield deleteOrder(order.id);
     } else {
       yield updateOrder(order);
@@ -102,7 +100,6 @@ function* syncOrder(id) {
       const dataResult = yield call(syncOrderService, order);
 
       if (dataResult.status === true) {
-        console.log('completed sync orders');
         yield deleteOrder(order.id);
       } else {
         checkAllSync = false;
@@ -144,8 +141,6 @@ function* getSyncDataFromLocal() {
     payload: customerSyncStatus
   });
   // custom product sync
-  console.log('custom product sync in service');
-  console.log(customProductSyncStatus);
   yield put({
     type: types.RECEIVED_LIST_SYNC_CUSTOM_PRODUCT,
     payload: customProductSyncStatus
@@ -163,7 +158,6 @@ function* getSyncDataFromLocal() {
 }
 
 function* runSyncWithSettingTime() {
-  console.log('auto run sync');
   const nowTime = new Date();
   const payload = { payload: null };
   const syncTimeAllProduct = yield getLastUpdateTime(types.ALL_PRODUCT_SYNC);
@@ -238,7 +232,6 @@ function* syncClientData(payload) {
 
   switch (payloadType) {
     case types.ALL_PRODUCT_SYNC:
-      console.log('sync all product service');
       yield put({
         type: types.LOADING_SYNC_ACTION,
         payload: { type: types.ALL_PRODUCT_SYNC, status: true }
@@ -257,7 +250,6 @@ function* syncClientData(payload) {
       });
       break;
     case types.CUSTOM_PRODUCT_SYNC:
-      console.log('sync custom product service');
       yield put({
         type: types.LOADING_SYNC_ACTION,
         payload: { type: types.CUSTOM_PRODUCT_SYNC, status: true }
@@ -276,7 +268,6 @@ function* syncClientData(payload) {
       });
       break;
     case types.CUSTOMERS_SYNC:
-      console.log('sync customers product service');
       yield put({
         type: types.LOADING_SYNC_ACTION,
         payload: { type: types.CUSTOMERS_SYNC, status: true }
@@ -295,7 +286,6 @@ function* syncClientData(payload) {
       });
       break;
     case types.GENERAL_CONFIG_SYNC:
-      console.log('sync config service');
       yield put({
         type: types.LOADING_SYNC_ACTION,
         payload: { type: types.GENERAL_CONFIG_SYNC, status: true }
@@ -314,7 +304,6 @@ function* syncClientData(payload) {
       });
       break;
     case types.SYNC_ORDER_LIST:
-      console.log('sync order list service');
       yield put({
         type: types.LOADING_SYNC_ACTION,
         payload: { type: types.SYNC_ORDER_LIST, status: true }
