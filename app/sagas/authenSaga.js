@@ -327,8 +327,9 @@ function* syncClientData(payload) {
   }
 
   // reupdate sync manager from localdb to reducer
-
-  yield getSyncDataFromLocal();
+  if (payloadType) {
+    yield getSyncDataFromLocal();
+  }
 }
 
 function* getListSyncOrder() {
