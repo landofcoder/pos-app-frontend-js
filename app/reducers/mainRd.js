@@ -87,6 +87,7 @@ const initialState = {
         tax_amount: 0,
         base_shipping_amount: 0,
         discount_code: '',
+        listGiftCard_code: [],
         amount_discount_code: 0
       }
     },
@@ -459,6 +460,17 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.checkout.orderPreparingCheckout.totals.discount_code =
           action.payload;
         draft.checkout.orderPreparingCheckout.totals.amount_discount_code = 0;
+        break;
+      case types.SET_GIFT_CARD_ACTION:
+        let initListGC = Array.from(draft.checkout.orderPreparingCheckout.totals.listGiftCard_code);
+        // condition for multi GC
+        const indexGC = action.payload.id !== undefined? action.payload.id:initListGC.length;
+        const replace = indexGC === initListGC.length?false: true;
+        console.log(replace);
+        if(action.payload.code.length > 0){
+          initListGC.splice(indexGC,replace?1:0,action.payload.code);
+          draft.checkout.orderPreparingCheckout.totals.listGiftCard_code = initListGC;
+        }
         break;
       case types.IS_INTERNET_CONNECTED:
         draft.internetConnected = action.payload;

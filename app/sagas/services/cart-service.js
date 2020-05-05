@@ -11,7 +11,7 @@ export async function getDiscountForQuoteService(payload) {
   const formDataCart = new FormData();
   formDataCart.append('param', JSON.stringify([]));
   let data;
-  const { cart, config, discountCode } = payload;
+  const { cart, config, discountCode, listGiftCard } = payload;
   const customerId = config.default_guest_checkout.customer_id || null;
   try {
     const response = await fetch(
@@ -33,7 +33,8 @@ export async function getDiscountForQuoteService(payload) {
           params: JSON.stringify({
             cart,
             customerId,
-            discountCode
+            discountCode,
+            listGiftCard
           })
         })
       }

@@ -652,7 +652,7 @@ function* getDiscountForCheckoutSaga() {
     orderPreparingCheckoutState
   );
   const discountCode = orderPreparingCheckoutStateResult.totals.discount_code;
-
+  const listGiftCard = orderPreparingCheckoutStateResult.totals.listGiftCard_code;
   let result;
   // const typeOfResult = typeof result;
   // If json type returned, that mean get discount success
@@ -660,7 +660,8 @@ function* getDiscountForCheckoutSaga() {
     result = yield call(getDiscountForQuoteService, {
       cart: cartCurrentObjResult.data,
       config: posSystemConfigResult,
-      discountCode
+      discountCode,
+      listGiftCard
     });
   } else {
     console.log(cartCurrentObjResult);
