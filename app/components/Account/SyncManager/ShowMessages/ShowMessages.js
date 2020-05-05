@@ -62,7 +62,8 @@ class ShowMessages extends Component {
         break;
     }
     console.log(data);
-    if (!data) return null;
+    if (!data || !data.actionErrors || data.actionErrors.length === 0)
+      return <span>Sync update is compelete!!</span>;
     return (
       <table className="table">
         <thead>

@@ -91,7 +91,7 @@ export default class Pos extends Component<Props, State> {
     // Get default product
 
     const { syncDataClient, hidDevice } = this.props;
-
+    // time for checking to sync
     const loopStep = 20000;
     const frameId = startLoop(syncDataClient, loopStep);
     this.setState({ frameId });

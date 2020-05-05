@@ -59,7 +59,6 @@ export async function failedLoadService(service) {
   let serviceData = await getServiceByName(service.name);
 
   if (serviceData) {
-    // truong hop sync lai cac service bi loi truoc do phai clear cac loi do truoc
     serviceData.errors += service.errors;
     serviceData.actionErrors.push(service.actionErrors);
     await updateService(serviceData);
@@ -81,5 +80,14 @@ export async function successLoadService(serviceName) {
   } else {
     console.log('tao');
     await createService(initService(serviceName));
+  }
+}
+
+export async function getLastUpdateTime(serviceName) {
+  const serviceData = await getServiceByName(serviceName);
+  if (serviceData) {
+    console.log(serviceData);
+    if (serviceData.update_at) return serviceData.update_at;
+    return serviceData.create_at;
   }
 }

@@ -1,4 +1,4 @@
-import { takeEvery, call, put } from 'redux-saga/effects';
+import { takeEvery, call, put, select } from 'redux-saga/effects';
 import * as types from '../constants/authen';
 import { SYNC_CLIENT_DATA, GET_LIST_SYNC_ORDER } from '../constants/root.json';
 import { LOGIN_FORM } from '../constants/main-panel-types.json';
@@ -8,10 +8,6 @@ import {
   writeAppInfoToLocal,
   writeLastTimeLogoutToLocal
 } from './services/login-service';
-import {
-  getTimeSyncConstant,
-  resetTimeSyncConstant
-} from './services/settings-service';
 import { setAppInfoToGlobal } from '../common/settings';
 import { syncCustomProductAPI } from './services/product-service';
 import { getAllTbl, deleteByKey } from '../reducers/db/sync_customers';
@@ -25,13 +21,16 @@ import {
 import {
   successLoadService,
   failedLoadService,
-  getServiceByName
+  getServiceByName,
+  getLastUpdateTime
 } from '../reducers/db/sync_data_manager';
 import { signUpCustomerService } from './services/customer-service';
 import { syncOrderService } from './services/cart-service';
 import {
   setupFetchingAppInfo,
-  setupSyncCategoriesAndProducts
+  setupSyncCategoriesAndProducts,
+  reloadTokenFromLoggedLocalDB,
+  timeSyncConfig
 } from './rootSaga';
 import { serviceTypeGroupManager } from '../common/sync-group-manager';
 
@@ -161,15 +160,60 @@ function* getSyncDataFromLocal() {
     payload: productSyncStatus
   });
 }
+
+function* runSyncWithSettingTime() {
+  console.log('auto run sync');
+  const nowTime = new Date();
+  const payload = { payload: null };
+  const syncTimeAllProduct = yield getLastUpdateTime(types.ALL_PRODUCT_SYNC);
+  const syncTimeCustomProduct = yield getLastUpdateTime(
+    types.CUSTOM_PRODUCT_SYNC
+  );
+  const syncTimeCustomer = yield getLastUpdateTime(types.CUSTOMERS_SYNC);
+  const syncTimeGeneralConfig = yield getLastUpdateTime(
+    types.GENERAL_CONFIG_SYNC
+  );
+  const timeSyncResult = yield select(timeSyncConfig);
+  const {
+    all_custom_product,
+    all_customers_sync,
+    all_products,
+    general_config_sync
+  } = timeSyncResult;
+  if (nowTime - syncTimeAllProduct > all_custom_product * 60000) {
+    console.log('go  auto sync all product');
+    payload.payload = types.ALL_PRODUCT_SYNC;
+    yield syncClientData(payload);
+  }
+  if (nowTime - syncTimeCustomProduct > all_customers_sync * 60000) {
+    console.log('go  auto sync custom product');
+    payload.payload = types.CUSTOM_PRODUCT_SYNC;
+    yield syncClientData(payload);
+  }
+  if (nowTime - syncTimeCustomer > all_products * 60000) {
+    console.log('go  auto sync customer');
+    payload.payload = types.CUSTOMERS_SYNC;
+    yield syncClientData(payload);
+  }
+  if (nowTime - syncTimeGeneralConfig > general_config_sync * 60000) {
+    console.log('go  auto sync general config');
+    payload.payload = types.GENERAL_CONFIG_SYNC;
+    yield syncClientData(payload);
+  }
+}
 /**
  * sync all data from state to server can bind with payload
  * @param {*} payload
  */
+
 function* syncClientData(payload) {
   const payloadType = payload.payload;
-  const dbTime = yield getTimeSyncConstant();
   const nowTime = Date.now();
-  console.log(payloadType);
+
+  if (payloadType) {
+    yield reloadTokenFromLoggedLocalDB();
+  }
+
   switch (payloadType) {
     case types.ALL_PRODUCT_SYNC:
       console.log('sync all product service');
@@ -267,16 +311,8 @@ function* syncClientData(payload) {
       });
       break;
     default:
-      if (nowTime - dbTime > 1200000 || payloadType === true) {
-        yield put({ type: types.STATUS_SYNC, payload: true });
-        yield resetTimeSyncConstant();
-        //
-        yield syncCustomProduct();
-        yield syncCustomer();
-        yield syncOrder();
-        yield put({ type: types.STATUS_SYNC, payload: false });
-        yield put({ type: GET_LIST_SYNC_ORDER });
-      }
+      yield runSyncWithSettingTime();
+      break;
   }
 
   // reupdate sync manager from localdb to reducer
