@@ -41,6 +41,8 @@ const initialState = {
   isShowHaveNoSearchResultFound: false,
   isLoadingRequireStep: false,
   isLoadingBackToLogin: false,
+  isShowLogsMessages: false,
+  typeShowLogsMessages: null,
   posSystemConfig: {}, // General config for pos <= must remove soon
   generalConfig: {},
   mainPanelType: HOME_DEFAULT_PRODUCT_LIST, // Main panel type for switching all main panel
@@ -620,8 +622,12 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.START_CARD_PAYMENT_LOADING:
         draft.checkout.cardPayment.isLoadingCharging = action.payload;
         break;
-      default:
+      case types.TOOGLE_MODAL_SHOW_SYNC_LOGS:
+        const { payload } = action;
+        draft.isShowLogsMessages = payload.status;
+        draft.typeShowLogsMessages = payload.type;
         return draft;
+      default:
     }
   });
 export default mainRd;

@@ -1,10 +1,5 @@
 import * as type from '../constants/root.json';
-
-export function runCron() {
-  return {
-    type: type.RUN_CRON
-  };
-}
+import { GET_SYNC_DATA_FROM_LOCAL } from '../constants/authen.json';
 
 export function getOrderHistory() {
   return {
@@ -67,8 +62,21 @@ export function orderAction(payload) {
   };
 }
 
-export function getSyncManager() {
+export function getListSyncOrder() {
   return {
-    type: type.GET_SYNC_MANAGER
+    type: type.GET_LIST_SYNC_ORDER
+  };
+}
+
+export function getSyncDataFromLocal() {
+  return {
+    type: GET_SYNC_DATA_FROM_LOCAL
+  };
+}
+
+export function showLogsAction(payload) {
+  return {
+    type: type.TOOGLE_MODAL_SHOW_SYNC_LOGS,
+    payload: { type: payload.type, status: payload.status }
   };
 }

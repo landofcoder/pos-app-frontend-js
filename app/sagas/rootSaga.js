@@ -62,6 +62,7 @@ import {
   setTokenGlobal
 } from '../common/settings';
 import { createProduct } from '../reducers/db/sync_custom_product';
+import { successLoadService } from '../reducers/db/sync_data_manager';
 import {
   CHILDREN,
   LOGIN_FORM,
@@ -79,6 +80,8 @@ const cartCurrent = state => state.mainRd.cartCurrent;
 const optionValue = state => state.mainRd.productOption.optionValue;
 const customer = state => state.mainRd.cartCurrent.customer;
 const posSystemConfig = state => state.mainRd.generalConfig.common_config;
+export const timeSyncConfig = state =>
+  state.mainRd.generalConfig.common_config.time_synchronized_for_modules;
 const itemCartEditing = state => state.mainRd.itemCartEditing;
 const currentPosCommand = state => state.mainRd.currentPosCommand;
 const orderPreparingCheckoutState = state =>
@@ -133,7 +136,7 @@ function* checkLoginBackgroundSaga() {
  * will re-login and set new liveToken
  * @returns void
  */
-function* reloadTokenFromLoggedLocalDB() {
+export function* reloadTokenFromLoggedLocalDB() {
   const loggedDb = yield readLoggedDbFromLocal();
   const lastTime = loggedDb.last_time;
   const dateLastTime = new Date(lastTime);
@@ -805,12 +808,14 @@ function* updateQtyCartItemSaga(payload) {
 function* writeCategoriesAndProductsToLocal() {
   // Get all categories
   const allCategories = yield call(getAllCategoriesService);
-
   // Sync categories to local db
   yield call(writeCategoriesToLocal, allCategories);
 
   // Sync products by categories
   yield call(writeProductsToLocal, allCategories);
+
+  // Add Sync manager success
+  yield call(successLoadService, typesAuthen.ALL_PRODUCT_SYNC);
 }
 
 function* createCustomizeProduct(payload) {
@@ -1123,7 +1128,7 @@ function* loginAction(payload) {
       autoConnectScannerDevice();
 
       // Start setup step 2
-      yield setupSyncCategoriesAndProducts();
+      yield setupSyncCategoriesAndProducts(); // added sync manager success
 
       // Get default data from local
       yield getDefaultDataFromLocal();
@@ -1167,6 +1172,8 @@ export function* setupFetchingGeneralConfig() {
   const shopInfoResponse = yield call(getShopInfoService);
   // Write appInfo to local and update fetching appInfo to done
   yield writeGeneralConfigToLocal(shopInfoResponse);
+  // Add Sync manager success
+  yield call(successLoadService, typesAuthen.GENERAL_CONFIG_SYNC);
   // Done step 1
   yield put({ type: types.SETUP_UPDATE_STATE_FETCHING_CONFIG, payload: 1 });
 }
@@ -1175,7 +1182,7 @@ export function* setupFetchingGeneralConfig() {
  * Setup sync categories and products to local
  * @returns void
  */
-function* setupSyncCategoriesAndProducts() {
+export function* setupSyncCategoriesAndProducts() {
   // Write categories and products to local
   yield writeCategoriesAndProductsToLocal();
 
@@ -1188,7 +1195,7 @@ function* setupSyncCategoriesAndProducts() {
   });
 }
 
-function* getDefaultDataFromLocal() {
+export function* getDefaultDataFromLocal() {
   // Get all categories from local
   yield getAllCategoriesFromLocal();
 

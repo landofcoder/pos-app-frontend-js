@@ -15,6 +15,7 @@ import Styles from './order-history.scss';
 import { formatCurrencyCode } from '../../../common/settings';
 import StylesPos from '../../pos.scss';
 import types from '../../../constants/routes';
+import { SYNC_ORDER_LIST} from '../../../constants/authen.json';
 import {
   PAYMENT_ACTION_ORDER,
   REORDER_ACTION_ORDER,
@@ -24,6 +25,7 @@ import {
   REFUND_ACTION_ORDER
 } from '../../../constants/root';
 import AddNoteOrder from './AddNoteOrder/AddNoteOrder';
+import { syncDataClient } from '../../../actions/homeAction';
 
 type Props = {
   getOrderHistory: () => void,
@@ -39,7 +41,8 @@ type Props = {
   orderHistoryDetailOffline: object,
   orderHistoryDetail: object,
   history: payload => void,
-  toggleModalAddNote: payload => void
+  toggleModalAddNote: payload => void,
+  syncDataClient: payload => void,
 };
 
 class OrderHistory extends Component<Props> {
@@ -196,6 +199,11 @@ class OrderHistory extends Component<Props> {
     return null;
   };
 
+  syncDataClientAction = (type,id) => {
+    const { syncDataClient } = this.props;
+    syncDataClient({ type,id });
+  }
+
   noteOrderAction = () => {
     const { toggleModalAddNote } = this.props;
     toggleModalAddNote(true);
@@ -223,11 +231,11 @@ class OrderHistory extends Component<Props> {
                 return (
                   <tr
                     key={index}
-                    onClick={() =>
-                      item.local
-                        ? this.getOrderHistoryDetailOffline(item)
-                        : this.getOrderHistoryDetail(item.sales_order_id)
-                    }
+                    // onClick={() =>
+                    //   item.local
+                    //     ? this.getOrderHistoryDetailOffline(item)
+                    //     : this.getOrderHistoryDetail(item.sales_order_id)
+                    // }
                   >
                     <th scope="row">{index + 1}</th>
                     <td>{item.sales_order_id ? item.sales_order_id : '--'}</td>
@@ -247,6 +255,9 @@ class OrderHistory extends Component<Props> {
                       <button
                         type="button"
                         className="btn btn-outline-secondary btn-sm"
+                        onClick={() => {
+                          this.syncDataClientAction(SYNC_ORDER_LIST,item.id)
+                        }}
                       >
                         Sync now
                       </button>
@@ -301,7 +312,8 @@ function mapDispatchToProps(dispatch) {
       dispatch(toggleModalOrderDetailOffline(payload)),
     getOrderHistoryDetail: id => dispatch(getOrderHistoryDetail(id)),
     orderAction: payload => dispatch(orderAction(payload)),
-    toggleModalAddNote: payload => dispatch(toggleModalAddNote(payload))
+    toggleModalAddNote: payload => dispatch(toggleModalAddNote(payload)),
+    syncDataClient: payload => dispatch(syncDataClient(payload))
   };
 }
 
