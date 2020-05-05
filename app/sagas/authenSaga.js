@@ -27,7 +27,7 @@ import {
 import { signUpCustomerService } from './services/customer-service';
 import { syncOrderService } from './services/cart-service';
 import {
-  setupFetchingAppInfo,
+  setupFetchingGeneralConfig,
   setupSyncCategoriesAndProducts,
   reloadTokenFromLoggedLocalDB,
   timeSyncConfig
@@ -291,7 +291,7 @@ function* syncClientData(payload) {
         payload: { type: types.GENERAL_CONFIG_SYNC, status: true }
       });
       try {
-        yield setupFetchingAppInfo(); // added sync manager success
+        yield setupFetchingGeneralConfig(); // added sync manager success
       } catch (e) {
         console.log(e);
         yield failedLoadService(

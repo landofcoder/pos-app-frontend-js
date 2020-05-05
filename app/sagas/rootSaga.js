@@ -1122,7 +1122,10 @@ function* loginAction(payload) {
         payload: SYNC_SCREEN
       });
       // Start setup step 1
-      yield setupFetchingAppInfo(); // added sync manager success
+      yield setupFetchingGeneralConfig();
+
+      // Auto connect scanner device
+      autoConnectScannerDevice();
 
       // Start setup step 2
       yield setupSyncCategoriesAndProducts(); // added sync manager success
@@ -1165,16 +1168,10 @@ function* loginAction(payload) {
  * Bootstrap application and load all config
  * @returns void
  */
-export function* setupFetchingAppInfo() {
+export function* setupFetchingGeneralConfig() {
   const shopInfoResponse = yield call(getShopInfoService);
   // Write appInfo to local and update fetching appInfo to done
   yield writeGeneralConfigToLocal(shopInfoResponse);
-
-  // Add Sync manager success
-  yield call(successLoadService, typesAuthen.GENERAL_CONFIG_SYNC);
-  // Auto connect scanner device
-  autoConnectScannerDevice();
-
   // Done step 1
   yield put({ type: types.SETUP_UPDATE_STATE_FETCHING_CONFIG, payload: 1 });
 }

@@ -7,6 +7,7 @@ import { createLogger } from 'redux-logger';
 import createRootReducer from '../reducers';
 import type { counterStateType } from '../reducers/types';
 import rootSaga from '../sagas/index';
+import { RUN_CRON } from '../constants/root.json';
 
 const history = createHashHistory();
 
@@ -27,7 +28,8 @@ const configureStore = (initialState?: counterStateType) => {
   // Logging Middleware
   const logger = createLogger({
     level: 'info',
-    collapsed: true
+    collapsed: true,
+    predicate: (getState, action) => action.type !== RUN_CRON
   });
 
   // Skip redux logs in console during the tests
