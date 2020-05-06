@@ -7,7 +7,7 @@ import { createLogger } from 'redux-logger';
 import createRootReducer from '../reducers';
 import type { counterStateType } from '../reducers/types';
 import rootSaga from '../sagas/index';
-import { RUN_CRON } from '../constants/root.json';
+import { SYNC_CLIENT_DATA } from '../constants/root.json';
 
 const history = createHashHistory();
 
@@ -29,7 +29,8 @@ const configureStore = (initialState?: counterStateType) => {
   const logger = createLogger({
     level: 'info',
     collapsed: true,
-    predicate: (getState, action) => action.type !== RUN_CRON
+    // this line to disable log to console when dispatch SYNC_CLIENT_DATA action
+    predicate: (getState, action) => action.type !== SYNC_CLIENT_DATA
   });
 
   // Skip redux logs in console during the tests

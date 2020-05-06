@@ -1,8 +1,10 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { updateIsInternetConnected } from '../actions/homeAction';
+import {
+  updateIsInternetConnected,
+  syncDataClient
+} from '../actions/homeAction';
 import { checkLoginBackground } from '../actions/authenAction';
-import { runCron } from '../actions/accountAction';
 import Login from '../components/Login/Login';
 import {
   CHILDREN,
@@ -14,11 +16,10 @@ import {
 import SyncFirstScreen from '../components/Login/SyncScreen/SyncScreen';
 import WorkPlace from '../components/Login/WorkPlace/WorkPlace';
 import { startLoop, stopLoop } from '../common/settings';
-import { syncDataClient } from '../actions/homeAction';
+
 type Props = {
   children: React.Node,
   updateIsInternetConnected: (payload: any) => void,
-  runCron: () => void,
   checkLoginBackground: () => void,
   switchingMode: string,
   flagSwitchModeCounter: number,

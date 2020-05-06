@@ -137,9 +137,9 @@ async function getProductsByCategory(payload) {
       totalCount: products.total_count
     };
   } catch (e) {
-    return {
-      items: []
-    };
+    // thong bao loi khi sync product khong the lay duoc product
+    // eslint-disable-next-line no-throw-literal
+    throw { message: 'All Product cannot sync from server', data: {} };
   }
 }
 
