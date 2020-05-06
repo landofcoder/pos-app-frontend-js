@@ -69,6 +69,8 @@ export async function failedLoadService(service) {
 export async function successLoadService(serviceName) {
   const serviceData = await getServiceByName(serviceName);
   if (serviceData) {
+    serviceData.actionErrors = [];
+    serviceData.errors = 0;
     await updateService(serviceData);
   } else {
     await createService(initService(serviceName));

@@ -21,6 +21,8 @@ class CollapseData extends Component {
   renderCollapse = data => {
     if (typeof data === 'object') {
       let toArray = this.collapseObject(data);
+      if (!toArray.length) return 'No more detail log messages';
+
       return (
         <>
           {toArray.map((item, key) => {
@@ -45,7 +47,6 @@ class CollapseData extends Component {
         </>
       );
     }
-    return null;
   };
 
   render() {
