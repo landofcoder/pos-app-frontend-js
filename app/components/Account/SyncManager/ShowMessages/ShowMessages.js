@@ -42,9 +42,7 @@ class ShowMessages extends Component {
   };
 
   showTitleLog = () => {
-    const { collapseData } = this.state;
-    let data;
-    const { typeShowLogsMessages, syncManager } = this.props;
+    const { typeShowLogsMessages } = this.props;
     switch (typeShowLogsMessages) {
       case ALL_PRODUCT_SYNC:
         return 'Sync All Products Logs';
