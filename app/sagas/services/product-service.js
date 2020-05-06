@@ -249,4 +249,35 @@ export async function findAllParentCategories(
 
 export async function syncCustomProductAPI(payload) {
   console.log(payload);
+  try {
+    const response = await fetch(
+      `${apiGatewayPath}/product/create-custom-product`,
+      {
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/json',
+          platform: `${window.platform}`,
+          url: window.mainUrl
+        },
+        redirect: 'follow',
+        referrer: 'no-referrer',
+        body: JSON.stringify({ payload })
+      }
+    );
+    const data = await response.json();
+    if(!data.message && data.status){
+      // eslint-disable-next-line no-throw-literal
+      throw {message: data.message};
+    }
+    return {
+      items: products.items,
+      totalCount: products.total_count
+    };
+  } catch (e) {
+    // eslint-disable-next-line no-throw-literal
+    throw { message: e.message || 'Server not response', data: {} };
+  }
 }

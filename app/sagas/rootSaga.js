@@ -14,7 +14,8 @@ import {
   getProductByCategoryService,
   getProductBySkuFromScanner,
   searchProductService,
-  writeProductsToLocal
+  writeProductsToLocal,
+  syncCustomProductAPI
 } from './services/product-service';
 import {
   searchCustomer,
@@ -61,7 +62,7 @@ import {
   setAppInfoToGlobal,
   setTokenGlobal
 } from '../common/settings';
-import { createProduct } from '../reducers/db/sync_custom_product';
+import { createProductDb } from '../reducers/db/sync_custom_product';
 import {
   CHILDREN,
   LOGIN_FORM,
@@ -651,7 +652,8 @@ function* getDiscountForCheckoutSaga() {
     orderPreparingCheckoutState
   );
   const discountCode = orderPreparingCheckoutStateResult.totals.discount_code;
-  const listGiftCard = orderPreparingCheckoutStateResult.totals.listGiftCard_code;
+  const listGiftCard =
+    orderPreparingCheckoutStateResult.totals.listGiftCard_code;
   let result;
   // const typeOfResult = typeof result;
   // If json type returned, that mean get discount success
@@ -816,14 +818,20 @@ function* writeCategoriesAndProductsToLocal() {
 }
 
 function* createCustomizeProduct(payload) {
-  const offlineMode = yield getOfflineMode();
-  if (offlineMode === 1) {
-    const status = yield call(createProduct, payload.payload);
-    if (status)
-      yield put({ type: types.ADD_TO_CART, payload: payload.payload });
-  } else {
-    // create custom product to magento with graphql
+  // if (internetConnectedResult) {
+  //   // add loading true
+  //   const result = yield call(syncCustomProductAPI, payload.payload);
+  //   if (result) {
+  //     yield put({ type: types.ADD_TO_CART, payload: payload.payload });
+  //   } else {
+  //     // show message
+  //   }
+  //   // add loading false
+  const status = yield call(createProductDb, payload.payload);
+  if (status) {
     yield put({ type: types.ADD_TO_CART, payload: payload.payload });
+  } else {
+    // show message
   }
 }
 

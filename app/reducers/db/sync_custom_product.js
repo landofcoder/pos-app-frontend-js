@@ -22,11 +22,14 @@ export async function getAllTblCustomProduct() {
   return data;
 }
 
-export async function createProduct(product) {
+export async function createProductDb(product) {
+  console.log('create product');
+  console.log(product);
   const data = await getByKey(product.name);
-  if (data.length === 0) {
+  if (!data || data.length === 0) {
     const tbl = db.table(table);
     const data = await tbl.add(product);
+    // must check result after is success or not
     return true;
   }
   return false;

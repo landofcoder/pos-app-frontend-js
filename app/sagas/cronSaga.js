@@ -196,12 +196,16 @@ function* runSyncWithSettingTime() {
     loadingSyncCustomProducts,
     loadingSyncCustomer
   } = syncManagerResult;
-  const {
-    all_products,
-    all_custom_product,
-    all_customers_sync,
-    general_config_sync
-  } = timeSyncResult;
+  // const {
+  //   all_products,
+  //   all_custom_product,
+  //   all_customers_sync,
+  //   general_config_sync
+  // } = timeSyncResult;
+  const all_products = 5;
+  const all_custom_product = 5;
+  const all_customers_sync = 5;
+  const general_config_sync = 5;
   if (
     nowTime - syncTimeAllProduct > all_products * 60000 &&
     !loadingSyncAllProduct
@@ -235,6 +239,7 @@ function* runSyncWithSettingTime() {
     yield syncClientData(payload);
   }
 }
+
 /**
  * sync all data from state to server can bind with payload
  * @param {*} payload
