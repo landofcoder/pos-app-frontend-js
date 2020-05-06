@@ -2,7 +2,7 @@ import db from './db';
 
 const table = 'sync_customers';
 
-export async function signUpCustomer(customers) {
+export async function signUpCustomerDb(customers) {
   const { payload } = customers;
   const data = {
     email: payload.customer.email,

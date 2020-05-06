@@ -2,7 +2,7 @@
  * Create guest cart service
  * @returns {Promise<any>}
  */
-import { getByKey, signUpCustomer } from '../../reducers/db/sync_customers';
+import { getByKey, signUpCustomerDb } from '../../reducers/db/sync_customers';
 import { apiGatewayPath } from '../../../configs/env/config.main';
 
 export async function searchCustomer(payload) {
@@ -101,18 +101,25 @@ export async function signUpCustomerService(payload) {
       }
     );
     data = await response.json();
-    if (!data.message && !data.errors) {
+    if (!data.message && !data.errors && data.success) {
       return { data, success: true };
     }
+    const message = data.data.errors[0].debugMessage || 'Customers cannot sync';
+    // eslint-disable-next-line no-throw-literal
+    throw { message, data: {} };
   } catch (e) {
-    console.log(e);
+    // eslint-disable-next-line no-throw-literal
+    throw {
+      message:
+        data.data.errors[0].debugMessage || 'Customers cannot sync from server',
+      data: {}
+    };
   }
-  return { data, success: false };
 }
 
 export async function signUpCustomerServiceDb(payload) {
   try {
-    const result = signUpCustomer(payload);
+    const result = await signUpCustomerDb(payload);
     return { data: result, success: true };
   } catch (err) {
     console.log(err);
