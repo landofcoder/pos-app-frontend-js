@@ -23,8 +23,7 @@ type Props = {
   checkLoginBackground: () => void,
   switchingMode: string,
   flagSwitchModeCounter: number,
-  syncDataClient: () => void,
-  configApp: object
+  syncDataClient: () => void
 };
 
 class App extends React.Component<Props> {
@@ -36,9 +35,7 @@ class App extends React.Component<Props> {
   };
 
   componentDidMount() {
-    const { updateIsInternetConnected, syncDataClient, configApp } = this.props;
-    // truong hop chua co duu lieu config cua pos app se khong duoc sync
-    if (!configApp) return;
+    const { updateIsInternetConnected, syncDataClient } = this.props;
 
     // Listen online and offline mode
     window.addEventListener('online', this.alertOnlineStatus);
@@ -117,7 +114,6 @@ function mapStateToProps(state) {
     token: state.authenRd.token,
     switchingMode: state.mainRd.switchingMode,
     flagSwitchModeCounter: state.mainRd.flagSwitchModeCounter,
-    configApp: state.mainRd.generalConfig.common_config
   };
 }
 
