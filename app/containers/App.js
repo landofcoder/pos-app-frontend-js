@@ -23,7 +23,8 @@ type Props = {
   checkLoginBackground: () => void,
   switchingMode: string,
   flagSwitchModeCounter: number,
-  syncDataClient: () => void
+  syncDataClient: () => void,
+  configApp: object
 };
 
 class App extends React.Component<Props> {
@@ -35,7 +36,10 @@ class App extends React.Component<Props> {
   };
 
   componentDidMount() {
-    const { updateIsInternetConnected, syncDataClient } = this.props;
+    const { updateIsInternetConnected, syncDataClient, configApp } = this.props;
+    // truong hop chua co duu lieu config cua pos app se khong duoc sync
+    if (!configApp) return;
+
     // Listen online and offline mode
     window.addEventListener('online', this.alertOnlineStatus);
     window.addEventListener('offline', this.alertOnlineStatus);
@@ -45,8 +49,6 @@ class App extends React.Component<Props> {
 
     const loopStep = 1000;
     // Start cron
-
-    // truong hop chua co duu lieu
 
     const frameId = startLoop(syncDataClient, loopStep);
     this.setState({ frameId });
@@ -114,7 +116,8 @@ function mapStateToProps(state) {
   return {
     token: state.authenRd.token,
     switchingMode: state.mainRd.switchingMode,
-    flagSwitchModeCounter: state.mainRd.flagSwitchModeCounter
+    flagSwitchModeCounter: state.mainRd.flagSwitchModeCounter,
+    configApp: state.mainRd.generalConfig.common_config
   };
 }
 
