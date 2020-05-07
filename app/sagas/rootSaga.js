@@ -176,18 +176,15 @@ function* startCashCheckoutActionSg(payload) {
  * @returns void
  */
 function* applyCustomerOrQuestAndShippingCheckout() {
-  const defaultOutletShippingAddressResult = yield select(detailOutlet);
-  let shippingAddress = null;
-  if (!defaultOutletShippingAddressResult) {
+  let shippingAddress = yield select(detailOutlet);
+  if (!shippingAddress) {
     console.error('shipping address is null');
-  } else {
-    shippingAddress = defaultOutletShippingAddressResult.data;
+    shippingAddress = null;
   }
 
   const posSystemConfigResult = yield select(posSystemConfig);
-  const detailOutletData = yield select(detailOutlet);
+  const detailOutletResult = yield select(detailOutlet);
   const cartCurrentObjResult = yield select(cartCurrent);
-  const detailOutletResult = detailOutletData.data;
   // Get customer info
   let customerInfo;
   if (cartCurrentObjResult.isGuestCustomer === true) {
@@ -605,34 +602,23 @@ function* getOrderHistory() {
 }
 
 function* signUpAction(payload) {
-  const internetConnectedResult = yield select(internetConnected);
   yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: true });
-
   // signUp action
-  if (internetConnectedResult) {
-    const res = yield call(signUpCustomerService, payload);
-
-    if (res.success) {
-      yield put({ type: types.TOGGLE_MODAL_SIGN_UP_CUSTOMER, payload: false });
-    } else {
-      yield put({
-        type: types.MESSAGE_SIGN_UP_CUSTOMER,
-        payload: res.data.errors[0].message
-      });
-    }
-    yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: false });
-  } else {
+  try {
     const res = yield call(signUpCustomerServiceDb, payload);
-
-    if (res.success)
+    if (!res.message)
       yield put({ type: types.TOGGLE_MODAL_SIGN_UP_CUSTOMER, payload: false });
     else {
-      yield put({
-        type: types.MESSAGE_SIGN_UP_CUSTOMER,
-        payload: res.message
-      });
+      // eslint-disable-next-line no-throw-literal
+      throw { message: res.message };
     }
+  } catch (e) {
+    yield put({
+      type: types.MESSAGE_SIGN_UP_CUSTOMER,
+      payload: e
+    });
   }
+  yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: false });
 }
 /**
  * Get discount when show cash checkout for offline mode

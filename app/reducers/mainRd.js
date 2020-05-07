@@ -599,7 +599,6 @@ const mainRd = (state: Object = initialState, action: Object) =>
           posSystemConfigResult.shipping_method
         );
         const paymentForPos = posSystemConfigResult.payment_for_pos;
-
         draft.checkout.orderPreparingCheckout.email = email;
         draft.checkout.orderPreparingCheckout.shipping_address.country_id =
           shippingAddress.country_id;

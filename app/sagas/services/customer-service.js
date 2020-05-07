@@ -29,6 +29,10 @@ export async function searchCustomer(payload) {
       }
     );
     const data = await response.json();
+    if (data.message || data.errors) {
+      // eslint-disable-next-line no-throw-literal
+      throw { message: data.message || data.errors };
+    }
     return data;
   } catch (err) {
     return { items: [] };

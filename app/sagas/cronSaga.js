@@ -29,6 +29,7 @@ import { serviceTypeGroupManager } from '../common/sync-group-manager';
 
 const posSystemConfig = state => state.mainRd.generalConfig.common_config;
 const cashierInfo = state => state.authenRd.cashierInfo;
+const detailOutlet = state => state.mainRd.generalConfig.detail_outlet;
 
 function* getListSyncOrder() {
   // get all order in local db
@@ -73,12 +74,14 @@ function* syncCustomer() {
 function* syncCustomProduct() {
   const products = yield call(getAllTblCustomProduct);
   const cashierInfoResult = yield select(cashierInfo);
+  const detailOutletResult = yield select(detailOutlet);
   let checkAllSync = true;
   // eslint-disable-next-line no-restricted-syntax
   for (const product of products) {
     const status = yield call(syncCustomProductAPI, {
       cashierInfo: cashierInfoResult,
-      product
+      product,
+      detailOutlet: detailOutletResult
     });
     if (status) {
       // eslint-disable-next-line no-await-in-loop

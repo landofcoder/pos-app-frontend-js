@@ -102,14 +102,12 @@ class ShowMessages extends Component {
                 </tr>
 
                 {collapseData[index] ? (
-                  <>
-                    <tr style={{ backgroundColor: '#fff' }}>
-                      <th scope="row"></th>
-                      <td>
-                        <CollapseData data={item.data} />
-                      </td>
-                    </tr>
-                  </>
+                  <tr key={index} style={{ backgroundColor: '#fff' }}>
+                    <th scope="row"></th>
+                    <td>
+                      <CollapseData data={item.data} />
+                    </td>
+                  </tr>
                 ) : null}
               </>
             );

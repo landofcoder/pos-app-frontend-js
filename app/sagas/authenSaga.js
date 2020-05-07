@@ -9,7 +9,6 @@ import {
 } from './services/login-service';
 import { setAppInfoToGlobal } from '../common/settings';
 
-
 function* logoutAction() {
   // Update view to login_form
   yield put({ type: types.UPDATE_SWITCHING_MODE, payload: LOGIN_FORM });
@@ -26,8 +25,7 @@ function* getAppByTokenSg(payloadParams) {
 
   const { payload } = payloadParams;
   const result = yield call(getAppInfoService, payload);
-  const getAppResult = result.data.getApp;
-  if (getAppResult) {
+  if (!result.message) {
     const { getApp } = result.data;
     yield put({
       type: types.RECEIVED_APP_INFO,

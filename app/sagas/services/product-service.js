@@ -248,7 +248,6 @@ export async function findAllParentCategories(
 }
 
 export async function syncCustomProductAPI(payload) {
-  console.log(payload);
   try {
     const response = await fetch(
       `${apiGatewayPath}/product/create-custom-product`,
@@ -260,7 +259,8 @@ export async function syncCustomProductAPI(payload) {
         headers: {
           'Content-Type': 'application/json',
           platform: `${window.platform}`,
-          url: window.mainUrl
+          url: window.mainUrl,
+          token: window.liveToken
         },
         redirect: 'follow',
         referrer: 'no-referrer',
