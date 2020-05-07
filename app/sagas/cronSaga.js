@@ -15,6 +15,7 @@ import {
   getServiceByName,
   getLastUpdateTime
 } from '../reducers/db/sync_data_manager';
+import { readLoggedDbFromLocal } from './services/login-service';
 import { signUpCustomerService } from './services/customer-service';
 import { syncOrderService } from './services/cart-service';
 import {
@@ -244,6 +245,8 @@ function* runSyncWithSettingTime() {
  */
 
 function* syncClientData(payload) {
+  const isLogged = yield readLoggedDbFromLocal();
+  if (!isLogged) return null;
   const payloadType = payload.payload;
 
   if (payloadType) {
