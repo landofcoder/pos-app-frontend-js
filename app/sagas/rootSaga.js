@@ -79,8 +79,6 @@ const cartCurrent = state => state.mainRd.cartCurrent;
 const optionValue = state => state.mainRd.productOption.optionValue;
 const customer = state => state.mainRd.cartCurrent.customer;
 const posSystemConfig = state => state.mainRd.generalConfig.common_config;
-export const timeSyncConfig = state =>
-  state.mainRd.generalConfig.common_config.time_synchronized_for_modules;
 const itemCartEditing = state => state.mainRd.itemCartEditing;
 const currentPosCommand = state => state.mainRd.currentPosCommand;
 const orderPreparingCheckoutState = state =>

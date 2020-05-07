@@ -20,12 +20,13 @@ import { syncOrderService } from './services/cart-service';
 import {
   setupFetchingGeneralConfig,
   setupSyncCategoriesAndProducts,
-  reloadTokenFromLoggedLocalDB,
-  timeSyncConfig
+  reloadTokenFromLoggedLocalDB
 } from './rootSaga';
 import { getAllTblCustomProduct } from '../reducers/db/sync_custom_product';
 
 import { serviceTypeGroupManager } from '../common/sync-group-manager';
+
+const posSystemConfig = state => state.mainRd.generalConfig.common_config;
 
 function* getListSyncOrder() {
   // get all order in local db
@@ -186,7 +187,9 @@ function* runSyncWithSettingTime() {
   const syncTimeGeneralConfig = yield getLastUpdateTime(
     types.GENERAL_CONFIG_SYNC
   );
-  const timeSyncResult = yield select(timeSyncConfig);
+  const posSystemConfigResult = yield select(posSystemConfig);
+  const { timeSyncResult } = posSystemConfigResult;
+
   const syncManagerResult = yield select(syncManager);
 
   // truong hop sync dang hoat dong va chua duoc hoan tat, ham check sync khong nen chay them ham sync them lan nua
