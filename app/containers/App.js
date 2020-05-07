@@ -45,6 +45,9 @@ class App extends React.Component<Props> {
 
     const loopStep = 1000;
     // Start cron
+
+    // truong hop chua co duu lieu
+
     const frameId = startLoop(syncDataClient, loopStep);
     this.setState({ frameId });
   }
