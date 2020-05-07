@@ -268,9 +268,9 @@ export async function syncCustomProductAPI(payload) {
       }
     );
     const data = await response.json();
-    if(!data.message && data.status){
+    if (!data.message && data.status) {
       // eslint-disable-next-line no-throw-literal
-      throw {message: data.message};
+      throw { message: data.message };
     }
     return {
       items: products.items,

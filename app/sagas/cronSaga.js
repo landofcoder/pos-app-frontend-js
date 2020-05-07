@@ -28,6 +28,7 @@ import { getAllTblCustomProduct } from '../reducers/db/sync_custom_product';
 import { serviceTypeGroupManager } from '../common/sync-group-manager';
 
 const posSystemConfig = state => state.mainRd.generalConfig.common_config;
+const cashierInfo = state => state.authenRd.cashierInfo;
 
 function* getListSyncOrder() {
   // get all order in local db
@@ -71,10 +72,14 @@ function* syncCustomer() {
 
 function* syncCustomProduct() {
   const products = yield call(getAllTblCustomProduct);
+  const cashierInfoResult = yield select(cashierInfo);
   let checkAllSync = true;
   // eslint-disable-next-line no-restricted-syntax
   for (const product of products) {
-    const status = yield call(syncCustomProductAPI, product);
+    const status = yield call(syncCustomProductAPI, {
+      cashierInfo: cashierInfoResult,
+      product
+    });
     if (status) {
       // eslint-disable-next-line no-await-in-loop
       yield call(deleteByKey, { name: product.name }); // ? delete or not ?
@@ -189,7 +194,7 @@ function* runSyncWithSettingTime() {
     types.GENERAL_CONFIG_SYNC
   );
   const posSystemConfigResult = yield select(posSystemConfig);
-  const { timeSyncResult } = posSystemConfigResult;
+  const { time_synchronized_for_modules } = posSystemConfigResult;
 
   const syncManagerResult = yield select(syncManager);
 
@@ -200,16 +205,12 @@ function* runSyncWithSettingTime() {
     loadingSyncCustomProducts,
     loadingSyncCustomer
   } = syncManagerResult;
-  // const {
-  //   all_products,
-  //   all_custom_product,
-  //   all_customers_sync,
-  //   general_config_sync
-  // } = timeSyncResult;
-  const all_products = 5;
-  const all_custom_product = 5;
-  const all_customers_sync = 5;
-  const general_config_sync = 5;
+  const {
+    all_products,
+    all_custom_product,
+    all_customers_sync,
+    general_config_sync
+  } = time_synchronized_for_modules;
   if (
     nowTime - syncTimeAllProduct > all_products * 60000 &&
     !loadingSyncAllProduct
@@ -222,7 +223,7 @@ function* runSyncWithSettingTime() {
     nowTime - syncTimeCustomProduct > all_custom_product * 60000 &&
     !loadingSyncCustomProducts
   ) {
-    console.log('go  auto sync custom product');
+    console.log('go auto sync custom product');
     payload.payload = types.CUSTOM_PRODUCT_SYNC;
     yield syncClientData(payload);
   }

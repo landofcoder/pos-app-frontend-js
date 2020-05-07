@@ -1,5 +1,7 @@
 import produce from 'immer';
 import * as typesAuthen from '../constants/authen';
+import { RECEIVED_GENERAL_CONFIG} from '../constants/root';
+
 const initialState = {
   loading: false,
   message: '',
@@ -28,6 +30,9 @@ const initialState = {
 const authenRd = (state = initialState, action) =>
   produce(state, draft => {
     switch (action.type) {
+      case RECEIVED_GENERAL_CONFIG:
+        draft.cashierInfo = action.payload.cashier_info;
+        break;
       case typesAuthen.START_LOADING:
         draft.loading = true;
         break;

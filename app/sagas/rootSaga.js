@@ -817,15 +817,6 @@ function* writeCategoriesAndProductsToLocal() {
 }
 
 function* createCustomizeProduct(payload) {
-  // if (internetConnectedResult) {
-  //   // add loading true
-  //   const result = yield call(syncCustomProductAPI, payload.payload);
-  //   if (result) {
-  //     yield put({ type: types.ADD_TO_CART, payload: payload.payload });
-  //   } else {
-  //     // show message
-  //   }
-  //   // add loading false
   const status = yield call(createProductDb, payload.payload);
   if (status) {
     yield put({ type: types.ADD_TO_CART, payload: payload.payload });
@@ -1200,11 +1191,9 @@ export function* setupSyncCategoriesAndProducts() {
 export function* getDefaultDataFromLocal() {
   // Get all categories from local
   yield getAllCategoriesFromLocal();
-
   // Get shopInfo from local
   const config = yield getGeneralFromLocal();
   yield receivedGeneralConfig(config);
-
   // Get default products from local
   yield getDefaultProductsFromLocal();
 }
