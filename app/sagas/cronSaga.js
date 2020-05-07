@@ -15,17 +15,19 @@ import {
   getServiceByName,
   getLastUpdateTime
 } from '../reducers/db/sync_data_manager';
+import { readLoggedDbFromLocal } from './services/login-service';
 import { signUpCustomerService } from './services/customer-service';
 import { syncOrderService } from './services/cart-service';
 import {
   setupFetchingGeneralConfig,
   setupSyncCategoriesAndProducts,
-  reloadTokenFromLoggedLocalDB,
-  timeSyncConfig
+  reloadTokenFromLoggedLocalDB
 } from './rootSaga';
 import { getAllTblCustomProduct } from '../reducers/db/sync_custom_product';
 
 import { serviceTypeGroupManager } from '../common/sync-group-manager';
+
+const posSystemConfig = state => state.mainRd.generalConfig.common_config;
 
 function* getListSyncOrder() {
   // get all order in local db
@@ -186,7 +188,9 @@ function* runSyncWithSettingTime() {
   const syncTimeGeneralConfig = yield getLastUpdateTime(
     types.GENERAL_CONFIG_SYNC
   );
-  const timeSyncResult = yield select(timeSyncConfig);
+  const posSystemConfigResult = yield select(posSystemConfig);
+  const { timeSyncResult } = posSystemConfigResult;
+
   const syncManagerResult = yield select(syncManager);
 
   // truong hop sync dang hoat dong va chua duoc hoan tat, ham check sync khong nen chay them ham sync them lan nua
@@ -246,6 +250,8 @@ function* runSyncWithSettingTime() {
  */
 
 function* syncClientData(payload) {
+  const isLogged = yield readLoggedDbFromLocal();
+  if (!isLogged) return null;
   const payloadType = payload.payload;
 
   if (payloadType) {

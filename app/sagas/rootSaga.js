@@ -80,8 +80,6 @@ const cartCurrent = state => state.mainRd.cartCurrent;
 const optionValue = state => state.mainRd.productOption.optionValue;
 const customer = state => state.mainRd.cartCurrent.customer;
 const posSystemConfig = state => state.mainRd.generalConfig.common_config;
-export const timeSyncConfig = state =>
-  state.mainRd.generalConfig.common_config.time_synchronized_for_modules;
 const itemCartEditing = state => state.mainRd.itemCartEditing;
 const currentPosCommand = state => state.mainRd.currentPosCommand;
 const orderPreparingCheckoutState = state =>
@@ -607,20 +605,11 @@ function* getOrderHistory() {
 }
 
 function* signUpAction(payload) {
+  const internetConnectedResult = yield select(internetConnected);
   yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: true });
-  const offlineMode = yield getOfflineMode();
 
-  if (offlineMode === 1) {
-    const res = yield call(signUpCustomerServiceDb, payload);
-
-    if (res.success)
-      yield put({ type: types.TOGGLE_MODAL_SIGN_UP_CUSTOMER, payload: false });
-    else
-      yield put({
-        type: types.MESSAGE_SIGN_UP_CUSTOMER,
-        payload: res.message
-      });
-  } else {
+  // signUp action
+  if (internetConnectedResult) {
     const res = yield call(signUpCustomerService, payload);
 
     if (res.success) {
@@ -631,10 +620,20 @@ function* signUpAction(payload) {
         payload: res.data.errors[0].message
       });
     }
-  }
-  yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: false });
-}
+    yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: false });
+  } else {
+    const res = yield call(signUpCustomerServiceDb, payload);
 
+    if (res.success)
+      yield put({ type: types.TOGGLE_MODAL_SIGN_UP_CUSTOMER, payload: false });
+    else {
+      yield put({
+        type: types.MESSAGE_SIGN_UP_CUSTOMER,
+        payload: res.message
+      });
+    }
+  }
+}
 /**
  * Get discount when show cash checkout for offline mode
  * @returns void
