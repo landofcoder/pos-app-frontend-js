@@ -2,10 +2,15 @@ import { takeEvery, put, select, call } from 'redux-saga/effects';
 import * as types from '../constants/authen';
 import { SYNC_CLIENT_DATA, GET_LIST_SYNC_ORDER } from '../constants/root.json';
 import { syncCustomProductAPI } from './services/product-service';
-import { getAllTbl, deleteByKey } from '../reducers/db/sync_customers';
+import { getAllTbl, deleteByIdCustomer } from '../reducers/db/sync_customers';
+import {
+  deleteByIdCustomProduct,
+  getAllTblCustomProduct
+} from '../reducers/db/sync_custom_product';
+
 import {
   getAllOrders,
-  deleteOrder,
+  deleteOrderById,
   getOrderById,
   updateOrder
 } from '../reducers/db/sync_orders';
@@ -23,7 +28,6 @@ import {
   setupSyncCategoriesAndProducts,
   reloadTokenFromLoggedLocalDB
 } from './rootSaga';
-import { getAllTblCustomProduct } from '../reducers/db/sync_custom_product';
 
 import { serviceTypeGroupManager } from '../common/sync-group-manager';
 
@@ -55,20 +59,18 @@ const syncManager = state => state.authenRd.syncManager;
 
 function* syncCustomer() {
   const customers = yield getAllTbl();
-  let checkAllSync = true;
   // eslint-disable-next-line no-restricted-syntax
   for (const customer of customers) {
-    const result = yield call(signUpCustomerService, customer);
-
-    if (result.ok === true) {
-      yield deleteByKey(customer.id);
-    } else {
-      checkAllSync = false;
+    // moi lan dong bo 1 customer neu bi loi van phai dong bo cac customer khac
+    try {
+      yield call(signUpCustomerService, customer);
+      yield deleteByIdCustomer(customer.id);
+    } catch (e) {
+      // eslint-disable-next-line no-throw-literal
+      throw { message: e.message };
     }
   }
-  if (checkAllSync) {
-    yield call(successLoadService, types.CUSTOMERS_SYNC);
-  }
+  yield call(successLoadService, types.CUSTOMERS_SYNC);
 }
 
 function* syncCustomProduct() {
@@ -85,7 +87,7 @@ function* syncCustomProduct() {
     });
     if (status) {
       // eslint-disable-next-line no-await-in-loop
-      yield call(deleteByKey, { name: product.name }); // ? delete or not ?
+      yield call(deleteByIdCustomProduct, product.name);
     } else {
       checkAllSync = false;
     }
@@ -102,7 +104,7 @@ function* syncOrder(id) {
     const order = yield getOrderById(id);
     const dataResult = yield call(syncOrderService, order);
     if (dataResult.status === true) {
-      yield deleteOrder(order.id);
+      yield deleteOrderById(order.id);
     } else {
       yield updateOrder(order);
       yield failedLoadService(
@@ -117,7 +119,7 @@ function* syncOrder(id) {
       const dataResult = yield call(syncOrderService, order);
 
       if (dataResult.status === true) {
-        yield deleteOrder(order.id);
+        yield deleteOrderById(order.id);
       } else {
         checkAllSync = false;
         yield failedLoadService(

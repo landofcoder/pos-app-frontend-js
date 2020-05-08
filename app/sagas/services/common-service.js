@@ -1,8 +1,6 @@
 import { put } from 'redux-saga/effects';
-import { getCategoriesFromLocal } from '../../reducers/db/categories';
-import { deleteOrder } from '../../reducers/db/sync_orders';
+import { deleteOrderById } from '../../reducers/db/sync_orders';
 import { UPDATE_CURRENT_POS_COMMAND } from '../../constants/root';
-import { getOfflineMode } from '../../common/settings';
 import { apiGatewayPath } from '../../../configs/env/config.main';
 
 /**
@@ -134,7 +132,7 @@ export async function getOrderHistoryServiceDetails(index) {
 }
 
 export async function cancelOrderService(index) {
-  await deleteOrder(index);
+  await deleteOrderById(index);
 }
 
 /**

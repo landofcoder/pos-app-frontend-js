@@ -66,7 +66,7 @@ class CustomizeProduct extends Component<Props> {
   preAddToCart = (product, qty) => {
     const productReAssign = Object.assign({}, product);
     const { createCustomizeProduct } = this.props;
-    productReAssign.qty = qty;
+    productReAssign.pos_qty = qty;
     createCustomizeProduct(productReAssign);
   };
 

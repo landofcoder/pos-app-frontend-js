@@ -27,15 +27,15 @@ export async function getAllTbl() {
   return data;
 }
 
-export async function deleteByKey(key) {
+export async function deleteByIdCustomer(id) {
   const tbl = db.table(table);
-  const data = await tbl.get(key);
+  const data = await tbl.get({ id });
   if (data) {
     await tbl.delete(data.id);
   }
 }
 
-export async function getByKey(name) {
+export async function getByName(name) {
   const productTbl = db.table(table);
   const result = [];
   const resultName = await productTbl.where({ first_name: name }).toArray();

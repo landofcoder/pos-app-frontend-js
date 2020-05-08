@@ -19,13 +19,13 @@ export async function deteleAllOrders() {
   await tbl.clear();
 }
 
-export async function deleteOrder(id) {
+export async function deleteOrderById(id) {
   const tbl = db.table(table);
   await tbl.delete(id);
 }
 
 export async function getOrderById(id) {
-  const tbl =  db.table(table);
+  const tbl = db.table(table);
   const result = await tbl.where({ id }).toArray();
   if (result) {
     console.log(result);

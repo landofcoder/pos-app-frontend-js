@@ -22,7 +22,6 @@ import Receipt from './payment/Receipt/Receipt';
 import EditCart from './ListCart/EditCart/EditCart';
 import { sumCartTotalPrice } from '../common/cart';
 import Categories from './commons/Categories/Categories';
-import { startLoop, stopLoop } from '../common/settings';
 import Custom from './product-types/Custom';
 import routes from '../constants/routes';
 

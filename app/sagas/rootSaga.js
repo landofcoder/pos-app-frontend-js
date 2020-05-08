@@ -15,13 +15,11 @@ import {
   getProductBySkuFromScanner,
   searchProductService,
   writeProductsToLocal,
-  syncCustomProductAPI
 } from './services/product-service';
 import {
   searchCustomer,
   searchCustomerByName,
   searchCustomerDbService,
-  signUpCustomerService,
   signUpCustomerServiceDb
 } from './services/customer-service';
 import {
@@ -58,7 +56,6 @@ import {
 import { syncCustomers } from '../reducers/db/customers';
 import { getAllOrders } from '../reducers/db/sync_orders';
 import {
-  getOfflineMode,
   setAppInfoToGlobal,
   setTokenGlobal
 } from '../common/settings';
@@ -438,6 +435,7 @@ function* receivedProductOptionValue(productDetailReFormat) {
  * @returns void
  */
 function* getSearchCustomer(payload) {
+  yield reloadTokenFromLoggedLocalDB();
   // Start search loading
   yield put({ type: types.UPDATE_IS_LOADING_SEARCH_CUSTOMER, payload: true });
   console.log(payload);
@@ -470,17 +468,19 @@ function* getSearchCustomer(payload) {
  * @param payload
  * @returns void
  */
-function* addToCart(payload) {
+function* addToCart(payloadParams) {
+  const payload = payloadParams;
+  if (payloadParams.payload.qty) {
+  }
   console.log('add to cart');
-  console.log(payload);
   // Find sky if exits sku, then increment qty
   const listCartCurrent = yield select(cartCurrent);
   const cartCustomerResult = yield select(customer);
-
+  console.log(payload);
   const product = Object.assign({}, payload.payload);
+  console.log(product);
   const productSku = product.sku;
   const typeId = product.type_id;
-
   // Add default pos_qty, if it does not exists
   // pos_qty always NULL because passed from product list
   if (!product.pos_qty) {
@@ -606,9 +606,21 @@ function* signUpAction(payload) {
   // signUp action
   try {
     const res = yield call(signUpCustomerServiceDb, payload);
-    if (!res.message)
+    if (!res.message) {
+      const { firstname, email } = payload.payload.customer;
+      const paramPayload = {
+        email,
+        first_name: firstname,
+        synced: false,
+        password: payload.payload.password,
+        payload: payload.payload
+      };
+      yield put({
+        type: types.SELECT_CUSTOMER_FOR_CURRENT_CART,
+        payload: paramPayload
+      });
       yield put({ type: types.TOGGLE_MODAL_SIGN_UP_CUSTOMER, payload: false });
-    else {
+    } else {
       // eslint-disable-next-line no-throw-literal
       throw { message: res.message };
     }
@@ -803,12 +815,8 @@ function* writeCategoriesAndProductsToLocal() {
 }
 
 function* createCustomizeProduct(payload) {
-  const status = yield call(createProductDb, payload.payload);
-  if (status) {
-    yield put({ type: types.ADD_TO_CART, payload: payload.payload });
-  } else {
-    // show message
-  }
+  yield call(createProductDb, payload.payload);
+  yield put({ type: types.ADD_TO_CART, payload: payload.payload });
 }
 
 function* showAllDevicesSaga() {

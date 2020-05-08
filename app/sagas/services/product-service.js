@@ -7,10 +7,6 @@ import {
   syncProducts
 } from '../../reducers/db/products';
 import { getCategoriesFromLocal } from '../../reducers/db/categories';
-import {
-  deleteByKey,
-  getAllTblCustomProduct
-} from '../../reducers/db/sync_custom_product';
 import { defaultPageSize, getOfflineMode } from '../../common/settings';
 import {
   QUERY_GET_PRODUCT_BY_CATEGORY,
@@ -268,13 +264,12 @@ export async function syncCustomProductAPI(payload) {
       }
     );
     const data = await response.json();
-    if (!data.message && data.status) {
+    if (data.message && data.status) {
       // eslint-disable-next-line no-throw-literal
       throw { message: data.message };
     }
     return {
-      items: products.items,
-      totalCount: products.total_count
+      status: true
     };
   } catch (e) {
     // eslint-disable-next-line no-throw-literal

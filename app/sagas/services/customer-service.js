@@ -2,7 +2,7 @@
  * Create guest cart service
  * @returns {Promise<any>}
  */
-import { getByKey, signUpCustomerDb } from '../../reducers/db/sync_customers';
+import { getByName, signUpCustomerDb } from '../../reducers/db/sync_customers';
 import { apiGatewayPath } from '../../../configs/env/config.main';
 
 export async function searchCustomer(payload) {
@@ -72,7 +72,7 @@ export async function searchCustomerByName(payload) {
 export async function searchCustomerDbService(payload) {
   const searchValue = payload.payload;
   try {
-    const result = getByKey(searchValue);
+    const result = getByName(searchValue);
     return result;
   } catch (e) {
     return [];
@@ -105,18 +105,19 @@ export async function signUpCustomerService(payload) {
       }
     );
     data = await response.json();
-    if (!data.message && !data.errors && data.success) {
-      return { data, success: true };
+    if (data.message || data.errors) {
+      // eslint-disable-next-line no-throw-literal
+      throw {
+        message: data.data.errors[0].debugMessage || 'Customers cannot sync',
+        data: data.errors
+      };
     }
-    const message = data.data.errors[0].debugMessage || 'Customers cannot sync';
-    // eslint-disable-next-line no-throw-literal
-    throw { message, data: {} };
+    return data;
   } catch (e) {
     // eslint-disable-next-line no-throw-literal
     throw {
-      message:
-        data.data.errors[0].debugMessage || 'Customers cannot sync from server',
-      data: {}
+      message: e.message || 'Customers cannot sync from server',
+      data: e.data
     };
   }
 }
