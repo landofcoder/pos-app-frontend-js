@@ -48,7 +48,10 @@ class CashPayment extends Component<Props> {
     try {
       // eslint-disable-next-line no-eval
       const output = eval(
-        `${inputCustomerCash}-${orderPreparingCheckout.totals.grand_total}`
+        `${inputCustomerCash}-${orderPreparingCheckout.totals.grand_total.replace(
+          '$',
+          ''
+        )}`
       );
       return formatCurrencyCode(output, currencyCode);
     } catch (err) {

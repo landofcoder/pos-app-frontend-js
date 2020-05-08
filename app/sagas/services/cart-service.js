@@ -40,11 +40,12 @@ export async function getDiscountForQuoteService(payload) {
       }
     );
     data = await response.json();
-    console.log(data);
+    // eslint-disable-next-line no-throw-literal
+    if(!data.cartId || !data.cartTotals) throw { message: 'Can not create Cart', data: {}}
     return data;
   } catch (e) {
     // eslint-disable-next-line no-throw-literal
-    throw { message: e.message || 'Server not Response' };
+    throw { message: e.message || 'Server not Response' , data: {}};
   }
 }
 
