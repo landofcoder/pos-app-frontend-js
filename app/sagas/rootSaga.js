@@ -14,7 +14,7 @@ import {
   getProductByCategoryService,
   getProductBySkuFromScanner,
   searchProductService,
-  writeProductsToLocal,
+  writeProductsToLocal
 } from './services/product-service';
 import {
   searchCustomer,
@@ -55,10 +55,7 @@ import {
 } from '../reducers/db/categories';
 import { syncCustomers } from '../reducers/db/customers';
 import { getAllOrders } from '../reducers/db/sync_orders';
-import {
-  setAppInfoToGlobal,
-  setTokenGlobal
-} from '../common/settings';
+import { setAppInfoToGlobal, setTokenGlobal } from '../common/settings';
 import { createProductDb } from '../reducers/db/sync_custom_product';
 import {
   CHILDREN,
@@ -654,15 +651,28 @@ function* getDiscountForCheckoutSaga() {
   let result;
   // const typeOfResult = typeof result;
   // If json type returned, that mean get discount success
-  if (internetConnectedResult && typeof result !== 'string') {
-    result = yield call(getDiscountForQuoteService, {
-      cart: cartCurrentObjResult.data,
-      config: posSystemConfigResult,
-      discountCode,
-      listGiftCard
-    });
+  if (internetConnectedResult) {
+    try {
+      result = yield call(getDiscountForQuoteService, {
+        cart: cartCurrentObjResult.data,
+        config: posSystemConfigResult,
+        discountCode,
+        listGiftCard
+      });
+    } catch (e) {
+      console.log('error get discount from server');
+      const sumTotalPriceResult = sumCartTotalPrice(cartCurrentObjResult);
+      result = {
+        cartTotals: {
+          discount_amount: 0,
+          base_grand_total: sumTotalPriceResult,
+          base_subtotal: sumTotalPriceResult,
+          tax_amount: 0
+        }
+      };
+    }
   } else {
-    console.log(cartCurrentObjResult);
+    console.log('internet not connected');
     const sumTotalPriceResult = sumCartTotalPrice(cartCurrentObjResult);
     result = {
       cartTotals: {
