@@ -58,19 +58,36 @@ function* getListSyncOrder() {
 const syncManager = state => state.authenRd.syncManager;
 
 function* syncCustomer() {
+  let checkAllSync = true;
   const customers = yield getAllTbl();
   // eslint-disable-next-line no-restricted-syntax
   for (const customer of customers) {
     // moi lan dong bo 1 customer neu bi loi van phai dong bo cac customer khac
     try {
-      yield call(signUpCustomerService, customer);
-      yield deleteByIdCustomer(customer.id);
+      const result = yield call(signUpCustomerService, customer);
+      if (result) {
+        yield deleteByIdCustomer(customer.id);
+      } else {
+        // eslint-disable-next-line no-throw-literal
+        throw { message: 'No response' };
+      }
     } catch (e) {
-      // eslint-disable-next-line no-throw-literal
-      throw { message: e.message };
+      checkAllSync = false;
+      // truong hop nay khong nen dung throw do viec su dung throw khien vong for se khong con tac dung
+      yield failedLoadService(
+        serviceTypeGroupManager(types.CUSTOMERS_SYNC, {
+          message: e.message,
+          data: e.data,
+          payload: {
+            customer
+          }
+        })
+      );
     }
   }
-  yield call(successLoadService, types.CUSTOMERS_SYNC);
+  if (checkAllSync) {
+    yield call(successLoadService, types.CUSTOMERS_SYNC);
+  }
 }
 
 function* syncCustomProduct() {
@@ -80,16 +97,33 @@ function* syncCustomProduct() {
   let checkAllSync = true;
   // eslint-disable-next-line no-restricted-syntax
   for (const product of products) {
-    const status = yield call(syncCustomProductAPI, {
-      cashierInfo: cashierInfoResult,
-      product,
-      detailOutlet: detailOutletResult
-    });
-    if (status) {
-      // eslint-disable-next-line no-await-in-loop
-      yield call(deleteByIdCustomProduct, product.name);
-    } else {
+    try {
+      const status = yield call(syncCustomProductAPI, {
+        cashierInfo: cashierInfoResult,
+        product,
+        detailOutlet: detailOutletResult
+      });
+      if (status) {
+        // eslint-disable-next-line no-await-in-loop
+        yield call(deleteByIdCustomProduct, product.name);
+      } else {
+        // eslint-disable-next-line no-throw-literal
+        throw { message: 'No response' };
+      }
+    } catch (e) {
       checkAllSync = false;
+      // truong hop nay khong nen dung throw do viec su dung throw khien vong for se khong con tac dung
+      yield failedLoadService(
+        serviceTypeGroupManager(types.CUSTOM_PRODUCT_SYNC, {
+          message: e.message,
+          data: e.data,
+          payload: {
+            cashierInfo: cashierInfoResult,
+            product,
+            detailOutlet: detailOutletResult
+          }
+        })
+      );
     }
   }
   if (checkAllSync) {
@@ -100,16 +134,34 @@ function* syncCustomProduct() {
 
 function* syncOrder(id) {
   // if syncOrder call with haven't id means sync all
+  const payload = {};
+  // step 1: sync custom product first
+  payload.payload = types.CUSTOM_PRODUCT_SYNC;
+  yield syncClientData(payload);
+  // step 2: sync customer second
+  payload.payload = types.CUSTOMERS_SYNC;
+  yield syncClientData(payload);
+  // step 3: next step
+
   if (id) {
     const order = yield getOrderById(id);
-    const dataResult = yield call(syncOrderService, order);
-    if (dataResult.status === true) {
-      yield deleteOrderById(order.id);
-    } else {
+    try {
+      const orderResult = yield call(syncOrderService, order);
+      if (orderResult.message || orderResult.errors || !orderResult.status) {
+        // eslint-disable-next-line no-throw-literal
+        throw {
+          message: orderResult.message || 'Cannot sync order',
+          data: orderResult.data
+        };
+      } else {
+        // not delete the order
+        order.success = true;
+        yield updateOrder(order);
+      }
+    } catch (e) {
+      order.message = e.message;
+      order.dataErros = e.data;
       yield updateOrder(order);
-      yield failedLoadService(
-        serviceTypeGroupManager(types.SYNC_ORDER_LIST, dataResult)
-      );
     }
   } else {
     const orders = yield getAllOrders();
@@ -135,7 +187,7 @@ function* syncOrder(id) {
 
 function* syncAllProduct() {
   yield setupSyncCategoriesAndProducts(); // added sync manager success
-  yield call(successLoadService, types.SYNC_ORDER_LIST);
+  yield call(successLoadService, types.ALL_PRODUCT_SYNC);
 }
 
 function* syncGeneralConfig() {

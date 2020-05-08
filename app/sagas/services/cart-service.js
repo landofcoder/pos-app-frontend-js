@@ -41,11 +41,13 @@ export async function getDiscountForQuoteService(payload) {
     );
     data = await response.json();
     // eslint-disable-next-line no-throw-literal
-    if(!data.cartId || !data.cartTotals) throw { message: 'Can not create Cart', data: {}}
+    if (!data.cartId || !data.cartTotals)
+      // eslint-disable-next-line no-throw-literal
+      throw { message: 'Can not create Cart', data: {} };
     return data;
   } catch (e) {
     // eslint-disable-next-line no-throw-literal
-    throw { message: e.message || 'Server not Response' , data: {}};
+    throw { message: e.message || 'Server not Response', data: {} };
   }
 }
 
@@ -93,9 +95,19 @@ export async function syncOrderService(params) {
       }
     );
     const data = await response.json();
+    if (data.message || data.errors || !data.status) {
+      // eslint-disable-next-line no-throw-literal
+      throw {
+        message: data.message || 'Can not create order',
+        data: data.data || data.errors
+      };
+    }
     return data;
-  } catch (err) {
-    return { errors: true };
+  } catch (error) {
+    return {
+      message: error.message || 'Server not response',
+      data: error.data
+    };
   }
 }
 
