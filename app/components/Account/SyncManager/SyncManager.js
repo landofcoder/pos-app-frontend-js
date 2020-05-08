@@ -149,7 +149,7 @@ class SyncManager extends Component {
                       >
                         <span className="sr-only">Loading...</span>
                       </div>
-                      Syncing
+                      &nbsp;Syncing
                     </div>
                   ) : (
                     <button
@@ -184,7 +184,7 @@ class SyncManager extends Component {
                       >
                         <span className="sr-only">Loading...</span>
                       </div>
-                      Syncing
+                      &nbsp;Syncing
                     </div>
                   ) : (
                     <button
@@ -219,7 +219,7 @@ class SyncManager extends Component {
                       >
                         <span className="sr-only">Loading...</span>
                       </div>
-                      Syncing
+                      &nbsp;Syncing
                     </div>
                   ) : (
                     <button
@@ -255,7 +255,7 @@ class SyncManager extends Component {
                       >
                         <span className="sr-only">Loading...</span>
                       </div>
-                      Syncing
+                      &nbsp;Syncing
                     </div>
                   ) : (
                     <button

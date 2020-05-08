@@ -2,15 +2,15 @@ import db from './db';
 
 const table = 'sync_custom_product';
 
-export async function getByKey(name) {
+export async function getByName(name) {
   const productTbl = db.table(table);
   const result = await productTbl.where({ name }).toArray();
   return result;
 }
 
-export async function deleteByKey(key) {
+export async function deleteByIdCustomProduct(id) {
   const tbl = db.table(table);
-  const data = await tbl.get({ key });
+  const data = await tbl.get({ id });
   if (data) {
     await tbl.delete(data.id);
   }
@@ -22,12 +22,16 @@ export async function getAllTblCustomProduct() {
   return data;
 }
 
-export async function createProduct(product) {
-  const data = await getByKey(product.name);
-  if (data.length === 0) {
+export async function createProductDb(product) {
+  console.log('create product');
+  const tbl = db.table(table);
+  console.log(product);
+  const data = await getByName(product.name);
+  if (!data || data.length === 0) {
     const tbl = db.table(table);
-    const data = await tbl.add(product);
-    return true;
+    await tbl.add(product);
   }
-  return false;
+  else {
+    await tbl.update(product.id, product);
+  }
 }

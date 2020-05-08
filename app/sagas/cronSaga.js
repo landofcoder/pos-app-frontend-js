@@ -2,10 +2,15 @@ import { takeEvery, put, select, call } from 'redux-saga/effects';
 import * as types from '../constants/authen';
 import { SYNC_CLIENT_DATA, GET_LIST_SYNC_ORDER } from '../constants/root.json';
 import { syncCustomProductAPI } from './services/product-service';
-import { getAllTbl, deleteByKey } from '../reducers/db/sync_customers';
+import { getAllTbl, deleteByIdCustomer } from '../reducers/db/sync_customers';
+import {
+  deleteByIdCustomProduct,
+  getAllTblCustomProduct
+} from '../reducers/db/sync_custom_product';
+
 import {
   getAllOrders,
-  deleteOrder,
+  deleteOrderById,
   getOrderById,
   updateOrder
 } from '../reducers/db/sync_orders';
@@ -23,11 +28,12 @@ import {
   setupSyncCategoriesAndProducts,
   reloadTokenFromLoggedLocalDB
 } from './rootSaga';
-import { getAllTblCustomProduct } from '../reducers/db/sync_custom_product';
 
 import { serviceTypeGroupManager } from '../common/sync-group-manager';
 
 const posSystemConfig = state => state.mainRd.generalConfig.common_config;
+const cashierInfo = state => state.authenRd.cashierInfo;
+const detailOutlet = state => state.mainRd.generalConfig.detail_outlet;
 
 function* getListSyncOrder() {
   // get all order in local db
@@ -53,31 +59,35 @@ const syncManager = state => state.authenRd.syncManager;
 
 function* syncCustomer() {
   const customers = yield getAllTbl();
-  let checkAllSync = true;
   // eslint-disable-next-line no-restricted-syntax
   for (const customer of customers) {
-    const result = yield call(signUpCustomerService, customer);
-
-    if (result.ok === true) {
-      yield deleteByKey(customer.id);
-    } else {
-      checkAllSync = false;
+    // moi lan dong bo 1 customer neu bi loi van phai dong bo cac customer khac
+    try {
+      yield call(signUpCustomerService, customer);
+      yield deleteByIdCustomer(customer.id);
+    } catch (e) {
+      // eslint-disable-next-line no-throw-literal
+      throw { message: e.message };
     }
   }
-  if (checkAllSync) {
-    yield call(successLoadService, types.CUSTOMERS_SYNC);
-  }
+  yield call(successLoadService, types.CUSTOMERS_SYNC);
 }
 
 function* syncCustomProduct() {
   const products = yield call(getAllTblCustomProduct);
+  const cashierInfoResult = yield select(cashierInfo);
+  const detailOutletResult = yield select(detailOutlet);
   let checkAllSync = true;
   // eslint-disable-next-line no-restricted-syntax
   for (const product of products) {
-    const status = yield call(syncCustomProductAPI, product);
+    const status = yield call(syncCustomProductAPI, {
+      cashierInfo: cashierInfoResult,
+      product,
+      detailOutlet: detailOutletResult
+    });
     if (status) {
       // eslint-disable-next-line no-await-in-loop
-      yield call(deleteByKey, { name: product.name }); // ? delete or not ?
+      yield call(deleteByIdCustomProduct, product.name);
     } else {
       checkAllSync = false;
     }
@@ -94,7 +104,7 @@ function* syncOrder(id) {
     const order = yield getOrderById(id);
     const dataResult = yield call(syncOrderService, order);
     if (dataResult.status === true) {
-      yield deleteOrder(order.id);
+      yield deleteOrderById(order.id);
     } else {
       yield updateOrder(order);
       yield failedLoadService(
@@ -109,7 +119,7 @@ function* syncOrder(id) {
       const dataResult = yield call(syncOrderService, order);
 
       if (dataResult.status === true) {
-        yield deleteOrder(order.id);
+        yield deleteOrderById(order.id);
       } else {
         checkAllSync = false;
         yield failedLoadService(
@@ -189,7 +199,7 @@ function* runSyncWithSettingTime() {
     types.GENERAL_CONFIG_SYNC
   );
   const posSystemConfigResult = yield select(posSystemConfig);
-  const { timeSyncResult } = posSystemConfigResult;
+  const { time_synchronized_for_modules } = posSystemConfigResult;
 
   const syncManagerResult = yield select(syncManager);
 
@@ -205,7 +215,7 @@ function* runSyncWithSettingTime() {
     all_custom_product,
     all_customers_sync,
     general_config_sync
-  } = timeSyncResult;
+  } = time_synchronized_for_modules;
   if (
     nowTime - syncTimeAllProduct > all_products * 60000 &&
     !loadingSyncAllProduct
@@ -218,7 +228,7 @@ function* runSyncWithSettingTime() {
     nowTime - syncTimeCustomProduct > all_custom_product * 60000 &&
     !loadingSyncCustomProducts
   ) {
-    console.log('go  auto sync custom product');
+    console.log('go auto sync custom product');
     payload.payload = types.CUSTOM_PRODUCT_SYNC;
     yield syncClientData(payload);
   }
@@ -239,6 +249,7 @@ function* runSyncWithSettingTime() {
     yield syncClientData(payload);
   }
 }
+
 /**
  * sync all data from state to server can bind with payload
  * @param {*} payload

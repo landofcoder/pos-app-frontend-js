@@ -20,7 +20,6 @@ import {
   searchCustomer,
   searchCustomerByName,
   searchCustomerDbService,
-  signUpCustomerService,
   signUpCustomerServiceDb
 } from './services/customer-service';
 import {
@@ -56,12 +55,8 @@ import {
 } from '../reducers/db/categories';
 import { syncCustomers } from '../reducers/db/customers';
 import { getAllOrders } from '../reducers/db/sync_orders';
-import {
-  getOfflineMode,
-  setAppInfoToGlobal,
-  setTokenGlobal
-} from '../common/settings';
-import { createProduct } from '../reducers/db/sync_custom_product';
+import { setAppInfoToGlobal, setTokenGlobal } from '../common/settings';
+import { createProductDb } from '../reducers/db/sync_custom_product';
 import {
   CHILDREN,
   LOGIN_FORM,
@@ -175,18 +170,15 @@ function* startCashCheckoutActionSg(payload) {
  * @returns void
  */
 function* applyCustomerOrQuestAndShippingCheckout() {
-  const defaultOutletShippingAddressResult = yield select(detailOutlet);
-  let shippingAddress = null;
-  if (!defaultOutletShippingAddressResult) {
+  let shippingAddress = yield select(detailOutlet);
+  if (!shippingAddress) {
     console.error('shipping address is null');
-  } else {
-    shippingAddress = defaultOutletShippingAddressResult.data;
+    shippingAddress = null;
   }
 
   const posSystemConfigResult = yield select(posSystemConfig);
-  const detailOutletData = yield select(detailOutlet);
+  const detailOutletResult = yield select(detailOutlet);
   const cartCurrentObjResult = yield select(cartCurrent);
-  const detailOutletResult = detailOutletData.data;
   // Get customer info
   let customerInfo;
   if (cartCurrentObjResult.isGuestCustomer === true) {
@@ -440,6 +432,7 @@ function* receivedProductOptionValue(productDetailReFormat) {
  * @returns void
  */
 function* getSearchCustomer(payload) {
+  yield reloadTokenFromLoggedLocalDB();
   // Start search loading
   yield put({ type: types.UPDATE_IS_LOADING_SEARCH_CUSTOMER, payload: true });
   console.log(payload);
@@ -472,17 +465,19 @@ function* getSearchCustomer(payload) {
  * @param payload
  * @returns void
  */
-function* addToCart(payload) {
+function* addToCart(payloadParams) {
+  const payload = payloadParams;
+  if (payloadParams.payload.qty) {
+  }
   console.log('add to cart');
-  console.log(payload);
   // Find sky if exits sku, then increment qty
   const listCartCurrent = yield select(cartCurrent);
   const cartCustomerResult = yield select(customer);
-
+  console.log(payload);
   const product = Object.assign({}, payload.payload);
+  console.log(product);
   const productSku = product.sku;
   const typeId = product.type_id;
-
   // Add default pos_qty, if it does not exists
   // pos_qty always NULL because passed from product list
   if (!product.pos_qty) {
@@ -604,34 +599,35 @@ function* getOrderHistory() {
 }
 
 function* signUpAction(payload) {
-  const internetConnectedResult = yield select(internetConnected);
   yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: true });
-
   // signUp action
-  if (internetConnectedResult) {
-    const res = yield call(signUpCustomerService, payload);
-
-    if (res.success) {
+  try {
+    const res = yield call(signUpCustomerServiceDb, payload);
+    if (!res.message) {
+      const { firstname, email } = payload.payload.customer;
+      const paramPayload = {
+        email,
+        first_name: firstname,
+        synced: false,
+        password: payload.payload.password,
+        payload: payload.payload
+      };
+      yield put({
+        type: types.SELECT_CUSTOMER_FOR_CURRENT_CART,
+        payload: paramPayload
+      });
       yield put({ type: types.TOGGLE_MODAL_SIGN_UP_CUSTOMER, payload: false });
     } else {
-      yield put({
-        type: types.MESSAGE_SIGN_UP_CUSTOMER,
-        payload: res.data.errors[0].message
-      });
+      // eslint-disable-next-line no-throw-literal
+      throw { message: res.message };
     }
-    yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: false });
-  } else {
-    const res = yield call(signUpCustomerServiceDb, payload);
-
-    if (res.success)
-      yield put({ type: types.TOGGLE_MODAL_SIGN_UP_CUSTOMER, payload: false });
-    else {
-      yield put({
-        type: types.MESSAGE_SIGN_UP_CUSTOMER,
-        payload: res.message
-      });
-    }
+  } catch (e) {
+    yield put({
+      type: types.MESSAGE_SIGN_UP_CUSTOMER,
+      payload: e
+    });
   }
+  yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: false });
 }
 /**
  * Get discount when show cash checkout for offline mode
@@ -655,15 +651,28 @@ function* getDiscountForCheckoutSaga() {
   let result;
   // const typeOfResult = typeof result;
   // If json type returned, that mean get discount success
-  if (internetConnectedResult && typeof result !== 'string') {
-    result = yield call(getDiscountForQuoteService, {
-      cart: cartCurrentObjResult.data,
-      config: posSystemConfigResult,
-      discountCode,
-      listGiftCard
-    });
+  if (internetConnectedResult) {
+    try {
+      result = yield call(getDiscountForQuoteService, {
+        cart: cartCurrentObjResult.data,
+        config: posSystemConfigResult,
+        discountCode,
+        listGiftCard
+      });
+    } catch (e) {
+      console.log('error get discount from server');
+      const sumTotalPriceResult = sumCartTotalPrice(cartCurrentObjResult);
+      result = {
+        cartTotals: {
+          discount_amount: 0,
+          base_grand_total: sumTotalPriceResult,
+          base_subtotal: sumTotalPriceResult,
+          tax_amount: 0
+        }
+      };
+    }
   } else {
-    console.log(cartCurrentObjResult);
+    console.log('internet not connected');
     const sumTotalPriceResult = sumCartTotalPrice(cartCurrentObjResult);
     result = {
       cartTotals: {
@@ -816,15 +825,8 @@ function* writeCategoriesAndProductsToLocal() {
 }
 
 function* createCustomizeProduct(payload) {
-  const offlineMode = yield getOfflineMode();
-  if (offlineMode === 1) {
-    const status = yield call(createProduct, payload.payload);
-    if (status)
-      yield put({ type: types.ADD_TO_CART, payload: payload.payload });
-  } else {
-    // create custom product to magento with graphql
-    yield put({ type: types.ADD_TO_CART, payload: payload.payload });
-  }
+  yield call(createProductDb, payload.payload);
+  yield put({ type: types.ADD_TO_CART, payload: payload.payload });
 }
 
 function* showAllDevicesSaga() {
@@ -1193,11 +1195,9 @@ export function* setupSyncCategoriesAndProducts() {
 export function* getDefaultDataFromLocal() {
   // Get all categories from local
   yield getAllCategoriesFromLocal();
-
   // Get shopInfo from local
   const config = yield getGeneralFromLocal();
   yield receivedGeneralConfig(config);
-
   // Get default products from local
   yield getDefaultProductsFromLocal();
 }

@@ -40,10 +40,12 @@ export async function getDiscountForQuoteService(payload) {
       }
     );
     data = await response.json();
+    console.log(data);
+    return data;
   } catch (e) {
-    return 'error';
+    // eslint-disable-next-line no-throw-literal
+    throw { message: e.message || 'Server not Response' };
   }
-  return data;
 }
 
 /**

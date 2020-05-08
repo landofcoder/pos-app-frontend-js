@@ -22,7 +22,6 @@ import Receipt from './payment/Receipt/Receipt';
 import EditCart from './ListCart/EditCart/EditCart';
 import { sumCartTotalPrice } from '../common/cart';
 import Categories from './commons/Categories/Categories';
-import { startLoop, stopLoop } from '../common/settings';
 import Custom from './product-types/Custom';
 import routes from '../constants/routes';
 
@@ -448,7 +447,21 @@ export default class Pos extends Component<Props, State> {
                 <div className="col-md-1">
                   <Categories />
                 </div>
-                <div className="col-md-11 mb-0 pr-0">
+                <div className="col-md-1">
+                  <div className="pt-2">
+                    <a
+                      onClick={() => {
+                        this.addCustomProduct();
+                      }}
+                    >
+                      <i
+                        style={{ color: '#888' }}
+                        className="fas fa-plus-circle fa-lg"
+                      ></i>
+                    </a>
+                  </div>
+                </div>
+                <div className="col-md-10 mb-0 pr-0">
                   <div className="input-group flex-nowrap">
                     <div className="input-group mb-3">
                       <div className="input-group-prepend">

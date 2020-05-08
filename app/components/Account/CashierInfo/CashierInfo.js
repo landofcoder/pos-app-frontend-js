@@ -48,7 +48,7 @@ class CashierInfo extends Component<Props> {
                 <div className="form-group">
                   <div className="form-group">
                     {/* eslint-disable-next-line camelcase */}
-                    <label htmlFor="first_name">First Name:</label>
+                    <label htmlFor="first_name">First Name:&ensp;</label>
                     <span id="first_name" className="">
                       {/* eslint-disable-next-line camelcase */}
                       {first_name}
@@ -56,20 +56,20 @@ class CashierInfo extends Component<Props> {
                   </div>
                   <div className="form-group">
                     {/* eslint-disable-next-line camelcase */}
-                    <label htmlFor="last_name">Last Name:</label>
+                    <label htmlFor="last_name">Last Name:&ensp;</label>
                     <span id="last_name" className="">
                       {/* eslint-disable-next-line camelcase */}
                       {last_name}
                     </span>
                   </div>
                   <div className="form-group">
-                    <label htmlFor="email">Email Address:</label>
+                    <label htmlFor="email">Email Address:&ensp;</label>
                     <span id="email" className="">
                       {email}
                     </span>
                   </div>
                   <div className="form-group">
-                    <label htmlFor="phone">Phone:</label>
+                    <label htmlFor="phone">Phone:&ensp;</label>
                     <span id="phone" className="">
                       {phone}
                     </span>

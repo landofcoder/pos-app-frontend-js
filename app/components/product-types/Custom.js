@@ -66,7 +66,7 @@ class CustomizeProduct extends Component<Props> {
   preAddToCart = (product, qty) => {
     const productReAssign = Object.assign({}, product);
     const { createCustomizeProduct } = this.props;
-    productReAssign.qty = qty;
+    productReAssign.pos_qty = qty;
     createCustomizeProduct(productReAssign);
   };
 
@@ -163,49 +163,6 @@ class CustomizeProduct extends Component<Props> {
                     onChange={this.actionQuantityValue}
                     value={quantity}
                   />
-                </div>
-              </div>
-            </div>
-            <div className="form-group">
-              <div className="row">
-                <div className="col-12">
-                  <label htmlFor="select-tax">Tax</label>
-                </div>
-                <div className="col-12">
-                  <select
-                    id="select-tax"
-                    className="custom-select"
-                    onChange={this.actionTaxSelect}
-                    value={tax}
-                  >
-                    <option key="None" value="none">
-                      None
-                    </option>
-                    <option key="Taxable Goods" value="taxable-goods">
-                      Taxable Goods
-                    </option>
-                    <option key="Refund Adjustments" value="refund-adjustments">
-                      Refund Adjustments
-                    </option>
-                    <option key="Gift Options" value="gift-options">
-                      Gift Options
-                    </option>
-                    <option
-                      key="Order Gift Wrapping"
-                      value="order-gift-wrapping"
-                    >
-                      Order Gift Wrapping
-                    </option>
-                    <option key="Item Gift Wrapping" value="item-gift-wrapping">
-                      Item Gift Wrapping
-                    </option>
-                    <option key="Printed Gift Card" value="printed-gift-card">
-                      Printed Gift Card
-                    </option>
-                    <option key="Reward Points" value="reward-points">
-                      Reward Points
-                    </option>
-                  </select>
                 </div>
               </div>
             </div>

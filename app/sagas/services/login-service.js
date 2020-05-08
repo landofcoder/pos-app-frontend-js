@@ -157,8 +157,13 @@ export async function getAppInfoService(payload) {
         }`
       })
     });
-    return response.json();
+    const data = await response.json();
+    if (data.errors || data.message || !data.data.getApp) {
+      // eslint-disable-next-line no-throw-literal
+      throw { message: data.errors || data.message };
+    }
+    return data;
   } catch (e) {
-    return { data: { getApp: null } };
+    return { message: e.message || 'Server not response'};
   }
 }

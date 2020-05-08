@@ -7,10 +7,6 @@ import {
   syncProducts
 } from '../../reducers/db/products';
 import { getCategoriesFromLocal } from '../../reducers/db/categories';
-import {
-  deleteByKey,
-  getAllTblCustomProduct
-} from '../../reducers/db/sync_custom_product';
 import { defaultPageSize, getOfflineMode } from '../../common/settings';
 import {
   QUERY_GET_PRODUCT_BY_CATEGORY,
@@ -248,5 +244,35 @@ export async function findAllParentCategories(
 }
 
 export async function syncCustomProductAPI(payload) {
-  console.log(payload);
+  try {
+    const response = await fetch(
+      `${apiGatewayPath}/product/create-custom-product`,
+      {
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/json',
+          platform: `${window.platform}`,
+          url: window.mainUrl,
+          token: window.liveToken
+        },
+        redirect: 'follow',
+        referrer: 'no-referrer',
+        body: JSON.stringify({ payload })
+      }
+    );
+    const data = await response.json();
+    if (data.message && data.status) {
+      // eslint-disable-next-line no-throw-literal
+      throw { message: data.message };
+    }
+    return {
+      status: true
+    };
+  } catch (e) {
+    // eslint-disable-next-line no-throw-literal
+    throw { message: e.message || 'Server not response', data: {} };
+  }
 }
