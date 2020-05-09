@@ -34,11 +34,9 @@ export async function getOrderById(id) {
   return null;
 }
 
-export async function updateOrder(order) {
-  console.log('update order');
-  console.log(order);
-  const updateOrder = order;
-  updateOrder.update_at = new Date();
+export async function updateOrderById(order) {
+  // eslint-disable-next-line no-param-reassign
+  order.update_at = new Date();
   const tbl = db.table(table);
-  await tbl.update(order.id, updateOrder);
+  await tbl.update(order.id, order);
 }

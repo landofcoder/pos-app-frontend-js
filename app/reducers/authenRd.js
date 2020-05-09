@@ -1,6 +1,6 @@
 import produce from 'immer';
 import * as typesAuthen from '../constants/authen';
-import { RECEIVED_GENERAL_CONFIG} from '../constants/root';
+import { RECEIVED_GENERAL_CONFIG } from '../constants/root';
 
 const initialState = {
   loading: false,
@@ -10,19 +10,26 @@ const initialState = {
   loadingWorkPlace: false,
   appInfo: {},
   moduleInstalled: {},
+  syncDataManager: {
+    syncCustomProduct: {},
+    syncCustomer: {},
+    syncOrder: {},
+    syncStatus: {},
+    syncConfig: {}
+  },
   syncManager: {
-    syncCustomProduct: [],
-    syncCustomer: [],
-    syncOrder: [],
-    syncStatus: [],
-    syncConfig: [],
-    syncAllProduct: [],
+    syncCustomProduct: {},
+    syncCustomer: {},
+    syncOrder: {},
+    syncStatus: {},
+    syncConfig: {},
+    syncAllProduct: {},
     loadingSyncCustomProducts: false,
     loadingSyncCustomer: false,
     loadingSyncOrder: false,
     loadingSyncStatus: false,
     loadingSyncConfig: false,
-    loadingSyncAllProduct: false,
+    loadingSyncAllProduct: false
   }
 };
 
@@ -58,21 +65,39 @@ const authenRd = (state = initialState, action) =>
         draft.tokenWorkPlace = action.payload;
         draft.messageErrorWorkPlace = '';
         break;
-      case typesAuthen.RECEIVED_LIST_SYNC_ORDER:
+      // received status sync
+      case typesAuthen.RECEIVED_STATUS_SYNC_ORDER:
         draft.syncManager.syncOrder = action.payload;
         break;
-      case typesAuthen.RECEIVED_LIST_SYNC_CUSTOM_PRODUCT:
+      case typesAuthen.RECEIVED_STATUS_SYNC_CUSTOM_PRODUCT:
         draft.syncManager.syncCustomProduct = action.payload;
         break;
-      case typesAuthen.RECEIVED_LIST_SYNC_CUSTOMER:
+      case typesAuthen.RECEIVED_STATUS_SYNC_CUSTOMER:
         draft.syncManager.syncCustomer = action.payload;
         break;
-      case typesAuthen.RECEIVED_LIST_SYNC_GENERAL_CONFIG:
+      case typesAuthen.RECEIVED_STATUS_SYNC_GENERAL_CONFIG:
         draft.syncManager.syncConfig = action.payload;
         break;
-      case typesAuthen.RECEIVED_LIST_SYNC_ALL_PRODUCT:
+      case typesAuthen.RECEIVED_STATUS_SYNC_ALL_PRODUCT:
         draft.syncManager.syncAllProduct = action.payload;
         break;
+      // received data sync
+      case typesAuthen.RECEIVED_DATA_SYNC_ORDER:
+        draft.syncDataManager.syncOrder = action.payload;
+        break;
+      case typesAuthen.RECEIVED_DATA_SYNC_CUSTOM_PRODUCT:
+        draft.syncDataManager.syncCustomProduct = action.payload;
+        break;
+      case typesAuthen.RECEIVED_DATA_SYNC_CUSTOMER:
+        draft.syncDataManager.syncCustomer = action.payload;
+        break;
+      case typesAuthen.RECEIVED_DATA_SYNC_GENERAL_CONFIG:
+        draft.syncDataManager.syncConfig = action.payload;
+        break;
+      case typesAuthen.RECEIVED_DATA_SYNC_ALL_PRODUCT:
+        draft.syncDataManager.syncAllProduct = action.payload;
+        break;
+      // end received data sync
       case typesAuthen.STATUS_SYNC:
         draft.syncManager.syncStatus = action.payload;
         break;

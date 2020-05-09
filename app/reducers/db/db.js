@@ -13,10 +13,6 @@ db.version(version).stores({
   settings: '++id, *key, created_at, updated_at'
 });
 
-db.version(13).stores({
-  module_sync_history: '++id, *key'
-});
-
 db.version(14).stores({
   barcode_index: '++id, *product_id, *bar_code'
 });

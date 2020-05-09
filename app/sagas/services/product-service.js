@@ -264,15 +264,15 @@ export async function syncCustomProductAPI(payload) {
       }
     );
     const data = await response.json();
-    if (data.message && data.status) {
+    if (data.message || data.errors) {
       // eslint-disable-next-line no-throw-literal
-      throw { message: data.message };
+      throw { message: data.message, data: {} };
     }
     return {
       status: true
     };
   } catch (e) {
     // eslint-disable-next-line no-throw-literal
-    throw { message: e.message || 'Server not response', data: {} };
+    throw { message: e.message || 'Server not response', data: e.data };
   }
 }

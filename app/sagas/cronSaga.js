@@ -1,18 +1,21 @@
 import { takeEvery, put, select, call } from 'redux-saga/effects';
 import * as types from '../constants/authen';
-import { SYNC_CLIENT_DATA, GET_LIST_SYNC_ORDER } from '../constants/root.json';
-import { syncCustomProductAPI } from './services/product-service';
-import { getAllTbl, deleteByIdCustomer } from '../reducers/db/sync_customers';
 import {
-  deleteByIdCustomProduct,
-  getAllTblCustomProduct
+  SYNC_CLIENT_DATA,
+  GET_SYNC_DATA_FROM_LOCAL,
+  GET_SYNC_STATUS_FROM_LOCAL
+} from '../constants/root.json';
+import { syncCustomProductAPI } from './services/product-service';
+import { getAllTbl, updateCustomerById } from '../reducers/db/sync_customers';
+import {
+  getAllTblCustomProduct,
+  updateCustomProductById
 } from '../reducers/db/sync_custom_product';
 
 import {
   getAllOrders,
-  deleteOrderById,
   getOrderById,
-  updateOrder
+  updateOrderById
 } from '../reducers/db/sync_orders';
 import {
   successLoadService,
@@ -35,107 +38,184 @@ const posSystemConfig = state => state.mainRd.generalConfig.common_config;
 const cashierInfo = state => state.authenRd.cashierInfo;
 const detailOutlet = state => state.mainRd.generalConfig.detail_outlet;
 
-function* getListSyncOrder() {
+function* getSyncDataFromLocal() {
   // get all order in local db
   const payloadResultOrder = yield getAllOrders();
   yield put({
-    type: types.RECEIVED_LIST_SYNC_ORDER,
+    type: types.RECEIVED_DATA_SYNC_ORDER,
     payload: payloadResultOrder
   });
   // get all custom product in local db
   const payloadResultCustomProduct = yield getAllTblCustomProduct();
   yield put({
-    type: types.RECEIVED_LIST_SYNC_CUSTOM_PRODUCT,
+    type: types.RECEIVED_DATA_SYNC_CUSTOM_PRODUCT,
     payload: payloadResultCustomProduct
   });
   // get all customer in local db
   const payloadResultCustomer = yield getAllTbl();
   yield put({
-    type: types.RECEIVED_LIST_SYNC_CUSTOMER,
+    type: types.RECEIVED_DATA_SYNC_CUSTOMER,
     payload: payloadResultCustomer
   });
 }
 const syncManager = state => state.authenRd.syncManager;
 
 function* syncCustomer() {
+  let checkAllSync = 0;
   const customers = yield getAllTbl();
   // eslint-disable-next-line no-restricted-syntax
   for (const customer of customers) {
+    // eslint-disable-next-line no-continue
+    if (customer.status) continue;
     // moi lan dong bo 1 customer neu bi loi van phai dong bo cac customer khac
     try {
-      yield call(signUpCustomerService, customer);
-      yield deleteByIdCustomer(customer.id);
+      const result = yield call(signUpCustomerService, customer);
+      if (result || result.status) {
+        // thay vi su dung delete thi su dung update
+        customer.success = true;
+        // yield deleteCustomerById(customer.id);
+        yield updateCustomerById(customer);
+      } else {
+        // eslint-disable-next-line no-throw-literal
+        throw { message: 'No response' };
+      }
     } catch (e) {
-      // eslint-disable-next-line no-throw-literal
-      throw { message: e.message };
+      checkAllSync += 1;
+      // cap nhat trang thai tren table customers
+      customer.success = false;
+      customer.message = e.message;
+      customer.dataErrors = e.data;
+      yield updateCustomerById(customer);
     }
   }
-  yield call(successLoadService, types.CUSTOMERS_SYNC);
+  if (!checkAllSync) {
+    yield call(successLoadService, types.CUSTOMERS_SYNC);
+  } else {
+    // eslint-disable-next-line no-throw-literal
+    throw {
+      message: 'Can not resolve sync all customer',
+      errors: checkAllSync
+    };
+  }
 }
 
 function* syncCustomProduct() {
   const products = yield call(getAllTblCustomProduct);
   const cashierInfoResult = yield select(cashierInfo);
   const detailOutletResult = yield select(detailOutlet);
-  let checkAllSync = true;
+  let checkAllSync = 0;
   // eslint-disable-next-line no-restricted-syntax
   for (const product of products) {
-    const status = yield call(syncCustomProductAPI, {
-      cashierInfo: cashierInfoResult,
-      product,
-      detailOutlet: detailOutletResult
-    });
-    if (status) {
-      // eslint-disable-next-line no-await-in-loop
-      yield call(deleteByIdCustomProduct, product.name);
-    } else {
-      checkAllSync = false;
+    // eslint-disable-next-line no-continue
+    if (product.status) continue;
+
+    try {
+      const result = yield call(syncCustomProductAPI, {
+        cashierInfo: cashierInfoResult,
+        product,
+        detailOutlet: detailOutletResult
+      });
+      if (result || result.status) {
+        product.status = true;
+        yield updateCustomProductById(product);
+      } else {
+        // eslint-disable-next-line no-throw-literal
+        throw { message: 'No response', errors: checkAllSync };
+      }
+    } catch (e) {
+      checkAllSync += 1;
+      // cap nhat trang thai tren table customers
+      product.success = false;
+      product.message = e.message;
+      product.dataErrors = e.data;
+      yield updateCustomProductById(product);
     }
   }
-  if (checkAllSync) {
+  if (!checkAllSync) {
     // Add Sync manager success
     yield call(successLoadService, types.CUSTOM_PRODUCT_SYNC);
+  } else {
+    // eslint-disable-next-line no-throw-literal
+    throw {
+      message: 'Can not resolve sync all customer',
+      errors: checkAllSync
+    };
   }
 }
 
-function* syncOrder(id) {
+function* syncOrder(orderId) {
   // if syncOrder call with haven't id means sync all
-  if (id) {
-    const order = yield getOrderById(id);
-    const dataResult = yield call(syncOrderService, order);
-    if (dataResult.status === true) {
-      yield deleteOrderById(order.id);
-    } else {
-      yield updateOrder(order);
-      yield failedLoadService(
-        serviceTypeGroupManager(types.SYNC_ORDER_LIST, dataResult)
-      );
+  const payload = {};
+  // step 1: sync custom product first
+  payload.payload = types.CUSTOM_PRODUCT_SYNC;
+  yield syncClientData(payload);
+  // step 2: sync customer second
+  payload.payload = types.CUSTOMERS_SYNC;
+  yield syncClientData(payload);
+  // step 3: next step
+
+  if (orderId) {
+    const order = yield getOrderById(orderId);
+    try {
+      const orderResult = yield call(syncOrderService, order);
+      if (orderResult.message || orderResult.errors || !orderResult.status) {
+        // eslint-disable-next-line no-throw-literal
+        throw {
+          message: orderResult.message || 'Cannot sync order',
+          data: orderResult.data
+        };
+      } else {
+        // not delete the order
+        order.success = true;
+        yield updateOrderById(order);
+      }
+    } catch (e) {
+      order.success = false;
+      order.message = e.message;
+      order.dataErrors = e.data;
+      yield updateOrderById(order);
     }
   } else {
     const orders = yield getAllOrders();
-    let checkAllSync = true;
+    let checkAllSync = 0;
     // eslint-disable-next-line no-restricted-syntax
     for (const order of orders) {
-      const dataResult = yield call(syncOrderService, order);
+      // eslint-disable-next-line no-continue
+      if (order.status) continue;
+      try {
+        const result = yield call(syncOrderService, order);
 
-      if (dataResult.status === true) {
-        yield deleteOrderById(order.id);
-      } else {
-        checkAllSync = false;
-        yield failedLoadService(
-          serviceTypeGroupManager(types.SYNC_ORDER_LIST, dataResult)
-        );
+        if (!result.status || result.message || result.errors) {
+          checkAllSync += 1;
+          // eslint-disable-next-line no-throw-literal
+          throw {
+            message: result.message || 'Cannot sync order',
+            data: result.data || result.errors || result
+          };
+        } else {
+          order.success = true;
+          yield updateOrderById(order);
+        }
+      } catch (e) {
+        order.success = false;
+        order.message = e.message;
+        order.dataErrors = e.data;
+        yield updateOrderById(order);
       }
     }
-    if (checkAllSync) {
+
+    if (!checkAllSync) {
       yield call(successLoadService, types.SYNC_ORDER_LIST);
+    } else {
+      // eslint-disable-next-line no-throw-literal
+      throw { message: 'Cannot sync all order', errors: checkAllSync };
     }
   }
 }
 
 function* syncAllProduct() {
   yield setupSyncCategoriesAndProducts(); // added sync manager success
-  yield call(successLoadService, types.SYNC_ORDER_LIST);
+  yield call(successLoadService, types.ALL_PRODUCT_SYNC);
 }
 
 function* syncGeneralConfig() {
@@ -144,7 +224,7 @@ function* syncGeneralConfig() {
   yield call(successLoadService, types.GENERAL_CONFIG_SYNC);
 }
 
-function* getSyncDataFromLocal() {
+function* getSyncStatusFromLocal() {
   const productSyncStatus = yield call(
     getServiceByName,
     types.ALL_PRODUCT_SYNC
@@ -162,27 +242,27 @@ function* getSyncDataFromLocal() {
 
   // order sync
   yield put({
-    type: types.RECEIVED_LIST_SYNC_ORDER,
+    type: types.RECEIVED_STATUS_SYNC_ORDER,
     payload: orderSyncStatus
   });
   // customer sync
   yield put({
-    type: types.RECEIVED_LIST_SYNC_CUSTOMER,
+    type: types.RECEIVED_STATUS_SYNC_CUSTOMER,
     payload: customerSyncStatus
   });
   // custom product sync
   yield put({
-    type: types.RECEIVED_LIST_SYNC_CUSTOM_PRODUCT,
+    type: types.RECEIVED_STATUS_SYNC_CUSTOM_PRODUCT,
     payload: customProductSyncStatus
   });
   // general config sync
   yield put({
-    type: types.RECEIVED_LIST_SYNC_GENERAL_CONFIG,
+    type: types.RECEIVED_STATUS_SYNC_GENERAL_CONFIG,
     payload: configSyncStatus
   });
   // all product sync
   yield put({
-    type: types.RECEIVED_LIST_SYNC_ALL_PRODUCT,
+    type: types.RECEIVED_STATUS_SYNC_ALL_PRODUCT,
     payload: productSyncStatus
   });
 }
@@ -291,7 +371,6 @@ function* syncClientData(payload) {
       try {
         yield syncCustomProduct(); // added sync manager success
       } catch (e) {
-        console.log(e);
         yield failedLoadService(
           serviceTypeGroupManager(types.CUSTOM_PRODUCT_SYNC, e)
         );
@@ -362,14 +441,15 @@ function* syncClientData(payload) {
 
   // reupdate sync manager from localdb to reducer
   if (payloadType) {
+    yield getSyncStatusFromLocal();
     yield getSyncDataFromLocal();
   }
 }
 
 function* cronSaga() {
   yield takeEvery(SYNC_CLIENT_DATA, syncClientData);
-  yield takeEvery(types.GET_SYNC_DATA_FROM_LOCAL, getSyncDataFromLocal);
-  yield takeEvery(GET_LIST_SYNC_ORDER, getListSyncOrder);
+  yield takeEvery(GET_SYNC_STATUS_FROM_LOCAL, getSyncStatusFromLocal);
+  yield takeEvery(GET_SYNC_DATA_FROM_LOCAL, getSyncDataFromLocal);
 }
 
 export default cronSaga;
