@@ -5,13 +5,13 @@ import {
   GET_SYNC_DATA_FROM_LOCAL,
   GET_SYNC_STATUS_FROM_LOCAL
 } from '../constants/root.json';
-import { syncCustomProductAPI } from './services/product-service';
+import { getGeneralConfigFromLocal } from './services/settings-service';
+import { syncCustomProductAPI, getAllProductFromLocal } from './services/product-service';
 import { getAllTbl, updateCustomerById } from '../reducers/db/sync_customers';
 import {
   getAllTblCustomProduct,
   updateCustomProductById
 } from '../reducers/db/sync_custom_product';
-
 import {
   getAllOrders,
   getOrderById,
@@ -39,6 +39,12 @@ const cashierInfo = state => state.authenRd.cashierInfo;
 const detailOutlet = state => state.mainRd.generalConfig.detail_outlet;
 
 function* getSyncDataFromLocal() {
+  // get all product in local db
+  const payloadResultAllProduct = yield getAllProductFromLocal();
+  yield put({
+    type: types.RECEIVED_DATA_SYNC_ALL_PRODUCT,
+    payload: payloadResultAllProduct
+  });
   // get all order in local db
   const payloadResultOrder = yield getAllOrders();
   yield put({
@@ -57,6 +63,12 @@ function* getSyncDataFromLocal() {
     type: types.RECEIVED_DATA_SYNC_CUSTOMER,
     payload: payloadResultCustomer
   });
+  // get all config in local db
+  const payloadResultGeneralConfig = yield getGeneralConfigFromLocal();
+  yield put({
+    type: types.RECEIVED_DATA_SYNC_GENERAL_CONFIG,
+    payload: payloadResultGeneralConfig
+  });
 }
 const syncManager = state => state.authenRd.syncManager;
 
@@ -71,9 +83,7 @@ function* syncCustomer() {
     try {
       const result = yield call(signUpCustomerService, customer);
       if (result || result.status) {
-        // thay vi su dung delete thi su dung update
         customer.success = true;
-        // yield deleteCustomerById(customer.id);
         yield updateCustomerById(customer);
       } else {
         // eslint-disable-next-line no-throw-literal

@@ -4,7 +4,8 @@ import {
   getProductBySku,
   getProductsByCategoryLocal,
   searchProductsLocal,
-  syncProducts
+  syncProducts,
+  getAllProduct
 } from '../../reducers/db/products';
 import { getCategoriesFromLocal } from '../../reducers/db/categories';
 import { defaultPageSize, getOfflineMode } from '../../common/settings';
@@ -241,6 +242,10 @@ export async function findAllParentCategories(
   }
 
   return parentIds;
+}
+
+export async function getAllProductFromLocal() {
+  return getAllProduct();
 }
 
 export async function syncCustomProductAPI(payload) {

@@ -83,7 +83,7 @@ class ShowMessages extends Component {
         </thead>
         <tbody>
           {syncCustomProduct.map((item, index) => {
-            if (item.success) return null;
+            if (item.status) return;
 
             return (
               <>
@@ -133,7 +133,7 @@ class ShowMessages extends Component {
         </thead>
         <tbody>
           {syncCustomer.map((item, index) => {
-            if (item.success) return null;
+            if (item.status) return null;
             console.log(item);
             return (
               <>

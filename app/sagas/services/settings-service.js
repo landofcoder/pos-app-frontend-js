@@ -9,6 +9,7 @@ import {
 const shopInfoKey = 'shop_info_config';
 const cashierInfoLabel = 'cashier_info';
 const connectedScannerDeviceLabel = 'connected_scanner_device';
+const generalConfig = 'general_config';
 
 export async function writeShopInfoToLocal(shopInfo) {
   const shopInfoDb = await getByKey(shopInfoKey);
@@ -67,4 +68,8 @@ export async function getConnectedDeviceSettings() {
 
 export async function removeScannerDeviceConnected() {
   await deleteByKeyV2(connectedScannerDeviceLabel);
+}
+
+export async function getGeneralConfigFromLocal() {
+  return getByKey(generalConfig);
 }
