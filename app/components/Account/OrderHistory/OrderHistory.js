@@ -15,7 +15,7 @@ import Styles from './order-history.scss';
 import { formatCurrencyCode } from '../../../common/settings';
 import StylesPos from '../../pos.scss';
 import types from '../../../constants/routes';
-import { SYNC_ORDER_LIST} from '../../../constants/authen.json';
+import { SYNC_ORDER_LIST } from '../../../constants/authen.json';
 import {
   PAYMENT_ACTION_ORDER,
   REORDER_ACTION_ORDER,
@@ -26,6 +26,7 @@ import {
 } from '../../../constants/root';
 import AddNoteOrder from './AddNoteOrder/AddNoteOrder';
 import { syncDataClient } from '../../../actions/homeAction';
+import { formatDistance } from 'date-fns';
 
 type Props = {
   getOrderHistory: () => void,
@@ -42,7 +43,7 @@ type Props = {
   orderHistoryDetail: object,
   history: payload => void,
   toggleModalAddNote: payload => void,
-  syncDataClient: payload => void,
+  syncDataClient: payload => void
 };
 
 class OrderHistory extends Component<Props> {
@@ -86,6 +87,13 @@ class OrderHistory extends Component<Props> {
       Object.entries(orderHistoryDetailOffline).length > 0 &&
       isOpenDetailOrderOffline
     );
+  };
+
+  renderLastTime = manager => {
+    if (manager.update_at) {
+      return `${formatDistance(manager.update_at, Date.now())} ago`;
+    }
+    return 'not synced';
   };
 
   actionDetailOrder = () => {
@@ -199,10 +207,10 @@ class OrderHistory extends Component<Props> {
     return null;
   };
 
-  syncDataClientAction = (type,id) => {
+  syncDataClientAction = (type, id) => {
     const { syncDataClient } = this.props;
-    syncDataClient({ type,id });
-  }
+    syncDataClient({ type, id });
+  };
 
   noteOrderAction = () => {
     const { toggleModalAddNote } = this.props;
@@ -228,42 +236,84 @@ class OrderHistory extends Component<Props> {
             </thead>
             <tbody>
               {orderHistory.map((item, index) => {
-                return (
-                  <tr
-                    key={index}
-                    // onClick={() =>
-                    //   item.local
-                    //     ? this.getOrderHistoryDetailOffline(item)
-                    //     : this.getOrderHistoryDetail(item.sales_order_id)
-                    // }
-                  >
-                    <th scope="row">{index + 1}</th>
-                    <td>{item.sales_order_id ? item.sales_order_id : '--'}</td>
-                    <td>{formatCurrencyCode(item.grand_total)}</td>
-                    <td>{item.created_at ? '5 minutes ago' : ''}</td>
-                    <td>{item.order_status ? item.order_status : '--'}</td>
-                    <td>
-                      {item.local ? (
-                        <span className="badge badge-dark badge-pill">
-                          Not synced
-                        </span>
-                      ) : (
-                        <></>
-                      )}
-                    </td>
-                    <td>
-                      <button
-                        type="button"
-                        className="btn btn-outline-secondary btn-sm"
-                        onClick={() => {
-                          this.syncDataClientAction(SYNC_ORDER_LIST,item.id)
-                        }}
-                      >
-                        Sync now
-                      </button>
-                    </td>
-                  </tr>
-                );
+                console.log(item);
+                if (item.local) {
+                  return (
+                    <tr
+                      key={index}
+                      // onClick={() =>
+                      //   item.local
+                      //     ? this.getOrderHistoryDetailOffline(item)
+                      //     : this.getOrderHistoryDetail(item.sales_order_id)
+                      // }
+                    >
+                      <th scope="row">{index + 1}</th>
+                      <td>{'--'}</td>
+                      <td>{formatCurrencyCode(item.grand_total)}</td>
+                      <td>{this.renderLastTime(item)}</td>
+                      <td>{item.success ? item.success : '--'}</td>
+                      <td>
+                        {item.local ? (
+                          <span className="badge badge-dark badge-pill">
+                            Not synced
+                          </span>
+                        ) : (
+                          <></>
+                        )}
+                      </td>
+                      <td>
+                        <button
+                          type="button"
+                          className="btn btn-outline-secondary btn-sm"
+                          onClick={() => {
+                            this.syncDataClientAction(SYNC_ORDER_LIST, item.id);
+                          }}
+                        >
+                          Sync now
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                } else {
+                  return (
+                    <tr
+                      key={index}
+                      // onClick={() =>
+                      //   item.local
+                      //     ? this.getOrderHistoryDetailOffline(item)
+                      //     : this.getOrderHistoryDetail(item.sales_order_id)
+                      // }
+                    >
+                      <th scope="row">{index + 1}</th>
+                      <td>
+                        {item.sales_order_id ? item.sales_order_id : '--'}
+                      </td>
+                      <td>{formatCurrencyCode(item.grand_total)}</td>
+                      <td>{item.created_at ? '5 minutes ago' : ''}</td>
+                      <td>{item.order_status ? item.order_status : '--'}</td>
+                      <td>
+                        {item.local ? (
+                          <span className="badge badge-dark badge-pill">
+                            Not synced
+                          </span>
+                        ) : (
+                          <></>
+                        )}
+                      </td>
+                      <td>
+                        <button
+                          type="button"
+                          className="btn btn-outline-secondary btn-sm"
+                          onClick={() => {
+                            this.syncDataClientAction(SYNC_ORDER_LIST, item.id);
+                          }}
+                        >
+                          Sync now
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                }
               })}
             </tbody>
           </table>
