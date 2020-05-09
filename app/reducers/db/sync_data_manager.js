@@ -65,10 +65,12 @@ export async function failedLoadService(service) {
 
   if (serviceData) {
     serviceData.errors = service.errors;
+    serviceData.message = service.message;
     await updateService(serviceData);
   } else {
     serviceData = initService(service.name);
     serviceData.errors = service.errors;
+    serviceData.message = service.message;
     await createService(serviceData);
   }
 }

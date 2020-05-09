@@ -108,7 +108,10 @@ export async function signUpCustomerService(payload) {
     if (data.message || data.errors) {
       // eslint-disable-next-line no-throw-literal
       throw {
-        message: data.data[0].message || data.data[0].debugMessage || 'Customers cannot sync',
+        message:
+          data.data[0].message ||
+          data.data[0].debugMessage ||
+          'Customers cannot sync',
         data: data.errors
       };
     }

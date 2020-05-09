@@ -14,6 +14,7 @@ type Props = {
   isShowLogsMessages: boolean,
   typeShowLogsMessages: string,
   syncDataManager: object,
+  syncManager: object,
   showLogsAction: (payload: Object) => void
 };
 class ShowMessages extends Component {
@@ -58,72 +59,129 @@ class ShowMessages extends Component {
   };
 
   showTableAllProductError = () => {
+    const { syncManager } = this.props;
+    const syncAllProductStatus = syncManager.syncAllProduct;
+    if (!syncAllProductStatus.errors) {
+      return (
+        <div className="alert alert-success" role="alert">
+          All Product synced success
+        </div>
+      );
+    }
+    // get message
+    console.log(syncAllProductStatus);
+    const message =
+      syncAllProductStatus.message || 'Some reason sync all product error !!!';
+
     return (
       <>
-        <p>hello</p>
+        <div className="alert alert-danger" role="alert">
+          {message}
+        </div>
       </>
     );
   };
 
   showTableCustomProductError = () => {
-    const { syncDataManager } = this.props;
+    const { syncDataManager, syncManager } = this.props;
+    const syncConfigStatus = syncManager.syncCustomProduct;
     const { syncCustomProduct } = syncDataManager;
-    console.log(syncCustomProduct);
-    return (
-      <table className="table">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Custom Product Name</th>
-            <th scope="col">Price</th>
-            <th scope="col">Q.ty</th>
-            <th scope="col">Create at</th>
-            <th scope="col">Status</th>
+    const { message } = syncConfigStatus;
+    const tableCustomProduct = syncCustomProduct.map((item, index) => {
+      if (item.status) return null;
+      return (
+        <>
+          <tr
+            key={index}
+            onClick={() => {
+              this.actionCollapseData(index);
+            }}
+          >
+            <th scope="row">{index + 1}</th>
+            <td>{item.name}</td>
+            <td>{item.price.regularPrice.amount.value}</td>
+            <td>{item.pos_qty}</td>
+            <td>{new Date(item.id).toDateString()}</td>
+            <td>
+              <span className="badge badge-pill badge-danger">error</span>
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          {syncCustomProduct.map((item, index) => {
-            if (item.status) return;
+        </>
+      );
+    });
 
-            return (
-              <>
-                <tr
-                  key={index}
-                  onClick={() => {
-                    this.actionCollapseData(index);
-                  }}
-                >
-                  <th scope="row">{index + 1}</th>
-                  <td>{item.name}</td>
-                  <td>{item.price.regularPrice.amount.value}</td>
-                  <td>{item.pos_qty}</td>
-                  <td>{new Date(item.id).toDateString()}</td>
-                  <td>
-                    <span className="badge badge-pill badge-danger">error</span>
-                  </td>
-                </tr>
-              </>
-            );
-          })}
-        </tbody>
-      </table>
+    if (!syncConfigStatus.errors)
+      return (
+        <div className="alert alert-success" role="alert">
+          All Custom Product synced success!
+        </div>
+      );
+    return (
+      <>
+        {message ? (
+          <div className="alert alert-danger" role="alert">
+            {message}
+          </div>
+        ) : null}
+        <table className="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Custom Product Name</th>
+              <th scope="col">Price</th>
+              <th scope="col">Q.ty</th>
+              <th scope="col">Create at</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody>{tableCustomProduct}</tbody>
+        </table>
+      </>
     );
-    // return (
-    //   <>
-    //     <p>hello</p>
-    //   </>
-    // );
   };
 
   showTableCustomerError = () => {
-    const { syncDataManager } = this.props;
+    const { syncDataManager, syncManager } = this.props;
+    const syncCustomerStatus = syncManager.syncCustomer;
     const { syncCustomer } = syncDataManager;
-    console.log(syncCustomer);
-    if (!syncCustomer) return <span>Sync customer already complete</span>;
+    const { message } = syncCustomerStatus;
+
+    const tableCustomer = syncCustomer.map((item, index) => {
+      if (item.status) return null;
+      return (
+        <>
+          <tr
+            key={index}
+            onClick={() => {
+              this.actionCollapseData(index);
+            }}
+          >
+            <th scope="row">{index + 1}</th>
+            <td>{`${item.first_name} ${item.payload.customer.lastname}`}</td>
+            <td>{item.email}</td>
+            <td>{new Date(item.id).toDateString()}</td>
+            <td>
+              <span className="badge badge-pill badge-danger">error</span>
+            </td>
+          </tr>
+        </>
+      );
+    });
+    if (!syncCustomerStatus.errors)
+      return (
+        <div className="alert alert-success" role="alert">
+          All Customer synced success
+        </div>
+      );
     return (
       <table className="table">
         <thead>
           <tr>
+            {message ? (
+              <div className="alert alert-danger" role="alert">
+                {message}
+              </div>
+            ) : null}
             <th scope="col">#</th>
             <th scope="col">Customer Name</th>
             <th scope="col">Email</th>
@@ -131,40 +189,32 @@ class ShowMessages extends Component {
             <th scope="col">Status</th>
           </tr>
         </thead>
-        <tbody>
-          {syncCustomer.map((item, index) => {
-            if (item.status) return null;
-            console.log(item);
-            return (
-              <>
-                <tr
-                  key={index}
-                  onClick={() => {
-                    this.actionCollapseData(index);
-                  }}
-                >
-                  <th scope="row">{index + 1}</th>
-                  <td>
-                    {`${item.first_name} ${item.payload.customer.lastname}`}
-                  </td>
-                  <td>{item.email}</td>
-                  <td>{new Date(item.id).toDateString()}</td>
-                  <td>
-                    <span className="badge badge-pill badge-danger">error</span>
-                  </td>
-                </tr>
-              </>
-            );
-          })}
-        </tbody>
+        <tbody>{tableCustomer}</tbody>
       </table>
     );
   };
 
   showTableGeneralConfigError = () => {
+    const { syncDataManager, syncManager } = this.props;
+    const { syncConfig } = syncDataManager;
+    const syncConfigStatus = syncManager.syncConfig;
+    if (!syncConfigStatus.errors) {
+      return (
+        <div className="alert alert-success" role="alert">
+          General Config synced success
+        </div>
+      );
+    }
+    // get message
+    console.log(syncConfig);
+    const message =
+      syncConfig[0].value.message || 'Some reason sync config error !!!';
+
     return (
       <>
-        <p>hello</p>
+        <div className="alert alert-danger" role="alert">
+          {message}
+        </div>
       </>
     );
   };
@@ -222,7 +272,8 @@ function mapStateToProps(state) {
   return {
     isShowLogsMessages: state.mainRd.isShowLogsMessages,
     typeShowLogsMessages: state.mainRd.typeShowLogsMessages,
-    syncDataManager: state.authenRd.syncDataManager
+    syncDataManager: state.authenRd.syncDataManager,
+    syncManager: state.authenRd.syncManager
   };
 }
 function mapDispatchToProps(dispatch) {

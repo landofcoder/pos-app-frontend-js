@@ -73,3 +73,16 @@ export async function removeScannerDeviceConnected() {
 export async function getGeneralConfigFromLocal() {
   return getByKey(generalConfig);
 }
+
+export async function updateGeneralConfigFromLocal(payload) {
+  try {
+    const generalConfigDb = await getGeneralConfigFromLocal();
+    generalConfigDb[0].value.message = payload.message;
+    generalConfigDb[0].value.actionErrors = payload.data;
+    await updateById(generalConfigDb[0].id, generalConfigDb[0].value);
+    return true;
+  } catch (e) {
+    console.log('failed to update general config');
+    return false;
+  }
+}

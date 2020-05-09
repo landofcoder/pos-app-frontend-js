@@ -5,8 +5,14 @@ import {
   GET_SYNC_DATA_FROM_LOCAL,
   GET_SYNC_STATUS_FROM_LOCAL
 } from '../constants/root.json';
-import { getGeneralConfigFromLocal } from './services/settings-service';
-import { syncCustomProductAPI, getAllProductFromLocal } from './services/product-service';
+import {
+  getGeneralConfigFromLocal,
+  updateGeneralConfigFromLocal
+} from './services/settings-service';
+import {
+  syncCustomProductAPI,
+  getAllProductFromLocal
+} from './services/product-service';
 import { getAllTbl, updateCustomerById } from '../reducers/db/sync_customers';
 import {
   getAllTblCustomProduct,
@@ -232,8 +238,13 @@ function* syncGeneralConfig() {
   try {
     yield setupFetchingGeneralConfig();
   } catch (e) {
+    const payload = {
+      message: e.message || 'Server not Response',
+      data: e.data
+    };
+    yield call(updateGeneralConfigFromLocal, payload);
     // eslint-disable-next-line no-throw-literal
-    throw { message: e.message || 'Server not Response', data: e.data };
+    throw payload;
   }
   // Add Sync manager success
   yield call(successLoadService, types.GENERAL_CONFIG_SYNC);
