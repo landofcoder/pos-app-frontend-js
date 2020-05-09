@@ -10,7 +10,7 @@ const initialState = {
   loadingWorkPlace: false,
   appInfo: {},
   moduleInstalled: {},
-  syncManagerData: {
+  syncDataManager: {
     syncCustomProduct: {},
     syncCustomer: {},
     syncOrder: {},
@@ -65,6 +65,7 @@ const authenRd = (state = initialState, action) =>
         draft.tokenWorkPlace = action.payload;
         draft.messageErrorWorkPlace = '';
         break;
+      // received status sync
       case typesAuthen.RECEIVED_STATUS_SYNC_ORDER:
         draft.syncManager.syncOrder = action.payload;
         break;
@@ -80,6 +81,23 @@ const authenRd = (state = initialState, action) =>
       case typesAuthen.RECEIVED_STATUS_SYNC_ALL_PRODUCT:
         draft.syncManager.syncAllProduct = action.payload;
         break;
+      // received data sync
+      case typesAuthen.RECEIVED_DATA_SYNC_ORDER:
+        draft.syncDataManager.syncOrder = action.payload;
+        break;
+      case typesAuthen.RECEIVED_DATA_SYNC_CUSTOM_PRODUCT:
+        draft.syncDataManager.syncCustomProduct = action.payload;
+        break;
+      case typesAuthen.RECEIVED_DATA_SYNC_CUSTOMER:
+        draft.syncDataManager.syncCustomer = action.payload;
+        break;
+      case typesAuthen.RECEIVED_DATA_SYNC_GENERAL_CONFIG:
+        draft.syncDataManager.syncConfig = action.payload;
+        break;
+      case typesAuthen.RECEIVED_DATA_SYNC_ALL_PRODUCT:
+        draft.syncDataManager.syncAllProduct = action.payload;
+        break;
+      // end received data sync
       case typesAuthen.STATUS_SYNC:
         draft.syncManager.syncStatus = action.payload;
         break;

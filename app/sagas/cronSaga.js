@@ -38,7 +38,7 @@ const posSystemConfig = state => state.mainRd.generalConfig.common_config;
 const cashierInfo = state => state.authenRd.cashierInfo;
 const detailOutlet = state => state.mainRd.generalConfig.detail_outlet;
 
-function* getSyncDataFromaLocal() {
+function* getSyncDataFromLocal() {
   // get all order in local db
   const payloadResultOrder = yield getAllOrders();
   yield put({
@@ -442,13 +442,14 @@ function* syncClientData(payload) {
   // reupdate sync manager from localdb to reducer
   if (payloadType) {
     yield getSyncStatusFromLocal();
+    yield getSyncDataFromLocal();
   }
 }
 
 function* cronSaga() {
   yield takeEvery(SYNC_CLIENT_DATA, syncClientData);
   yield takeEvery(GET_SYNC_STATUS_FROM_LOCAL, getSyncStatusFromLocal);
-  yield takeEvery(GET_SYNC_DATA_FROM_LOCAL, getSyncDataFromaLocal);
+  yield takeEvery(GET_SYNC_DATA_FROM_LOCAL, getSyncDataFromLocal);
 }
 
 export default cronSaga;

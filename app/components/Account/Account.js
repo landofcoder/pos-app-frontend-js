@@ -7,6 +7,15 @@ import CashierInfo from './CashierInfo/CashierInfo';
 import ConnectDevices from './ConnectDevices/ConnectDevices';
 import SyncManager from './SyncManager/SyncManager';
 import { POS } from '../../constants/routes.json';
+import {
+  getSyncDataFromLocal,
+  getSyncStatusFromLocal
+} from '../../actions/accountAction';
+
+type Props = {
+  getStatusSync: () => void,
+  getDataSync: () => void
+};
 class Account extends Component {
   props: Props;
 
@@ -15,6 +24,12 @@ class Account extends Component {
     this.state = {
       viewSelected: 'ordersHistory'
     };
+  }
+
+  componentDidMount() {
+    const { getDataSync, getStatusSync } = this.props;
+    getDataSync();
+    getStatusSync();
   }
 
   switchingComponent = payload => {
@@ -103,6 +118,12 @@ class Account extends Component {
   }
 }
 
+function mapDispatchToProps(dispatch) {
+  return {
+    getStatusSync: () => dispatch(getSyncStatusFromLocal()),
+    getDataSync: () => dispatch(getSyncDataFromLocal())
+  };
+}
 function mapStateToProps(state) {
   return {
     syncStatus: state.authenRd.syncManager.syncStatus
@@ -111,5 +132,5 @@ function mapStateToProps(state) {
 
 export default connect(
   mapStateToProps,
-  null
+  mapDispatchToProps
 )(Account);

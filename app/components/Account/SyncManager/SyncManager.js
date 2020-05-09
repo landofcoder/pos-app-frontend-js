@@ -5,11 +5,7 @@ import SyncCustomProductManager from './SyncCustomProductManager/SyncCustomProdu
 import SyncCustomerManager from './SyncCustomerManager/SyncCustomerManager';
 import SyncOrderManager from './SyncOrderManager/SyncOrderManager';
 import { syncDataClient } from '../../../actions/homeAction';
-import {
-  getListSyncOrder,
-  getSyncDataFromLocal,
-  showLogsAction
-} from '../../../actions/accountAction';
+import { showLogsAction } from '../../../actions/accountAction';
 
 import {
   ALL_PRODUCT_SYNC,
@@ -18,11 +14,10 @@ import {
   GENERAL_CONFIG_SYNC
 } from '../../../constants/authen.json';
 import Style from './sync-manager.scss';
+
 type Props = {
   syncDataClient: payload => void,
-  getListSyncOrder: () => void,
   syncManager: Object,
-  getDataSync: () => void,
   showLogsAction: (payload: Object) => void
 };
 class SyncManager extends Component {
@@ -33,11 +28,6 @@ class SyncManager extends Component {
     this.state = {
       viewSelected: 'syncOrder'
     };
-  }
-
-  componentDidMount(): void {
-    const { getDataSync } = this.props;
-    getDataSync();
   }
 
   renderSwitchShowUpSync = () => {
@@ -281,8 +271,6 @@ class SyncManager extends Component {
 function mapDispatchToProps(dispatch) {
   return {
     syncDataClient: payload => dispatch(syncDataClient({ type: payload })),
-    getListSyncOrder: () => dispatch(getListSyncOrder()),
-    getDataSync: () => dispatch(getSyncDataFromLocal()),
     showLogsAction: payload => dispatch(showLogsAction(payload))
   };
 }

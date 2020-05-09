@@ -60,13 +60,13 @@ export function orderAction(payload) {
   };
 }
 
-export function getListSyncOrder() {
+export function getSyncDataFromLocal() {
   return {
     type: type.GET_SYNC_DATA_FROM_LOCAL
   };
 }
 
-export function getSyncDataFromLocal() {
+export function getSyncStatusFromLocal() {
   return {
     type: type.GET_SYNC_STATUS_FROM_LOCAL
   };
