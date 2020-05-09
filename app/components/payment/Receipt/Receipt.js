@@ -81,7 +81,7 @@ class Receipt extends Component<Props> {
     const customerReceipt = cartForReceipt.customer;
     /* eslint-disable */
     const { outlet_name } = detailOutlet;
-    const {
+    let {
       receipt_title,
       outlet_name_display,
       date_display,
@@ -97,6 +97,14 @@ class Receipt extends Component<Props> {
       header_content,
       footer_content
     } = customReceipt;
+
+    // hien tai nen show tat ca cac thong tin cua receipt
+    receipt_title = 'Receipt';
+    outlet_name_display = 1;
+    date_display = 1;
+    order_id_display = 0;
+    customer_display = 1;
+
     const css = `
         img {
             width: 100%;
@@ -116,11 +124,12 @@ class Receipt extends Component<Props> {
                 style={{
                   width: '100%',
                   paddingTop: '20px',
-                  textAlign: 'center'
+                  textAlign: 'center',
+                  borderBottom: '1px solid #dedede'
                 }}
               >
                 <tbody>
-                  {Number(logo_display) === 1 ? (
+                  {+logo_display === 1 ? (
                     <tr>
                       <td colSpan="2">
                         <img
@@ -148,36 +157,44 @@ class Receipt extends Component<Props> {
                       {receipt_title}
                     </td>
                   </tr>
-                  <tr>
-                    <td colSpan="2" style={{ textAlign: 'center' }}>
-                      {detailOutlet.outlet_name}
-                    </td>
-                  </tr>
-                  {outlet_name_display ? (
+                  {+outlet_name_display ? (
                     <tr>
-                      <td style={{ textAlign: 'left' }}>outlet_name</td>
+                      <td colSpan="2" style={{ textAlign: 'center' }}>
+                        {detailOutlet.outlet_name}
+                      </td>
                     </tr>
                   ) : null}
                   <tr>
-                    {date_display === '1' ? (
-                      <td
-                        style={{
-                          marginTop: '25px',
-                          textAlign: 'left',
-                          width: '50%'
-                        }}
-                      >
-                        {dateTime}
-                      </td>
+                    {+date_display === 1 ? (
+                      <>
+                        <td
+                          style={{
+                            marginTop: '25px',
+                            textAlign: 'left',
+                            width: '50%'
+                          }}
+                        >
+                          Create at
+                        </td>
+                        <td
+                          style={{
+                            marginTop: '25px',
+                            textAlign: 'left',
+                            width: '50%'
+                          }}
+                        >
+                          {dateTime}
+                        </td>
+                      </>
                     ) : null}
-                    {order_id_display ? (
-                      <td style={{ textAlign: 'right' }}>
+                    {+order_id_display ? (
+                      <td style={{ textAlign: 'left' }}>
                         <span>{order_id_label}&nbsp;</span>
                         <span>{orderId}</span>
                       </td>
                     ) : null}
                   </tr>
-                  {customerReceipt && Number(customer_display) === 1 ? (
+                  {customerReceipt && +customer_display === 1 ? (
                     <tr>
                       <td style={{ textAlign: 'left' }}>Customer:&nbsp;</td>
                       <td style={{ textAlign: 'right' }}>
