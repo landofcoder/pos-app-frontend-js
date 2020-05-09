@@ -30,8 +30,18 @@ export async function createProductDb(product) {
   if (!data || data.length === 0) {
     const tbl = db.table(table);
     await tbl.add(product);
-  }
-  else {
+  } else {
     await tbl.update(product.id, product);
+  }
+}
+export async function updateCustomProductById(customProduct) {
+  // eslint-disable-next-line no-param-reassign
+  customProduct.update_at = new Date();
+  const tbl = db.table(table);
+  try {
+    await tbl.update(customProduct.id, customProduct);
+    return true;
+  } catch (e) {
+    return false;
   }
 }

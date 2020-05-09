@@ -14,11 +14,11 @@ export async function signUpCustomerDb(customers) {
   const customer = await signUpCustomerTbl.get({
     email: payload.customer.email
   });
-  if (customer) {
+  if (!customer || !customer.sync) {
     await signUpCustomerTbl.update(customer.id, data);
-  } else {
-    await signUpCustomerTbl.add(data);
+    return true;
   }
+  return false;
 }
 
 export async function getAllTbl() {
@@ -26,15 +26,27 @@ export async function getAllTbl() {
   const data = await tbl.toArray();
   return data;
 }
-
-export async function deleteByIdCustomer(id) {
+export async function deleteCustomerById(id) {
   const tbl = db.table(table);
-  const data = await tbl.get({ id });
-  if (data) {
-    await tbl.delete(data.id);
+  try {
+    await tbl.delete(id);
+    return true;
+  } catch (e) {
+    return false;
   }
 }
 
+export async function updateCustomerById(customer) {
+  // eslint-disable-next-line no-param-reassign
+  customer.udpate_at = new Date();
+  const tbl = db.table(table);
+  try {
+    await tbl.update(customer.id, customer);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
 export async function getByName(name) {
   const productTbl = db.table(table);
   const result = [];

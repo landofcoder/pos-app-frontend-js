@@ -6,11 +6,10 @@ const table = 'sync_data_manager';
 function initService(
   serviceName
   // eslint-disable-next-line flowtype/no-primitive-constructor-types
-): { name: String, error: Number, actionErrors: Array } {
+): { name: String, error: Number } {
   return {
     name: serviceName,
-    errors: 0,
-    actionErrors: []
+    errors: 0
   };
 }
 
@@ -28,8 +27,14 @@ export async function deleteByKey(key) {
   const tbl = db.table(table);
   const data = await tbl.get({ key });
   if (data) {
-    await tbl.delete(data.id);
+    try {
+      await tbl.delete(data.id);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
+  return false;
 }
 
 export async function getAllService() {
@@ -40,8 +45,12 @@ export async function getAllService() {
 
 export async function createService(service) {
   const tbl = db.table(table);
-  await tbl.add(service);
-  return true;
+  try {
+    await tbl.add(service);
+    return true;
+  } catch (e) {
+    return false;
+  }
 }
 
 export async function updateService(service) {
@@ -55,13 +64,11 @@ export async function failedLoadService(service) {
   let serviceData = await getServiceByName(service.name);
 
   if (serviceData) {
-    serviceData.errors += service.errors;
-    serviceData.actionErrors.push(service.actionErrors);
+    serviceData.errors = service.errors;
     await updateService(serviceData);
   } else {
     serviceData = initService(service.name);
     serviceData.errors = service.errors;
-    serviceData.actionErrors = service.actionErrors;
     await createService(serviceData);
   }
 }
@@ -69,7 +76,6 @@ export async function failedLoadService(service) {
 export async function successLoadService(serviceName) {
   const serviceData = await getServiceByName(serviceName);
   if (serviceData) {
-    serviceData.actionErrors = [];
     serviceData.errors = 0;
     await updateService(serviceData);
   } else {

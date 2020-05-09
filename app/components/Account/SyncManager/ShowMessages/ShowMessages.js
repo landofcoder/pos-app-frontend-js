@@ -77,8 +77,7 @@ class ShowMessages extends Component {
       default:
         break;
     }
-    if (!data || !data.actionErrors || data.actionErrors.length === 0)
-      return <span>Sync update is compelete!!</span>;
+    if (!data || !data.errors) return <span>Sync update is compelete!!</span>;
     return (
       <table className="table">
         <thead>
@@ -88,30 +87,30 @@ class ShowMessages extends Component {
           </tr>
         </thead>
         <tbody>
-          {data.actionErrors.map((item, index) => {
-            return (
-              <>
-                <tr
-                  key={index}
-                  onClick={() => {
-                    this.actionCollapseData(index);
-                  }}
-                >
-                  <th scope="row">{index + 1}</th>
-                  <td>{item.message}</td>
-                </tr>
+          {/*{data.actionErrors.map((item, index) => {*/}
+          {/*  return (*/}
+          {/*    <>*/}
+          {/*      <tr*/}
+          {/*        key={index}*/}
+          {/*        onClick={() => {*/}
+          {/*          this.actionCollapseData(index);*/}
+          {/*        }}*/}
+          {/*      >*/}
+          {/*        <th scope="row">{index + 1}</th>*/}
+          {/*        <td>{item.message}</td>*/}
+          {/*      </tr>*/}
 
-                {collapseData[index] ? (
-                  <tr key={index} style={{ backgroundColor: '#fff' }}>
-                    <th scope="row"></th>
-                    <td>
-                      <CollapseData data={item.data} />
-                    </td>
-                  </tr>
-                ) : null}
-              </>
-            );
-          })}
+          {/*      {collapseData[index] ? (*/}
+          {/*        <tr key={index} style={{ backgroundColor: '#fff' }}>*/}
+          {/*          <th scope="row"></th>*/}
+          {/*          <td>*/}
+          {/*            <CollapseData data={item.data} />*/}
+          {/*          </td>*/}
+          {/*        </tr>*/}
+          {/*      ) : null}*/}
+          {/*    </>*/}
+          {/*  );*/}
+          {/*})}*/}
         </tbody>
       </table>
     );
