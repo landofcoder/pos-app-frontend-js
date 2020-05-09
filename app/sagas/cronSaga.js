@@ -1,17 +1,19 @@
 import { takeEvery, put, select, call } from 'redux-saga/effects';
 import * as types from '../constants/authen';
-import { SYNC_CLIENT_DATA, GET_LIST_SYNC_ORDER } from '../constants/root.json';
+import {
+  SYNC_CLIENT_DATA,
+  GET_SYNC_DATA_FROM_LOCAL,
+  GET_SYNC_STATUS_FROM_LOCAL
+} from '../constants/root.json';
 import { syncCustomProductAPI } from './services/product-service';
 import { getAllTbl, updateCustomerById } from '../reducers/db/sync_customers';
 import {
-  deleteByIdCustomProduct,
   getAllTblCustomProduct,
   updateCustomProductById
 } from '../reducers/db/sync_custom_product';
 
 import {
   getAllOrders,
-  deleteOrderById,
   getOrderById,
   updateOrderById
 } from '../reducers/db/sync_orders';
@@ -36,23 +38,23 @@ const posSystemConfig = state => state.mainRd.generalConfig.common_config;
 const cashierInfo = state => state.authenRd.cashierInfo;
 const detailOutlet = state => state.mainRd.generalConfig.detail_outlet;
 
-function* getListSyncOrder() {
+function* getSyncDataFromaLocal() {
   // get all order in local db
   const payloadResultOrder = yield getAllOrders();
   yield put({
-    type: types.RECEIVED_LIST_SYNC_ORDER,
+    type: types.RECEIVED_DATA_SYNC_ORDER,
     payload: payloadResultOrder
   });
   // get all custom product in local db
   const payloadResultCustomProduct = yield getAllTblCustomProduct();
   yield put({
-    type: types.RECEIVED_LIST_SYNC_CUSTOM_PRODUCT,
+    type: types.RECEIVED_DATA_SYNC_CUSTOM_PRODUCT,
     payload: payloadResultCustomProduct
   });
   // get all customer in local db
   const payloadResultCustomer = yield getAllTbl();
   yield put({
-    type: types.RECEIVED_LIST_SYNC_CUSTOMER,
+    type: types.RECEIVED_DATA_SYNC_CUSTOMER,
     payload: payloadResultCustomer
   });
 }
@@ -134,7 +136,10 @@ function* syncCustomProduct() {
     yield call(successLoadService, types.CUSTOM_PRODUCT_SYNC);
   } else {
     // eslint-disable-next-line no-throw-literal
-    throw { message: 'Can not resolve sync all customer', errors: checkAllSync };
+    throw {
+      message: 'Can not resolve sync all customer',
+      errors: checkAllSync
+    };
   }
 }
 
@@ -219,7 +224,7 @@ function* syncGeneralConfig() {
   yield call(successLoadService, types.GENERAL_CONFIG_SYNC);
 }
 
-function* getSyncDataFromLocal() {
+function* getSyncStatusFromLocal() {
   const productSyncStatus = yield call(
     getServiceByName,
     types.ALL_PRODUCT_SYNC
@@ -237,27 +242,27 @@ function* getSyncDataFromLocal() {
 
   // order sync
   yield put({
-    type: types.RECEIVED_LIST_SYNC_ORDER,
+    type: types.RECEIVED_STATUS_SYNC_ORDER,
     payload: orderSyncStatus
   });
   // customer sync
   yield put({
-    type: types.RECEIVED_LIST_SYNC_CUSTOMER,
+    type: types.RECEIVED_STATUS_SYNC_CUSTOMER,
     payload: customerSyncStatus
   });
   // custom product sync
   yield put({
-    type: types.RECEIVED_LIST_SYNC_CUSTOM_PRODUCT,
+    type: types.RECEIVED_STATUS_SYNC_CUSTOM_PRODUCT,
     payload: customProductSyncStatus
   });
   // general config sync
   yield put({
-    type: types.RECEIVED_LIST_SYNC_GENERAL_CONFIG,
+    type: types.RECEIVED_STATUS_SYNC_GENERAL_CONFIG,
     payload: configSyncStatus
   });
   // all product sync
   yield put({
-    type: types.RECEIVED_LIST_SYNC_ALL_PRODUCT,
+    type: types.RECEIVED_STATUS_SYNC_ALL_PRODUCT,
     payload: productSyncStatus
   });
 }
@@ -436,14 +441,14 @@ function* syncClientData(payload) {
 
   // reupdate sync manager from localdb to reducer
   if (payloadType) {
-    yield getSyncDataFromLocal();
+    yield getSyncStatusFromLocal();
   }
 }
 
 function* cronSaga() {
   yield takeEvery(SYNC_CLIENT_DATA, syncClientData);
-  yield takeEvery(types.GET_SYNC_DATA_FROM_LOCAL, getSyncDataFromLocal);
-  yield takeEvery(GET_LIST_SYNC_ORDER, getListSyncOrder);
+  yield takeEvery(GET_SYNC_STATUS_FROM_LOCAL, getSyncStatusFromLocal);
+  yield takeEvery(GET_SYNC_DATA_FROM_LOCAL, getSyncDataFromaLocal);
 }
 
 export default cronSaga;
