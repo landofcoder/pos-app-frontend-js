@@ -13,7 +13,7 @@ import { showLogsAction } from '../../../../actions/accountAction';
 type Props = {
   isShowLogsMessages: boolean,
   typeShowLogsMessages: string,
-  syncManager: object,
+  syncDataManager: object,
   showLogsAction: (payload: Object) => void
 };
 class ShowMessages extends Component {
@@ -57,63 +57,132 @@ class ShowMessages extends Component {
     }
   };
 
-  showLog = () => {
-    const { collapseData } = this.state;
-    let data;
-    const { typeShowLogsMessages, syncManager } = this.props;
-    switch (typeShowLogsMessages) {
-      case ALL_PRODUCT_SYNC:
-        data = syncManager.syncAllProduct;
-        break;
-      case CUSTOM_PRODUCT_SYNC:
-        data = syncManager.syncCustomProduct;
-        break;
-      case CUSTOMERS_SYNC:
-        data = syncManager.syncCustomer;
-        break;
-      case GENERAL_CONFIG_SYNC:
-        data = syncManager.syncConfig;
-        break;
-      default:
-        break;
-    }
-    if (!data || !data.errors) return <span>Sync update is compelete!!</span>;
+  showTableAllProductError = () => {
+    return (
+      <>
+        <p>hello</p>
+      </>
+    );
+  };
+
+  showTableCustomProductError = () => {
+    const { syncDataManager } = this.props;
+    const { syncCustomProduct } = syncDataManager;
+    console.log(syncCustomProduct);
     return (
       <table className="table">
         <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">Message</th>
+            <th scope="col">Custom Product Name</th>
+            <th scope="col">Price</th>
+            <th scope="col">Q.ty</th>
+            <th scope="col">Create at</th>
+            <th scope="col">Status</th>
           </tr>
         </thead>
         <tbody>
-          {/*{data.actionErrors.map((item, index) => {*/}
-          {/*  return (*/}
-          {/*    <>*/}
-          {/*      <tr*/}
-          {/*        key={index}*/}
-          {/*        onClick={() => {*/}
-          {/*          this.actionCollapseData(index);*/}
-          {/*        }}*/}
-          {/*      >*/}
-          {/*        <th scope="row">{index + 1}</th>*/}
-          {/*        <td>{item.message}</td>*/}
-          {/*      </tr>*/}
+          {syncCustomProduct.map((item, index) => {
+            if (item.success) return null;
 
-          {/*      {collapseData[index] ? (*/}
-          {/*        <tr key={index} style={{ backgroundColor: '#fff' }}>*/}
-          {/*          <th scope="row"></th>*/}
-          {/*          <td>*/}
-          {/*            <CollapseData data={item.data} />*/}
-          {/*          </td>*/}
-          {/*        </tr>*/}
-          {/*      ) : null}*/}
-          {/*    </>*/}
-          {/*  );*/}
-          {/*})}*/}
+            return (
+              <>
+                <tr
+                  key={index}
+                  onClick={() => {
+                    this.actionCollapseData(index);
+                  }}
+                >
+                  <th scope="row">{index + 1}</th>
+                  <td>{item.name}</td>
+                  <td>{item.price.regularPrice.amount.value}</td>
+                  <td>{item.pos_qty}</td>
+                  <td>{new Date(item.id).toDateString()}</td>
+                  <td>
+                    <span className="badge badge-pill badge-danger">error</span>
+                  </td>
+                </tr>
+              </>
+            );
+          })}
         </tbody>
       </table>
     );
+    // return (
+    //   <>
+    //     <p>hello</p>
+    //   </>
+    // );
+  };
+
+  showTableCustomerError = () => {
+    const { syncDataManager } = this.props;
+    const { syncCustomer } = syncDataManager;
+    console.log(syncCustomer);
+    if (!syncCustomer) return <span>Sync customer already complete</span>;
+    return (
+      <table className="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Customer Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Create at</th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {syncCustomer.map((item, index) => {
+            if (item.success) return null;
+            console.log(item);
+            return (
+              <>
+                <tr
+                  key={index}
+                  onClick={() => {
+                    this.actionCollapseData(index);
+                  }}
+                >
+                  <th scope="row">{index + 1}</th>
+                  <td>
+                    {`${item.first_name} ${item.payload.customer.lastname}`}
+                  </td>
+                  <td>{item.email}</td>
+                  <td>{new Date(item.id).toDateString()}</td>
+                  <td>
+                    <span className="badge badge-pill badge-danger">error</span>
+                  </td>
+                </tr>
+              </>
+            );
+          })}
+        </tbody>
+      </table>
+    );
+  };
+
+  showTableGeneralConfigError = () => {
+    return (
+      <>
+        <p>hello</p>
+      </>
+    );
+  };
+
+  showTableLog = () => {
+    const { typeShowLogsMessages } = this.props;
+    switch (typeShowLogsMessages) {
+      case ALL_PRODUCT_SYNC:
+        return this.showTableAllProductError();
+      case CUSTOM_PRODUCT_SYNC:
+        return this.showTableCustomProductError();
+      case CUSTOMERS_SYNC:
+        return this.showTableCustomerError();
+      case GENERAL_CONFIG_SYNC:
+        return this.showTableGeneralConfigError();
+      default:
+        break;
+    }
   };
 
   render() {
@@ -125,12 +194,12 @@ class ShowMessages extends Component {
           display: isShowLogsMessages ? 'block' : 'none'
         }}
       >
-        <div className={ModalStyle.modalContent}>
+        <div className={ModalStyle.modalContentLg}>
           <div className="modal-content" style={{ backgroundColor: '#F7F8FA' }}>
             <div className="modal-header">
               <h5 className="modal-title">{this.showTitleLog()}</h5>
             </div>
-            <div className="modal-body">{this.showLog()}</div>
+            <div className="modal-body">{this.showTableLog()}</div>
             <div className="modal-footer">
               <button
                 type="button"
@@ -153,7 +222,7 @@ function mapStateToProps(state) {
   return {
     isShowLogsMessages: state.mainRd.isShowLogsMessages,
     typeShowLogsMessages: state.mainRd.typeShowLogsMessages,
-    syncManager: state.authenRd.syncManager
+    syncDataManager: state.authenRd.syncDataManager
   };
 }
 function mapDispatchToProps(dispatch) {

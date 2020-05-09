@@ -637,7 +637,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
         const { payload } = action;
         draft.isShowLogsMessages = payload.status;
         draft.typeShowLogsMessages = payload.type;
-        return draft;
+        break;
       default:
     }
   });

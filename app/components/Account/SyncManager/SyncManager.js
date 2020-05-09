@@ -45,9 +45,8 @@ class SyncManager extends Component {
   };
 
   syncDataClientAction = type => {
-    const { syncDataClient, showLogsAction } = this.props;
+    const { syncDataClient } = this.props;
     syncDataClient(type);
-    showLogsAction({ status: false });
   };
 
   viewSelectedAction = payload => {
@@ -56,7 +55,7 @@ class SyncManager extends Component {
 
   renderLastTime = manager => {
     if (manager.update_at) {
-      return formatDistance(manager.update_at, new Date()) + ' ago';
+      return `${formatDistance(manager.update_at, Date.now())} ago`;
     }
     return 'not synced';
   };
@@ -196,7 +195,7 @@ class SyncManager extends Component {
                   this.actionToggleShowLogs(CUSTOMERS_SYNC);
                 }}
               >
-                <th scope="row">4</th>
+                <th scope="row">3</th>
                 <td>Customers sync</td>
                 <td>{this.renderLastTime(syncCustomer)}</td>
                 <td>{this.renderStatusSync(syncCustomer)}</td>
@@ -231,7 +230,7 @@ class SyncManager extends Component {
                   this.actionToggleShowLogs(GENERAL_CONFIG_SYNC);
                 }}
               >
-                <th scope="row">3</th>
+                <th scope="row">4</th>
                 <td>General config sync</td>
                 <td>{this.renderLastTime(syncConfig)}</td>
                 <td>{this.renderStatusSync(syncConfig)}</td>

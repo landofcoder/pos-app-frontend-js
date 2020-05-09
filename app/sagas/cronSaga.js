@@ -219,7 +219,12 @@ function* syncAllProduct() {
 }
 
 function* syncGeneralConfig() {
-  yield setupFetchingGeneralConfig();
+  try {
+    yield setupFetchingGeneralConfig();
+  } catch (e) {
+    // eslint-disable-next-line no-throw-literal
+    throw { message: e.message || 'Server not Response', data: e.data };
+  }
   // Add Sync manager success
   yield call(successLoadService, types.GENERAL_CONFIG_SYNC);
 }
@@ -268,7 +273,7 @@ function* getSyncStatusFromLocal() {
 }
 
 function* runSyncWithSettingTime() {
-  const nowTime = new Date();
+  const nowTime = Date.now();
   const payload = { payload: null };
   const syncTimeAllProduct = yield getLastUpdateTime(types.ALL_PRODUCT_SYNC);
   const syncTimeCustomProduct = yield getLastUpdateTime(

@@ -36,7 +36,7 @@ export async function createProductDb(product) {
 }
 export async function updateCustomProductById(customProduct) {
   // eslint-disable-next-line no-param-reassign
-  customProduct.update_at = new Date();
+  customProduct.update_at = Date.now();
   const tbl = db.table(table);
   try {
     await tbl.update(customProduct.id, customProduct);
