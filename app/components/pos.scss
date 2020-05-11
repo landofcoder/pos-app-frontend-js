@@ -1,7 +1,7 @@
 @import 'styles/variables';
 
 #wrapPostContainerId {
-  padding-top: #{$paddingTopPostContainerId};
+  //padding-top: #{$paddingTopPostContainerId};
   height: #{$wrapPostContainerHeight}; // 98 after calc
   padding-bottom: $paddingBottomPostContainerId;
 }
@@ -11,6 +11,27 @@
   max-height: 100%; // remove this for enabled all scroll
   min-height: 100%;
   padding-bottom: 50px;
+
+  .wrapTop {
+    padding-left: 100px;
+    border-bottom: 1px solid #dedede;
+    margin-bottom: 10px;
+
+    .wrapTopActions {
+      display: flex;
+      padding-top: 3px;
+
+      .wrapCategories {
+        display: block;
+      }
+
+      .wrapActions {
+        i {
+          font-size: 20px;
+        }
+      }
+    }
+  }
 }
 
 #wrapSearchLoading {
@@ -24,10 +45,10 @@
 .wrapFooterAction {
   position: fixed;
   width: 100%;
-  height: 130px;
   bottom: 0;
   margin-left: -15px;
   margin-bottom: 10px;
+  border-top: 1px solid #dedede;
 
   .wrapActionFirstLine {
     padding-right: 5px;
@@ -44,7 +65,8 @@
 
   .wrapFooterLine {
     border-top: 1px solid #D3D3D3;
-    display: flex;
+    //display: flex;
+    display: none;
     margin-top: 6px;
     padding-top: 6px;
 
@@ -78,7 +100,7 @@
 .wrapProductItem {
   .itemCart {
     width: 100%;
-    border: 0 !important;
+    //border: 0 !important;
   }
 
   .wrapProductImage {
