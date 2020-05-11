@@ -2,6 +2,8 @@
 logs
 *.log
 
+configs/env/config.local.js
+
 # Runtime data
 pids
 *.pid
