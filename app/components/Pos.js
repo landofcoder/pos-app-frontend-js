@@ -581,7 +581,7 @@ export default class Pos extends Component<Props, State> {
           <div className={`${Styles.wrapActionFirstLine} pt-2`}>
             {cartHoldList.map((item, index) => {
               return (
-                <div key={index} className="col-md-1 pr-1 pl-0">
+                <div key={index} className="col-md-1 pr-0 pl-0">
                   <button
                     type="button"
                     onClick={() => switchToHoldItemCart(index)}
@@ -592,7 +592,7 @@ export default class Pos extends Component<Props, State> {
                 </div>
               );
             })}
-            <div className="col-md-2 pr-1 pl-0">
+            <div className="col-md-2 pr-0 pl-0">
               <button
                 type="button"
                 onClick={holdAction}
