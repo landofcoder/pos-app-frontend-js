@@ -14,7 +14,7 @@ db.version(version).stores({
 });
 
 db.version(14).stores({
-  barcode_index: '++id, *product_id, *bar_code'
+  barcode_index: '++id, *product_id, *barcode'
 });
 
 db.version(14).stores({

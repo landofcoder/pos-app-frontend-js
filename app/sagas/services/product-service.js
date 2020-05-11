@@ -7,6 +7,7 @@ import {
   syncProducts
 } from '../../reducers/db/products';
 import { getCategoriesFromLocal } from '../../reducers/db/categories';
+import { syncBarCodeIndexToLocal } from '../../reducers/db/barcode_index';
 import { defaultPageSize, getOfflineMode } from '../../common/settings';
 import {
   QUERY_GET_PRODUCT_BY_CATEGORY,
@@ -346,5 +347,5 @@ export async function getProductBarCodeInventoryByPage(
 }
 
 export async function writeProductBarCodeToLocal(list) {
-  console.log('list:', list);
+  await syncBarCodeIndexToLocal(list);
 }
