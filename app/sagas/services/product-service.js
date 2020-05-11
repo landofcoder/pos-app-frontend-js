@@ -276,3 +276,75 @@ export async function syncCustomProductAPI(payload) {
     throw { message: e.message || 'Server not response', data: e.data };
   }
 }
+
+export async function fetchingAndWriteProductBarCodeInventory() {
+  const currentPage = 1;
+  const productBarCode = await getProductBarCodeInventoryByPage(currentPage);
+
+  // eslint-disable-next-line no-unused-vars,camelcase
+  const { total_page, list } = productBarCode;
+
+  // Sync product barcode inventory
+  await writeProductBarCodeToLocal(list);
+
+  // Init page array
+  const array = new Array(total_page).fill(0);
+
+  // eslint-disable-next-line camelcase
+  if (total_page > 1) {
+    array.forEach(async (item, index) => {
+      const productBarCode = await getProductBarCodeInventoryByPage(
+        index + 1,
+        true
+      );
+      console.log('list by page:', productBarCode);
+    });
+  }
+}
+
+export async function getProductBarCodeInventoryByPage(
+  payload,
+  skipFirstPage = false
+) {
+  const { currentPage } = payload;
+  if (skipFirstPage && currentPage === 1) {
+    return;
+  }
+  let data;
+  let response = {};
+  try {
+    response = await fetch(
+      `${apiGatewayPath}/product/sync-bar-code/100/${currentPage}`,
+      {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+          url: window.mainUrl,
+          platform: window.platform,
+          token: window.liveToken
+        },
+        redirect: 'follow',
+        referrer: 'no-referrer'
+      }
+    );
+    data = await response.json();
+  } catch (e) {
+    // eslint-disable-next-line no-throw-literal
+    throw { message: 'error connection to server', data: {} };
+  }
+  if (data.message) {
+    // eslint-disable-next-line no-throw-literal
+    throw { message: data.message, data };
+  }
+
+  if (data.length > 0) {
+    return data[0];
+  }
+  return null;
+}
+
+export async function writeProductBarCodeToLocal(list) {
+  console.log('list:', list);
+}

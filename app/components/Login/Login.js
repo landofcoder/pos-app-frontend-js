@@ -94,7 +94,7 @@ class Login extends Component<Props, State> {
               </div>
               <div className="form-group">
                 <button
-                  className="btn btn-lg btn-primary btn-block mt-1"
+                  className="btn btn-primary btn-block mt-1"
                   type="submit"
                 >
                   {loading ? <Loading /> : <>Sign In</>}
@@ -106,7 +106,7 @@ class Login extends Component<Props, State> {
                   className="btn btn-link"
                   onClick={this.backToWorkPlace}
                 >
-                  Back
+                  <span className="text-muted">Back</span>
                 </button>
               </div>
             </form>

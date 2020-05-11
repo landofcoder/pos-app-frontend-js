@@ -14,7 +14,8 @@ import {
   getProductByCategoryService,
   getProductBySkuFromScanner,
   searchProductService,
-  writeProductsToLocal
+  writeProductsToLocal,
+  fetchingAndWriteProductBarCodeInventory
 } from './services/product-service';
 import {
   searchCustomer,
@@ -824,6 +825,10 @@ function* writeCategoriesAndProductsToLocal() {
   yield call(writeProductsToLocal, allCategories);
 }
 
+function* writeProductBarCodeInventoryToLocal() {
+  yield call(fetchingAndWriteProductBarCodeInventory);
+}
+
 function* createCustomizeProduct(payload) {
   yield call(createProductDb, payload.payload);
   yield put({ type: types.ADD_TO_CART, payload: payload.payload });
@@ -924,7 +929,7 @@ function* noteOrderAction(payload) {
     yield call(noteOrderActionService, { message: payload.message, id });
     // get id and call service
   } else {
-    // set in localdb
+    // set in local db
   }
   yield put({ type: types.LOADING_NOTE_ORDER_ACTION, payload: false });
   yield put({ type: types.TOGGLE_ACTION_ORDER_ADD_NOTE, payload: false });
@@ -1120,14 +1125,17 @@ function* loginAction(payload) {
         type: typesAuthen.UPDATE_SWITCHING_MODE,
         payload: SYNC_SCREEN
       });
-      // Start setup step 1
+      // Step 1: Get general config
       yield setupFetchingGeneralConfig();
 
       // Auto connect scanner device
       autoConnectScannerDevice();
 
-      // Start setup step 2
-      yield setupSyncCategoriesAndProducts(); // added sync manager success
+      // Step 2: Start setup
+      // yield setupSyncCategoriesAndProducts(); // added sync manager success
+
+      // Step 3: Sync product barcode to local
+      yield writeProductBarCodeInventoryToLocal();
 
       // Get default data from local
       yield getDefaultDataFromLocal();
@@ -1143,10 +1151,10 @@ function* loginAction(payload) {
     }
 
     // Write logged info to local
-    yield writeLoggedInfoToLocal({
-      login: payload.payload,
-      token: resultLogin.data
-    });
+    // yield writeLoggedInfoToLocal({
+    //   login: payload.payload,
+    //   token: resultLogin.data
+    // });
     // Setup empty error message
     yield put({
       type: typesAuthen.ERROR_LOGIN,

@@ -23,7 +23,8 @@ const initialState = {
   flagSwitchModeCounter: 1, // When this flag counter up, render in App.js will re-render and backgroundLogin will re-check
   setup: {
     stateFetchingConfig: 0, // 0 = loading, 1 = succeed
-    stateSynchronizingCategoriesAndProducts: 0 // 0 = loading, 1 = succeed
+    stateSynchronizingCategoriesAndProducts: 0, // 0 = loading, 1 = succeed
+    stateSyncProductBarCodeInventory: 0
   },
   currentPosCommand: {
     query: {
