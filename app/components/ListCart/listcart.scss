@@ -7,10 +7,12 @@
   .item {
     padding: 0.75rem 1.25rem;
     background-color: #fff;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    border: 1px solid #dedede;
+    border-radius: 5px;
+    margin-bottom: 10px;
 
     &:last-child {
-      border-bottom: 0;
+      //border-bottom: 0;
     }
 
     .wrapLineProduct {
@@ -84,7 +86,7 @@
         font-weight: bold;
         border-radius: 50%;
         color: #444;
-        background: #E3E8EE;
+        background: #ffffff;
       }
     }
 

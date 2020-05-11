@@ -355,7 +355,7 @@ export default class Pos extends Component<Props, State> {
     const { mainWrapProductPanel } = this.state;
     // Check Redirect To Layout Account
 
-    const classWrapProductPanel = `pr-3 ${Styles.wrapProductPanel} row`;
+    const classWrapProductPanel = `pr-3 ${Styles.wrapProductPanel}`;
     // Enable checkout button or disable
     const disableCheckout = cartCurrent.data.length <= 0;
     const { isShowingProductOption } = productOption;
@@ -437,72 +437,79 @@ export default class Pos extends Component<Props, State> {
             <></>
           )}
           <div className="row" id={Styles.wrapPostContainerId}>
-            <div className="col-md-9">
+            <div className="col-md-9 pt-3 pl-0 pr-0">
               <div
                 className={classWrapProductPanel}
                 id={mainWrapProductPanel}
                 data-id="mainPosProduct"
                 onScroll={this.handleScroll}
               >
-                <div className="col-md-1">
-                  <Categories />
-                </div>
-                <div className="col-md-1">
-                  <div className="pt-2">
-                    <a
-                      onClick={() => {
-                        this.addCustomProduct();
-                      }}
-                    >
-                      <i
-                        style={{ color: '#888' }}
-                        className="fas fa-plus-circle fa-lg"
-                      ></i>
-                    </a>
-                  </div>
-                </div>
-                <div className="col-md-10 mb-0 pr-0">
-                  <div className="input-group flex-nowrap">
-                    <div className="input-group mb-3">
-                      <div className="input-group-prepend">
-                        <span className="input-group-text" id="basic-addon1">
-                          Search
-                        </span>
-                      </div>
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="sku, product name"
-                        onInput={this.searchTyping}
-                        aria-label="Username"
-                        aria-describedby="basic-addon1"
-                      />
-                      {isLoadingSearchHandle ? (
-                        <div id={Styles.wrapSearchLoading}>
-                          <div className="d-flex justify-content-center">
-                            <div
-                              className="spinner-border text-secondary spinner-border-sm"
-                              role="status"
-                            >
-                              <span className="sr-only">Loading...</span>
-                            </div>
-                          </div>
-                        </div>
-                      ) : (
-                        <></>
-                      )}
+                {/* Header action begin */}
+                <div className={`row ${Styles.wrapTop}`}>
+                  <div className={`${Styles.wrapTopActions} col-md-2`}>
+                    <div className={Styles.wrapCategories}>
+                      <Categories />
+                    </div>
+                    <div className={Styles.wrapActions}>
+                      <a
+                        href="#"
+                        onClick={() => {
+                          this.addCustomProduct();
+                        }}
+                      >
+                        <i
+                          style={{ color: '#888' }}
+                          className="fas fa-plus fa-lg"
+                        ></i>
+                      </a>
                     </div>
                   </div>
-                  {isShowHaveNoSearchResultFound ? (
-                    <>
-                      <p className="text-center text-muted">
-                        Have no item found
-                      </p>
-                    </>
-                  ) : (
-                    <></>
-                  )}
+                  <div className="col-md-5 mb-0 pr-0">
+                    <div className="input-group flex-nowrap">
+                      <div className="input-group input-group-sm mb-3">
+                        <div className="input-group-prepend">
+                          <span className="input-group-text" id="basic-addon1">
+                            Search
+                          </span>
+                        </div>
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="sku, product name"
+                          onInput={this.searchTyping}
+                          aria-label="Username"
+                          aria-describedby="basic-addon1"
+                        />
+                        {isLoadingSearchHandle ? (
+                          <div id={Styles.wrapSearchLoading}>
+                            <div className="d-flex justify-content-center">
+                              <div
+                                className="spinner-border text-secondary spinner-border-sm"
+                                role="status"
+                              >
+                                <span className="sr-only">Loading...</span>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <></>
+                        )}
+                      </div>
+                    </div>
+                    {isShowHaveNoSearchResultFound ? (
+                      <>
+                        <p className="text-center text-muted">
+                          Have no item found
+                        </p>
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                  </div>
+                  <div className="col-md-5"></div>
                 </div>
+                {/* Header action end */}
+
                 {mainProductListLoading ? (
                   <div className="col-md-12">
                     <div className="d-flex justify-content-center">
@@ -515,7 +522,9 @@ export default class Pos extends Component<Props, State> {
                     </div>
                   </div>
                 ) : (
-                  this.renderSwitchPanel(productList)
+                  <div className="row pl-2 pr-2">
+                    {this.renderSwitchPanel(productList)}
+                  </div>
                 )}
                 <div className="col-md-12">
                   {posCommandIsFetchingProduct ? (
@@ -533,25 +542,25 @@ export default class Pos extends Component<Props, State> {
                 </div>
               </div>
             </div>
-            <div className="col-md-3">
-              <div className={CommonStyle.wrapLevel1}>
+            <div className="col-md-3 pl-0 pr-0">
+              <div className={`${CommonStyle.wrapLevel1} pt-3`}>
                 <div className={CommonStyle.wrapCartPanelPosition}>
                   <ListCart />
                   <div className={CommonStyle.subTotalContainer}>
-                    <div className={CommonStyle.wrapSubTotal}>
+                    <div className={`${CommonStyle.wrapSubTotal} pr-3`}>
                       {this.renderDiscountAndTax()}
                       <div className={CommonStyle.wrapRow}>
                         <div
                           className={CommonStyle.wrapLabel}
                           data-grand-total="1"
                         >
-                          <span>Subtotal</span>
+                          <span>Subtotal:</span>
                         </div>
                         <div
                           className={CommonStyle.wrapValue}
                           data-grand-total="1"
                         >
-                          <span>{this.sumTotalPrice()}</span>
+                          <span className="font-weight-bold">{this.sumTotalPrice()}</span>
                         </div>
                       </div>
                     </div>
@@ -569,26 +578,26 @@ export default class Pos extends Component<Props, State> {
           }
           className={Styles.wrapFooterAction}
         >
-          <div className={Styles.wrapActionFirstLine}>
+          <div className={`${Styles.wrapActionFirstLine} pt-2`}>
             {cartHoldList.map((item, index) => {
               return (
-                <div key={index} className="col-md-1 pr-1 pl-0">
+                <div key={index} className="col-md-1 pr-0 pl-0">
                   <button
                     type="button"
                     onClick={() => switchToHoldItemCart(index)}
-                    className="btn btn-outline-dark btn-lg btn-block"
+                    className="btn btn-outline-dark btn-block"
                   >
                     {index + 1}
                   </button>
                 </div>
               );
             })}
-            <div className="col-md-2 pr-1 pl-0">
+            <div className="col-md-2 pr-0 pl-0">
               <button
                 type="button"
                 onClick={holdAction}
                 disabled={cartCurrent.data.length <= 0}
-                className="btn btn-outline-dark btn-lg btn-block"
+                className="btn btn-outline-dark btn-block"
               >
                 Hold
               </button>
@@ -598,7 +607,7 @@ export default class Pos extends Component<Props, State> {
             <div className="col-md-2 pl-0 pr-1">
               <button
                 type="button"
-                className="btn btn-outline-dark btn-lg btn-block"
+                className="btn btn-outline-dark btn-block"
                 onClick={this.handleRedirectToAccount}
               >
                 Account
@@ -608,7 +617,7 @@ export default class Pos extends Component<Props, State> {
               <button
                 type="button"
                 disabled={cartCurrent.data.length <= 0}
-                className="btn btn-outline-danger btn-lg btn-block"
+                className="btn btn-outline-danger btn-block"
                 onClick={emptyCart}
               >
                 Empty cart
@@ -622,7 +631,7 @@ export default class Pos extends Component<Props, State> {
               <button
                 type="button"
                 disabled={disableCheckout}
-                className="btn btn-primary btn-lg btn-block"
+                className="btn btn-primary btn-block"
                 onClick={startCashCheckoutAction}
               >
                 CASH
@@ -633,7 +642,7 @@ export default class Pos extends Component<Props, State> {
                 type="button"
                 disabled={disableCheckout}
                 onClick={this.showPaymentView}
-                className="btn btn-outline-primary btn-lg btn-block"
+                className="btn btn-outline-primary btn-block"
               >
                 Pay
               </button>

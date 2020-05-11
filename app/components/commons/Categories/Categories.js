@@ -105,6 +105,7 @@ class Categories extends Component<Props> {
               <li className="dropdown">
                 <a
                   href="#"
+                  className="menu-icon"
                   role="button"
                   data-toggle="dropdown"
                   aria-haspopup="true"

@@ -12,6 +12,10 @@
   display: block !important;
 }
 
+.mainmenu ul li a.menu-icon {
+  padding-top: 0;
+}
+
 .mainmenu .active a, .mainmenu .active a:focus, .mainmenu
 .active a:hover, .mainmenu li a:hover,
 .mainmenu li a:focus, .navbar-default .navbar-nav > .show > a,

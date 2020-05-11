@@ -195,7 +195,7 @@ class CartCustomer extends Component<Props> {
         )}
         <button
           type="button"
-          className="btn btn-outline-dark btn-lg btn-block"
+          className="btn btn-outline-dark btn-block"
           onClick={() => toggleModalCustomer(true)}
         >
           Customer {customer ? `(${customer.firstname})` : ''}
