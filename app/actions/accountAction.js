@@ -12,10 +12,9 @@ export function getOrderHistoryDetail(payload) {
   };
 }
 
-export function getOrderHistoryDetailOffline(payload) {
+export function closeToggleModalOrderDetail() {
   return {
-    type: type.GET_ORDER_HISTORY_DETAIL_OFFLINE_ACTION,
-    payload
+    type: type.CLOSE_TOGGLE_MODAL_DETAIL_ORDER
   };
 }
 

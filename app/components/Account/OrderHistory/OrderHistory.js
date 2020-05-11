@@ -1,19 +1,22 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
+import { formatDistance } from 'date-fns';
 import {
   getOrderHistory,
   toggleModalOrderDetail,
   toggleModalOrderDetailOffline,
   orderAction,
   toggleModalAddNote,
-  getOrderHistoryDetail
+  getOrderHistoryDetail,
+  closeToggleModalOrderDetail
 } from '../../../actions/accountAction';
 import DetailOrder from './DetailOrder/DetailOrder';
 import DetailOrderOffline from './DetailOrderOffline/DetailOrderOffline';
 import Styles from './order-history.scss';
 import { formatCurrencyCode } from '../../../common/settings';
 import StylesPos from '../../pos.scss';
+import modalStyle from '../../styles/modal.scss';
 import types from '../../../constants/routes';
 import { SYNC_ORDER_LIST } from '../../../constants/authen.json';
 import {
@@ -26,12 +29,12 @@ import {
 } from '../../../constants/root';
 import AddNoteOrder from './AddNoteOrder/AddNoteOrder';
 import { syncDataClient } from '../../../actions/homeAction';
-import { formatDistance } from 'date-fns';
 
 type Props = {
   getOrderHistory: () => void,
   isLoading: boolean,
-  orderHistory: [],
+  orderHistory: array,
+  orderHistoryDb: array,
   isOpenDetailOrder: boolean,
   isOpenDetailOrderOffline: boolean,
   isOpenAddNote: boolean,
@@ -43,7 +46,9 @@ type Props = {
   orderHistoryDetail: object,
   history: payload => void,
   toggleModalAddNote: payload => void,
-  syncDataClient: payload => void
+  syncDataClient: payload => void,
+  closeToggleModalOrderDetail: () => void,
+  isLoadingSyncAllOrder: boolean
 };
 
 class OrderHistory extends Component<Props> {
@@ -66,6 +71,11 @@ class OrderHistory extends Component<Props> {
       isShow: true,
       dataItem: dataOrderCheckoutOfflineItem
     });
+  };
+
+  closeOrderHistoryDetail = () => {
+    const { closeToggleModalOrderDetail } = this.props;
+    closeToggleModalOrderDetail();
   };
 
   selectDetailOrder = () => {
@@ -96,19 +106,31 @@ class OrderHistory extends Component<Props> {
     return 'not synced';
   };
 
+  renderStatusSync = manager => {
+    if (!manager.update_at) {
+      return (
+        <span className="badge badge-pill badge-secondary">not synced</span>
+      );
+    }
+    if (!manager.success) {
+      return <span className="badge badge-danger badge-pill">error</span>;
+    }
+    return <span className="badge badge-success badge-pill">success</span>;
+  };
+
   actionDetailOrder = () => {
     const { orderAction, history, isOpenAddNote } = this.props;
 
     // check have detail order to consider show action detail
     if (this.isShowingDetailOrder() || this.isShowingDetailOrderOffline()) {
       return (
-        <div>
+        <>
           {isOpenAddNote ? <AddNoteOrder /> : null}
-          <div>
-            <div className="col-md-2 pl-1 pr-0">
+          <div className="row flex-row-reverse mx-3">
+            <div className="col-md-3 pl-1 pr-0">
               <button
                 type="button"
-                className="btn btn-outline-primary btn-lg btn-block"
+                className="btn btn-outline-primary btn btn-block"
                 onClick={() => {
                   orderAction({
                     action: PAYMENT_ACTION_ORDER
@@ -118,10 +140,10 @@ class OrderHistory extends Component<Props> {
                 Take Payment
               </button>
             </div>
-            <div className="col-md-2 pl-1 pr-0">
+            <div className="col-md-3 pl-1 pr-0">
               <button
                 type="button"
-                className="btn btn-outline-primary btn-lg btn-block"
+                className="btn btn-outline-dark btn btn-block"
                 onClick={() => {
                   orderAction({
                     action: REORDER_ACTION_ORDER
@@ -132,10 +154,10 @@ class OrderHistory extends Component<Props> {
                 Reorder
               </button>
             </div>
-            <div className="col-md-2 pl-1 pr-0">
+            <div className="col-md-3 pl-1 pr-0">
               <button
                 type="button"
-                className="btn btn-outline-dark btn-lg btn-block"
+                className="btn btn-outline-dark btn btn-block"
                 onClick={() => {
                   orderAction({
                     action: PRINT_ACTION_ORDER
@@ -145,10 +167,10 @@ class OrderHistory extends Component<Props> {
                 Print
               </button>
             </div>
-            <div className="col-md-2 pl-1 pr-0">
+            <div className="col-md-3 pl-1 pr-0">
               <button
                 type="button"
-                className="btn btn-outline-dark btn-lg btn-block"
+                className="btn btn-outline-dark btn btn-block"
                 onClick={() => {
                   orderAction({
                     action: SHIPMENT_ACTION_ORDER
@@ -160,12 +182,12 @@ class OrderHistory extends Component<Props> {
             </div>
           </div>
           <div
-            className={`${StylesPos.wrapActionSecondLine} ${Styles.fixMarginRow} row`}
+            className={`${StylesPos.wrapActionSecondLine} row flex-row-reverse mx-3 py-1`}
           >
-            <div className="col-md-2 pl-1 pr-0">
+            <div className="col-md-3 pl-1 pr-0">
               <button
                 type="button"
-                className="btn btn-outline-primary btn-lg btn-block"
+                className="btn btn-outline-dark btn btn-block"
                 onClick={() => {
                   this.noteOrderAction();
                 }}
@@ -173,10 +195,10 @@ class OrderHistory extends Component<Props> {
                 Note
               </button>
             </div>
-            <div className="col-md-2 pl-1 pr-0">
+            <div className="col-md-3 pl-1 pr-0">
               <button
                 type="button"
-                className="btn btn-outline-danger btn-lg btn-block"
+                className="btn btn-outline-danger btn btn-block"
                 disabled={this.isShowingDetailOrder()}
                 onClick={() => {
                   orderAction({
@@ -184,13 +206,13 @@ class OrderHistory extends Component<Props> {
                   });
                 }}
               >
-                Cancel
+                Cancel Order
               </button>
             </div>
-            <div className="col-md-2 pl-1 pr-0">
+            <div className="col-md-3 pl-1 pr-0">
               <button
                 type="button"
-                className="btn btn-outline-dark btn-lg btn-block"
+                className="btn btn-outline-dark btn btn-block"
                 onClick={() => {
                   orderAction({
                     action: REFUND_ACTION_ORDER
@@ -201,7 +223,7 @@ class OrderHistory extends Component<Props> {
               </button>
             </div>
           </div>
-        </div>
+        </>
       );
     }
     return null;
@@ -218,7 +240,14 @@ class OrderHistory extends Component<Props> {
   };
 
   render() {
-    const { orderHistory, isLoading } = this.props;
+    const {
+      orderHistory,
+      orderHistoryDb,
+      isOpenDetailOrderOffline,
+      isOpenDetailOrder,
+      isLoading,
+      isLoadingSyncAllOrder
+    } = this.props;
     return (
       <>
         <div className="row">
@@ -230,81 +259,88 @@ class OrderHistory extends Component<Props> {
                 <th scope="col">Total</th>
                 <th scope="col">Last time sync</th>
                 <th scope="col">Orders status</th>
-                <th scope="col">Status</th>
+                <th scope="col">Sync status</th>
                 <th scope="col">Action</th>
               </tr>
             </thead>
             <tbody>
+              {/*order db*/}
+              {orderHistoryDb.map((item, index) => {
+                console.log(item);
+                if (item.local) {
+                  return (
+                    <tr
+                      key={index}
+                      style={{ cursor: 'pointer' }}
+                      onClick={() =>
+                        item.local
+                          ? this.getOrderHistoryDetailOffline(item)
+                          : this.getOrderHistoryDetail(item.sales_order_id)
+                      }
+                    >
+                      <th scope="row">{index + 1}</th>
+                      <td>--</td>
+                      <td>{formatCurrencyCode(item.grand_total)}</td>
+                      <td>{this.renderLastTime(item)}</td>
+                      <td>{item.success ? item.success : '--'}</td>
+                      <td>{this.renderStatusSync(item)}</td>
+                      <td>
+                        {isLoadingSyncAllOrder ? (
+                          <div>
+                            <div
+                              className="spinner-border spinner-border-sm"
+                              role="status"
+                            >
+                              <span className="sr-only">Loading...</span>
+                            </div>
+                            &nbsp;Syncing
+                          </div>
+                        ) : (
+                          <button
+                            type="button"
+                            className="btn btn-outline-secondary btn-sm"
+                            onClick={e => {
+                              e.stopPropagation();
+                              this.syncDataClientAction(
+                                SYNC_ORDER_LIST,
+                                item.id
+                              );
+                            }}
+                          >
+                            Sync now
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                }
+              })}
+              {/*order service api*/}
               {orderHistory.map((item, index) => {
                 console.log(item);
                 if (item.local) {
                   return (
                     <tr
                       key={index}
-                      // onClick={() =>
-                      //   item.local
-                      //     ? this.getOrderHistoryDetailOffline(item)
-                      //     : this.getOrderHistoryDetail(item.sales_order_id)
-                      // }
+                      style={{ cursor: 'pointer' }}
+                      onClick={() =>
+                        item.local
+                          ? this.getOrderHistoryDetailOffline(item)
+                          : this.getOrderHistoryDetail(item.sales_order_id)
+                      }
                     >
                       <th scope="row">{index + 1}</th>
-                      <td>{'--'}</td>
+                      <td>--</td>
                       <td>{formatCurrencyCode(item.grand_total)}</td>
                       <td>{this.renderLastTime(item)}</td>
                       <td>{item.success ? item.success : '--'}</td>
-                      <td>
-                        {item.local ? (
-                          <span className="badge badge-dark badge-pill">
-                            Not synced
-                          </span>
-                        ) : (
-                          <></>
-                        )}
-                      </td>
+                      <td>{this.renderStatusSync(item)}</td>
                       <td>
                         <button
                           type="button"
                           className="btn btn-outline-secondary btn-sm"
-                          onClick={() => {
-                            this.syncDataClientAction(SYNC_ORDER_LIST, item.id);
-                          }}
-                        >
-                          Sync now
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                } else {
-                  return (
-                    <tr
-                      key={index}
-                      // onClick={() =>
-                      //   item.local
-                      //     ? this.getOrderHistoryDetailOffline(item)
-                      //     : this.getOrderHistoryDetail(item.sales_order_id)
-                      // }
-                    >
-                      <th scope="row">{index + 1}</th>
-                      <td>
-                        {item.sales_order_id ? item.sales_order_id : '--'}
-                      </td>
-                      <td>{formatCurrencyCode(item.grand_total)}</td>
-                      <td>{item.created_at ? '5 minutes ago' : ''}</td>
-                      <td>{item.order_status ? item.order_status : '--'}</td>
-                      <td>
-                        {item.local ? (
-                          <span className="badge badge-dark badge-pill">
-                            Not synced
-                          </span>
-                        ) : (
-                          <></>
-                        )}
-                      </td>
-                      <td>
-                        <button
-                          type="button"
-                          className="btn btn-outline-secondary btn-sm"
-                          onClick={() => {
+                          onClick={e => {
+                            e.stopPropagation();
                             this.syncDataClientAction(SYNC_ORDER_LIST, item.id);
                           }}
                         >
@@ -317,8 +353,6 @@ class OrderHistory extends Component<Props> {
               })}
             </tbody>
           </table>
-        </div>
-        <div className="col-12">
           {isLoading ? (
             <div className="form-group">
               <div className="text-center">
@@ -331,9 +365,60 @@ class OrderHistory extends Component<Props> {
               </div>
             </div>
           ) : null}
-          <div className="col-9">
-            {this.selectDetailOrder()}
-            {this.actionDetailOrder()}
+        </div>
+        <div
+          className={modalStyle.modal}
+          style={{
+            display:
+              isOpenDetailOrderOffline || isOpenDetailOrder ? 'block' : 'none'
+          }}
+        >
+          <div className={modalStyle.modalContentLg}>
+            {/* {isLoading ? ( */}
+            {/*  <div className="form-group"> */}
+            {/*    <div className="text-center"> */}
+            {/*      <div */}
+            {/*        className="spinner-border spinner-border-sm text-secondary" */}
+            {/*        role="status" */}
+            {/*      > */}
+            {/*        <span className="sr-only">Loading...</span> */}
+            {/*      </div> */}
+            {/*    </div> */}
+            {/*  </div> */}
+            {/* ) : null} */}
+            {/* <div className="col-9"> */}
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Order receipt</h5>
+                <div className="col-md-2 p-0">
+                  <button
+                    onClick={() => {
+                      this.closeOrderHistoryDetail();
+                    }}
+                    type="button"
+                    className="btn btn-outline-dark btn-block"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+              <div className={`modal-body ${Styles.toogleContent}`}>
+                {this.selectDetailOrder()}
+              </div>
+              <div
+                className={Styles.buttonAction}
+                style={{
+                  width: '100%',
+                  position: 'absolute',
+                  bottom: '0',
+                  display: 'flex',
+                  flexDirection: 'column'
+                }}
+              >
+                {this.actionDetailOrder()}
+              </div>
+            </div>
+            {/* </div> */}
           </div>
         </div>
       </>
@@ -348,8 +433,10 @@ function mapStateToProps(state) {
     isOpenAddNote: state.mainRd.isOpenAddNote,
     isLoading: state.mainRd.isLoadingOrderHistory,
     orderHistory: state.mainRd.orderHistory,
+    orderHistoryDb: state.authenRd.syncDataManager.syncOrder,
     orderHistoryDetailOffline: state.mainRd.orderHistoryDetailOffline,
-    orderHistoryDetail: state.mainRd.orderHistoryDetail
+    orderHistoryDetail: state.mainRd.orderHistoryDetail,
+    isLoadingSyncAllOrder: state.authenRd.syncManager.loadingSyncOrder
   };
 }
 
@@ -363,7 +450,8 @@ function mapDispatchToProps(dispatch) {
     getOrderHistoryDetail: id => dispatch(getOrderHistoryDetail(id)),
     orderAction: payload => dispatch(orderAction(payload)),
     toggleModalAddNote: payload => dispatch(toggleModalAddNote(payload)),
-    syncDataClient: payload => dispatch(syncDataClient(payload))
+    syncDataClient: payload => dispatch(syncDataClient(payload)),
+    closeToggleModalOrderDetail: () => dispatch(closeToggleModalOrderDetail())
   };
 }
 

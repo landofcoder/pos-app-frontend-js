@@ -136,7 +136,7 @@ async function getProductsByCategory(payload) {
   } catch (e) {
     // thong bao loi khi sync product khong the lay duoc product
     // eslint-disable-next-line no-throw-literal
-    throw { message: 'All Product cannot sync from server', data: {} };
+    throw { message: e.message || 'Products cannot get from server', data: {} };
   }
 }
 

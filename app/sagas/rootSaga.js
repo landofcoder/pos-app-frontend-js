@@ -587,13 +587,11 @@ function* getOrderHistory() {
   const data = yield call(getOrderHistoryService);
 
   // Get orders from local db
-  const allOrders = yield getAllOrders();
   // console.log('all orders:', JSON.stringify(allOrders));
 
   yield put({
     type: types.RECEIVED_ORDER_HISTORY_ACTION,
     payload: data.items,
-    syncOrders: allOrders
   });
   yield put({ type: types.TURN_OFF_LOADING_ORDER_HISTORY });
 }

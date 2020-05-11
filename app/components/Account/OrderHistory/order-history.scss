@@ -1,0 +1,15 @@
+$heightToggleContent: 75vh;
+$heighttButtonAction: 95px;
+$heightToggleBodyContent: calc(
+  #{$heightToggleContent} - #{$heighttButtonAction} - 20px
+);
+.toogleContent {
+  height: $heightToggleContent;
+}
+.buttonAction {
+  height: $heighttButtonAction;
+}
+.toogleBodyContent {
+  overflow-y: scroll;
+  height: $heightToggleBodyContent;
+}

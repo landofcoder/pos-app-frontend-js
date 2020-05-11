@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ModalStyle from '../../../styles/modal.scss';
-import CollapseData from './CollapseData/CollapseData';
 import {
   ALL_PRODUCT_SYNC,
   CUSTOM_PRODUCT_SYNC,
@@ -64,7 +63,8 @@ class ShowMessages extends Component {
     if (!syncAllProductStatus.errors) {
       return (
         <div className="alert alert-success" role="alert">
-          All Product synced success
+          <i className="far fa-check-circle" /> &nbsp;
+          <span>All Product synced success</span>
         </div>
       );
     }
@@ -76,6 +76,8 @@ class ShowMessages extends Component {
     return (
       <>
         <div className="alert alert-danger" role="alert">
+          <i className="fas fa-exclamation-circle" style={{ color: '#666' }} />{' '}
+          &nbsp;
           {message}
         </div>
       </>
@@ -113,13 +115,19 @@ class ShowMessages extends Component {
     if (!syncConfigStatus.errors)
       return (
         <div className="alert alert-success" role="alert">
-          All Custom Product synced success!
+          <i className="far fa-check-circle" /> &nbsp;
+          <span>All Custom Product synced success!</span>
         </div>
       );
     return (
       <>
         {message ? (
           <div className="alert alert-danger" role="alert">
+            <i
+              className="fas fa-exclamation-circle"
+              style={{ color: '#666' }}
+            />{' '}
+            &nbsp;
             {message}
           </div>
         ) : null}
@@ -170,7 +178,8 @@ class ShowMessages extends Component {
     if (!syncCustomerStatus.errors)
       return (
         <div className="alert alert-success" role="alert">
-          All Customer synced success
+          <i className="far fa-check-circle" /> &nbsp;
+          <span>All Customer synced success</span>
         </div>
       );
     return (
@@ -179,6 +188,11 @@ class ShowMessages extends Component {
           <tr>
             {message ? (
               <div className="alert alert-danger" role="alert">
+                <i
+                  className="fas fa-exclamation-circle"
+                  style={{ color: '#666' }}
+                />{' '}
+                &nbsp;
                 {message}
               </div>
             ) : null}
@@ -201,7 +215,8 @@ class ShowMessages extends Component {
     if (!syncConfigStatus.errors) {
       return (
         <div className="alert alert-success" role="alert">
-          General Config synced success
+          <i className="far fa-check-circle" /> &nbsp;
+          <span>General Config synced success</span>
         </div>
       );
     }
@@ -213,6 +228,8 @@ class ShowMessages extends Component {
     return (
       <>
         <div className="alert alert-danger" role="alert">
+          <i className="fas fa-exclamation-circle" style={{ color: '#666' }} />{' '}
+          &nbsp;
           {message}
         </div>
       </>

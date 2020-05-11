@@ -11,11 +11,12 @@ const initialState = {
   appInfo: {},
   moduleInstalled: {},
   syncDataManager: {
-    syncCustomProduct: {},
-    syncCustomer: {},
-    syncOrder: {},
+    syncCustomProduct: [],
+    syncCustomer: [],
+    syncOrder: [],
     syncStatus: {},
-    syncConfig: {}
+    syncConfig: {},
+    syncAllProduct: []
   },
   syncManager: {
     syncCustomProduct: {},
