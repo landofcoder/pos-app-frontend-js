@@ -198,6 +198,9 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.SETUP_UPDATE_STATE_SYNCHRONIZING_CATEGORIES_AND_PRODUCTS:
         draft.setup.stateSynchronizingCategoriesAndProducts = action.payload;
         break;
+      case types.SETUP_UPDATE_STATE_SYNC_PRODUCT_BAR_CODE_INVENTORY:
+        draft.setup.stateSyncProductBarCodeInventory = action.payload;
+        break;
       case types.UPDATE_IS_SHOW_CARD_PAYMENT_MODAL:
         draft.checkout.isShowCardPaymentModal = action.payload;
         break;

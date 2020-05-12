@@ -253,7 +253,10 @@ export default class Pos extends Component<Props, State> {
                     </div>
                   </div>
                   <div className={Styles.wrapProductInfo}>
-                    <span className={Styles.wrapProductName}>{item.name}</span>
+                    <span
+                      className={Styles.wrapProductName}
+                      dangerouslySetInnerHTML={{ __html: item.name }}
+                    />
                     <span className={Styles.wrapSku}>{item.sku}</span>
                   </div>
                 </a>
@@ -560,7 +563,9 @@ export default class Pos extends Component<Props, State> {
                           className={CommonStyle.wrapValue}
                           data-grand-total="1"
                         >
-                          <span className="font-weight-bold">{this.sumTotalPrice()}</span>
+                          <span className="font-weight-bold">
+                            {this.sumTotalPrice()}
+                          </span>
                         </div>
                       </div>
                     </div>

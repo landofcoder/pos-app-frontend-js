@@ -1,4 +1,4 @@
-import { call } from 'redux-saga/effects';
+import { all, call } from 'redux-saga/effects';
 import {
   counterProduct,
   getProductBySku,
@@ -287,26 +287,33 @@ export function* fetchingAndWriteProductBarCodeInventory() {
 
   // eslint-disable-next-line no-unused-vars,camelcase
   const { total_page, list } = productBarCode;
-  console.log('type of:', typeof list);
-  console.log('any item: 3?', list[3]);
 
   // Sync product barcode inventory
   yield syncBarCodeIndexToLocal(list);
 
   // Init page array
-  // const array = new Array(total_page).fill(0);
+  const arrayPageListPaging = new Array(total_page).fill(0);
 
-  // // eslint-disable-next-line camelcase
-  // if (total_page > 1) {
-  //   array.forEach(async (item, index) => {
-  //     const productBarCode = await getProductBarCodeInventoryByPage(
-  //       index + 1,
-  //       true
-  //     );
-  //     const { total_page, list } = productBarCode;
-  //    await writeProductBarCodeToLocal();
-  //   });
-  // }
+  // eslint-disable-next-line camelcase
+  if (total_page > 1) {
+    yield all(
+      arrayPageListPaging.map((item, index) =>
+        call(fetchingNextPageBarCodeInventory, { index: index + 1 })
+      )
+    );
+  }
+}
+
+function* fetchingNextPageBarCodeInventory({ index }) {
+  const productBarCode = yield getProductBarCodeInventoryByPage(
+    index + 1,
+    true
+  );
+  if (productBarCode) {
+    const { list } = productBarCode;
+    // Sync product barcode inventory
+    yield syncBarCodeIndexToLocal(list);
+  }
 }
 
 export async function getProductBarCodeInventoryByPage(

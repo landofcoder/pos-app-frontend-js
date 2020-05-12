@@ -97,9 +97,11 @@ class Configuration extends Component<Props> {
           ) : (
             <>
               <div className="modal-header">
-                <h5 className="modal-title" id="exampleModalLongTitle">
-                  {parentProduct.name}
-                </h5>
+                <h5
+                  className="modal-title"
+                  id="exampleModalLongTitle"
+                  dangerouslySetInnerHTML={{ __html: parentProduct.name }}
+                />
                 <button
                   type="button"
                   className="close"
@@ -149,7 +151,7 @@ class Configuration extends Component<Props> {
                   <button
                     type="button"
                     onClick={() => updateIsShowingProductOption(false)}
-                    className="btn btn-outline-dark btn-lg btn-block"
+                    className="btn btn-outline-dark btn-block"
                   >
                     CANCEL
                   </button>
@@ -158,7 +160,7 @@ class Configuration extends Component<Props> {
                   <button
                     onClick={this.addToCart}
                     type="button"
-                    className="btn btn-primary btn-lg btn-block"
+                    className="btn btn-primary btn-block"
                   >
                     ADD TO CART
                   </button>

@@ -1,15 +1,15 @@
 import { all, call } from 'redux-saga/effects';
+import { format } from 'date-fns';
 import db from './db';
 
 const table = 'barcode_index';
+const barCodeIndexTbl = db.table(table);
 
 export function* syncBarCodeIndexToLocal(listProductBarCode) {
   if (listProductBarCode.length > 0) {
-    const barCodeIndexTbl = db.table(table);
     yield all(
       listProductBarCode.map(item => {
-        console.log('item:', item);
-        return call(syncBarCodeHandle, { item, barCodeIndexTbl });
+        return call(syncBarCodeHandle, { item });
       })
     );
   }
@@ -17,14 +17,16 @@ export function* syncBarCodeIndexToLocal(listProductBarCode) {
 
 function* syncBarCodeHandle(payload) {
   const { item } = payload;
-  const table = payload.barCodeIndexTbl;
-  yield;
-  const listItem = yield table.where({ barcode: item.barcode }).first();
-  if (listItem) {
+  const existsItem = yield barCodeIndexTbl
+    .where({ barcode: item.barcode })
+    .first();
+  if (existsItem) {
     // Update
-    console.log('update');
+    item.updated_at = format(new Date(), 'yyyy-MM-dd hh:m:s');
+    yield barCodeIndexTbl.update(existsItem, item);
   } else {
     // Create new
-    console.log('add new');
+    item.created_at = format(new Date(), 'yyyy-MM-dd hh:m:s');
+    yield barCodeIndexTbl.add(item);
   }
 }

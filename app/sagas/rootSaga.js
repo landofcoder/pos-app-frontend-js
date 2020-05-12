@@ -827,6 +827,12 @@ function* writeCategoriesAndProductsToLocal() {
 
 function* writeProductBarCodeInventoryToLocal() {
   yield fetchingAndWriteProductBarCodeInventory();
+
+  // Update done step 3
+  yield put({
+    type: types.SETUP_UPDATE_STATE_SYNC_PRODUCT_BAR_CODE_INVENTORY,
+    payload: 1
+  });
 }
 
 function* createCustomizeProduct(payload) {
@@ -1132,7 +1138,7 @@ function* loginAction(payload) {
       autoConnectScannerDevice();
 
       // Step 2: Start setup
-      // yield setupSyncCategoriesAndProducts(); // added sync manager success
+      yield setupSyncCategoriesAndProducts(); // added sync manager success
 
       // Step 3: Sync product barcode to local
       yield writeProductBarCodeInventoryToLocal();
@@ -1151,10 +1157,10 @@ function* loginAction(payload) {
     }
 
     // Write logged info to local
-    // yield writeLoggedInfoToLocal({
-    //   login: payload.payload,
-    //   token: resultLogin.data
-    // });
+    yield writeLoggedInfoToLocal({
+      login: payload.payload,
+      token: resultLogin.data
+    });
     // Setup empty error message
     yield put({
       type: typesAuthen.ERROR_LOGIN,

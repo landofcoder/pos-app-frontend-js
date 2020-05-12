@@ -106,16 +106,21 @@ class Grouped extends Component<Props> {
         ) : (
           <div>
             <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLongTitle">
-                {optionValue.name}
-              </h5>
+              <h5
+                className="modal-title"
+                id="exampleModalLongTitle"
+                dangerouslySetInnerHTML={{ __html: optionValue.name }}
+              ></h5>
             </div>
             <div className="modal-body">
               {optionValue.items.map((item, index) => {
                 return (
                   <div className="form-group" key={index}>
                     <div className="row">
-                      <div className="col-md-6">{item.product.name}</div>
+                      <div
+                        className="col-md-6"
+                        dangerouslySetInnerHTML={{ __html: item.product.name }}
+                      ></div>
                       <div className="col-md-6">
                         <input
                           className="form-control"
@@ -138,7 +143,7 @@ class Grouped extends Component<Props> {
                 <button
                   type="button"
                   onClick={() => updateIsShowingProductOption(false)}
-                  className="btn btn-outline-dark btn-lg btn-block"
+                  className="btn btn-outline-dark btn-block"
                 >
                   CANCEL
                 </button>
@@ -147,7 +152,7 @@ class Grouped extends Component<Props> {
                 <button
                   onClick={this.addToCart}
                   type="button"
-                  className="btn btn-primary btn-lg btn-block"
+                  className="btn btn-primary btn-block"
                 >
                   ADD TO CART
                 </button>
@@ -174,6 +179,7 @@ function mapDispatchToProps(dispatch) {
     addToCart: payload => dispatch(addToCart(payload))
   };
 }
+
 export default connect(
   mapStateToProps,
   mapDispatchToProps
