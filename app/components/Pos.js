@@ -89,8 +89,8 @@ export default class Pos extends Component<Props, State> {
 
     const { hidDevice } = this.props;
     // Uncomment below code for testing scanner device working
-    // const { getProductBySkuFromScanner } = this.props;
-    // getProductBySkuFromScanner('MH11');
+    const { getProductByBarcodeFromScanner } = this.props;
+    getProductByBarcodeFromScanner('7-1C4PASWT');
 
     const { isWaitingForListingDataEvent } = hidDevice.waitForConnect;
     if (isWaitingForListingDataEvent) {
@@ -120,7 +120,7 @@ export default class Pos extends Component<Props, State> {
 
   testAction = () => {
     const { getProductByBarcodeFromScanner } = this.props;
-    getProductByBarcodeFromScanner('24-MG04');
+    getProductByBarcodeFromScanner('7-1C4PASWT');
   };
 
   getFirstMedia = (item: Object) => {

@@ -918,11 +918,12 @@ function* changeScannerDeviceSaga() {
  */
 function* getProductByBarcodeFromScannerSaga(payload) {
   const productResult = yield getProductByBarcodeFromScanner(payload.payload);
-  // Pass this product to POS component
-  yield put({
-    type: types.TRIGGER_ADD_ITEM_TO_CART_FROM_SCANNER_BAR_CODE,
-    payload: productResult
-  });
+  console.log('product result:', productResult);
+  // // Pass this product to POS component
+  // yield put({
+  //   type: types.TRIGGER_ADD_ITEM_TO_CART_FROM_SCANNER_BAR_CODE,
+  //   payload: productResult
+  // });
 }
 
 function* noteOrderAction(payload) {

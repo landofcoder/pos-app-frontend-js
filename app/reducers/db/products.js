@@ -4,9 +4,10 @@ import { defaultPageSize } from '../../common/settings';
 
 const table = 'products';
 
-export async function getProductBySku(sku) {
+export async function getProductById(id) {
+  console.log('product id:', id);
   const productTbl = db.table(table);
-  const result = await productTbl.get({ sku });
+  const result = await productTbl.get({ id });
   return result;
 }
 

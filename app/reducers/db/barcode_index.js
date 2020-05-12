@@ -17,9 +17,7 @@ export function* syncBarCodeIndexToLocal(listProductBarCode) {
 
 function* syncBarCodeHandle(payload) {
   const { item } = payload;
-  const existsItem = yield barCodeIndexTbl
-    .where({ barcode: item.barcode })
-    .first();
+  const existsItem = yield barCodeIndexTbl.get({ barcode: item.barcode });
   if (existsItem) {
     // Update
     item.updated_at = format(new Date(), 'yyyy-MM-dd hh:m:s');
@@ -29,4 +27,9 @@ function* syncBarCodeHandle(payload) {
     item.created_at = format(new Date(), 'yyyy-MM-dd hh:m:s');
     yield barCodeIndexTbl.add(item);
   }
+}
+
+export async function getProductByBarcode(barcode) {
+  const result = await barCodeIndexTbl.get({ barcode });
+  return result;
 }

@@ -1,13 +1,16 @@
 import { all, call } from 'redux-saga/effects';
 import {
   counterProduct,
-  getProductBySku,
   getProductsByCategoryLocal,
   searchProductsLocal,
-  syncProducts
+  syncProducts,
+  getProductById
 } from '../../reducers/db/products';
 import { getCategoriesFromLocal } from '../../reducers/db/categories';
-import { syncBarCodeIndexToLocal } from '../../reducers/db/barcode_index';
+import {
+  syncBarCodeIndexToLocal,
+  getProductByBarcode
+} from '../../reducers/db/barcode_index';
 import { defaultPageSize } from '../../common/settings';
 import {
   QUERY_GET_PRODUCT_BY_CATEGORY,
@@ -39,8 +42,16 @@ export function* searchProductService(payload) {
  * @returns void
  */
 export function* getProductByBarcodeFromScanner(payload) {
-  const sku = payload;
-  return yield getProductBySku(sku);
+  const barcode = payload;
+  const productResult = yield getProductByBarcode(barcode);
+  // Get product by id
+  if (productResult) {
+    const productId = productResult.product_id;
+    return yield getProductById(productId);
+  } else {
+    // Show error not found product by barcode
+    console.error('not fond product by barcode');
+  }
 }
 
 /**
