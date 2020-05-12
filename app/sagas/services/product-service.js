@@ -278,36 +278,41 @@ export async function syncCustomProductAPI(payload) {
   }
 }
 
-export async function fetchingAndWriteProductBarCodeInventory() {
+export function* fetchingAndWriteProductBarCodeInventory() {
   const currentPage = 1;
-  const productBarCode = await getProductBarCodeInventoryByPage(currentPage);
+  const productBarCode = yield getProductBarCodeInventoryByPage(
+    currentPage,
+    false
+  );
 
   // eslint-disable-next-line no-unused-vars,camelcase
   const { total_page, list } = productBarCode;
+  console.log('type of:', typeof list);
+  console.log('any item: 3?', list[3]);
 
   // Sync product barcode inventory
-  await writeProductBarCodeToLocal(list);
+  yield syncBarCodeIndexToLocal(list);
 
   // Init page array
-  const array = new Array(total_page).fill(0);
+  // const array = new Array(total_page).fill(0);
 
-  // eslint-disable-next-line camelcase
-  if (total_page > 1) {
-    array.forEach(async (item, index) => {
-      const productBarCode = await getProductBarCodeInventoryByPage(
-        index + 1,
-        true
-      );
-      console.log('list by page:', productBarCode);
-    });
-  }
+  // // eslint-disable-next-line camelcase
+  // if (total_page > 1) {
+  //   array.forEach(async (item, index) => {
+  //     const productBarCode = await getProductBarCodeInventoryByPage(
+  //       index + 1,
+  //       true
+  //     );
+  //     const { total_page, list } = productBarCode;
+  //    await writeProductBarCodeToLocal();
+  //   });
+  // }
 }
 
 export async function getProductBarCodeInventoryByPage(
-  payload,
+  currentPage,
   skipFirstPage = false
 ) {
-  const { currentPage } = payload;
   if (skipFirstPage && currentPage === 1) {
     return;
   }
@@ -344,8 +349,4 @@ export async function getProductBarCodeInventoryByPage(
     return data[0];
   }
   return null;
-}
-
-export async function writeProductBarCodeToLocal(list) {
-  await syncBarCodeIndexToLocal(list);
 }

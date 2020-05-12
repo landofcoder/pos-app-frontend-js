@@ -826,7 +826,7 @@ function* writeCategoriesAndProductsToLocal() {
 }
 
 function* writeProductBarCodeInventoryToLocal() {
-  yield call(fetchingAndWriteProductBarCodeInventory);
+  yield fetchingAndWriteProductBarCodeInventory();
 }
 
 function* createCustomizeProduct(payload) {
