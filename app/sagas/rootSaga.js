@@ -12,7 +12,7 @@ import { stripeMakePayment } from './services/payments/stripe-payment';
 import { authorizeMakePayment } from './services/payments/authorize-payment';
 import {
   getProductByCategoryService,
-  getProductBySkuFromScanner,
+  getProductByBarcodeFromScanner,
   searchProductService,
   writeProductsToLocal,
   fetchingAndWriteProductBarCodeInventory
@@ -916,8 +916,8 @@ function* changeScannerDeviceSaga() {
  * @param payload
  * @returns void
  */
-function* getProductBySkuFromScannerSaga(payload) {
-  const productResult = yield getProductBySkuFromScanner(payload.payload);
+function* getProductByBarcodeFromScannerSaga(payload) {
+  const productResult = yield getProductByBarcodeFromScanner(payload.payload);
   // Pass this product to POS component
   yield put({
     type: types.TRIGGER_ADD_ITEM_TO_CART_FROM_SCANNER_BAR_CODE,
@@ -1248,8 +1248,8 @@ function* rootSaga() {
   yield takeEvery(types.CONNECT_TO_SCANNER_DEVICE, connectToScannerDeviceSaga);
   yield takeEvery(types.CHANGE_SCANNER_DEVICE, changeScannerDeviceSaga);
   yield takeEvery(
-    types.GET_PRODUCT_BY_SKU_FROM_SCANNER,
-    getProductBySkuFromScannerSaga
+    types.GET_PRODUCT_BY_BARCODE_FROM_SCANNER,
+    getProductByBarcodeFromScannerSaga
   );
 
   yield takeEvery(types.ORDER_ACTION, orderAction);

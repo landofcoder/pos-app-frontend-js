@@ -8,7 +8,7 @@ import {
 } from '../../reducers/db/products';
 import { getCategoriesFromLocal } from '../../reducers/db/categories';
 import { syncBarCodeIndexToLocal } from '../../reducers/db/barcode_index';
-import { defaultPageSize, getOfflineMode } from '../../common/settings';
+import { defaultPageSize } from '../../common/settings';
 import {
   QUERY_GET_PRODUCT_BY_CATEGORY,
   QUERY_SEARCH_PRODUCT
@@ -38,17 +38,9 @@ export function* searchProductService(payload) {
  * @param payload
  * @returns void
  */
-export function* getProductBySkuFromScanner(payload) {
-  const offlineMode = yield getOfflineMode();
+export function* getProductByBarcodeFromScanner(payload) {
   const sku = payload;
-  if (offlineMode === 1) {
-    return yield getProductBySku(sku);
-  }
-  // Call filter by sku
-  const result = yield querySearchProduct(sku, 1);
-  if (result && result.length > 0) {
-    return result[0];
-  }
+  return yield getProductBySku(sku);
 }
 
 /**

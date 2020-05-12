@@ -35,7 +35,7 @@ type Props = {
   mainPanelType: string,
   checkoutAction: () => void,
   getDetailProductConfigurable: (payload: Object) => void,
-  getProductBySkuFromScanner: (payload: string) => void,
+  getProductByBarcodeFromScanner: (payload: string) => void,
   getDetailProductBundle: (payload: Object) => void,
   getDetailProductGrouped: (payload: Object) => void,
   loadProductPaging: () => void,
@@ -80,8 +80,7 @@ export default class Pos extends Component<Props, State> {
     this.state = {
       delayTimer: {},
       typeId: '',
-      mainWrapProductPanel: 'main-wrap-product-panel',
-      frameId: null
+      mainWrapProductPanel: 'main-wrap-product-panel'
     };
   }
 
@@ -96,8 +95,8 @@ export default class Pos extends Component<Props, State> {
     const { isWaitingForListingDataEvent } = hidDevice.waitForConnect;
     if (isWaitingForListingDataEvent) {
       window.scanner.on('data', data => {
-        const { getProductBySkuFromScanner } = this.props;
-        getProductBySkuFromScanner(data);
+        const { getProductByBarcodeFromScanner } = this.props;
+        getProductByBarcodeFromScanner(data);
       });
       window.scanner.startScanning();
     }
@@ -120,8 +119,8 @@ export default class Pos extends Component<Props, State> {
   };
 
   testAction = () => {
-    const { getProductBySkuFromScanner } = this.props;
-    getProductBySkuFromScanner('24-MG04');
+    const { getProductByBarcodeFromScanner } = this.props;
+    getProductByBarcodeFromScanner('24-MG04');
   };
 
   getFirstMedia = (item: Object) => {
