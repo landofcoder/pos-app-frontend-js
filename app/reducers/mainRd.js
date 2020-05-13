@@ -433,6 +433,10 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.orderHistoryDetailOffline = action.payload.dataItem;
         draft.orderHistoryDetail = {};
         break;
+      case types.CLOSE_TOGGLE_MODAL_DETAIL_ORDER:
+        draft.isOpenDetailOrderOffline = false;
+        draft.isOpenDetailOrder = false;
+        break;
       case types.TOGGLE_MODAL_CALCULATOR:
         draft.isOpenCalculator = action.payload;
         break;
@@ -440,12 +444,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.isLoadingOrderHistory = false;
         break;
       case types.RECEIVED_ORDER_HISTORY_ACTION:
-        // Add status not sync to syncOrders array
-        action.syncOrders.forEach(function(element) {
-          element.from_local_db = 1;
-        });
-        const mainArray = action.payload.concat(action.syncOrders);
-        draft.orderHistory = mainArray;
+        draft.orderHistory = action.payload;
         break;
       case types.RECEIVED_ORDER_HISTORY_DETAIL_ACTION:
         draft.orderHistoryDetail = action.payload;
@@ -462,13 +461,18 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.checkout.orderPreparingCheckout.totals.amount_discount_code = 0;
         break;
       case types.SET_GIFT_CARD_ACTION:
-        let initListGC = Array.from(draft.checkout.orderPreparingCheckout.totals.listGiftCard_code);
+        let initListGC = Array.from(
+          draft.checkout.orderPreparingCheckout.totals.listGiftCard_code
+        );
         // condition for multi GC
-        const indexGC = action.payload.id !== undefined? action.payload.id:initListGC.length;
-        const replace = indexGC === initListGC.length?false: true;
+        const indexGC =
+          action.payload.id !== undefined
+            ? action.payload.id
+            : initListGC.length;
+        const replace = indexGC === initListGC.length ? false : true;
         console.log(replace);
-        if(action.payload.code.length > 0){
-          initListGC.splice(indexGC,replace?1:0,action.payload.code);
+        if (action.payload.code.length > 0) {
+          initListGC.splice(indexGC, replace ? 1 : 0, action.payload.code);
           draft.checkout.orderPreparingCheckout.totals.listGiftCard_code = initListGC;
         }
         break;
@@ -637,7 +641,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
         const { payload } = action;
         draft.isShowLogsMessages = payload.status;
         draft.typeShowLogsMessages = payload.type;
-        return draft;
+        break;
       default:
     }
   });

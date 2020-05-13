@@ -55,7 +55,7 @@ export async function createService(service) {
 
 export async function updateService(service) {
   const newService = service;
-  newService.update_at = new Date();
+  newService.update_at = Date.now();
   const tbl = db.table(table);
   await tbl.update(newService.id, newService);
 }
@@ -65,10 +65,12 @@ export async function failedLoadService(service) {
 
   if (serviceData) {
     serviceData.errors = service.errors;
+    serviceData.message = service.message;
     await updateService(serviceData);
   } else {
     serviceData = initService(service.name);
     serviceData.errors = service.errors;
+    serviceData.message = service.message;
     await createService(serviceData);
   }
 }

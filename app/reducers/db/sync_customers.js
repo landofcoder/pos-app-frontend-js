@@ -5,6 +5,7 @@ const table = 'sync_customers';
 export async function signUpCustomerDb(customers) {
   const { payload } = customers;
   const data = {
+    id: Date.now(),
     email: payload.customer.email,
     first_name: payload.customer.firstname,
     synced: false,
@@ -14,8 +15,8 @@ export async function signUpCustomerDb(customers) {
   const customer = await signUpCustomerTbl.get({
     email: payload.customer.email
   });
-  if (!customer || !customer.sync) {
-    await signUpCustomerTbl.update(customer.id, data);
+  if (!customer || !customer.length()) {
+    await signUpCustomerTbl.add(data);
     return true;
   }
   return false;
@@ -38,7 +39,7 @@ export async function deleteCustomerById(id) {
 
 export async function updateCustomerById(customer) {
   // eslint-disable-next-line no-param-reassign
-  customer.udpate_at = new Date();
+  customer.udpate_at = Date.now();
   const tbl = db.table(table);
   try {
     await tbl.update(customer.id, customer);

@@ -4,7 +4,8 @@ import {
   getProductBySku,
   getProductsByCategoryLocal,
   searchProductsLocal,
-  syncProducts
+  syncProducts,
+  getAllProduct
 } from '../../reducers/db/products';
 import { getCategoriesFromLocal } from '../../reducers/db/categories';
 import { defaultPageSize, getOfflineMode } from '../../common/settings';
@@ -135,7 +136,7 @@ async function getProductsByCategory(payload) {
   } catch (e) {
     // thong bao loi khi sync product khong the lay duoc product
     // eslint-disable-next-line no-throw-literal
-    throw { message: 'All Product cannot sync from server', data: {} };
+    throw { message: e.message || 'Products cannot get from server', data: {} };
   }
 }
 
@@ -241,6 +242,10 @@ export async function findAllParentCategories(
   }
 
   return parentIds;
+}
+
+export async function getAllProductFromLocal() {
+  return getAllProduct();
 }
 
 export async function syncCustomProductAPI(payload) {

@@ -36,7 +36,7 @@ export async function getOrderById(id) {
 
 export async function updateOrderById(order) {
   // eslint-disable-next-line no-param-reassign
-  order.update_at = new Date();
+  order.update_at = Date.now();
   const tbl = db.table(table);
   await tbl.update(order.id, order);
 }

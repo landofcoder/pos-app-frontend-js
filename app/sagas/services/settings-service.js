@@ -9,6 +9,7 @@ import {
 const shopInfoKey = 'shop_info_config';
 const cashierInfoLabel = 'cashier_info';
 const connectedScannerDeviceLabel = 'connected_scanner_device';
+const generalConfig = 'general_config';
 
 export async function writeShopInfoToLocal(shopInfo) {
   const shopInfoDb = await getByKey(shopInfoKey);
@@ -67,4 +68,21 @@ export async function getConnectedDeviceSettings() {
 
 export async function removeScannerDeviceConnected() {
   await deleteByKeyV2(connectedScannerDeviceLabel);
+}
+
+export async function getGeneralConfigFromLocal() {
+  return getByKey(generalConfig);
+}
+
+export async function updateGeneralConfigFromLocal(payload) {
+  try {
+    const generalConfigDb = await getGeneralConfigFromLocal();
+    generalConfigDb[0].value.message = payload.message;
+    generalConfigDb[0].value.actionErrors = payload.data;
+    await updateById(generalConfigDb[0].id, generalConfigDb[0].value);
+    return true;
+  } catch (e) {
+    console.log('failed to update general config');
+    return false;
+  }
 }

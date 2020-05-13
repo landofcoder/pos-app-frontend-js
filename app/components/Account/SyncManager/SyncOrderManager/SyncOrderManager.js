@@ -42,7 +42,7 @@ class SyncOrderManager extends Component {
                       <td>{item.created_at}</td>
                       <td>
                         {item.local ? (
-                          <p className="text-muted">Not synced</p>
+                          <p className="text-muted">not synced</p>
                         ) : (
                           <></>
                         )}

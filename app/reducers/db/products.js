@@ -132,3 +132,13 @@ export async function getProductsByCategoryLocal({ categoryId, currentPage }) {
   }
   return data;
 }
+
+export async function getAllProduct() {
+  const tbl = db.table(table);
+  try {
+    const products = await tbl.toArray();
+    return products;
+  } catch (e) {
+    return [];
+  }
+}

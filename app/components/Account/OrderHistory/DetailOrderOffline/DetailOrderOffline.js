@@ -2,11 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Styles from '../DetailOrder/detail-order.scss';
 import { formatCurrencyCode } from '../../../../common/settings';
-import {
-  getOrderHistoryDetailOffline,
-  toggleModalOrderDetailOffline,
-  actionLoadingOrderDetailOffline
-} from '../../../../actions/accountAction';
+import { actionLoadingOrderDetailOffline } from '../../../../actions/accountAction';
 
 type Props = {
   orderHistoryDetail: {},
@@ -15,7 +11,6 @@ type Props = {
   isLoadingOrderHistoryDetail: boolean,
   // getOrderHistoryDetail: id => void,
   orderHistoryDetail: {},
-  toggleModalOrderDetail: payload => void,
   actionLoadingOrderDetailOffline: payload => void
 };
 class DetailOrderOffline extends Component {
@@ -46,10 +41,10 @@ class DetailOrderOffline extends Component {
       isLoadingOrderHistoryDetail,
       orderHistoryDetail
     } = this.props;
-
+    console.log(orderHistoryDetail);
     return (
       <>
-        <div className={`${Styles.wrapDetailOrder}`}>
+        <div>
           <div
             style={{
               display: isOpenDetailOrder ? 'block' : 'none'
@@ -110,7 +105,7 @@ class DetailOrderOffline extends Component {
                           </div>
                         </div>
                         <div>
-                          {orderHistoryDetail.items.cartCurrentResult.map(
+                          {orderHistoryDetail.items.cartCurrentResult.data.map(
                             (item, index) => (
                               <div
                                 key={index}
@@ -165,7 +160,7 @@ class DetailOrderOffline extends Component {
                               {this.formatSymbolMoney(
                                 orderHistoryDetail.items
                                   .orderPreparingCheckoutResult.totals
-                                  .discount_amount
+                                  .base_discount_amount
                               )}
                             </span>
                           </div>
@@ -191,7 +186,7 @@ class DetailOrderOffline extends Component {
                           </div>
                           <div className="d-flex justify-content-between pr-1">
                             <span>Status</span>
-                            <span>Not synced</span>
+                            <span>not synced</span>
                             {}
                           </div>
                         </div>
@@ -348,9 +343,6 @@ function mapStateToProps(state) {
 }
 function mapDispatchToProps(dispatch) {
   return {
-    getOrderHistoryDetail: id => dispatch(getOrderHistoryDetailOffline(id)),
-    toggleModalOrderDetail: payload =>
-      dispatch(toggleModalOrderDetailOffline(payload)),
     actionLoadingOrderDetailOffline: payload =>
       dispatch(actionLoadingOrderDetailOffline(payload))
   };
