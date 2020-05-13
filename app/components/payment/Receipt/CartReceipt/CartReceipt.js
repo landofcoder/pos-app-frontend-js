@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { deleteItemCart } from '../../../../actions/homeAction';
-import style from './cartReceipt.scss';
 import { formatCurrencyCode } from '../../../../common/settings';
 
 type Props = {
@@ -23,7 +22,7 @@ class CartReceipt extends Component<Props> {
     } = this.props;
 
     /* eslint-disable-next-line */
-    const {
+    let {
       subtotal_display,
       subtotal_label,
       discount_display,
@@ -32,15 +31,21 @@ class CartReceipt extends Component<Props> {
       cashier_label,
       grand_total_label
     } = customReceipt;
+    // hien tai nen show tat ca cac thong tin cua receipt
+
+    subtotal_display = 1;
+    subtotal_label = 'Subtotal';
+    discount_display = 1;
+    discount_label = 'Discount';
+    cashier_name_display = 1;
+    cashier_label = 'Cashier';
+    grand_total_label = 'Grand total';
 
     const { totals } = orderPreparingCheckout;
-    console.log('totals:', totals);
     const subTotal = formatCurrencyCode(totals.base_subtotal);
     const discountAmount = formatCurrencyCode(totals.base_discount_amount);
     const shippingAmount = formatCurrencyCode(totals.base_shipping_amount);
     const grandTotal = formatCurrencyCode(totals.grand_total);
-    // eslint-disable-next-line no-lone-blocks
-    /*eslint-disable*/
 
     return (
       <div>
@@ -98,17 +103,25 @@ class CartReceipt extends Component<Props> {
           <tbody>
             <tr>
               <td style={{ textAlign: 'left' }}>Shipping & Handling</td>
-              <td style={{ textAlign: 'right',fontWeight: "bold" }}>{shippingAmount}</td>
+              <td style={{ textAlign: 'right', fontWeight: 'bold' }}>
+                {shippingAmount}
+              </td>
             </tr>
             {Number(discount_display) === 1 ? (
               <tr>
                 <td style={{ textAlign: 'left' }}>{discount_label}</td>
-                <td style={{ textAlign: 'right',fontWeight: "bold" }}>{discountAmount}</td>
+                <td style={{ textAlign: 'right', fontWeight: 'bold' }}>
+                  {discountAmount}
+                </td>
               </tr>
             ) : null}
             <tr>
-              <td style={{ textAlign: 'left' }}>{grand_total_label}</td>
-              <td style={{ textAlign: 'right', fontWeight: "bold" }}>{grandTotal}</td>
+              <td style={{ textAlign: 'left', fontWeight: 'bold' }}>
+                Grand total
+              </td>
+              <td style={{ textAlign: 'right', fontWeight: 'bold' }}>
+                {grandTotal}
+              </td>
             </tr>
           </tbody>
         </table>
@@ -118,7 +131,9 @@ class CartReceipt extends Component<Props> {
               <tbody>
                 <tr>
                   <td style={{ textAlign: 'left' }}>{cashier_label}&nbsp;</td>
-                  <td style={{ textAlign: 'right' }}>{cashierInfo.first_name}</td>
+                  <td style={{ textAlign: 'right' }}>
+                    {`${cashierInfo.first_name} ${cashierInfo.last_name}`}
+                  </td>
                 </tr>
               </tbody>
             </table>
