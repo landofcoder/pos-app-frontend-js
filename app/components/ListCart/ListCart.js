@@ -105,10 +105,13 @@ class ListCart extends Component<Props> {
                   </div>
                   <div className={styles.wrapInfo}>
                     <div
+                      role="presentation"
                       className={styles.wrapProductName}
                       onClick={() => this.editCartItem(item, index)}
                     >
-                      <span>{item.name}</span>
+                      <span
+                        dangerouslySetInnerHTML={{ __html: item.name }}
+                      ></span>
                     </div>
                     <div className={styles.wrapPriceInfo}>
                       <div className={styles.wrapSku}>{item.sku}</div>

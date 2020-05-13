@@ -1,14 +1,18 @@
-import { call } from 'redux-saga/effects';
+import { all, call } from 'redux-saga/effects';
 import {
   counterProduct,
-  getProductBySku,
   getProductsByCategoryLocal,
   searchProductsLocal,
   syncProducts,
+  getProductsByProductIdLocal,
   getAllProduct
 } from '../../reducers/db/products';
 import { getCategoriesFromLocal } from '../../reducers/db/categories';
-import { defaultPageSize, getOfflineMode } from '../../common/settings';
+import {
+  syncBarCodeIndexToLocal,
+  getProductByBarcode
+} from '../../reducers/db/barcode_index';
+import { defaultPageSize } from '../../common/settings';
 import {
   QUERY_GET_PRODUCT_BY_CATEGORY,
   QUERY_SEARCH_PRODUCT
@@ -38,17 +42,21 @@ export function* searchProductService(payload) {
  * @param payload
  * @returns void
  */
-export function* getProductBySkuFromScanner(payload) {
-  const offlineMode = yield getOfflineMode();
-  const sku = payload;
-  if (offlineMode === 1) {
-    return yield getProductBySku(sku);
+export function* getProductByBarcodeFromScanner(payload) {
+  const barcode = payload;
+  const productResult = yield getProductByBarcode(barcode);
+  // Get product by id
+  if (productResult) {
+    const { qty } = productResult;
+    const productId = productResult.product_id;
+    const product = yield getProductsByProductIdLocal(productId);
+    return {
+      product,
+      qty
+    };
   }
-  // Call filter by sku
-  const result = yield querySearchProduct(sku, 1);
-  if (result && result.length > 0) {
-    return result[0];
-  }
+  // Show error not found product by barcode
+  console.error('not fond product by barcode');
 }
 
 /**
@@ -280,4 +288,84 @@ export async function syncCustomProductAPI(payload) {
     // eslint-disable-next-line no-throw-literal
     throw { message: e.message || 'Server not response', data: e.data };
   }
+}
+
+export function* fetchingAndWriteProductBarCodeInventory() {
+  const currentPage = 1;
+  const productBarCode = yield getProductBarCodeInventoryByPage(
+    currentPage,
+    false
+  );
+
+  // eslint-disable-next-line no-unused-vars,camelcase
+  const { total_page, list } = productBarCode;
+
+  // Sync product barcode inventory
+  yield syncBarCodeIndexToLocal(list);
+
+  // Init page array
+  const arrayPageListPaging = new Array(total_page).fill(0);
+
+  // eslint-disable-next-line camelcase
+  if (total_page > 1) {
+    yield all(
+      arrayPageListPaging.map((item, index) =>
+        call(fetchingNextPageBarCodeInventory, { index: index + 1 })
+      )
+    );
+  }
+}
+
+function* fetchingNextPageBarCodeInventory({ index }) {
+  const productBarCode = yield getProductBarCodeInventoryByPage(
+    index + 1,
+    true
+  );
+  if (productBarCode) {
+    const { list } = productBarCode;
+    // Sync product barcode inventory
+    yield syncBarCodeIndexToLocal(list);
+  }
+}
+
+export async function getProductBarCodeInventoryByPage(
+  currentPage,
+  skipFirstPage = false
+) {
+  if (skipFirstPage && currentPage === 1) {
+    return;
+  }
+  let data;
+  let response = {};
+  try {
+    response = await fetch(
+      `${apiGatewayPath}/product/sync-bar-code/100/${currentPage}`,
+      {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+          url: window.mainUrl,
+          platform: window.platform,
+          token: window.liveToken
+        },
+        redirect: 'follow',
+        referrer: 'no-referrer'
+      }
+    );
+    data = await response.json();
+  } catch (e) {
+    // eslint-disable-next-line no-throw-literal
+    throw { message: 'error connection to server', data: {} };
+  }
+  if (data.message) {
+    // eslint-disable-next-line no-throw-literal
+    throw { message: data.message, data };
+  }
+
+  if (data.length > 0) {
+    return data[0];
+  }
+  return null;
 }

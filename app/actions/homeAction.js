@@ -320,9 +320,9 @@ export function changeScannerDevice() {
   };
 }
 
-export function getProductBySkuFromScanner(payload) {
+export function getProductByBarcodeFromScanner(payload) {
   return {
-    type: types.GET_PRODUCT_BY_SKU_FROM_SCANNER,
+    type: types.GET_PRODUCT_BY_BARCODE_FROM_SCANNER,
     payload
   };
 }

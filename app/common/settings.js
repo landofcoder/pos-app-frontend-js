@@ -1,14 +1,5 @@
 import LocaleCurrency from 'locale-currency';
 
-/**
- * Get offline mode
- * @returns number
- */
-export function getOfflineMode() {
-  console.info('offline mode:', window.enableOffline);
-  return window.enableOffline;
-}
-
 export function getGraphqlPath() {
   return `${window.mainUrl}graphql`;
 }

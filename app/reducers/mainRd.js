@@ -23,7 +23,8 @@ const initialState = {
   flagSwitchModeCounter: 1, // When this flag counter up, render in App.js will re-render and backgroundLogin will re-check
   setup: {
     stateFetchingConfig: 0, // 0 = loading, 1 = succeed
-    stateSynchronizingCategoriesAndProducts: 0 // 0 = loading, 1 = succeed
+    stateSynchronizingCategoriesAndProducts: 0, // 0 = loading, 1 = succeed
+    stateSyncProductBarCodeInventory: 0
   },
   currentPosCommand: {
     query: {
@@ -196,6 +197,9 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.SETUP_UPDATE_STATE_SYNCHRONIZING_CATEGORIES_AND_PRODUCTS:
         draft.setup.stateSynchronizingCategoriesAndProducts = action.payload;
+        break;
+      case types.SETUP_UPDATE_STATE_SYNC_PRODUCT_BAR_CODE_INVENTORY:
+        draft.setup.stateSyncProductBarCodeInventory = action.payload;
         break;
       case types.UPDATE_IS_SHOW_CARD_PAYMENT_MODAL:
         draft.checkout.isShowCardPaymentModal = action.payload;
@@ -577,7 +581,9 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.TRIGGER_ADD_ITEM_TO_CART_FROM_SCANNER_BAR_CODE:
         draft.hidDevice.triggerProduct.status = true;
-        draft.hidDevice.triggerProduct.product = action.payload;
+        draft.hidDevice.triggerProduct.product = action.payload.product;
+        // Update qty from barcode_index, if merchant installed multiple barcode module, qty number may have other value
+        draft.hidDevice.triggerProduct.product.pos_qty = action.payload.qty;
         break;
       case types.UPDATE_TRIGGER_SCANNER_PRODUCT_TO_FALSE:
         draft.hidDevice.triggerProduct.status = false;

@@ -108,9 +108,11 @@ class Bundle extends Component<Props> {
         ) : (
           <div>
             <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLongTitle">
-                {optionValue.name}
-              </h5>
+              <h5
+                className="modal-title"
+                id="exampleModalLongTitle"
+                dangerouslySetInnerHTML={{ __html: optionValue.name }}
+              ></h5>
               <button
                 type="button"
                 className="close"
@@ -134,7 +136,7 @@ class Bundle extends Component<Props> {
                 <button
                   type="button"
                   onClick={() => updateIsShowingProductOption(false)}
-                  className="btn btn-outline-dark btn-lg btn-block"
+                  className="btn btn-outline-dark btn-block"
                 >
                   CANCEL
                 </button>
@@ -143,7 +145,7 @@ class Bundle extends Component<Props> {
                 <button
                   onClick={this.addToCart}
                   type="button"
-                  className="btn btn-primary btn-lg btn-block"
+                  className="btn btn-primary btn-block"
                 >
                   ADD TO CART
                 </button>

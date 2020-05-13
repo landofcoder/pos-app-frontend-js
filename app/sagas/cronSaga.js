@@ -45,36 +45,36 @@ const cashierInfo = state => state.authenRd.cashierInfo;
 const detailOutlet = state => state.mainRd.generalConfig.detail_outlet;
 
 function* getSyncDataFromLocal() {
-  // get all product in local db
-  const payloadResultAllProduct = yield getAllProductFromLocal();
-  yield put({
-    type: types.RECEIVED_DATA_SYNC_ALL_PRODUCT,
-    payload: payloadResultAllProduct
-  });
-  // get all order in local db
-  const payloadResultOrder = yield getAllOrders();
-  yield put({
-    type: types.RECEIVED_DATA_SYNC_ORDER,
-    payload: payloadResultOrder
-  });
-  // get all custom product in local db
-  const payloadResultCustomProduct = yield getAllTblCustomProduct();
-  yield put({
-    type: types.RECEIVED_DATA_SYNC_CUSTOM_PRODUCT,
-    payload: payloadResultCustomProduct
-  });
-  // get all customer in local db
-  const payloadResultCustomer = yield getAllTbl();
-  yield put({
-    type: types.RECEIVED_DATA_SYNC_CUSTOMER,
-    payload: payloadResultCustomer
-  });
-  // get all config in local db
-  const payloadResultGeneralConfig = yield getGeneralConfigFromLocal();
-  yield put({
-    type: types.RECEIVED_DATA_SYNC_GENERAL_CONFIG,
-    payload: payloadResultGeneralConfig
-  });
+  // // get all product in local db
+  // const payloadResultAllProduct = yield getAllProductFromLocal();
+  // yield put({
+  //   type: types.RECEIVED_DATA_SYNC_ALL_PRODUCT,
+  //   payload: payloadResultAllProduct
+  // });
+  // // get all order in local db
+  // const payloadResultOrder = yield getAllOrders();
+  // yield put({
+  //   type: types.RECEIVED_DATA_SYNC_ORDER,
+  //   payload: payloadResultOrder
+  // });
+  // // get all custom product in local db
+  // const payloadResultCustomProduct = yield getAllTblCustomProduct();
+  // yield put({
+  //   type: types.RECEIVED_DATA_SYNC_CUSTOM_PRODUCT,
+  //   payload: payloadResultCustomProduct
+  // });
+  // // get all customer in local db
+  // const payloadResultCustomer = yield getAllTbl();
+  // yield put({
+  //   type: types.RECEIVED_DATA_SYNC_CUSTOMER,
+  //   payload: payloadResultCustomer
+  // });
+  // // get all config in local db
+  // const payloadResultGeneralConfig = yield getGeneralConfigFromLocal();
+  // yield put({
+  //   type: types.RECEIVED_DATA_SYNC_GENERAL_CONFIG,
+  //   payload: payloadResultGeneralConfig
+  // });
 }
 const syncManager = state => state.authenRd.syncManager;
 

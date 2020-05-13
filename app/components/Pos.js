@@ -35,7 +35,7 @@ type Props = {
   mainPanelType: string,
   checkoutAction: () => void,
   getDetailProductConfigurable: (payload: Object) => void,
-  getProductBySkuFromScanner: (payload: string) => void,
+  getProductByBarcodeFromScanner: (payload: string) => void,
   getDetailProductBundle: (payload: Object) => void,
   getDetailProductGrouped: (payload: Object) => void,
   loadProductPaging: () => void,
@@ -80,8 +80,7 @@ export default class Pos extends Component<Props, State> {
     this.state = {
       delayTimer: {},
       typeId: '',
-      mainWrapProductPanel: 'main-wrap-product-panel',
-      frameId: null
+      mainWrapProductPanel: 'main-wrap-product-panel'
     };
   }
 
@@ -90,14 +89,14 @@ export default class Pos extends Component<Props, State> {
 
     const { hidDevice } = this.props;
     // Uncomment below code for testing scanner device working
-    // const { getProductBySkuFromScanner } = this.props;
-    // getProductBySkuFromScanner('MH11');
+    // const { getProductByBarcodeFromScanner } = this.props;
+    // getProductByBarcodeFromScanner('1-NgJAq6C1');
 
     const { isWaitingForListingDataEvent } = hidDevice.waitForConnect;
     if (isWaitingForListingDataEvent) {
       window.scanner.on('data', data => {
-        const { getProductBySkuFromScanner } = this.props;
-        getProductBySkuFromScanner(data);
+        const { getProductByBarcodeFromScanner } = this.props;
+        getProductByBarcodeFromScanner(data);
       });
       window.scanner.startScanning();
     }
@@ -120,8 +119,8 @@ export default class Pos extends Component<Props, State> {
   };
 
   testAction = () => {
-    const { getProductBySkuFromScanner } = this.props;
-    getProductBySkuFromScanner('24-MG04');
+    const { getProductByBarcodeFromScanner } = this.props;
+    getProductByBarcodeFromScanner('7-1C4PASWT');
   };
 
   getFirstMedia = (item: Object) => {
@@ -253,7 +252,10 @@ export default class Pos extends Component<Props, State> {
                     </div>
                   </div>
                   <div className={Styles.wrapProductInfo}>
-                    <span className={Styles.wrapProductName}>{item.name}</span>
+                    <span
+                      className={Styles.wrapProductName}
+                      dangerouslySetInnerHTML={{ __html: item.name }}
+                    />
                     <span className={Styles.wrapSku}>{item.sku}</span>
                   </div>
                 </a>
@@ -560,7 +562,9 @@ export default class Pos extends Component<Props, State> {
                           className={CommonStyle.wrapValue}
                           data-grand-total="1"
                         >
-                          <span className="font-weight-bold">{this.sumTotalPrice()}</span>
+                          <span className="font-weight-bold">
+                            {this.sumTotalPrice()}
+                          </span>
                         </div>
                       </div>
                     </div>
