@@ -4,13 +4,6 @@ import { defaultPageSize } from '../../common/settings';
 
 const table = 'products';
 
-export async function getProductById(id) {
-  console.log('product id:', id);
-  const productTbl = db.table(table);
-  const result = await productTbl.get({ id });
-  return result;
-}
-
 /**
  * Sync products to local database
  * @param productList
@@ -69,8 +62,23 @@ async function makeCategoriesArraySimple(product) {
       categoryIds.push(item.id);
     });
     productAssign.categoryIds = categoryIds;
+    productAssign.productIds = await getAllVariantsProduct(product);
   }
   return productAssign;
+}
+
+async function getAllVariantsProduct(product) {
+  const listVariants = product.variants;
+  if (listVariants && listVariants.length > 0) {
+    const listProductIds = [];
+    listVariants.forEach(item => {
+      const objProduct = item.product;
+      const productId = objProduct.id;
+      listProductIds.push(productId);
+    });
+    return listProductIds;
+  }
+  return [];
 }
 
 export async function getProductBySkuLocal(payload) {
@@ -130,6 +138,27 @@ export async function getProductsByCategoryLocal({ categoryId, currentPage }) {
   } catch (e) {
     console.log('error:', e);
     data = [];
+  }
+  return data;
+}
+
+export async function getProductsByProductIdLocal(productId) {
+  let data;
+  try {
+    // Search product id from parent object first
+    data = await db.table(table).get({ id: Number(productId) });
+    // If not found then search in productIds
+    if (!data) {
+      data = await db
+        .table(table)
+        .where('productIds')
+        .anyOf(Number(productId))
+        .offset(0)
+        .limit(defaultPageSize)
+        .first();
+    }
+  } catch (e) {
+    console.log('error:', e);
   }
   return data;
 }

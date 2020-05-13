@@ -4,7 +4,7 @@ import {
   getProductsByCategoryLocal,
   searchProductsLocal,
   syncProducts,
-  getProductById
+  getProductsByProductIdLocal
 } from '../../reducers/db/products';
 import { getCategoriesFromLocal } from '../../reducers/db/categories';
 import {
@@ -46,12 +46,16 @@ export function* getProductByBarcodeFromScanner(payload) {
   const productResult = yield getProductByBarcode(barcode);
   // Get product by id
   if (productResult) {
+    const { qty } = productResult;
     const productId = productResult.product_id;
-    return yield getProductById(productId);
-  } else {
-    // Show error not found product by barcode
-    console.error('not fond product by barcode');
+    const product = yield getProductsByProductIdLocal(productId);
+    return {
+      product,
+      qty
+    };
   }
+  // Show error not found product by barcode
+  console.error('not fond product by barcode');
 }
 
 /**
@@ -181,7 +185,7 @@ async function syncAllProductsByCategory(categoryId) {
     categoryId,
     currentPage
   });
-  // Let all parents categories of this category
+  // Get all parents categories of this category
   const defaultCategory = await getCategoriesFromLocal();
   const allParentIds = await findAllParentCategories(
     defaultCategory.children_data,

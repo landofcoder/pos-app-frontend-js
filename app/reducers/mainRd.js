@@ -577,7 +577,9 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.TRIGGER_ADD_ITEM_TO_CART_FROM_SCANNER_BAR_CODE:
         draft.hidDevice.triggerProduct.status = true;
-        draft.hidDevice.triggerProduct.product = action.payload;
+        draft.hidDevice.triggerProduct.product = action.payload.product;
+        // Update qty from barcode_index, if merchant installed multiple barcode module, qty number may have other value
+        draft.hidDevice.triggerProduct.product.pos_qty = action.payload.qty;
         break;
       case types.UPDATE_TRIGGER_SCANNER_PRODUCT_TO_FALSE:
         draft.hidDevice.triggerProduct.status = false;

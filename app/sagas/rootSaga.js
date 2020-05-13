@@ -468,15 +468,10 @@ function* getSearchCustomer(payload) {
  */
 function* addToCart(payloadParams) {
   const payload = payloadParams;
-  if (payloadParams.payload.qty) {
-  }
-  console.log('add to cart');
   // Find sky if exits sku, then increment qty
   const listCartCurrent = yield select(cartCurrent);
   const cartCustomerResult = yield select(customer);
-  console.log(payload);
   const product = Object.assign({}, payload.payload);
-  console.log(product);
   const productSku = product.sku;
   const typeId = product.type_id;
   // Add default pos_qty, if it does not exists
@@ -918,12 +913,13 @@ function* changeScannerDeviceSaga() {
  */
 function* getProductByBarcodeFromScannerSaga(payload) {
   const productResult = yield getProductByBarcodeFromScanner(payload.payload);
-  console.log('product result:', productResult);
-  // // Pass this product to POS component
-  // yield put({
-  //   type: types.TRIGGER_ADD_ITEM_TO_CART_FROM_SCANNER_BAR_CODE,
-  //   payload: productResult
-  // });
+  if (productResult) {
+    // Pass this product to POS component
+    yield put({
+      type: types.TRIGGER_ADD_ITEM_TO_CART_FROM_SCANNER_BAR_CODE,
+      payload: { product: productResult.product, qty: productResult.qty }
+    });
+  }
 }
 
 function* noteOrderAction(payload) {

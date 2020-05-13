@@ -89,8 +89,8 @@ export default class Pos extends Component<Props, State> {
 
     const { hidDevice } = this.props;
     // Uncomment below code for testing scanner device working
-    const { getProductByBarcodeFromScanner } = this.props;
-    getProductByBarcodeFromScanner('7-1C4PASWT');
+    // const { getProductByBarcodeFromScanner } = this.props;
+    // getProductByBarcodeFromScanner('1-NgJAq6C1');
 
     const { isWaitingForListingDataEvent } = hidDevice.waitForConnect;
     if (isWaitingForListingDataEvent) {

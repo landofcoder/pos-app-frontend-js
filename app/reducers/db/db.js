@@ -3,7 +3,7 @@ import Dexie from 'dexie';
 const db = new Dexie('Lof_Pos');
 const version = 12;
 db.version(version).stores({
-  products: '++id, *categoryIds, *sku, *name',
+  products: '++id, *categoryIds, *productIds, *sku, *name',
   categories: '++id',
   customers: '++id',
   sync_customers: '++id,*email,*first_name',
