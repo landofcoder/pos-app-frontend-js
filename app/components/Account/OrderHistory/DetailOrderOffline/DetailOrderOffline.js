@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Styles from '../DetailOrder/detail-order.scss';
+import StylesOrder from '../order-history.scss';
 import { formatCurrencyCode } from '../../../../common/settings';
 import { actionLoadingOrderDetailOffline } from '../../../../actions/accountAction';
-
 type Props = {
   orderHistoryDetail: {},
   // order_id_history: number,
@@ -44,7 +44,7 @@ class DetailOrderOffline extends Component {
     console.log(orderHistoryDetail);
     return (
       <>
-        <div>
+        <div className={`${StylesOrder.toogleBodyContent}`}>
           <div
             style={{
               display: isOpenDetailOrder ? 'block' : 'none'

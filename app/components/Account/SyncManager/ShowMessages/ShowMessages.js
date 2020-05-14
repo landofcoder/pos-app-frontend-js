@@ -222,9 +222,7 @@ class ShowMessages extends Component {
     }
     // get message
     console.log(syncConfig);
-    const message =
-      syncConfig[0].value.message || 'Some reason sync config error !!!';
-
+    const message = syncConfig.message || 'Some reason sync config error !!!';
     return (
       <>
         <div className="alert alert-danger" role="alert">
