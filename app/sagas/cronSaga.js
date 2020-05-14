@@ -402,7 +402,6 @@ function* checkTimeToAcceptSyncing(typeID) {
     generalConfigSync = timeConfig.general_config_sync || 5;
     allOrdersSync = timeConfig.all_orders_sync || 5;
   } catch (e) {
-    console.log('Cannot get time config');
   }
   const syncManagerResult = yield select(syncManager);
 
