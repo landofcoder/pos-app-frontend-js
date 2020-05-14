@@ -401,8 +401,7 @@ function* checkTimeToAcceptSyncing(typeID) {
     allCustomersSync = timeConfig.all_customers_sync || 5;
     generalConfigSync = timeConfig.general_config_sync || 5;
     allOrdersSync = timeConfig.all_orders_sync || 5;
-  } catch (e) {
-  }
+  } catch (e) {}
   const syncManagerResult = yield select(syncManager);
 
   const {
@@ -462,6 +461,9 @@ function* checkTimeToAcceptSyncing(typeID) {
 }
 
 function* cronJobs() {
+  const isLogged = yield readLoggedDbFromLocal();
+  if (!isLogged) return null;
+
   // get token
   yield reloadTokenFromLoggedLocalDB();
   // run sync action
