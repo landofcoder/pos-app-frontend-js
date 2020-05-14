@@ -295,6 +295,12 @@ export function syncDataClient(payload) {
   };
 }
 
+export function cronJobs() {
+  return {
+    type: types.CRON_JOBS_ACTION,
+  };
+}
+
 export function createCustomizeProduct(payload) {
   return {
     type: types.CREATE_CUSTOMIZE_PRODUCT,

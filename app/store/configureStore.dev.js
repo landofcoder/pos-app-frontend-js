@@ -28,9 +28,9 @@ const configureStore = (initialState?: counterStateType) => {
   // Logging Middleware
   const logger = createLogger({
     level: 'info',
-    collapsed: true,
+    collapsed: true
     // this line to disable log to console when dispatch SYNC_CLIENT_DATA action
-    predicate: (getState, action) => action.type !== SYNC_CLIENT_DATA
+    // predicate: (getState, action) => action.type !== SYNC_CLIENT_DATA
   });
 
   // Skip redux logs in console during the tests

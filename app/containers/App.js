@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import {
   updateIsInternetConnected,
-  syncDataClient
+  cronJobs
 } from '../actions/homeAction';
 import { checkLoginBackground } from '../actions/authenAction';
 import Login from '../components/Login/Login';
@@ -23,7 +23,7 @@ type Props = {
   checkLoginBackground: () => void,
   switchingMode: string,
   flagSwitchModeCounter: number,
-  syncDataClient: () => void
+  cronJobs: () => void
 };
 
 class App extends React.Component<Props> {
@@ -35,7 +35,7 @@ class App extends React.Component<Props> {
   };
 
   componentDidMount() {
-    const { updateIsInternetConnected, syncDataClient } = this.props;
+    const { updateIsInternetConnected, cronJobs } = this.props;
 
     // Listen online and offline mode
     window.addEventListener('online', this.alertOnlineStatus);
@@ -47,7 +47,7 @@ class App extends React.Component<Props> {
     const loopStep = 1000;
     // Start cron
 
-    const frameId = startLoop(syncDataClient, loopStep);
+    const frameId = startLoop(cronJobs, loopStep);
     this.setState({ frameId });
   }
 
@@ -122,7 +122,7 @@ function mapDispatchToProps(dispatch) {
     updateIsInternetConnected: payload =>
       dispatch(updateIsInternetConnected(payload)),
     checkLoginBackground: () => dispatch(checkLoginBackground()),
-    syncDataClient: () => dispatch(syncDataClient())
+    cronJobs: () => dispatch(cronJobs())
   };
 }
 
