@@ -41,7 +41,6 @@ class DetailOrderOffline extends Component {
       isLoadingOrderHistoryDetail,
       orderHistoryDetail
     } = this.props;
-    console.log(orderHistoryDetail);
     return (
       <>
         <div>

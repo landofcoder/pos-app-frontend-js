@@ -69,7 +69,6 @@ class ShowMessages extends Component {
       );
     }
     // get message
-    console.log(syncAllProductStatus);
     const message =
       syncAllProductStatus.message || 'Some reason sync all product error !!!';
 
@@ -92,23 +91,21 @@ class ShowMessages extends Component {
     const tableCustomProduct = syncCustomProduct.map((item, index) => {
       if (item.status) return null;
       return (
-        <>
-          <tr
-            key={index}
-            onClick={() => {
-              this.actionCollapseData(index);
-            }}
-          >
-            <th scope="row">{index + 1}</th>
-            <td>{item.name}</td>
-            <td>{item.price.regularPrice.amount.value}</td>
-            <td>{item.pos_qty}</td>
-            <td>{new Date(item.id).toDateString()}</td>
-            <td>
-              <span className="badge badge-pill badge-danger">error</span>
-            </td>
-          </tr>
-        </>
+        <tr
+          key={index}
+          onClick={() => {
+            this.actionCollapseData(index);
+          }}
+        >
+          <th scope="row">{index + 1}</th>
+          <td>{item.name}</td>
+          <td>{item.price.regularPrice.amount.value}</td>
+          <td>{item.pos_qty}</td>
+          <td>{new Date(item.id).toDateString()}</td>
+          <td>
+            <span className="badge badge-pill badge-danger">error</span>
+          </td>
+        </tr>
       );
     });
 
@@ -209,8 +206,7 @@ class ShowMessages extends Component {
   };
 
   showTableGeneralConfigError = () => {
-    const { syncDataManager, syncManager } = this.props;
-    const { syncConfig } = syncDataManager;
+    const { syncManager } = this.props;
     const syncConfigStatus = syncManager.syncConfig;
     if (!syncConfigStatus.errors) {
       return (
@@ -221,9 +217,8 @@ class ShowMessages extends Component {
       );
     }
     // get message
-    console.log(syncConfig);
     const message =
-      syncConfig[0].value.message || 'Some reason sync config error !!!';
+      syncConfigStatus.message || 'Some reason sync config error !!!';
 
     return (
       <>

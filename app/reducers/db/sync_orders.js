@@ -26,12 +26,13 @@ export async function deleteOrderById(id) {
 
 export async function getOrderById(id) {
   const tbl = db.table(table);
-  const result = await tbl.where({ id }).toArray();
-  if (result) {
-    console.log(result);
-    return result[0];
+  let data = [];
+  try {
+    data = await tbl.where({ id }).toArray();
+  } catch (e) {
+    console.log('Cannot get order by id');
   }
-  return null;
+  return data;
 }
 
 export async function updateOrderById(order) {

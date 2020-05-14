@@ -111,9 +111,8 @@ export async function loginService(payload) {
     const data = await response.json();
     return data;
   } catch (e) {
-    console.log(e);
+    return { message: 'Cannot connect server, please try again.' };
   }
-  return { message: 'Cannot connect server, please try again.' };
 }
 
 export async function setMainUrlKey(payload) {
@@ -164,6 +163,6 @@ export async function getAppInfoService(payload) {
     }
     return data;
   } catch (e) {
-    return { message: e.message || 'Server not response'};
+    return { message: e.message || 'Error connection to server' };
   }
 }

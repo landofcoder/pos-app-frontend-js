@@ -1,24 +1,27 @@
 import { takeEvery, put, select, call } from 'redux-saga/effects';
 import * as types from '../constants/authen';
 import {
-  SYNC_CLIENT_DATA,
-  GET_SYNC_DATA_FROM_LOCAL,
+  SYNC_DATA_TYPE,
   GET_SYNC_STATUS_FROM_LOCAL,
   CRON_JOBS_ACTION,
-  SYNC_DATA_TYPE_WITH_ID
+  GET_SYNC_ALL_CUSTOM_PRODUCT_ERROR_FROM_LOCAL,
+  GET_SYNC_ALL_CUSTOMER_ERROR_FROM_LOCAL,
+  GET_SYNC_ALL_ORDER_ERROR_FROM_LOCAL
 } from '../constants/root.json';
 import {
   getGeneralConfigFromLocal,
   updateGeneralConfigFromLocal
 } from './services/settings-service';
+import { syncCustomProductAPI } from './services/product-service';
 import {
-  syncCustomProductAPI,
-  getAllProductFromLocal
-} from './services/product-service';
-import { getAllTbl, updateCustomerById } from '../reducers/db/sync_customers';
+  getAllTblCustomer,
+  getCustomerByName,
+  updateCustomerById
+} from '../reducers/db/sync_customers';
 import {
   getAllTblCustomProduct,
-  updateCustomProductById
+  updateCustomProductById,
+  getCustomProductById
 } from '../reducers/db/sync_custom_product';
 import {
   getAllOrders,
@@ -31,7 +34,6 @@ import {
   getServiceByName,
   getLastUpdateTime
 } from '../reducers/db/sync_data_manager';
-import { readLoggedDbFromLocal } from './services/login-service';
 import { signUpCustomerService } from './services/customer-service';
 import { syncOrderService } from './services/cart-service';
 import {
@@ -45,86 +47,87 @@ import { serviceTypeGroupManager } from '../common/sync-group-manager';
 const cashierInfo = state => state.authenRd.cashierInfo;
 const detailOutlet = state => state.mainRd.generalConfig.detail_outlet;
 
-function* getSyncDataFromLocal() {
-  // // get all product in local db
-  // const payloadResultAllProduct = yield getAllProductFromLocal();
-  // yield put({
-  //   type: types.RECEIVED_DATA_SYNC_ALL_PRODUCT,
-  //   payload: payloadResultAllProduct
-  // });
-  // // get all order in local db
-  // const payloadResultOrder = yield getAllOrders();
-  // yield put({
-  //   type: types.RECEIVED_DATA_SYNC_ORDER,
-  //   payload: payloadResultOrder
-  // });
-  // // get all custom product in local db
-  // const payloadResultCustomProduct = yield getAllTblCustomProduct();
-  // yield put({
-  //   type: types.RECEIVED_DATA_SYNC_CUSTOM_PRODUCT,
-  //   payload: payloadResultCustomProduct
-  // });
-  // // get all customer in local db
-  // const payloadResultCustomer = yield getAllTbl();
-  // yield put({
-  //   type: types.RECEIVED_DATA_SYNC_CUSTOMER,
-  //   payload: payloadResultCustomer
-  // });
-  // // get all config in local db
-  // const payloadResultGeneralConfig = yield getGeneralConfigFromLocal();
-  // yield put({
-  //   type: types.RECEIVED_DATA_SYNC_GENERAL_CONFIG,
-  //   payload: payloadResultGeneralConfig
-  // });
+function* getSyncAllCustomProductError() {
+  // get all custom product in local db
+  const payloadResultCustomProduct = yield getAllTblCustomProduct();
+  const customFailed = payloadResultCustomProduct.filter(item => {
+    return !item.success;
+  });
+  yield put({
+    type: types.RECEIVED_DATA_SYNC_CUSTOM_PRODUCT,
+    payload: customFailed
+  });
+}
+function* getSyncAllCustomerError() {
+  // get all customer in local db
+  const payloadResultCustomer = yield getAllTblCustomer();
+  const customerFailed = payloadResultCustomer.filter(item => {
+    return !item.success;
+  });
+  yield put({
+    type: types.RECEIVED_DATA_SYNC_CUSTOMER,
+    payload: customerFailed
+  });
+}
+function* getSyncAllOrderError() {
+  // get all order in local db
+  const payloadResultOrder = yield getAllOrders();
+  const orderFailed = payloadResultOrder.filter(item => {
+    return !item.success;
+  });
+  yield put({
+    type: types.RECEIVED_DATA_SYNC_ORDER,
+    payload: orderFailed
+  });
 }
 
 function* getSyncStatusFromLocal() {
-  // const productSyncStatus = yield call(
-  //   getServiceByName,
-  //   types.ALL_PRODUCT_SYNC
-  // );
-  // const customerSyncStatus = yield call(getServiceByName, types.CUSTOMERS_SYNC);
-  // const customProductSyncStatus = yield call(
-  //   getServiceByName,
-  //   types.CUSTOM_PRODUCT_SYNC
-  // );
-  // const configSyncStatus = yield call(
-  //   getServiceByName,
-  //   types.GENERAL_CONFIG_SYNC
-  // );
-  // const orderSyncStatus = yield call(getServiceByName, types.SYNC_ORDER_LIST);
-  // // order sync
-  // yield put({
-  //   type: types.RECEIVED_STATUS_SYNC_ORDER,
-  //   payload: orderSyncStatus
-  // });
-  // // customer sync
-  // yield put({
-  //   type: types.RECEIVED_STATUS_SYNC_CUSTOMER,
-  //   payload: customerSyncStatus
-  // });
-  // // custom product sync
-  // yield put({
-  //   type: types.RECEIVED_STATUS_SYNC_CUSTOM_PRODUCT,
-  //   payload: customProductSyncStatus
-  // });
-  // // general config sync
-  // yield put({
-  //   type: types.RECEIVED_STATUS_SYNC_GENERAL_CONFIG,
-  //   payload: configSyncStatus
-  // });
-  // // all product sync
-  // yield put({
-  //   type: types.RECEIVED_STATUS_SYNC_ALL_PRODUCT,
-  //   payload: productSyncStatus
-  // });
+  const productSyncStatus = yield call(
+    getServiceByName,
+    types.ALL_PRODUCT_SYNC
+  );
+  const customerSyncStatus = yield call(getServiceByName, types.CUSTOMERS_SYNC);
+  const customProductSyncStatus = yield call(
+    getServiceByName,
+    types.CUSTOM_PRODUCT_SYNC
+  );
+  const configSyncStatus = yield call(
+    getServiceByName,
+    types.GENERAL_CONFIG_SYNC
+  );
+  const orderSyncStatus = yield call(getServiceByName, types.SYNC_ORDER_LIST);
+  // order sync
+  yield put({
+    type: types.RECEIVED_STATUS_SYNC_ORDER,
+    payload: orderSyncStatus
+  });
+  // customer sync
+  yield put({
+    type: types.RECEIVED_STATUS_SYNC_CUSTOMER,
+    payload: customerSyncStatus
+  });
+  // custom product sync
+  yield put({
+    type: types.RECEIVED_STATUS_SYNC_CUSTOM_PRODUCT,
+    payload: customProductSyncStatus
+  });
+  // general config sync
+  yield put({
+    type: types.RECEIVED_STATUS_SYNC_GENERAL_CONFIG,
+    payload: configSyncStatus
+  });
+  // all product sync
+  yield put({
+    type: types.RECEIVED_STATUS_SYNC_ALL_PRODUCT,
+    payload: productSyncStatus
+  });
 }
 
 const syncManager = state => state.authenRd.syncManager;
 
-function* syncCustomer(customerID) {
-  const timeAccept = yield getTimeToAcceptSyncing(types.CUSTOMERS_SYNC);
-  if (!customerID && !timeAccept) {
+function* syncCustomer(customerName, syncAllNow) {
+  const timeAccept = yield checkTimeToAcceptSyncing(types.CUSTOMERS_SYNC);
+  if (!customerName && !timeAccept && !syncAllNow) {
     return null;
   }
   yield put({
@@ -133,7 +136,12 @@ function* syncCustomer(customerID) {
   });
 
   let checkAllSync = 0;
-  const customers = yield getAllTbl();
+  let customers = [];
+  if (customerName && !syncAllNow) {
+    customers = yield getCustomerByName(customerName);
+  } else {
+    customers = yield getAllTblCustomer();
+  }
   // eslint-disable-next-line no-restricted-syntax
   for (const customer of customers) {
     // eslint-disable-next-line no-continue
@@ -178,9 +186,9 @@ function* syncCustomer(customerID) {
   });
 }
 
-function* syncCustomProduct(customProductID) {
-  const timeAccept = yield getTimeToAcceptSyncing(types.CUSTOM_PRODUCT_SYNC);
-  if (!customProductID && !timeAccept) {
+function* syncCustomProduct(customProductID, syncAllNow) {
+  const timeAccept = yield checkTimeToAcceptSyncing(types.CUSTOM_PRODUCT_SYNC);
+  if (!customProductID && !timeAccept && !syncAllNow) {
     return null;
   }
   yield put({
@@ -188,7 +196,12 @@ function* syncCustomProduct(customProductID) {
     payload: { type: types.CUSTOM_PRODUCT_SYNC, status: true }
   });
 
-  const products = yield call(getAllTblCustomProduct);
+  let products = [];
+  if (customProductID && !syncAllNow) {
+    products = yield call(getCustomProductById, customProductID);
+  } else {
+    products = yield call(getAllTblCustomProduct);
+  }
   const cashierInfoResult = yield select(cashierInfo);
   const detailOutletResult = yield select(detailOutlet);
   let checkAllSync = 0;
@@ -225,7 +238,7 @@ function* syncCustomProduct(customProductID) {
   } else {
     // eslint-disable-next-line no-throw-literal
     const dataErrors = {
-      message: 'Cannot create customer',
+      message: 'Cannot create all custom product',
       errors: checkAllSync
     };
     yield failedLoadService(
@@ -239,9 +252,9 @@ function* syncCustomProduct(customProductID) {
   });
 }
 
-function* syncOrder(orderId) {
-  const timeAccept = yield getTimeToAcceptSyncing(types.ALL_ORDER_SYNC);
-  if (!orderId && !timeAccept) {
+function* syncOrder(orderId, syncAllNow) {
+  const timeAccept = yield checkTimeToAcceptSyncing(types.ALL_ORDER_SYNC);
+  if (!orderId && !timeAccept && !syncAllNow) {
     return null;
   }
   yield put({
@@ -249,15 +262,18 @@ function* syncOrder(orderId) {
     payload: { type: types.SYNC_ORDER_LIST, status: true }
   });
 
-  // if syncOrder call with haven't id means sync all
-  const payload = {};
   // step 1: sync custom product first
   yield syncCustomProduct();
   // step 2: sync customer second
   yield syncCustomer();
   // step 3: next step
 
-  const orders = yield getAllOrders();
+  let orders;
+  if (orderId && !syncAllNow) {
+    orders = yield getOrderById(orderId);
+  } else {
+    orders = yield getAllOrders();
+  }
   let checkAllSync = 0;
   // eslint-disable-next-line no-restricted-syntax
   for (const order of orders) {
@@ -304,9 +320,9 @@ function* syncOrder(orderId) {
   });
 }
 
-function* syncAllProduct(ProductID) {
-  const timeAccept = yield getTimeToAcceptSyncing(types.ALL_PRODUCT_SYNC);
-  if (!ProductID && !timeAccept) {
+function* syncAllProduct(ProductID, syncAllNow) {
+  const timeAccept = yield checkTimeToAcceptSyncing(types.ALL_PRODUCT_SYNC);
+  if (!ProductID && !timeAccept && !syncAllNow) {
     return null;
   }
 
@@ -322,15 +338,16 @@ function* syncAllProduct(ProductID) {
   } catch (e) {
     yield failedLoadService(serviceTypeGroupManager(types.ALL_PRODUCT_SYNC, e));
   }
+
   yield put({
     type: types.LOADING_SYNC_ACTION,
     payload: { type: types.ALL_PRODUCT_SYNC, status: false }
   });
 }
 
-function* syncGeneralConfig(configName) {
-  const timeAccept = yield getTimeToAcceptSyncing(types.GENERAL_CONFIG_SYNC);
-  if (!configName && !timeAccept) {
+function* syncGeneralConfig(configName, syncAllNow) {
+  const timeAccept = yield checkTimeToAcceptSyncing(types.GENERAL_CONFIG_SYNC);
+  if (!configName && !timeAccept && !syncAllNow) {
     return null;
   }
   yield put({
@@ -359,7 +376,7 @@ function* syncGeneralConfig(configName) {
   });
 }
 
-function* getTimeToAcceptSyncing(typeID) {
+function* checkTimeToAcceptSyncing(typeID) {
   const nowTime = Date.now();
   const syncTimeAllProduct = yield getLastUpdateTime(types.ALL_PRODUCT_SYNC);
   const syncTimeCustomProduct = yield getLastUpdateTime(
@@ -379,14 +396,13 @@ function* getTimeToAcceptSyncing(typeID) {
   let allOrdersSync = 5;
   try {
     timeConfig = config[0].value.common_config.time_synchronized_for_modules;
-    console.log(timeConfig);
     allProducts = timeConfig.all_products || 5;
     allCustomProduct = timeConfig.all_custom_product || 5;
     allCustomersSync = timeConfig.all_customers_sync || 5;
     generalConfigSync = timeConfig.general_config_sync || 5;
     allOrdersSync = timeConfig.all_orders_sync || 5;
   } catch (e) {
-    timeConfig = null;
+    console.log('Cannot get time config');
   }
   const syncManagerResult = yield select(syncManager);
 
@@ -464,22 +480,22 @@ function* cronJobs() {
 
 function* syncTypeDataWithID(payload) {
   const payloadType = payload.payload;
-  const { id } = payload;
+  const { id, syncAllNow } = payload;
   switch (payloadType) {
     case types.ALL_PRODUCT_SYNC:
-      yield syncAllProduct(id);
+      yield syncAllProduct(id, syncAllNow);
       break;
     case types.CUSTOM_PRODUCT_SYNC:
-      yield syncCustomProduct(id);
+      yield syncCustomProduct(id, syncAllNow);
       break;
     case types.CUSTOMERS_SYNC:
-      yield syncCustomer(id);
+      yield syncCustomer(id, syncAllNow);
       break;
     case types.GENERAL_CONFIG_SYNC:
-      yield syncGeneralConfig(id);
+      yield syncGeneralConfig(id, syncAllNow);
       break;
     case types.SYNC_ORDER_LIST:
-      yield syncOrder(id);
+      yield syncOrder(id, syncAllNow);
       break;
     default:
       break;
@@ -488,9 +504,17 @@ function* syncTypeDataWithID(payload) {
 
 function* cronSaga() {
   yield takeEvery(CRON_JOBS_ACTION, cronJobs);
-  yield takeEvery(SYNC_DATA_TYPE_WITH_ID, syncTypeDataWithID);
+  yield takeEvery(SYNC_DATA_TYPE, syncTypeDataWithID);
   yield takeEvery(GET_SYNC_STATUS_FROM_LOCAL, getSyncStatusFromLocal);
-  yield takeEvery(GET_SYNC_DATA_FROM_LOCAL, getSyncDataFromLocal);
+  yield takeEvery(
+    GET_SYNC_ALL_CUSTOM_PRODUCT_ERROR_FROM_LOCAL,
+    getSyncAllCustomProductError
+  );
+  yield takeEvery(
+    GET_SYNC_ALL_CUSTOMER_ERROR_FROM_LOCAL,
+    getSyncAllCustomerError
+  );
+  yield takeEvery(GET_SYNC_ALL_ORDER_ERROR_FROM_LOCAL, getSyncAllOrderError);
 }
 
 export default cronSaga;

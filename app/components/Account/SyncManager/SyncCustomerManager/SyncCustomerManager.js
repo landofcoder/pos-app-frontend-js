@@ -1,12 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Styles from '../../OrderHistory/order-history.scss';
+import { getSyncAllCustomerError } from '../../../../actions/accountAction';
 
 type Props = {
-  ListSyncCustomer: Array
+  ListSyncCustomer: Array,
+  getSyncAllCustomerError: payload => void
 };
 class SyncCustomerManager extends Component {
   props: Props;
+
+  componentDidUpdate() {
+    const { getSyncAllCustomerError } = this.props;
+    getSyncAllCustomerError();
+  }
 
   render() {
     const { ListSyncCustomer } = this.props;
@@ -49,7 +56,9 @@ function mapStateToProps(state) {
   };
 }
 function mapDispatchToProps(dispatch) {
-  return {};
+  return {
+    getSyncAllCustomerError: dispatch(getSyncAllCustomerError())
+  };
 }
 export default connect(
   mapStateToProps,

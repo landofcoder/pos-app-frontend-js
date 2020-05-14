@@ -47,7 +47,7 @@ export async function getDiscountForQuoteService(payload) {
     return data;
   } catch (e) {
     // eslint-disable-next-line no-throw-literal
-    throw { message: e.message || 'Server not Response', data: {} };
+    throw { message: e.message || 'Error connection to server', data: {} };
   }
 }
 
@@ -105,7 +105,7 @@ export async function syncOrderService(params) {
     return data;
   } catch (error) {
     return {
-      message: error.message || 'Server not response',
+      message: error.message || 'Error connection to server',
       data: error.data
     };
   }

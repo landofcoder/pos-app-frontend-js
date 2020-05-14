@@ -60,9 +60,21 @@ export function orderAction(payload) {
   };
 }
 
-export function getSyncDataFromLocal() {
+export function getSyncAllCustomProductError() {
   return {
-    type: type.GET_SYNC_DATA_FROM_LOCAL
+    type: type.GET_SYNC_ALL_CUSTOM_PRODUCT_ERROR_FROM_LOCAL
+  };
+}
+
+export function getSyncAllCustomerError() {
+  return {
+    type: type.GET_SYNC_ALL_CUSTOMER_ERROR_FROM_LOCAL
+  };
+}
+
+export function getSyncAllOrderError() {
+  return {
+    type: type.GET_SYNC_ALL_ORDER_ERROR_FROM_LOCAL
   };
 }
 

@@ -8,13 +8,12 @@ import ConnectDevices from './ConnectDevices/ConnectDevices';
 import SyncManager from './SyncManager/SyncManager';
 import { POS } from '../../constants/routes.json';
 import {
-  getSyncDataFromLocal,
+  getSyncAllOrderError,
   getSyncStatusFromLocal
 } from '../../actions/accountAction';
 
 type Props = {
-  getStatusSync: () => void,
-  getDataSync: () => void
+  getStatusSync: () => void
 };
 class Account extends Component {
   props: Props;
@@ -27,8 +26,7 @@ class Account extends Component {
   }
 
   componentDidMount() {
-    const { getDataSync, getStatusSync } = this.props;
-    getDataSync();
+    const { getStatusSync } = this.props;
     getStatusSync();
   }
 
@@ -120,8 +118,7 @@ class Account extends Component {
 
 function mapDispatchToProps(dispatch) {
   return {
-    getStatusSync: () => dispatch(getSyncStatusFromLocal()),
-    getDataSync: () => dispatch(getSyncDataFromLocal())
+    getStatusSync: () => dispatch(getSyncStatusFromLocal())
   };
 }
 function mapStateToProps(state) {

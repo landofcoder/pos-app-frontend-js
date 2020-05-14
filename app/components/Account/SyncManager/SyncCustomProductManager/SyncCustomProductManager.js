@@ -1,13 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Styles from '../../OrderHistory/order-history.scss';
+import { getSyncAllCustomProductError } from '../../../../actions/accountAction';
 
 type Props = {
-  customer: Object,
-  ListSyncCustomProduct: Array
+  ListSyncCustomProduct: Array,
+  getSyncAllCustomProductError: () => void
 };
 class SyncCustomProductManager extends Component {
   props: Props;
+
+  componentDidMount() {
+    const { getSyncAllCustomProductError } = this.props;
+    getSyncAllCustomProductError();
+  }
 
   render() {
     const { ListSyncCustomProduct } = this.props;
@@ -46,12 +52,13 @@ class SyncCustomProductManager extends Component {
 }
 function mapStateToProps(state) {
   return {
-    customer: state.authenRd.syncManager.syncCustomer,
     ListSyncCustomProduct: state.authenRd.syncManager.syncCustomProduct
   };
 }
 function mapDispatchToProps(dispatch) {
-  return {};
+  return {
+    getSyncAllCustomProductError: dispatch(getSyncAllCustomProductError())
+  };
 }
 export default connect(
   mapStateToProps,
