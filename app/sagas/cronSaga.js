@@ -52,7 +52,7 @@ function* getSyncAllCustomProductError() {
   // get all custom product in local db
   const payloadResultCustomProduct = yield getAllTblCustomProduct();
   const customFailed = payloadResultCustomProduct.filter(item => {
-    return !item.success;
+    return !item.status;
   });
   yield put({
     type: types.RECEIVED_DATA_SYNC_CUSTOM_PRODUCT,
@@ -63,7 +63,7 @@ function* getSyncAllCustomerError() {
   // get all customer in local db
   const payloadResultCustomer = yield getAllTblCustomer();
   const customerFailed = payloadResultCustomer.filter(item => {
-    return !item.success;
+    return !item.status;
   });
   yield put({
     type: types.RECEIVED_DATA_SYNC_CUSTOMER,
@@ -74,7 +74,7 @@ function* getSyncAllOrderError() {
   // get all order in local db
   const payloadResultOrder = yield getAllOrders();
   const orderFailed = payloadResultOrder.filter(item => {
-    return !item.success;
+    return !item.status;
   });
   yield put({
     type: types.RECEIVED_DATA_SYNC_ORDER,
@@ -150,7 +150,7 @@ function* syncCustomer(customerName, syncAllNow) {
     try {
       const result = yield call(signUpCustomerService, customer);
       if (result || result.status) {
-        customer.success = true;
+        customer.status = true;
         yield updateCustomerById(customer);
       } else {
         // eslint-disable-next-line no-throw-literal
@@ -159,7 +159,7 @@ function* syncCustomer(customerName, syncAllNow) {
     } catch (e) {
       checkAllSync += 1;
       // cap nhat trang thai tren table customers
-      customer.success = false;
+      customer.status = false;
       customer.message = e.message;
       customer.dataErrors = e.data;
       yield updateCustomerById(customer);
@@ -225,7 +225,7 @@ function* syncCustomProduct(customProductID, syncAllNow) {
     } catch (e) {
       checkAllSync += 1;
       // cap nhat trang thai tren table customers
-      product.success = false;
+      product.status = false;
       product.message = e.message;
       product.dataErrors = e.data;
       yield updateCustomProductById(product);
@@ -289,11 +289,12 @@ function* syncOrder(orderId, syncAllNow) {
           data: result.data || result.errors || result
         };
       } else {
+        order.status = true;
         order.success = true;
         yield updateOrderById(order);
       }
     } catch (e) {
-      order.success = false;
+      order.status = false;
       order.message = e.message;
       order.dataErrors = e.data;
       yield updateOrderById(order);
