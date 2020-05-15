@@ -6,7 +6,7 @@ db.version(version).stores({
   products: '++id, *categoryIds, *productIds, *sku, *name',
   categories: '++id',
   customers: '++id',
-  sync_customers: '++id,*email,*first_name',
+  sync_customers: '++id,*email,first_name',
   sync_orders: '++id',
   sync_custom_product: '++id, name',
   sync_data_manager: '++id, *name',
