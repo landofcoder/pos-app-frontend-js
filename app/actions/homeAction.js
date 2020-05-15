@@ -286,7 +286,6 @@ export function loadProductPaging() {
 }
 
 export function syncDataClient(payload) {
-  console.log(payload);
   return {
     type: types.SYNC_DATA_TYPE,
     payload: payload.type,
