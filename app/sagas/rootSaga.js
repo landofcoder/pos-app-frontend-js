@@ -643,15 +643,19 @@ function* getDiscountForCheckoutSaga() {
   const listGiftCard =
     orderPreparingCheckoutStateResult.totals.listGiftCard_code;
   let result;
+  let customerId;
+  try {
+    customerId = cartCurrentObjResult.customer.id;
+  } catch (e) {
+    customerId = posSystemConfigResult.default_guest_checkout.customer_id;
+  }
   // const typeOfResult = typeof result;
   // If json type returned, that mean get discount success
   if (internetConnectedResult) {
     try {
       result = yield call(getDiscountForQuoteService, {
         cart: cartCurrentObjResult.data,
-        customerId:
-          cartCurrentObjResult.customer.id ||
-          posSystemConfigResult.default_guest_checkout.customer_id,
+        customerId,
         discountCode,
         listGiftCard
       });
