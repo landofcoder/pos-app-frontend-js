@@ -55,7 +55,6 @@ import {
   writeCategoriesToLocal
 } from '../reducers/db/categories';
 import { syncCustomers } from '../reducers/db/customers';
-import { getAllOrders } from '../reducers/db/sync_orders';
 import { setAppInfoToGlobal, setTokenGlobal } from '../common/settings';
 import { createProductDb } from '../reducers/db/sync_custom_product';
 import {
@@ -1164,7 +1163,7 @@ function* loginAction(payload) {
   } else {
     yield put({
       type: typesAuthen.ERROR_LOGIN,
-      payload: resultLogin.message
+      payload: resultLogin
     });
   }
 

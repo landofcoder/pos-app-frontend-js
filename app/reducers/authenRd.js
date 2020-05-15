@@ -10,6 +10,13 @@ const initialState = {
   loadingWorkPlace: false,
   appInfo: {},
   moduleInstalled: {},
+  login: {
+    loginResult: {
+      data: '',
+      status: true, // Default status login result is true will not show error messages
+      listMessage: []
+    }
+  },
   syncDataManager: {
     syncCustomProduct: [],
     syncCustomer: [],
@@ -54,10 +61,8 @@ const authenRd = (state = initialState, action) =>
         draft.loadingWorkPlace = false;
         break;
       case typesAuthen.ERROR_LOGIN:
-        draft.message = action.payload;
-        break;
-      case typesAuthen.SUCCESS_LOGIN:
-        draft.message = 'SUCCESS';
+        console.log('error payload:', action.payload);
+        draft.login.loginResult = action.payload;
         break;
       case typesAuthen.GET_APP_INFO_FAILURE:
         draft.messageErrorWorkPlace = action.payload;
@@ -66,7 +71,6 @@ const authenRd = (state = initialState, action) =>
         draft.tokenWorkPlace = action.payload;
         draft.messageErrorWorkPlace = '';
         break;
-      // received status sync
       case typesAuthen.RECEIVED_STATUS_SYNC_ORDER:
         draft.syncManager.syncOrder = action.payload;
         break;

@@ -9,8 +9,8 @@ import Loading from '../commons/Loading';
 type Props = {
   login: (payload: Object) => void,
   backToWorkPlace: () => void,
-  message: string,
-  loading: boolean
+  loading: boolean,
+  loginStatus: boolean
 };
 
 type State = {
@@ -51,9 +51,8 @@ class Login extends Component<Props, State> {
   };
 
   render() {
-    const { message, loading } = this.props;
+    const { loading, loginStatus, listMessage } = this.props;
     const { valueUser, valuePass } = this.state;
-
     return (
       <>
         <div className={`${commonStyles.contentColumn} ${styles.wrapPage}`}>
@@ -86,20 +85,37 @@ class Login extends Component<Props, State> {
                 />
               </div>
               <div className="form-group">
-                {message !== '' ? (
-                  <div className="text-danger">{message}</div>
-                ) : (
-                  <></>
-                )}
-              </div>
-              <div className="form-group">
                 <button
                   className="btn btn-primary btn-block mt-1"
                   type="submit"
                 >
-                  {loading ? <Loading /> : <>Sign In</>}
+                  {loading ? <Loading/> : <>Sign In</>}
                 </button>
               </div>
+              {loginStatus === false ? (
+                <div>
+                  <p>Please check the conditions below</p>
+                  <div className="card">
+                    <div className="card-body">
+                      <ul>
+                        {listMessage.map((item, index) => {
+                          return (
+                            <li key={index}>
+                              {item.status === true ? (
+                                <span className="text-success">{item.mess}</span>
+                              ) : (
+                                <span className="text-danger">{item.mess}</span>
+                              )}
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div></div>
+              )}
               <div>
                 <button
                   type="button"
@@ -123,13 +139,16 @@ function mapDispatchToProps(dispatch) {
     backToWorkPlace: () => dispatch(backToWorkPlace())
   };
 }
+
 function mapStateToProps(state) {
   return {
-    message: state.authenRd.message,
     loading: state.authenRd.loading,
-    mainUrl: state.authenRd.mainUrl
+    mainUrl: state.authenRd.mainUrl,
+    loginStatus: state.authenRd.login.loginResult.status,
+    listMessage: state.authenRd.login.loginResult.listMessage
   };
 }
+
 export default connect(
   mapStateToProps,
   mapDispatchToProps
