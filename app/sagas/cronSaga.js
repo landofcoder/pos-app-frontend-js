@@ -483,6 +483,12 @@ function* cronJobs() {
  * @param {*} payload
  */
 
+/**
+ * there are 2 payload in param id mean if you want sync with special id(orderid,customerid,productid,...) with payloadType
+ * another you want to sync all of payloadType use syncAllNow = 1
+ * @param payload
+ * @returns {Generator<Generator<Generator<Promise<*>|<"SELECT", SelectEffectDescriptor>|Promise<*|undefined>|Promise<*|undefined>, boolean, *>|<"PUT", PutEffectDescriptor<{payload: {type: string, status: boolean}, type: string}>>, null, *>|Generator<Generator<Promise<*>|<"SELECT", SelectEffectDescriptor>|Promise<*|undefined>|Promise<*|undefined>, boolean, *>|<"PUT", PutEffectDescriptor<{payload: {type: string, status: boolean}, type: string}>>, null, *>, void, *>}
+ */
 function* syncTypeDataWithID(payload) {
   const payloadType = payload.payload;
   const { id, syncAllNow } = payload;
