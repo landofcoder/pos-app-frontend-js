@@ -73,13 +73,11 @@ class ShowMessages extends Component {
       syncAllProductStatus.message || 'Some reason sync all product error !!!';
 
     return (
-      <>
-        <div className="alert alert-danger" role="alert">
-          <i className="fas fa-exclamation-circle" style={{ color: '#666' }} />{' '}
-          &nbsp;
-          {message}
-        </div>
-      </>
+      <div className="alert alert-danger" role="alert">
+        <i className="fas fa-exclamation-circle" style={{ color: '#666' }} />{' '}
+        &nbsp;
+        {message}
+      </div>
     );
   };
 
@@ -154,22 +152,20 @@ class ShowMessages extends Component {
     const tableCustomer = syncCustomer.map((item, index) => {
       if (item.status) return null;
       return (
-        <>
-          <tr
-            key={index}
-            onClick={() => {
-              this.actionCollapseData(index);
-            }}
-          >
-            <th scope="row">{index + 1}</th>
-            <td>{`${item.first_name} ${item.payload.customer.lastname}`}</td>
-            <td>{item.email}</td>
-            <td>{new Date(item.id).toDateString()}</td>
-            <td>
-              <span className="badge badge-pill badge-danger">error</span>
-            </td>
-          </tr>
-        </>
+        <tr
+          key={index}
+          onClick={() => {
+            this.actionCollapseData(index);
+          }}
+        >
+          <th scope="row">{index + 1}</th>
+          <td>{`${item.first_name} ${item.payload.customer.lastname}`}</td>
+          <td>{item.email}</td>
+          <td>{new Date(item.id).toDateString()}</td>
+          <td>
+            <span className="badge badge-pill badge-danger">error</span>
+          </td>
+        </tr>
       );
     });
     if (!syncCustomerStatus.errors)
