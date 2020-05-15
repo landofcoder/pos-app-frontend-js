@@ -461,8 +461,6 @@ function* checkTimeToAcceptSyncing(typeID) {
 }
 
 function* cronJobs() {
-  const isLogged = yield readLoggedDbFromLocal();
-  if (!isLogged) return null;
 
   // get token
   yield reloadTokenFromLoggedLocalDB();

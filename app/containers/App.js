@@ -1,9 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import {
-  updateIsInternetConnected,
-  cronJobs
-} from '../actions/homeAction';
+import { updateIsInternetConnected, cronJobs } from '../actions/homeAction';
 import { checkLoginBackground } from '../actions/authenAction';
 import Login from '../components/Login/Login';
 import {
@@ -35,7 +32,7 @@ class App extends React.Component<Props> {
   };
 
   componentDidMount() {
-    const { updateIsInternetConnected, cronJobs } = this.props;
+    const { updateIsInternetConnected, cronJobs, switchingMode } = this.props;
 
     // Listen online and offline mode
     window.addEventListener('online', this.alertOnlineStatus);
@@ -46,9 +43,10 @@ class App extends React.Component<Props> {
 
     const loopStep = 1000;
     // Start cron
-
-    const frameId = startLoop(cronJobs, loopStep);
-    this.setState({ frameId });
+    if (switchingMode === CHILDREN) {
+      const frameId = startLoop(cronJobs, loopStep);
+      this.setState({ frameId });
+    }
   }
 
   componentWillUnmount(): void {
@@ -72,8 +70,16 @@ class App extends React.Component<Props> {
       checkLoginBackground,
       flagSwitchModeCounter
     } = this.props;
+    const loopStep = 1000;
+    // Start cron
     const { counterMode } = this.state;
-
+    if (switchingMode === CHILDREN) {
+      const frameId = startLoop(cronJobs, loopStep);
+      this.setState({ frameId });
+    } else {
+      const { frameId } = this.state;
+      stopLoop(frameId);
+    }
     // Make sure checkLoginBackground just run when flagSwitchModeCounter count up
     if (counterMode !== flagSwitchModeCounter) {
       this.setState({ counterMode: flagSwitchModeCounter });
@@ -113,7 +119,7 @@ function mapStateToProps(state) {
   return {
     token: state.authenRd.token,
     switchingMode: state.mainRd.switchingMode,
-    flagSwitchModeCounter: state.mainRd.flagSwitchModeCounter,
+    flagSwitchModeCounter: state.mainRd.flagSwitchModeCounter
   };
 }
 
