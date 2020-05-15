@@ -22,7 +22,7 @@ export async function signUpCustomerDb(customers) {
   return false;
 }
 
-export async function getAllTbl() {
+export async function getAllTblCustomer() {
   const tbl = db.table(table);
   const data = await tbl.toArray();
   return data;
@@ -48,7 +48,7 @@ export async function updateCustomerById(customer) {
     return false;
   }
 }
-export async function getByName(name) {
+export async function getCustomerByName(name) {
   const productTbl = db.table(table);
   const result = [];
   const resultName = await productTbl.where({ first_name: name }).toArray();

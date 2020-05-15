@@ -45,3 +45,15 @@ export async function updateCustomProductById(customProduct) {
     return false;
   }
 }
+export async function getCustomProductById(customProductId) {
+  // eslint-disable-next-line no-param-reassign
+  const tbl = db.table(table);
+  let data = [];
+  try {
+    data = await tbl.where({ id: customProductId }).toArray();
+    return data;
+  } catch (e) {
+    console.log('get product by id error');
+    return data;
+  }
+}

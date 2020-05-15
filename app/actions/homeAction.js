@@ -39,7 +39,6 @@ export function checkoutAction() {
   };
 }
 
-
 export function startCashCheckoutAction(payload) {
   return {
     type: types.START_CASH_CHECKOUT_ACTION,
@@ -287,11 +286,17 @@ export function loadProductPaging() {
 }
 
 export function syncDataClient(payload) {
-  payload = payload || {};
   return {
-    type: types.SYNC_CLIENT_DATA,
+    type: types.SYNC_DATA_TYPE,
     payload: payload.type,
-    id: payload.id
+    id: payload.id,
+    syncAllNow: payload.syncAllNow
+  };
+}
+
+export function cronJobs() {
+  return {
+    type: types.CRON_JOBS_ACTION
   };
 }
 
@@ -379,7 +384,7 @@ export function setGiftCardAction(payload) {
   return {
     type: types.SET_GIFT_CARD_ACTION,
     payload
-  }
+  };
 }
 export function backToWorkPlace() {
   return {

@@ -62,7 +62,7 @@ class AddNoteOrder extends Component<Props> {
     return (
       <div>
         <div className={ModalStyle.modal} style={{ display: 'block' }}>
-          <div className={ModalStyle.modalContent}>
+          <div className={ModalStyle.modalContentMd}>
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Add Note</h5>

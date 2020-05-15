@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { format } from 'date-fns';
 import Styles from '../DetailOrder/detail-order.scss';
+import StylesOrder from '../order-history.scss';
 import { formatCurrencyCode } from '../../../../common/settings';
 import { actionLoadingOrderDetailOffline } from '../../../../actions/accountAction';
-
 type Props = {
   orderHistoryDetail: {},
   // order_id_history: number,
@@ -41,10 +42,9 @@ class DetailOrderOffline extends Component {
       isLoadingOrderHistoryDetail,
       orderHistoryDetail
     } = this.props;
-    console.log(orderHistoryDetail);
     return (
       <>
-        <div>
+        <div className={`${StylesOrder.toogleBodyContent}`}>
           <div
             style={{
               display: isOpenDetailOrder ? 'block' : 'none'
@@ -65,12 +65,26 @@ class DetailOrderOffline extends Component {
                   <>
                     <div className="modal-body">
                       <div className="form-group">
+                        {orderHistoryDetail.message ? (
+                          <div className="alert alert-danger" role="alert">
+                            <i
+                              className="fas fa-exclamation-circle"
+                              style={{ color: '#666' }}
+                            />{' '}
+                            &nbsp;{orderHistoryDetail.message}
+                          </div>
+                        ) : null}
                         <div className="form-group">
                           <div className="pl-0">
                             <div className={Styles.wrapContent}>
                               <div className="d-flex justify-content-between pr-1">
                                 <span>Order Date: </span>
-                                <span>{orderHistoryDetail.created_at}</span>
+                                <span>
+                                  {format(
+                                    new Date(orderHistoryDetail.created_at),
+                                    'yyyy-MM-dd hh:m:s'
+                                  )}
+                                </span>
                               </div>
                               <div className="d-flex justify-content-between pr-1">
                                 <span>Location: </span>

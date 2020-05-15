@@ -123,9 +123,15 @@ const authenRd = (state = initialState, action) =>
           case typesAuthen.GENERAL_CONFIG_SYNC:
             draft.syncManager.loadingSyncConfig = action.payload.status;
             break;
+          case typesAuthen.SYNC_ORDER_LIST:
+            draft.syncManager.loadingSyncOrder = action.payload.status;
+            break;
+          default:
+            break;
         }
         break;
       default:
+        break;
     }
   });
 

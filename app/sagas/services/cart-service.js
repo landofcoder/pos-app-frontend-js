@@ -1,4 +1,3 @@
-import { format } from 'date-fns';
 import { createOrders } from '../../reducers/db/sync_orders';
 import { apiGatewayPath } from '../../../configs/env/config.main';
 
@@ -47,7 +46,7 @@ export async function getDiscountForQuoteService(payload) {
     return data;
   } catch (e) {
     // eslint-disable-next-line no-throw-literal
-    throw { message: e.message || 'Server not Response', data: {} };
+    throw { message: e.message || 'Error connection to server', data: {} };
   }
 }
 
@@ -60,21 +59,21 @@ export async function createOrderLocal(payload) {
   const { cartCurrentResult, orderPreparingCheckoutResult } = payload;
   console.log('dd1:', cartCurrentResult);
   console.log('dd2:', orderPreparingCheckoutResult);
-  console.log('dd3-date:', format(new Date(), 'yyyy-MM-dd hh:m:s'));
+  console.log('dd3-date:', Date.now());
   const newOrder = {
     id: Date.now(),
     grand_total: orderPreparingCheckoutResult.totals.grand_total,
     items: payload,
     local: true,
-    created_at: format(new Date(), 'yyyy-MM-dd hh:m:s')
+    created_at: Date.now()
   };
   const res = await createOrders(newOrder);
   console.log('response:', res);
 }
 
 export async function syncOrderService(params) {
-  console.log('payload in sync order service ');
-  console.log(params);
+  console.log('sync order');
+
   try {
     const response = await fetch(
       `${apiGatewayPath}/cashier/customer-checkout/sync-order`,
@@ -105,7 +104,7 @@ export async function syncOrderService(params) {
     return data;
   } catch (error) {
     return {
-      message: error.message || 'Server not response',
+      message: error.message || 'Error connection to server',
       data: error.data
     };
   }

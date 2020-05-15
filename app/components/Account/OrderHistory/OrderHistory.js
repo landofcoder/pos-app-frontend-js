@@ -9,7 +9,8 @@ import {
   orderAction,
   toggleModalAddNote,
   getOrderHistoryDetail,
-  closeToggleModalOrderDetail
+  closeToggleModalOrderDetail,
+  getSyncAllOrderError
 } from '../../../actions/accountAction';
 import DetailOrder from './DetailOrder/DetailOrder';
 import DetailOrderOffline from './DetailOrderOffline/DetailOrderOffline';
@@ -48,15 +49,31 @@ type Props = {
   toggleModalAddNote: payload => void,
   syncDataClient: payload => void,
   closeToggleModalOrderDetail: () => void,
-  isLoadingSyncAllOrder: boolean
+  isLoadingSyncAllOrder: boolean,
+  getSyncAllOrderError: () => void
 };
 
 class OrderHistory extends Component<Props> {
   props: Props;
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      intervalGetDataErrorId: null
+    };
+  }
+
   componentDidMount(): void {
-    const { getOrderHistory } = this.props;
+    const { getOrderHistory, getSyncAllOrderError } = this.props;
     getOrderHistory();
+    getSyncAllOrderError();
+    const getSyncOrderErrorId = setInterval(getSyncAllOrderError, 3000);
+    this.setState({ intervalGetDataErrorId: getSyncOrderErrorId });
+  }
+
+  componentWillUnmount(): void {
+    const { intervalGetDataErrorId } = this.state;
+    clearInterval(intervalGetDataErrorId);
   }
 
   getOrderHistoryDetail = saleOrderId => {
@@ -107,12 +124,22 @@ class OrderHistory extends Component<Props> {
   };
 
   renderStatusSync = manager => {
+    const { isLoadingSyncAllOrder } = this.props;
+    if (isLoadingSyncAllOrder)
+      return (
+        <div>
+          <div className="spinner-border spinner-border-sm" role="status">
+            <span className="sr-only">Loading...</span>
+          </div>
+          &nbsp;Syncing
+        </div>
+      );
     if (!manager.update_at) {
       return (
         <span className="badge badge-pill badge-secondary">not synced</span>
       );
     }
-    if (!manager.success) {
+    if (!manager.status) {
       return <span className="badge badge-danger badge-pill">error</span>;
     }
     return <span className="badge badge-success badge-pill">success</span>;
@@ -260,13 +287,12 @@ class OrderHistory extends Component<Props> {
                 <th scope="col">Last time sync</th>
                 <th scope="col">Orders status</th>
                 <th scope="col">Sync status</th>
-                <th scope="col">Action</th>
+                {/*<th scope="col">Action</th>*/}
               </tr>
             </thead>
             <tbody>
               {/*order db*/}
               {orderHistoryDb.map((item, index) => {
-                console.log(item);
                 if (item.local) {
                   return (
                     <tr
@@ -282,42 +308,41 @@ class OrderHistory extends Component<Props> {
                       <td>--</td>
                       <td>{formatCurrencyCode(item.grand_total)}</td>
                       <td>{this.renderLastTime(item)}</td>
-                      <td>{item.success ? item.success : '--'}</td>
+                      <td>{item.status ? item.status : '--'}</td>
                       <td>{this.renderStatusSync(item)}</td>
-                      <td>
-                        {isLoadingSyncAllOrder ? (
-                          <div>
-                            <div
-                              className="spinner-border spinner-border-sm"
-                              role="status"
-                            >
-                              <span className="sr-only">Loading...</span>
-                            </div>
-                            &nbsp;Syncing
-                          </div>
-                        ) : (
-                          <button
-                            type="button"
-                            className="btn btn-outline-secondary btn-sm"
-                            onClick={e => {
-                              e.stopPropagation();
-                              this.syncDataClientAction(
-                                SYNC_ORDER_LIST,
-                                item.id
-                              );
-                            }}
-                          >
-                            Sync now
-                          </button>
-                        )}
-                      </td>
+                      {/*<td>*/}
+                      {/*  {isLoadingSyncAllOrder ? (*/}
+                      {/*    <div>*/}
+                      {/*      <div*/}
+                      {/*        className="spinner-border spinner-border-sm"*/}
+                      {/*        role="status"*/}
+                      {/*      >*/}
+                      {/*        <span className="sr-only">Loading...</span>*/}
+                      {/*      </div>*/}
+                      {/*      &nbsp;Syncing*/}
+                      {/*    </div>*/}
+                      {/*  ) : (*/}
+                      {/*    <button*/}
+                      {/*      type="button"*/}
+                      {/*      className="btn btn-outline-secondary btn-sm"*/}
+                      {/*      onClick={e => {*/}
+                      {/*        e.stopPropagation();*/}
+                      {/*        this.syncDataClientAction(*/}
+                      {/*          SYNC_ORDER_LIST,*/}
+                      {/*          item.id*/}
+                      {/*        );*/}
+                      {/*      }}*/}
+                      {/*    >*/}
+                      {/*      Sync now*/}
+                      {/*    </button>*/}
+                      {/*  )}*/}
+                      {/*</td>*/}
                     </tr>
                   );
                 }
               })}
               {/*order service api*/}
               {orderHistory.map((item, index) => {
-                console.log(item);
                 if (item.local) {
                   return (
                     <tr
@@ -333,7 +358,7 @@ class OrderHistory extends Component<Props> {
                       <td>--</td>
                       <td>{formatCurrencyCode(item.grand_total)}</td>
                       <td>{this.renderLastTime(item)}</td>
-                      <td>{item.success ? item.success : '--'}</td>
+                      <td>{item.status ? item.status : '--'}</td>
                       <td>{this.renderStatusSync(item)}</td>
                       <td>
                         <button
@@ -451,7 +476,8 @@ function mapDispatchToProps(dispatch) {
     orderAction: payload => dispatch(orderAction(payload)),
     toggleModalAddNote: payload => dispatch(toggleModalAddNote(payload)),
     syncDataClient: payload => dispatch(syncDataClient(payload)),
-    closeToggleModalOrderDetail: () => dispatch(closeToggleModalOrderDetail())
+    closeToggleModalOrderDetail: () => dispatch(closeToggleModalOrderDetail()),
+    getSyncAllOrderError: () => dispatch(getSyncAllOrderError())
   };
 }
 

@@ -69,18 +69,15 @@ class ShowMessages extends Component {
       );
     }
     // get message
-    console.log(syncAllProductStatus);
     const message =
       syncAllProductStatus.message || 'Some reason sync all product error !!!';
 
     return (
-      <>
-        <div className="alert alert-danger" role="alert">
-          <i className="fas fa-exclamation-circle" style={{ color: '#666' }} />{' '}
-          &nbsp;
-          {message}
-        </div>
-      </>
+      <div className="alert alert-danger" role="alert">
+        <i className="fas fa-exclamation-circle" style={{ color: '#666' }} />{' '}
+        &nbsp;
+        {message}
+      </div>
     );
   };
 
@@ -92,23 +89,21 @@ class ShowMessages extends Component {
     const tableCustomProduct = syncCustomProduct.map((item, index) => {
       if (item.status) return null;
       return (
-        <>
-          <tr
-            key={index}
-            onClick={() => {
-              this.actionCollapseData(index);
-            }}
-          >
-            <th scope="row">{index + 1}</th>
-            <td>{item.name}</td>
-            <td>{item.price.regularPrice.amount.value}</td>
-            <td>{item.pos_qty}</td>
-            <td>{new Date(item.id).toDateString()}</td>
-            <td>
-              <span className="badge badge-pill badge-danger">error</span>
-            </td>
-          </tr>
-        </>
+        <tr
+          key={index}
+          onClick={() => {
+            this.actionCollapseData(index);
+          }}
+        >
+          <th scope="row">{index + 1}</th>
+          <td>{item.name}</td>
+          <td>{item.price.regularPrice.amount.value}</td>
+          <td>{item.pos_qty}</td>
+          <td>{new Date(item.id).toDateString()}</td>
+          <td>
+            <span className="badge badge-pill badge-danger">error</span>
+          </td>
+        </tr>
       );
     });
 
@@ -157,22 +152,20 @@ class ShowMessages extends Component {
     const tableCustomer = syncCustomer.map((item, index) => {
       if (item.status) return null;
       return (
-        <>
-          <tr
-            key={index}
-            onClick={() => {
-              this.actionCollapseData(index);
-            }}
-          >
-            <th scope="row">{index + 1}</th>
-            <td>{`${item.first_name} ${item.payload.customer.lastname}`}</td>
-            <td>{item.email}</td>
-            <td>{new Date(item.id).toDateString()}</td>
-            <td>
-              <span className="badge badge-pill badge-danger">error</span>
-            </td>
-          </tr>
-        </>
+        <tr
+          key={index}
+          onClick={() => {
+            this.actionCollapseData(index);
+          }}
+        >
+          <th scope="row">{index + 1}</th>
+          <td>{`${item.first_name} ${item.payload.customer.lastname}`}</td>
+          <td>{item.email}</td>
+          <td>{new Date(item.id).toDateString()}</td>
+          <td>
+            <span className="badge badge-pill badge-danger">error</span>
+          </td>
+        </tr>
       );
     });
     if (!syncCustomerStatus.errors)
@@ -183,34 +176,35 @@ class ShowMessages extends Component {
         </div>
       );
     return (
-      <table className="table">
-        <thead>
-          <tr>
-            {message ? (
-              <div className="alert alert-danger" role="alert">
-                <i
-                  className="fas fa-exclamation-circle"
-                  style={{ color: '#666' }}
-                />{' '}
-                &nbsp;
-                {message}
-              </div>
-            ) : null}
-            <th scope="col">#</th>
-            <th scope="col">Customer Name</th>
-            <th scope="col">Email</th>
-            <th scope="col">Create at</th>
-            <th scope="col">Status</th>
-          </tr>
-        </thead>
-        <tbody>{tableCustomer}</tbody>
-      </table>
+      <>
+        {message ? (
+          <div className="alert alert-danger" role="alert">
+            <i
+              className="fas fa-exclamation-circle"
+              style={{ color: '#666' }}
+            />{' '}
+            &nbsp;
+            {message}
+          </div>
+        ) : null}
+        <table className="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Customer Name</th>
+              <th scope="col">Email</th>
+              <th scope="col">Create at</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody>{tableCustomer}</tbody>
+        </table>
+      </>
     );
   };
 
   showTableGeneralConfigError = () => {
-    const { syncDataManager, syncManager } = this.props;
-    const { syncConfig } = syncDataManager;
+    const { syncManager } = this.props;
     const syncConfigStatus = syncManager.syncConfig;
     if (!syncConfigStatus.errors) {
       return (
@@ -220,10 +214,8 @@ class ShowMessages extends Component {
         </div>
       );
     }
-    // get message
-    console.log(syncConfig);
     const message =
-      syncConfig[0].value.message || 'Some reason sync config error !!!';
+      syncConfigStatus.message || 'Some reason sync config error !!!';
 
     return (
       <>

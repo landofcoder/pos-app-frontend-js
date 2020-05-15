@@ -55,8 +55,7 @@ class SyncScreen extends Component {
     } = setup;
     const allowNextButton =
       stateFetchingConfig === 1 &&
-      stateSynchronizingCategoriesAndProducts === 1 &&
-      stateSyncProductBarCodeInventory === 1;
+      stateSynchronizingCategoriesAndProducts === 1;
     return loading ? (
       <div>
         <div className="container center-loading">

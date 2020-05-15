@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { formatDistance } from 'date-fns';
 import { connect } from 'react-redux';
-import SyncCustomProductManager from './SyncCustomProductManager/SyncCustomProductManager';
-import SyncCustomerManager from './SyncCustomerManager/SyncCustomerManager';
-import SyncOrderManager from './SyncOrderManager/SyncOrderManager';
 import { syncDataClient } from '../../../actions/homeAction';
-import { showLogsAction } from '../../../actions/accountAction';
+import {
+  showLogsAction,
+  getSyncAllCustomerError,
+  getSyncAllCustomProductError,
+  getSyncStatusFromLocal
+} from '../../../actions/accountAction';
 
 import {
   ALL_PRODUCT_SYNC,
@@ -18,7 +20,10 @@ import Style from './sync-manager.scss';
 type Props = {
   syncDataClient: payload => void,
   syncManager: Object,
-  showLogsAction: (payload: Object) => void
+  showLogsAction: (payload: Object) => void,
+  getSyncAllCustomerError: () => void,
+  getSyncAllCustomProductError: () => void,
+  getSyncStatusFromLocal: () => void
 };
 class SyncManager extends Component {
   props: Props;
@@ -26,27 +31,26 @@ class SyncManager extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      viewSelected: 'syncOrder'
+      viewSelected: 'syncOrder',
+      intervalGetDataErrorId: null
     };
   }
 
-  renderSwitchShowUpSync = () => {
-    const { viewSelected } = this.state;
-    switch (viewSelected) {
-      case 'syncCustomProduct':
-        return <SyncCustomProductManager />;
-      case 'syncCustomer':
-        return <SyncCustomerManager />;
-      case 'syncOrder':
-        return <SyncOrderManager />;
-      default:
-        return null;
-    }
-  };
+  componentDidMount(): void {
+    const { getSyncStatusFromLocal } = this.props;
+    getSyncStatusFromLocal();
+    const getSyncOrderErrorId = setInterval(getSyncStatusFromLocal, 3000);
+    this.setState({ intervalGetDataErrorId: getSyncOrderErrorId });
+  }
+
+  componentWillUnmount(): void {
+    const { intervalGetDataErrorId } = this.state;
+    clearInterval(intervalGetDataErrorId);
+  }
 
   syncDataClientAction = type => {
     const { syncDataClient } = this.props;
-    syncDataClient(type);
+    syncDataClient({ type, syncAllNow: true });
   };
 
   viewSelectedAction = payload => {
@@ -77,13 +81,19 @@ class SyncManager extends Component {
   };
 
   actionSyncStatus = manager => {
-    const { syncManager } = this.props;
+    const {
+      syncManager,
+      getSyncAllCustomerError,
+      getSyncAllCustomProductError
+    } = this.props;
     switch (manager.name) {
       case CUSTOMERS_SYNC:
+        getSyncAllCustomerError();
         return syncManager.loadingSyncCustomer;
       case ALL_PRODUCT_SYNC:
         return syncManager.loadingSyncAllProduct;
       case CUSTOM_PRODUCT_SYNC:
+        getSyncAllCustomProductError();
         return syncManager.loadingSyncCustomProducts;
       case GENERAL_CONFIG_SYNC:
         return syncManager.loadingSyncConfig;
@@ -269,8 +279,19 @@ class SyncManager extends Component {
 }
 function mapDispatchToProps(dispatch) {
   return {
-    syncDataClient: payload => dispatch(syncDataClient({ type: payload })),
-    showLogsAction: payload => dispatch(showLogsAction(payload))
+    syncDataClient: payload =>
+      dispatch(
+        syncDataClient({
+          type: payload.type,
+          id: 'syncManger',
+          syncAllNow: payload.syncAllNow
+        })
+      ),
+    showLogsAction: payload => dispatch(showLogsAction(payload)),
+    getSyncAllCustomerError: () => dispatch(getSyncAllCustomerError()),
+    getSyncAllCustomProductError: () =>
+      dispatch(getSyncAllCustomProductError()),
+    getSyncStatusFromLocal: () => dispatch(getSyncStatusFromLocal())
   };
 }
 function mapStateToProps(state) {

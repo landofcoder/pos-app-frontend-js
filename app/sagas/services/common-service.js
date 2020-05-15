@@ -27,7 +27,7 @@ export async function getShopInfoService() {
     data = await response.json();
   } catch (data) {
     // eslint-disable-next-line no-throw-literal
-    throw { message: 'Server not response', data: {} };
+    throw { message: 'Error connection to server', data: {} };
   }
 
   const { cashier_info, common_config, currency_code, receipt } = data;
@@ -78,7 +78,7 @@ export async function getAllCategoriesService() {
     data = await response.json();
   } catch (e) {
     // eslint-disable-next-line no-throw-literal
-    throw { message: 'error connection to server', data: {} };
+    throw { message: 'Error connection to server', data: {} };
   }
   if (data.message) {
     // eslint-disable-next-line no-throw-literal

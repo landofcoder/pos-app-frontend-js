@@ -586,7 +586,7 @@ function* getOrderHistory() {
 
   yield put({
     type: types.RECEIVED_ORDER_HISTORY_ACTION,
-    payload: data.items,
+    payload: data.items
   });
   yield put({ type: types.TURN_OFF_LOADING_ORDER_HISTORY });
 }
@@ -653,7 +653,6 @@ function* getDiscountForCheckoutSaga() {
         listGiftCard
       });
     } catch (e) {
-      console.log('error get discount from server');
       const sumTotalPriceResult = sumCartTotalPrice(cartCurrentObjResult);
       result = {
         cartTotals: {
@@ -818,8 +817,9 @@ function* writeCategoriesAndProductsToLocal() {
 }
 
 function* writeProductBarCodeInventoryToLocal() {
-  yield fetchingAndWriteProductBarCodeInventory();
-
+  try {
+    yield fetchingAndWriteProductBarCodeInventory();
+  } catch (e) {}
   // Update done step 3
   yield put({
     type: types.SETUP_UPDATE_STATE_SYNC_PRODUCT_BAR_CODE_INVENTORY,

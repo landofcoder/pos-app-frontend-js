@@ -392,7 +392,7 @@ export default class Pos extends Component<Props, State> {
               className={
                 toggleModalCalculatorStatus
                   ? ModalStyle.modalContentLg
-                  : ModalStyle.modalContent
+                  : ModalStyle.modalContentMd
               }
             >
               {isShowCashPaymentModel ? <CashPanel /> : <></>}

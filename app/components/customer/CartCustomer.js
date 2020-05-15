@@ -87,7 +87,7 @@ class CartCustomer extends Component<Props> {
             className={ModalStyle.modal}
             style={{ display: isOpenFindCustomer ? 'block' : 'none' }}
           >
-            <div className={ModalStyle.modalContent}>
+            <div className={ModalStyle.modalContentMd}>
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">Choose customer</h5>

@@ -1,9 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import {
-  updateIsInternetConnected,
-  syncDataClient
-} from '../actions/homeAction';
+import { updateIsInternetConnected, cronJobs } from '../actions/homeAction';
 import { checkLoginBackground } from '../actions/authenAction';
 import Login from '../components/Login/Login';
 import {
@@ -23,7 +20,7 @@ type Props = {
   checkLoginBackground: () => void,
   switchingMode: string,
   flagSwitchModeCounter: number,
-  syncDataClient: () => void
+  cronJobs: () => void
 };
 
 class App extends React.Component<Props> {
@@ -31,11 +28,12 @@ class App extends React.Component<Props> {
 
   state = {
     counterMode: 0,
-    frameId: null
+    frameId: null,
+    runFrame: false
   };
 
   componentDidMount() {
-    const { updateIsInternetConnected, syncDataClient } = this.props;
+    const { updateIsInternetConnected } = this.props;
 
     // Listen online and offline mode
     window.addEventListener('online', this.alertOnlineStatus);
@@ -43,17 +41,12 @@ class App extends React.Component<Props> {
 
     // Get current online mode
     updateIsInternetConnected(navigator.onLine);
-
-    const loopStep = 1000;
-    // Start cron
-
-    const frameId = startLoop(syncDataClient, loopStep);
-    this.setState({ frameId });
   }
 
   componentWillUnmount(): void {
     const { frameId } = this.state;
     stopLoop(frameId);
+    this.setState({ runFrame: false });
   }
 
   alertOnlineStatus = event => {
@@ -70,10 +63,24 @@ class App extends React.Component<Props> {
       children,
       switchingMode,
       checkLoginBackground,
-      flagSwitchModeCounter
+      flagSwitchModeCounter,
+      cronJobs
     } = this.props;
-    const { counterMode } = this.state;
-
+    const loopStep = 1000;
+    // Start cron
+    const { counterMode, runFrame } = this.state;
+    // truong hop vao pos page se chay frame khi frame truoc do chua bat
+    if (switchingMode === CHILDREN && !runFrame) {
+      const frameId = startLoop(cronJobs, loopStep);
+      this.setState({ frameId, runFrame: true });
+    }
+    // truong hop vao screen dieu kien se phai tat frame khi frame truoc do chua tat
+    else if (switchingMode !== CHILDREN && runFrame) {
+      console.log('stop cron');
+      const { frameId } = this.state;
+      stopLoop(frameId);
+      this.setState({ runFrame: false });
+    }
     // Make sure checkLoginBackground just run when flagSwitchModeCounter count up
     if (counterMode !== flagSwitchModeCounter) {
       this.setState({ counterMode: flagSwitchModeCounter });
@@ -113,7 +120,7 @@ function mapStateToProps(state) {
   return {
     token: state.authenRd.token,
     switchingMode: state.mainRd.switchingMode,
-    flagSwitchModeCounter: state.mainRd.flagSwitchModeCounter,
+    flagSwitchModeCounter: state.mainRd.flagSwitchModeCounter
   };
 }
 
@@ -122,7 +129,7 @@ function mapDispatchToProps(dispatch) {
     updateIsInternetConnected: payload =>
       dispatch(updateIsInternetConnected(payload)),
     checkLoginBackground: () => dispatch(checkLoginBackground()),
-    syncDataClient: () => dispatch(syncDataClient())
+    cronJobs: () => dispatch(cronJobs())
   };
 }
 
