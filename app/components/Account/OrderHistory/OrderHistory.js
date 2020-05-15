@@ -56,10 +56,24 @@ type Props = {
 class OrderHistory extends Component<Props> {
   props: Props;
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      intervalGetDataErrorId: null
+    };
+  }
+
   componentDidMount(): void {
     const { getOrderHistory, getSyncAllOrderError } = this.props;
     getOrderHistory();
     getSyncAllOrderError();
+    const getSyncOrderErrorId = setInterval(getSyncAllOrderError, 3000);
+    this.setState({ intervalGetDataErrorId: getSyncOrderErrorId });
+  }
+
+  componentWillUnmount(): void {
+    const { intervalGetDataErrorId } = this.state;
+    clearInterval(intervalGetDataErrorId);
   }
 
   getOrderHistoryDetail = saleOrderId => {

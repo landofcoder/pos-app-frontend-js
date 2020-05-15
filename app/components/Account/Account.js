@@ -7,14 +7,7 @@ import CashierInfo from './CashierInfo/CashierInfo';
 import ConnectDevices from './ConnectDevices/ConnectDevices';
 import SyncManager from './SyncManager/SyncManager';
 import { POS } from '../../constants/routes.json';
-import {
-  getSyncAllOrderError,
-  getSyncStatusFromLocal
-} from '../../actions/accountAction';
 
-type Props = {
-  getStatusSync: () => void
-};
 class Account extends Component {
   props: Props;
 
@@ -23,11 +16,6 @@ class Account extends Component {
     this.state = {
       viewSelected: 'ordersHistory'
     };
-  }
-
-  componentDidMount() {
-    const { getStatusSync } = this.props;
-    getStatusSync();
   }
 
   switchingComponent = payload => {
@@ -117,9 +105,7 @@ class Account extends Component {
 }
 
 function mapDispatchToProps(dispatch) {
-  return {
-    getStatusSync: () => dispatch(getSyncStatusFromLocal())
-  };
+  return {};
 }
 function mapStateToProps(state) {
   return {

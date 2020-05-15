@@ -5,7 +5,8 @@ import { syncDataClient } from '../../../actions/homeAction';
 import {
   showLogsAction,
   getSyncAllCustomerError,
-  getSyncAllCustomProductError
+  getSyncAllCustomProductError,
+  getSyncStatusFromLocal
 } from '../../../actions/accountAction';
 
 import {
@@ -21,7 +22,8 @@ type Props = {
   syncManager: Object,
   showLogsAction: (payload: Object) => void,
   getSyncAllCustomerError: () => void,
-  getSyncAllCustomProductError: () => void
+  getSyncAllCustomProductError: () => void,
+  getSyncStatusFromLocal: () => void
 };
 class SyncManager extends Component {
   props: Props;
@@ -29,8 +31,21 @@ class SyncManager extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      viewSelected: 'syncOrder'
+      viewSelected: 'syncOrder',
+      intervalGetDataErrorId: null
     };
+  }
+
+  componentDidMount(): void {
+    const { getSyncStatusFromLocal } = this.props;
+    getSyncStatusFromLocal();
+    const getSyncOrderErrorId = setInterval(getSyncStatusFromLocal, 3000);
+    this.setState({ intervalGetDataErrorId: getSyncOrderErrorId });
+  }
+
+  componentWillUnmount(): void {
+    const { intervalGetDataErrorId } = this.state;
+    clearInterval(intervalGetDataErrorId);
   }
 
   syncDataClientAction = type => {
@@ -274,14 +289,16 @@ function mapDispatchToProps(dispatch) {
       ),
     showLogsAction: payload => dispatch(showLogsAction(payload)),
     getSyncAllCustomerError: () => dispatch(getSyncAllCustomerError()),
-    getSyncAllCustomProductError: () => dispatch(getSyncAllCustomProductError())
+    getSyncAllCustomProductError: () =>
+      dispatch(getSyncAllCustomProductError()),
+    getSyncStatusFromLocal: () => dispatch(getSyncStatusFromLocal())
   };
 }
 function mapStateToProps(state) {
   return {
     isShowLogsMessages: state.mainRd.isShowLogsMessages,
     typeShowLogsMessages: state.mainRd.typeShowLogsMessages,
-    syncManager: state.authenRd.syncManager,
+    syncManager: state.authenRd.syncManager
   };
 }
 export default connect(

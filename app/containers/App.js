@@ -28,11 +28,12 @@ class App extends React.Component<Props> {
 
   state = {
     counterMode: 0,
-    frameId: null
+    frameId: null,
+    runFrame: false
   };
 
   componentDidMount() {
-    const { updateIsInternetConnected, cronJobs, switchingMode } = this.props;
+    const { updateIsInternetConnected } = this.props;
 
     // Listen online and offline mode
     window.addEventListener('online', this.alertOnlineStatus);
@@ -40,18 +41,12 @@ class App extends React.Component<Props> {
 
     // Get current online mode
     updateIsInternetConnected(navigator.onLine);
-
-    const loopStep = 1000;
-    // Start cron
-    if (switchingMode === CHILDREN) {
-      const frameId = startLoop(cronJobs, loopStep);
-      this.setState({ frameId });
-    }
   }
 
   componentWillUnmount(): void {
     const { frameId } = this.state;
     stopLoop(frameId);
+    this.setState({ runFrame: false });
   }
 
   alertOnlineStatus = event => {
@@ -72,13 +67,17 @@ class App extends React.Component<Props> {
     } = this.props;
     const loopStep = 1000;
     // Start cron
-    const { counterMode } = this.state;
-    if (switchingMode === CHILDREN) {
+    const { counterMode, runFrame } = this.state;
+    // truong hop vao pos page se chay frame khi frame truoc do chua bat
+    if (switchingMode === CHILDREN && !runFrame) {
       const frameId = startLoop(cronJobs, loopStep);
-      this.setState({ frameId });
-    } else {
+      this.setState({ frameId, runFrame: true });
+    }
+    // truong hop vao screen dieu kien se phai tat frame khi frame truoc do chua tat
+    else if (switchingMode !== CHILDREN && runFrame) {
       const { frameId } = this.state;
       stopLoop(frameId);
+      this.setState({ runFrame: false });
     }
     // Make sure checkLoginBackground just run when flagSwitchModeCounter count up
     if (counterMode !== flagSwitchModeCounter) {
