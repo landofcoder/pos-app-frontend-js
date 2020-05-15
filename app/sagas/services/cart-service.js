@@ -10,8 +10,7 @@ export async function getDiscountForQuoteService(payload) {
   const formDataCart = new FormData();
   formDataCart.append('param', JSON.stringify([]));
   let data;
-  const { cart, config, discountCode, listGiftCard } = payload;
-  const customerId = config.default_guest_checkout.customer_id || null;
+  const { cart, discountCode, listGiftCard, customerId } = payload;
   try {
     const response = await fetch(
       `${apiGatewayPath}/cashier/customer-checkout/get-discount-quote`,
@@ -40,9 +39,9 @@ export async function getDiscountForQuoteService(payload) {
     );
     data = await response.json();
     // eslint-disable-next-line no-throw-literal
-    if (!data.cartId || !data.cartTotals)
+    if (!data.cartId || !data.cartTotals || data.message)
       // eslint-disable-next-line no-throw-literal
-      throw { message: 'Can not create Cart', data: {} };
+      throw { message: data.message || 'Can not create Cart', data: {} };
     return data;
   } catch (e) {
     // eslint-disable-next-line no-throw-literal
@@ -95,6 +94,8 @@ export async function syncOrderService(params) {
     );
     const data = await response.json();
     if (data.message || data.errors || !data.status) {
+      console.log(data.message || 'Can not create order');
+
       // eslint-disable-next-line no-throw-literal
       throw {
         message: data.message || 'Can not create order',

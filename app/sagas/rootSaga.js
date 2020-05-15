@@ -649,7 +649,9 @@ function* getDiscountForCheckoutSaga() {
     try {
       result = yield call(getDiscountForQuoteService, {
         cart: cartCurrentObjResult.data,
-        config: posSystemConfigResult,
+        customerId:
+          cartCurrentObjResult.customer.id ||
+          posSystemConfigResult.default_guest_checkout.customer_id,
         discountCode,
         listGiftCard
       });
