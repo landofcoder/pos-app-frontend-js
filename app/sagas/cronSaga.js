@@ -46,6 +46,7 @@ import { serviceTypeGroupManager } from '../common/sync-group-manager';
 
 const cashierInfo = state => state.authenRd.cashierInfo;
 const detailOutlet = state => state.mainRd.generalConfig.detail_outlet;
+const syncManager = state => state.authenRd.syncManager;
 
 function* getSyncAllCustomProductError() {
   // get all custom product in local db
@@ -122,8 +123,6 @@ function* getSyncStatusFromLocal() {
     payload: productSyncStatus
   });
 }
-
-const syncManager = state => state.authenRd.syncManager;
 
 function* syncCustomer(customerName, syncAllNow) {
   const timeAccept = yield checkTimeToAcceptSyncing(types.CUSTOMERS_SYNC);
@@ -461,7 +460,6 @@ function* checkTimeToAcceptSyncing(typeID) {
 }
 
 function* cronJobs() {
-
   // get token
   yield reloadTokenFromLoggedLocalDB();
   // run sync action
