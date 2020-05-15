@@ -94,7 +94,7 @@ class SignUpCustomer extends Component {
           className={ModalStyle.modal}
           style={{ display: isOpenSignUpCustomer ? 'block' : 'none' }}
         >
-          <div className={ModalStyle.modalContent}>
+          <div className={ModalStyle.modalContentMd}>
             <div className="modal-content">
               <form onSubmit={this.handleSignUpAction}>
                 <div className="modal-header">

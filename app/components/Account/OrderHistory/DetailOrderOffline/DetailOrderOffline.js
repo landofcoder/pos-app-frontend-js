@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { format } from 'date-fns';
 import Styles from '../DetailOrder/detail-order.scss';
 import StylesOrder from '../order-history.scss';
 import { formatCurrencyCode } from '../../../../common/settings';
@@ -78,7 +79,12 @@ class DetailOrderOffline extends Component {
                             <div className={Styles.wrapContent}>
                               <div className="d-flex justify-content-between pr-1">
                                 <span>Order Date: </span>
-                                <span>{orderHistoryDetail.created_at}</span>
+                                <span>
+                                  {format(
+                                    new Date(orderHistoryDetail.created_at),
+                                    'yyyy-MM-dd hh:m:s'
+                                  )}
+                                </span>
                               </div>
                               <div className="d-flex justify-content-between pr-1">
                                 <span>Location: </span>

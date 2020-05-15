@@ -180,28 +180,30 @@ class ShowMessages extends Component {
         </div>
       );
     return (
-      <table className="table">
-        <thead>
-          <tr>
-            {message ? (
-              <div className="alert alert-danger" role="alert">
-                <i
-                  className="fas fa-exclamation-circle"
-                  style={{ color: '#666' }}
-                />{' '}
-                &nbsp;
-                {message}
-              </div>
-            ) : null}
-            <th scope="col">#</th>
-            <th scope="col">Customer Name</th>
-            <th scope="col">Email</th>
-            <th scope="col">Create at</th>
-            <th scope="col">Status</th>
-          </tr>
-        </thead>
-        <tbody>{tableCustomer}</tbody>
-      </table>
+      <>
+        {message ? (
+          <div className="alert alert-danger" role="alert">
+            <i
+              className="fas fa-exclamation-circle"
+              style={{ color: '#666' }}
+            />{' '}
+            &nbsp;
+            {message}
+          </div>
+        ) : null}
+        <table className="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Customer Name</th>
+              <th scope="col">Email</th>
+              <th scope="col">Create at</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody>{tableCustomer}</tbody>
+        </table>
+      </>
     );
   };
 
