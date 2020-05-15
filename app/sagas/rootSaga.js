@@ -654,7 +654,6 @@ function* getDiscountForCheckoutSaga() {
         listGiftCard
       });
     } catch (e) {
-      console.log('error get discount from server');
       const sumTotalPriceResult = sumCartTotalPrice(cartCurrentObjResult);
       result = {
         cartTotals: {

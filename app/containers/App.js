@@ -63,7 +63,8 @@ class App extends React.Component<Props> {
       children,
       switchingMode,
       checkLoginBackground,
-      flagSwitchModeCounter
+      flagSwitchModeCounter,
+      cronJobs
     } = this.props;
     const loopStep = 1000;
     // Start cron
@@ -75,6 +76,7 @@ class App extends React.Component<Props> {
     }
     // truong hop vao screen dieu kien se phai tat frame khi frame truoc do chua tat
     else if (switchingMode !== CHILDREN && runFrame) {
+      console.log('stop cron');
       const { frameId } = this.state;
       stopLoop(frameId);
       this.setState({ runFrame: false });

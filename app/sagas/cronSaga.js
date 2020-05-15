@@ -252,7 +252,7 @@ function* syncCustomProduct(customProductID, syncAllNow) {
 }
 
 function* syncOrder(orderId, syncAllNow) {
-  const timeAccept = yield checkTimeToAcceptSyncing(types.ALL_ORDER_SYNC);
+  const timeAccept = yield checkTimeToAcceptSyncing(types.SYNC_ORDER_LIST);
   if (!orderId && !timeAccept && !syncAllNow) {
     return null;
   }
@@ -377,15 +377,11 @@ function* syncGeneralConfig(configName, syncAllNow) {
 
 function* checkTimeToAcceptSyncing(typeID) {
   const nowTime = Date.now();
-  const syncTimeAllProduct = yield getLastUpdateTime(types.ALL_PRODUCT_SYNC);
-  const syncTimeCustomProduct = yield getLastUpdateTime(
-    types.CUSTOM_PRODUCT_SYNC
-  );
-  const syncTimeCustomer = yield getLastUpdateTime(types.CUSTOMERS_SYNC);
-  const syncTimeGeneralConfig = yield getLastUpdateTime(
-    types.GENERAL_CONFIG_SYNC
-  );
-  const config = yield getGeneralConfigFromLocal();
+  let syncTimeAllProduct;
+  let syncTimeCustomProduct;
+  let syncTimeCustomer;
+  let syncTimeGeneralConfig;
+  let syncTimeAllOrder;
   let timeConfig;
   // default time
   let allProducts = 5;
@@ -393,6 +389,8 @@ function* checkTimeToAcceptSyncing(typeID) {
   let allCustomersSync = 5;
   let generalConfigSync = 5;
   let allOrdersSync = 5;
+  // get config time from localdb
+  const config = yield getGeneralConfigFromLocal();
   try {
     timeConfig = config[0].value.common_config.time_synchronized_for_modules;
     allProducts = timeConfig.all_products || 5;
@@ -412,8 +410,10 @@ function* checkTimeToAcceptSyncing(typeID) {
   } = syncManagerResult;
 
   // truong hop sync dang hoat dong va chua duoc hoan tat, ham check sync khong nen chay them ham sync them lan nua
+
   switch (typeID) {
     case types.ALL_PRODUCT_SYNC:
+      syncTimeAllProduct = yield getLastUpdateTime(types.ALL_PRODUCT_SYNC);
       if (
         nowTime - syncTimeAllProduct > allProducts * 60000 &&
         !loadingSyncAllProduct
@@ -422,6 +422,9 @@ function* checkTimeToAcceptSyncing(typeID) {
       }
       break;
     case types.CUSTOM_PRODUCT_SYNC:
+      syncTimeCustomProduct = yield getLastUpdateTime(
+        types.CUSTOM_PRODUCT_SYNC
+      );
       if (
         nowTime - syncTimeCustomProduct > allCustomProduct * 60000 &&
         !loadingSyncCustomProducts
@@ -430,6 +433,7 @@ function* checkTimeToAcceptSyncing(typeID) {
       }
       break;
     case types.CUSTOMERS_SYNC:
+      syncTimeCustomer = yield getLastUpdateTime(types.CUSTOMERS_SYNC);
       if (
         nowTime - syncTimeCustomer > allCustomersSync * 60000 &&
         !loadingSyncCustomer
@@ -438,6 +442,9 @@ function* checkTimeToAcceptSyncing(typeID) {
       }
       break;
     case types.GENERAL_CONFIG_SYNC:
+      syncTimeGeneralConfig = yield getLastUpdateTime(
+        types.GENERAL_CONFIG_SYNC
+      );
       if (
         nowTime - syncTimeGeneralConfig > generalConfigSync * 60000 &&
         !loadingSyncConfig
@@ -445,9 +452,10 @@ function* checkTimeToAcceptSyncing(typeID) {
         return true;
       }
       break;
-    case types.ALL_ORDER_SYNC:
+    case types.SYNC_ORDER_LIST:
+      syncTimeAllOrder = yield getLastUpdateTime(types.SYNC_ORDER_LIST);
       if (
-        nowTime - syncTimeGeneralConfig > allOrdersSync * 60000 &&
+        nowTime - syncTimeAllOrder > allOrdersSync * 60000 &&
         !loadingSyncOrder
       ) {
         return true;

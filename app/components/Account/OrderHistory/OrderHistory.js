@@ -343,7 +343,6 @@ class OrderHistory extends Component<Props> {
               })}
               {/*order service api*/}
               {orderHistory.map((item, index) => {
-                console.log(item);
                 if (item.local) {
                   return (
                     <tr
