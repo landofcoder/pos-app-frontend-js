@@ -139,7 +139,7 @@ class OrderHistory extends Component<Props> {
         <span className="badge badge-pill badge-secondary">not synced</span>
       );
     }
-    if (!manager.success) {
+    if (!manager.status) {
       return <span className="badge badge-danger badge-pill">error</span>;
     }
     return <span className="badge badge-success badge-pill">success</span>;
@@ -308,7 +308,7 @@ class OrderHistory extends Component<Props> {
                       <td>--</td>
                       <td>{formatCurrencyCode(item.grand_total)}</td>
                       <td>{this.renderLastTime(item)}</td>
-                      <td>{item.success ? item.success : '--'}</td>
+                      <td>{item.status ? item.status : '--'}</td>
                       <td>{this.renderStatusSync(item)}</td>
                       {/*<td>*/}
                       {/*  {isLoadingSyncAllOrder ? (*/}
@@ -358,7 +358,7 @@ class OrderHistory extends Component<Props> {
                       <td>--</td>
                       <td>{formatCurrencyCode(item.grand_total)}</td>
                       <td>{this.renderLastTime(item)}</td>
-                      <td>{item.success ? item.success : '--'}</td>
+                      <td>{item.status ? item.status : '--'}</td>
                       <td>{this.renderStatusSync(item)}</td>
                       <td>
                         <button

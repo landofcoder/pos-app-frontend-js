@@ -71,8 +71,8 @@ export async function createOrderLocal(payload) {
 }
 
 export async function syncOrderService(params) {
-  console.log('payload in sync order service ');
-  console.log(params);
+  console.log('sync order');
+
   try {
     const response = await fetch(
       `${apiGatewayPath}/cashier/customer-checkout/sync-order`,
