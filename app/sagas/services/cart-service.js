@@ -1,4 +1,3 @@
-import { format } from 'date-fns';
 import { createOrders } from '../../reducers/db/sync_orders';
 import { apiGatewayPath } from '../../../configs/env/config.main';
 
@@ -60,13 +59,13 @@ export async function createOrderLocal(payload) {
   const { cartCurrentResult, orderPreparingCheckoutResult } = payload;
   console.log('dd1:', cartCurrentResult);
   console.log('dd2:', orderPreparingCheckoutResult);
-  console.log('dd3-date:', format(new Date(), 'yyyy-MM-dd hh:m:s'));
+  console.log('dd3-date:', Date.now());
   const newOrder = {
     id: Date.now(),
     grand_total: orderPreparingCheckoutResult.totals.grand_total,
     items: payload,
     local: true,
-    created_at: format(new Date(), 'yyyy-MM-dd hh:m:s')
+    created_at: Date.now()
   };
   const res = await createOrders(newOrder);
   console.log('response:', res);

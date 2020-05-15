@@ -28,8 +28,8 @@ const configureStore = (initialState?: counterStateType) => {
   // Logging Middleware
   const logger = createLogger({
     level: 'info',
-    collapsed: true
-    // predicate: (getState, action) => action.type !== CRON_JOBS_ACTION
+    collapsed: true,
+    predicate: (getState, action) => action.type !== CRON_JOBS_ACTION
     // this line to disable log to console when dispatch CRON_JOBS_ACTION action
     // predicate: (getState, action) => action.type !== CRON_JOBS_ACTION
   });
