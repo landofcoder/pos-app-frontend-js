@@ -216,7 +216,6 @@ class ShowMessages extends Component {
         </div>
       );
     }
-    // get message
     const message =
       syncConfigStatus.message || 'Some reason sync config error !!!';
 
