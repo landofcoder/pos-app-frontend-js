@@ -61,7 +61,6 @@ const authenRd = (state = initialState, action) =>
         draft.loadingWorkPlace = false;
         break;
       case typesAuthen.ERROR_LOGIN:
-        console.log('error payload:', action.payload);
         draft.login.loginResult = action.payload;
         break;
       case typesAuthen.GET_APP_INFO_FAILURE:

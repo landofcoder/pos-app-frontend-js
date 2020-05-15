@@ -817,9 +817,7 @@ function* writeCategoriesAndProductsToLocal() {
 }
 
 function* writeProductBarCodeInventoryToLocal() {
-  try {
-    yield fetchingAndWriteProductBarCodeInventory();
-  } catch (e) {}
+  yield fetchingAndWriteProductBarCodeInventory();
   // Update done step 3
   yield put({
     type: types.SETUP_UPDATE_STATE_SYNC_PRODUCT_BAR_CODE_INVENTORY,
