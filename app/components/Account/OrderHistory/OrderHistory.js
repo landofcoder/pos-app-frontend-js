@@ -67,7 +67,7 @@ class OrderHistory extends Component<Props> {
     const { getOrderHistory, getSyncAllOrderError } = this.props;
     getOrderHistory();
     getSyncAllOrderError();
-    const getSyncOrderErrorId = setInterval(getSyncAllOrderError, 2000);
+    const getSyncOrderErrorId = setInterval(getSyncAllOrderError, 10000);
     this.setState({ intervalGetDataErrorId: getSyncOrderErrorId });
   }
 

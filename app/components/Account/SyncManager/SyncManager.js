@@ -38,7 +38,7 @@ class SyncManager extends Component {
   componentDidMount(): void {
     const { getSyncStatusFromLocal } = this.props;
     getSyncStatusFromLocal();
-    const getSyncOrderErrorId = setInterval(getSyncStatusFromLocal, 2000);
+    const getSyncOrderErrorId = setInterval(getSyncStatusFromLocal, 10000);
     this.setState({ intervalGetDataErrorId: getSyncOrderErrorId });
   }
 
