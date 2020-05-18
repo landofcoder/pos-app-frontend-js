@@ -16,7 +16,8 @@ import { syncCustomProductAPI } from './services/product-service';
 import {
   getAllTblCustomer,
   getCustomerByName,
-  updateCustomerById
+  updateCustomerById,
+  replaceCustomerById
 } from '../reducers/db/sync_customers';
 import {
   getAllTblCustomProduct,
@@ -150,8 +151,9 @@ function* syncCustomer(customerName, syncAllNow) {
     try {
       const result = yield call(signUpCustomerService, customer);
       if (result || result.status) {
+        const newCustomerId = result.data.data.createCustomer.customer.id;
         customer.status = true;
-        yield updateCustomerById(customer);
+        yield replaceCustomerById(customer, newCustomerId);
       } else {
         // eslint-disable-next-line no-throw-literal
         throw { message: result.message || 'Cannot create customer' };

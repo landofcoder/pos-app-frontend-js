@@ -440,7 +440,10 @@ function* getSearchCustomer(payload) {
   const searchResult = yield call(searchCustomer, payload);
 
   const searchResultByName = yield call(searchCustomerByName, payload);
-  const searchDbResult = yield call(searchCustomerDbService, payload);
+  let searchDbResult = yield call(searchCustomerDbService, payload);
+  console.log('before', searchDbResult);
+  searchDbResult = searchDbResult.map(item => item.payload.customer);
+  console.log('after', searchDbResult);
   const mergeArray = searchResult.items.concat(
     searchResultByName.items,
     searchDbResult

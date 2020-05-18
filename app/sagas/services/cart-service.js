@@ -1,5 +1,6 @@
 import { createOrders } from '../../reducers/db/sync_orders';
 import { apiGatewayPath } from '../../../configs/env/config.main';
+import { updateCustomerOrderListById } from '../../reducers/db/sync_customers';
 
 /**
  * Get discount and info for new quote
@@ -59,8 +60,15 @@ export async function createOrderLocal(payload) {
   console.log('dd1:', cartCurrentResult);
   console.log('dd2:', orderPreparingCheckoutResult);
   console.log('dd3-date:', Date.now());
+  const idOrder = Date.now();
+  const customer = Object.assign({}, cartCurrentResult.customer);
+  // truong hop la customer va customer do chua duoc dong bo
+  if (!cartCurrentResult.isGuestCustomer && !customer.status) {
+    // luu order id vao customer do
+    await updateCustomerOrderListById(customer, idOrder);
+  }
   const newOrder = {
-    id: Date.now(),
+    id: idOrder,
     grand_total: orderPreparingCheckoutResult.totals.grand_total,
     items: payload,
     local: true,
