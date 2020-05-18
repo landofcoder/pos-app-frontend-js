@@ -59,7 +59,8 @@ function* resolveCustomerIdForOrder(customer) {
     const orderResult = yield getOrderById(item.orderId);
     const order = orderResult[0];
     order.items.cartCurrentResult.customer = customerResult.payload.customer;
-    yield updateOrderById(order);
+    // update order with no change time
+    yield updateOrderById(order, true);
   }
   yield updateCustomerOrderListById(customer);
 }
