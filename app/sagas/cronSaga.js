@@ -54,15 +54,11 @@ const syncManager = state => state.authenRd.syncManager;
 function* resolveCustomerIdForOrder(customer) {
   const customerResult = yield call(getCustomerById, customer.id);
   const { orderList } = customerResult;
-  console.log(customerResult);
-  console.log(orderList);
   // eslint-disable-next-line no-restricted-syntax
   for (const item of orderList) {
     const orderResult = yield getOrderById(item.orderId);
     const order = orderResult[0];
-    console.log('search order', order);
     order.items.cartCurrentResult.customer = customerResult.payload.customer;
-    console.log('order after update id', order);
     yield updateOrderById(order);
   }
   yield updateCustomerOrderListById(customer);
