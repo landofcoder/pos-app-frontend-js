@@ -76,16 +76,18 @@ export async function replaceCustomerById(customer, newCustomerId) {
   }
 }
 
-export async function updateCustomerOrderListById(customer, idOrder) {
+export async function updateCustomerOrderListById(customer, orderId) {
   // eslint-disable-next-line no-param-reassign
   const tbl = db.table(table);
   try {
     const customerResult = await tbl.get({ id: customer.id });
     if (customerResult) {
-      if (customerResult.orderList) {
-        customerResult.orderList.push({ idOrder });
+      if (!orderId) {
+        customerResult.orderList = null;
+      } else if (customerResult.orderList) {
+        customerResult.orderList.push({ orderId });
       } else {
-        customerResult.orderList = [{ idOrder }];
+        customerResult.orderList = [{ orderId }];
       }
       await tbl.update(customer.id, customerResult);
       return true;
@@ -99,9 +101,14 @@ export async function updateCustomerOrderListById(customer, idOrder) {
 }
 
 export async function getCustomerByName(name) {
-  const productTbl = db.table(table);
+  const customerTbl = db.table(table);
   const result = [];
-  const resultName = await productTbl.where({ first_name: name }).toArray();
-  const resultEmail = await productTbl.where({ email: name }).toArray();
+  const resultName = await customerTbl.where({ first_name: name }).toArray();
+  const resultEmail = await customerTbl.where({ email: name }).toArray();
   return result.concat(resultName, resultEmail);
+}
+
+export async function getCustomerById(customerId) {
+  const customerTbl = db.table(table);
+  return customerTbl.get({ id: customerId });
 }

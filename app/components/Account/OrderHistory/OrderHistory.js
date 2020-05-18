@@ -134,15 +134,13 @@ class OrderHistory extends Component<Props> {
           &nbsp;Syncing
         </div>
       );
-    if (!manager.update_at) {
-      return (
-        <span className="badge badge-pill badge-secondary">not synced</span>
-      );
+    if (manager.status === true) {
+      return <span className="badge badge-success badge-pill">success</span>;
     }
-    if (!manager.status) {
+    if (manager.status === false || manager.message) {
       return <span className="badge badge-danger badge-pill">error</span>;
     }
-    return <span className="badge badge-success badge-pill">success</span>;
+    return <span className="badge badge-pill badge-secondary">not synced</span>;
   };
 
   actionDetailOrder = () => {

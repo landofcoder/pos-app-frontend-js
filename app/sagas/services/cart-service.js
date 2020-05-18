@@ -60,15 +60,15 @@ export async function createOrderLocal(payload) {
   console.log('dd1:', cartCurrentResult);
   console.log('dd2:', orderPreparingCheckoutResult);
   console.log('dd3-date:', Date.now());
-  const idOrder = Date.now();
+  const orderId = Date.now();
   const customer = Object.assign({}, cartCurrentResult.customer);
   // truong hop la customer va customer do chua duoc dong bo
   if (!cartCurrentResult.isGuestCustomer && !customer.status) {
     // luu order id vao customer do
-    await updateCustomerOrderListById(customer, idOrder);
+    await updateCustomerOrderListById(customer, orderId);
   }
   const newOrder = {
-    id: idOrder,
+    id: orderId,
     grand_total: orderPreparingCheckoutResult.totals.grand_total,
     items: payload,
     local: true,

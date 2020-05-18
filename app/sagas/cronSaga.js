@@ -17,7 +17,9 @@ import {
   getAllTblCustomer,
   getCustomerByName,
   updateCustomerById,
-  replaceCustomerById
+  replaceCustomerById,
+  getCustomerById,
+  updateCustomerOrderListById
 } from '../reducers/db/sync_customers';
 import {
   getAllTblCustomProduct,
@@ -49,6 +51,22 @@ const cashierInfo = state => state.authenRd.cashierInfo;
 const detailOutlet = state => state.mainRd.generalConfig.detail_outlet;
 const syncManager = state => state.authenRd.syncManager;
 
+function* resolveCustomerIdForOrder(customer) {
+  const customerResult = yield call(getCustomerById, customer.id);
+  const { orderList } = customerResult;
+  console.log(customerResult);
+  console.log(orderList);
+  // eslint-disable-next-line no-restricted-syntax
+  for (const item of orderList) {
+    const orderResult = yield getOrderById(item.orderId);
+    const order = orderResult[0];
+    console.log('search order', order);
+    order.items.cartCurrentResult.customer = customerResult.payload.customer;
+    console.log('order after update id', order);
+    yield updateOrderById(order);
+  }
+  yield updateCustomerOrderListById(customer);
+}
 function* getSyncAllCustomProductError() {
   // get all custom product in local db
   const payloadResultCustomProduct = yield getAllTblCustomProduct();
@@ -153,7 +171,10 @@ function* syncCustomer(customerName, syncAllNow) {
       if (result || result.status) {
         const newCustomerId = result.data.data.createCustomer.customer.id;
         customer.status = true;
+        // update customerid
         yield replaceCustomerById(customer, newCustomerId);
+        // update customerid in order checkout with this customer
+        yield resolveCustomerIdForOrder(customer);
       } else {
         // eslint-disable-next-line no-throw-literal
         throw { message: result.message || 'Cannot create customer' };
