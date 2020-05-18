@@ -76,7 +76,6 @@ class CartCustomer extends Component<Props> {
     // let firstname = '';
     // let lastname = '';
     if (customer) {
-      console.log(customer);
       email = customer.email || customer.email;
       // firstname = customer.firstname || customer.customer.firstname;
       // lastname = customer.lastname || customer.customer.lastname;
@@ -148,7 +147,6 @@ class CartCustomer extends Component<Props> {
                   ) : (
                     <ul className="list-group">
                       {customerSearchResult.map((item, index) => {
-                        console.log(item);
                         return (
                           <button
                             key={index}
