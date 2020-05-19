@@ -439,7 +439,10 @@ function* getSearchCustomer(payload) {
   const searchResult = yield call(searchCustomer, payload);
 
   const searchResultByName = yield call(searchCustomerByName, payload);
-  const searchDbResult = yield call(searchCustomerDbService, payload);
+  let searchDbResult = yield call(searchCustomerDbService, payload);
+  console.log('before', searchDbResult);
+  searchDbResult = searchDbResult.map(item => item.payload.customer);
+  console.log('after', searchDbResult);
   const mergeArray = searchResult.items.concat(
     searchResultByName.items,
     searchDbResult
@@ -642,13 +645,19 @@ function* getDiscountForCheckoutSaga() {
   const listGiftCard =
     orderPreparingCheckoutStateResult.totals.listGiftCard_code;
   let result;
+  let customerId;
+  try {
+    customerId = cartCurrentObjResult.customer.id;
+  } catch (e) {
+    customerId = posSystemConfigResult.default_guest_checkout.customer_id;
+  }
   // const typeOfResult = typeof result;
   // If json type returned, that mean get discount success
   if (internetConnectedResult) {
     try {
       result = yield call(getDiscountForQuoteService, {
         cart: cartCurrentObjResult.data,
-        config: posSystemConfigResult,
+        customerId,
         discountCode,
         listGiftCard
       });

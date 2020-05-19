@@ -73,12 +73,12 @@ class CartCustomer extends Component<Props> {
       unSelectCustomerForCurrentCart
     } = this.props;
     let email = '';
-    let firstname = '';
-    let lastname = '';
+    // let firstname = '';
+    // let lastname = '';
     if (customer) {
-      email = customer.email;
-      firstname = customer.firstname || customer.payload.customer.firstname;
-      lastname = customer.lastname || customer.payload.customer.lastname;
+      email = customer.email || customer.email;
+      // firstname = customer.firstname || customer.customer.firstname;
+      // lastname = customer.lastname || customer.customer.lastname;
     }
     return (
       <div className={Styles.wrapCartCustomer}>
@@ -198,7 +198,8 @@ class CartCustomer extends Component<Props> {
           className="btn btn-outline-dark btn-block"
           onClick={() => toggleModalCustomer(true)}
         >
-          Customer {customer ? `(${customer.firstname})` : ''}
+          Customer{' '}
+          {customer ? `(${customer.firstname || customer.firstname})` : ''}
         </button>
       </div>
     );

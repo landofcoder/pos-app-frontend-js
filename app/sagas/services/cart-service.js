@@ -1,5 +1,6 @@
 import { createOrders } from '../../reducers/db/sync_orders';
 import { apiGatewayPath } from '../../../configs/env/config.main';
+import { updateCustomerOrderListById } from '../../reducers/db/sync_customers';
 
 /**
  * Get discount and info for new quote
@@ -10,8 +11,7 @@ export async function getDiscountForQuoteService(payload) {
   const formDataCart = new FormData();
   formDataCart.append('param', JSON.stringify([]));
   let data;
-  const { cart, config, discountCode, listGiftCard } = payload;
-  const customerId = config.default_guest_checkout.customer_id || null;
+  const { cart, discountCode, listGiftCard, customerId } = payload;
   try {
     const response = await fetch(
       `${apiGatewayPath}/cashier/customer-checkout/get-discount-quote`,
@@ -40,9 +40,9 @@ export async function getDiscountForQuoteService(payload) {
     );
     data = await response.json();
     // eslint-disable-next-line no-throw-literal
-    if (!data.cartId || !data.cartTotals)
+    if (!data.cartId || !data.cartTotals || data.message)
       // eslint-disable-next-line no-throw-literal
-      throw { message: 'Can not create Cart', data: {} };
+      throw { message: data.message || 'Can not create Cart', data: {} };
     return data;
   } catch (e) {
     // eslint-disable-next-line no-throw-literal
@@ -60,8 +60,15 @@ export async function createOrderLocal(payload) {
   console.log('dd1:', cartCurrentResult);
   console.log('dd2:', orderPreparingCheckoutResult);
   console.log('dd3-date:', Date.now());
+  const orderId = Date.now();
+  const customer = Object.assign({}, cartCurrentResult.customer);
+  // truong hop la customer va customer do chua duoc dong bo
+  if (!cartCurrentResult.isGuestCustomer && !customer.status) {
+    // luu order id vao customer do
+    await updateCustomerOrderListById(customer, orderId);
+  }
   const newOrder = {
-    id: Date.now(),
+    id: orderId,
     grand_total: orderPreparingCheckoutResult.totals.grand_total,
     items: payload,
     local: true,
@@ -95,6 +102,8 @@ export async function syncOrderService(params) {
     );
     const data = await response.json();
     if (data.message || data.errors || !data.status) {
+      console.log(data.message || 'Can not create order');
+
       // eslint-disable-next-line no-throw-literal
       throw {
         message: data.message || 'Can not create order',

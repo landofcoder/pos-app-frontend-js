@@ -2,7 +2,10 @@
  * Create guest cart service
  * @returns {Promise<any>}
  */
-import { getCustomerByName, signUpCustomerDb } from '../../reducers/db/sync_customers';
+import {
+  getCustomerByName,
+  signUpCustomerDb
+} from '../../reducers/db/sync_customers';
 import { apiGatewayPath } from '../../../configs/env/config.main';
 
 export async function searchCustomer(payload) {

@@ -31,7 +31,6 @@ class SyncManager extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      viewSelected: 'syncOrder',
       intervalGetDataErrorId: null
     };
   }
@@ -39,7 +38,7 @@ class SyncManager extends Component {
   componentDidMount(): void {
     const { getSyncStatusFromLocal } = this.props;
     getSyncStatusFromLocal();
-    const getSyncOrderErrorId = setInterval(getSyncStatusFromLocal, 3000);
+    const getSyncOrderErrorId = setInterval(getSyncStatusFromLocal, 10000);
     this.setState({ intervalGetDataErrorId: getSyncOrderErrorId });
   }
 
@@ -51,10 +50,6 @@ class SyncManager extends Component {
   syncDataClientAction = type => {
     const { syncDataClient } = this.props;
     syncDataClient({ type, syncAllNow: true });
-  };
-
-  viewSelectedAction = payload => {
-    this.setState({ viewSelected: payload });
   };
 
   renderLastTime = manager => {
