@@ -32,6 +32,7 @@ class CashPayment extends Component<Props> {
 
   componentDidMount(): void {
     document.addEventListener('keydown', this.escFunction, false);
+    console.log('run to cash did mount');
   }
 
   componentWillUnmount() {
@@ -77,12 +78,12 @@ class CashPayment extends Component<Props> {
           className="col-sm-5 pt-1 pr-0 col-form-label"
           htmlFor="inputValue"
         >
-          Customer&apos;s cash recieved
+          Money received
         </label>
         <div className="col-sm-7 pb-1">
           <input
             type="number"
-            placeholder="Input Customer's Cash"
+            placeholder="Money received"
             className="form-control"
             onChange={this.changeInputCustomerCash}
             value={inputCustomerCash}
@@ -138,7 +139,7 @@ class CashPayment extends Component<Props> {
         <div
           className={`modal-content ${
             toggleModalCalculatorStatus
-              ? 'col-lg-8 col-md-8 col-sm-8 col-8'
+              ? 'col-lg-6 col-md-6 col-sm-6 col-6'
               : null
           }`}
         >
@@ -161,14 +162,14 @@ class CashPayment extends Component<Props> {
             <button
               type="button"
               onClick={() => updateShowCashModal(false)}
-              className="btn btn-outline-dark btn-lg btn-block mt-0"
+              className="btn btn-outline-dark btn-block mt-0"
             >
               CANCEL
             </button>
             <button
               type="button"
               onClick={() => this.toggleModalCalculator()}
-              className="btn btn-outline-info btn-lg btn-block mt-0"
+              className="btn btn-outline-info btn-block mt-0"
             >
               CALCULATOR
             </button>
@@ -178,7 +179,7 @@ class CashPayment extends Component<Props> {
               onClick={cashPlaceOrderAction}
               disabled={!this.considerOrder() || isLoadingCashPlaceOrder}
               type="button"
-              className="btn btn-primary btn-lg btn-block"
+              className="btn btn-primary btn-block"
             >
               {isLoadingCashPlaceOrder ? (
                 <span

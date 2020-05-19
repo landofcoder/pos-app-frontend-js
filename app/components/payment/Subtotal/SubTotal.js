@@ -33,16 +33,6 @@ class SubTotal extends Component<Props> {
 
   sumOrderTotal = () => {
     const { orderPreparingCheckout } = this.props;
-    const subTotal = orderPreparingCheckout.totals.base_subtotal;
-
-    const shippingAmount = orderPreparingCheckout.totals.base_shipping_amount;
-    const discountAmount = orderPreparingCheckout.totals.base_discount_amount;
-
-    console.log('dd0::', orderPreparingCheckout);
-    console.log('dd1:', subTotal);
-    console.log('dd2:', shippingAmount);
-    console.log('dd3:', discountAmount);
-
     const grandTotal = orderPreparingCheckout.totals.grand_total;
     return formatCurrencyCode(grandTotal);
   };
@@ -62,11 +52,11 @@ class SubTotal extends Component<Props> {
     });
   };
 
-  giftCardAction = (event) => {
+  giftCardAction = event => {
     const { checkoutAction, setGiftCardAction } = this.props;
     const { delayTimer } = this.state;
     const code = event.target.value;
-    setGiftCardAction({code,id:0});
+    setGiftCardAction({ code, id: 0 });
     if (delayTimer) clearTimeout(delayTimer);
     const delayTimerRes = setTimeout(() => {
       // Do the ajax stuff
@@ -75,12 +65,13 @@ class SubTotal extends Component<Props> {
     this.setState({
       delayTimer: delayTimerRes
     });
-  }
+  };
 
   showGiftCard = () => {
     const { isShowInputGiftCard } = this.state;
+    // eslint-disable-next-line react/prop-types
     const { giftCardCode } = this.props;
-    //const  isCheckValidateCode = !!amountDiscountCode;
+    // const  isCheckValidateCode = !!amountDiscountCode;
     // const isShowValidateCode = !!discountCode;
     if (isShowInputGiftCard) {
       return (
@@ -89,7 +80,7 @@ class SubTotal extends Component<Props> {
             value={giftCardCode}
             onChange={this.giftCardAction}
             type="text"
-            className={`form-control`}
+            className="form-control"
             aria-label="Text input with dropdown button"
             placeholder="Enter Gift card"
             required
@@ -118,10 +109,8 @@ class SubTotal extends Component<Props> {
 
   showCouponCode = () => {
     const { isShowInputCouponCode } = this.state;
-    const { discountCode, amountDiscountCode } = this.props;
+    const { discountCode } = this.props;
     const discountCodeValue = discountCode || '';
-    const isCheckValidateCode = !!amountDiscountCode;
-    const isShowValidateCode = !!discountCode;
     if (isShowInputCouponCode) {
       return (
         <div className="input-group mb-3">
@@ -129,7 +118,7 @@ class SubTotal extends Component<Props> {
             value={discountCodeValue}
             onChange={this.discountCodeAction}
             type="text"
-            className={`form-control`}
+            className="form-control"
             aria-label="Text input with dropdown button"
             placeholder="Enter code here"
             required
@@ -140,7 +129,6 @@ class SubTotal extends Component<Props> {
     return (
       <>
         <div>
-          {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
           <a
             onClick={() => {
               this.setState({ isShowInputCouponCode: true });
@@ -268,7 +256,6 @@ function mapDispatchToProps(dispatch) {
     checkoutAction: payload => dispatch(checkoutAction(payload)),
     setDiscountCodeAction: payload => dispatch(setDiscountCodeAction(payload)),
     setGiftCardAction: payload => dispatch(setGiftCardAction(payload))
-
   };
 }
 export default connect(

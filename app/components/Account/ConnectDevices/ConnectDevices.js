@@ -54,7 +54,7 @@ class ConnectDevices extends Component<Props> {
               <div className="card-body">
                 {connectedDeviceStatus ? (
                   <>
-                    <hr/>
+                    <hr />
                     <span>Connected:</span>&nbsp;
                     <span className="font-weight-bold">
                       {connectedDeviceItem.product}

@@ -5,6 +5,15 @@
 @import '~@fortawesome/fontawesome-free/css/all.css';
 @import 'bootstrap.css';
 @import './dropdown.css';
+@import '~rc-slider/assets/index.css';
+
+.rc-slider-track {
+  background-color: #5721cc;
+}
+
+.rc-slider-handle {
+  border-color: #5721cc #5721cc #331673;
+}
 
 body {
   height: 100vh;
@@ -16,6 +25,7 @@ body {
   align-items: center;
   height: 100vh;
 }
+
 .invalid-feedback {
   display: block;
 }

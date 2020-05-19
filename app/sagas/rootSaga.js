@@ -32,7 +32,8 @@ import {
 } from './services/common-service';
 import {
   createConnectedDeviceSettings,
-  removeScannerDeviceConnected
+  removeScannerDeviceConnected,
+  getConnectedDeviceSettings
 } from './services/settings-service';
 import {
   getAppInfoFromLocal,
@@ -841,20 +842,18 @@ function* createCustomizeProduct(payload) {
 
 function* showAllDevicesSaga() {
   const allDevices = yield getDevices();
-
   // Add default select
   allDevices.unshift({ product: '--Please select--' });
   yield put({ type: types.RECEIVED_ALL_DEVICES, payload: allDevices });
 }
 
-function autoConnectScannerDevice() {
-  // const scannerConnectedSettings = yield getConnectedDeviceSettings();
-  // if (scannerConnectedSettings) {
-  //   const { vendorId, productId } = scannerConnectedSettings;
-  //   console.log('obj result:', scannerConnectedSettings);
-  //   yield connectHIDScanner(vendorId, productId, scannerConnectedSettings);
-  // }
-  console.log('auto scan');
+function* autoConnectScannerDevice() {
+  const scannerConnectedSettings = yield getConnectedDeviceSettings();
+  if (scannerConnectedSettings) {
+    const { vendorId, productId } = scannerConnectedSettings;
+    console.log('obj result:', scannerConnectedSettings);
+    // yield connectHIDScanner(vendorId, productId, scannerConnectedSettings);
+  }
 }
 
 /**
@@ -1136,7 +1135,7 @@ function* loginAction(payload) {
       yield setupFetchingGeneralConfig();
 
       // Auto connect scanner device
-      autoConnectScannerDevice();
+      yield autoConnectScannerDevice();
 
       // Step 2: Start setup
       yield setupSyncCategoriesAndProducts(); // added sync manager success

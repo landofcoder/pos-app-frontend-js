@@ -288,7 +288,8 @@
     "relay-runtime": "^7.1.0",
     "source-map-support": "^0.5.11",
     "stripe": "^8.22.0",
-    "usb-barcode-scanner-brainos": "^1.0.6"
+    "usb-barcode-scanner-brainos": "^1.0.6",
+    "rc-slider": "^9.2.4"
   },
   "devEngines": {
     "node": ">=7.x",
