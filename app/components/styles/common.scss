@@ -5,6 +5,16 @@
   flex-direction: column;
 }
 
+.btnActionPadding {
+  padding: 5px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #dedede;
+    border-radius: 5px;
+  }
+}
+
 .colorText {
   color: #9b9b9b;
 }

@@ -160,22 +160,6 @@ class CashPayment extends Component<Props> {
           </div>
           <div className="modal-footer">
             <button
-              type="button"
-              onClick={() => updateShowCashModal(false)}
-              className="btn btn-outline-dark btn-block mt-0"
-            >
-              CANCEL
-            </button>
-            <button
-              type="button"
-              onClick={() => this.toggleModalCalculator()}
-              className="btn btn-outline-info btn-block mt-0"
-            >
-              CALCULATOR
-            </button>
-          </div>
-          <div className="modal-footer">
-            <button
               onClick={cashPlaceOrderAction}
               disabled={!this.considerOrder() || isLoadingCashPlaceOrder}
               type="button"
@@ -190,6 +174,22 @@ class CashPayment extends Component<Props> {
               ) : (
                 <>PLACE ORDER</>
               )}
+            </button>
+          </div>
+          <div className="modal-footer">
+            <button
+              type="button"
+              onClick={() => updateShowCashModal(false)}
+              className="btn btn-outline-dark btn-block mt-0"
+            >
+              CANCEL
+            </button>
+            <button
+              type="button"
+              onClick={() => this.toggleModalCalculator()}
+              className="btn btn-outline-info btn-block mt-0"
+            >
+              CALCULATOR
             </button>
           </div>
         </div>

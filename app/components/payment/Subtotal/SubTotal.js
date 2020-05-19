@@ -7,6 +7,7 @@ import {
   setDiscountCodeAction,
   setGiftCardAction
 } from '../../../actions/homeAction';
+import StyleCommon from '../../styles/common.scss';
 
 type Props = {
   loadingPreparingOrder: boolean,
@@ -91,8 +92,9 @@ class SubTotal extends Component<Props> {
     return (
       <>
         <div>
-          {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
           <a
+            className={StyleCommon.btnActionPadding}
+            role="presentation"
             onClick={() => {
               this.setState({ isShowInputGiftCard: true });
             }}
@@ -130,6 +132,8 @@ class SubTotal extends Component<Props> {
       <>
         <div>
           <a
+            className={StyleCommon.btnActionPadding}
+            role="presentation"
             onClick={() => {
               this.setState({ isShowInputCouponCode: true });
             }}
