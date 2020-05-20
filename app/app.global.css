@@ -7,6 +7,7 @@
 @import './dropdown.css';
 @import '~rc-slider/assets/index.css';
 
+
 .rc-slider-track {
   background-color: #5721cc;
 }

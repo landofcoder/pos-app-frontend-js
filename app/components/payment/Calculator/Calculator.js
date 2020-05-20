@@ -52,8 +52,8 @@ class Calculator extends Component {
     return (
       <>
         <div
-          className={`col-lg-4 col-md-4 col-sm-4 col-4 ${
-            toggleModalCalculatorStatus ? null : 'd-none'
+          className={`col-5 ${
+            toggleModalCalculatorStatus === true ? '' : 'd-none'
           }`}
         >
           <div className="card">

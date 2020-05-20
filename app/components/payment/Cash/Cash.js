@@ -8,6 +8,8 @@ import {
 import Calculator from '../Calculator/Calculator';
 import SubTotal from '../Subtotal/SubTotal';
 import { formatCurrencyCode } from '../../../common/settings';
+import ModalStyle from '../../styles/modal.scss';
+import RewardPoint from '../RewardPoint/RewardPoint';
 
 type Props = {
   loadingPreparingOrder: boolean,
@@ -26,7 +28,8 @@ class CashPayment extends Component<Props> {
   constructor(props) {
     super(props);
     this.state = {
-      inputCustomerCash: ''
+      inputCustomerCash: '',
+      isShowRewardPoint: true
     };
   }
 
@@ -134,66 +137,84 @@ class CashPayment extends Component<Props> {
       isLoadingCashPlaceOrder,
       toggleModalCalculatorStatus
     } = this.props;
+    const { isShowRewardPoint } = this.state;
+    let isScaleUpModal = false;
+    let widthModal = '400px';
+
+    if (toggleModalCalculatorStatus === true) {
+      isScaleUpModal = true;
+      widthModal = '800px';
+    } else if (isShowRewardPoint === true) {
+      isScaleUpModal = true;
+      widthModal = '700px';
+    }
+
     return (
-      <div className="row">
+      <div
+        className={ModalStyle.modal}
+        style={{ display: 'block' }}
+        id="cashPaymentModal"
+      >
         <div
-          className={`modal-content ${
-            toggleModalCalculatorStatus
-              ? 'col-lg-6 col-md-6 col-sm-6 col-6'
-              : null
-          }`}
+          className={ModalStyle.modalContentMd}
+          style={{ width: widthModal }}
         >
-          <div className="modal-header">
-            <h5 className="modal-title" id="modalCashPayment">
-              Checkout
-            </h5>
-            <button
-              type="button"
-              className="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            />
-          </div>
-          <div className="modal-body">
-            <SubTotal />
-            {this.considerOrder() ? this.transactionCustomer() : null}
-          </div>
-          <div className="modal-footer">
-            <button
-              onClick={cashPlaceOrderAction}
-              disabled={!this.considerOrder() || isLoadingCashPlaceOrder}
-              type="button"
-              className="btn btn-primary btn-block"
-            >
-              {isLoadingCashPlaceOrder ? (
-                <span
-                  className="spinner-border spinner-border"
-                  role="status"
-                  aria-hidden="true"
+          <div className="row">
+            <div className={`modal-content ${isScaleUpModal ? 'col-7' : null}`}>
+              <div className="modal-header">
+                <h5 className="modal-title" id="modalCashPayment">
+                  Checkout
+                </h5>
+                <button
+                  type="button"
+                  className="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
                 />
-              ) : (
-                <>PLACE ORDER</>
-              )}
-            </button>
-          </div>
-          <div className="modal-footer">
-            <button
-              type="button"
-              onClick={() => updateShowCashModal(false)}
-              className="btn btn-outline-dark btn-block mt-0"
-            >
-              CANCEL
-            </button>
-            <button
-              type="button"
-              onClick={() => this.toggleModalCalculator()}
-              className="btn btn-outline-info btn-block mt-0"
-            >
-              CALCULATOR
-            </button>
+              </div>
+              <div className="modal-body">
+                <SubTotal />
+                {this.considerOrder() ? this.transactionCustomer() : null}
+              </div>
+              <div className="modal-footer">
+                <button
+                  onClick={cashPlaceOrderAction}
+                  disabled={!this.considerOrder() || isLoadingCashPlaceOrder}
+                  type="button"
+                  className="btn btn-primary btn-block"
+                >
+                  {isLoadingCashPlaceOrder ? (
+                    <span
+                      className="spinner-border spinner-border"
+                      role="status"
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    <>PLACE ORDER</>
+                  )}
+                </button>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  onClick={() => updateShowCashModal(false)}
+                  className="btn btn-outline-dark btn-block mt-0"
+                >
+                  CANCEL
+                </button>
+                <button
+                  type="button"
+                  onClick={() => this.toggleModalCalculator()}
+                  className="btn btn-outline-info btn-block mt-0"
+                >
+                  CALCULATOR
+                </button>
+              </div>
+            </div>
+            <Calculator />
+            {isShowRewardPoint ? <RewardPoint /> : <></>}
           </div>
         </div>
-        <Calculator />
       </div>
     );
   }

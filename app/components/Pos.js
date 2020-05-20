@@ -55,7 +55,6 @@ type Props = {
   isShowHaveNoSearchResultFound: boolean,
   isOpenSignUpCustomer: boolean,
   internetConnected: boolean,
-  toggleModalCalculatorStatus: boolean,
   posCommandIsFetchingProduct: boolean,
   defaultColor: string,
   hidDevice: Object,
@@ -349,7 +348,6 @@ export default class Pos extends Component<Props, State> {
       isShowCashPaymentModel,
       isShowCardPaymentModal,
       isOpenReceiptModal,
-      toggleModalCalculatorStatus,
       posCommandIsFetchingProduct,
       defaultColor,
       startCashCheckoutAction
@@ -382,20 +380,11 @@ export default class Pos extends Component<Props, State> {
               {this.switchingProductSettings()}
             </div>
           </div>
+
           {/* CASH PAYMENT MODAL */}
-          <div
-            className={ModalStyle.modal}
-            id="cashPaymentModal"
-            style={{ display: isShowCashPaymentModel ? 'block' : 'none' }}
-          >
-            <div
-              className={ModalStyle.modalContentMd}
-              style={{ width: '400px' }}
-            >
-              {isShowCashPaymentModel ? <CashPanel /> : <></>}
-            </div>
-          </div>
+          {isShowCashPaymentModel ? <CashPanel /> : <></>}
           {/* PAYMENT MODAL */}
+
           <div
             className={ModalStyle.modal}
             id="payModal"
