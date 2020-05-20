@@ -108,6 +108,9 @@ function* checkLoginBackgroundSaga() {
 
   // Logged
   if (loggedDb !== false) {
+    // Auto connect scanner
+    yield autoConnectScannerDevice();
+
     yield getDefaultDataFromLocal();
     yield put({ type: types.UPDATE_SWITCHING_MODE, payload: CHILDREN });
   } else {
@@ -851,8 +854,7 @@ function* autoConnectScannerDevice() {
   const scannerConnectedSettings = yield getConnectedDeviceSettings();
   if (scannerConnectedSettings) {
     const { vendorId, productId } = scannerConnectedSettings;
-    console.log('obj result:', scannerConnectedSettings);
-    // yield connectHIDScanner(vendorId, productId, scannerConnectedSettings);
+    yield connectHIDScanner(vendorId, productId, scannerConnectedSettings);
   }
 }
 
@@ -895,7 +897,7 @@ function* connectHIDScanner(vendorId, productId, deviceSelected) {
     // Create to local storage
     yield createConnectedDeviceSettings(deviceSelected);
   } catch (e) {
-    console.error('error when connect scanner device:', e);
+    console.info('error when connect scanner device:', e);
     yield put({ type: types.UPDATE_ERROR_CONNECT, payload: true });
   }
 }
@@ -1133,9 +1135,6 @@ function* loginAction(payload) {
       });
       // Step 1: Get general config
       yield setupFetchingGeneralConfig();
-
-      // Auto connect scanner device
-      yield autoConnectScannerDevice();
 
       // Step 2: Start setup
       yield setupSyncCategoriesAndProducts(); // added sync manager success
