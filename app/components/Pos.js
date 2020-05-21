@@ -440,6 +440,7 @@ export default class Pos extends Component<Props, State> {
                     </div>
                     <div className={Styles.wrapActions}>
                       <a
+                        className={CommonStyle.btnActionPadding}
                         href="#"
                         onClick={() => {
                           this.addCustomProduct();
