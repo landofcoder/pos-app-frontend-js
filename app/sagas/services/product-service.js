@@ -364,7 +364,6 @@ export async function getProductBarCodeInventoryByPage(
     }
     return null;
   } catch (e) {
-    // eslint-disable-next-line no-throw-literal
-    throw { message: 'Error connection to server', data: {} };
+    return null;
   }
 }
