@@ -393,7 +393,7 @@ class OrderHistory extends Component<Props> {
           ) : null}
           {!orderHistoryDb.length ? (
             <div className="col">
-              <div className="alert alert-info" role="alert">
+              <div className="alert alert-light text-center" role="alert">
                 No orders found to wait for syncing.
               </div>
             </div>
