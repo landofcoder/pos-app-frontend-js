@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { deleteItemCart } from '../../../../actions/homeAction';
@@ -21,7 +22,6 @@ class CartReceipt extends Component<Props> {
       cashierInfo
     } = this.props;
 
-    /* eslint-disable-next-line */
     let {
       subtotal_display,
       subtotal_label,
@@ -32,6 +32,7 @@ class CartReceipt extends Component<Props> {
       grand_total_label
     } = customReceipt;
     // hien tai nen show tat ca cac thong tin cua receipt
+    /* eslint-disable no-console */
 
     subtotal_display = 1;
     subtotal_label = 'Subtotal';
