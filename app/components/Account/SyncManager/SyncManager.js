@@ -76,19 +76,13 @@ class SyncManager extends Component {
   };
 
   actionSyncStatus = manager => {
-    const {
-      syncManager,
-      getSyncAllCustomerError,
-      getSyncAllCustomProductError
-    } = this.props;
+    const { syncManager } = this.props;
     switch (manager.name) {
       case CUSTOMERS_SYNC:
-        getSyncAllCustomerError();
         return syncManager.loadingSyncCustomer;
       case ALL_PRODUCT_SYNC:
         return syncManager.loadingSyncAllProduct;
       case CUSTOM_PRODUCT_SYNC:
-        getSyncAllCustomProductError();
         return syncManager.loadingSyncCustomProducts;
       case GENERAL_CONFIG_SYNC:
         return syncManager.loadingSyncConfig;
@@ -98,7 +92,26 @@ class SyncManager extends Component {
   };
 
   actionToggleShowLogs = type => {
-    const { showLogsAction } = this.props;
+    const {
+      showLogsAction,
+      getSyncAllCustomProductError,
+      getSyncAllCustomerError
+    } = this.props;
+    // toggle show log action will get data from local
+    switch (type) {
+      case ALL_PRODUCT_SYNC:
+        break;
+      case CUSTOM_PRODUCT_SYNC:
+        getSyncAllCustomProductError();
+        break;
+      case CUSTOMERS_SYNC:
+        getSyncAllCustomerError();
+        break;
+      case GENERAL_CONFIG_SYNC:
+        break;
+      default:
+        return;
+    }
     showLogsAction({ type, status: true });
   };
 

@@ -378,6 +378,7 @@ class OrderHistory extends Component<Props> {
               })}
             </tbody>
           </table>
+
           {isLoading ? (
             <div className="form-group">
               <div className="text-center">
@@ -387,6 +388,13 @@ class OrderHistory extends Component<Props> {
                 >
                   <span className="sr-only">Loading...</span>
                 </div>
+              </div>
+            </div>
+          ) : null}
+          {!orderHistoryDb.length ? (
+            <div className="col">
+              <div className="alert alert-info" role="alert">
+                No orders found to wait for syncing.
               </div>
             </div>
           ) : null}

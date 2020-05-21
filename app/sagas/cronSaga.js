@@ -113,30 +113,15 @@ function* getSyncStatusFromLocal() {
     types.GENERAL_CONFIG_SYNC
   );
   const orderSyncStatus = yield call(getServiceByName, types.SYNC_ORDER_LIST);
-  // order sync
   yield put({
-    type: types.RECEIVED_STATUS_SYNC_ORDER,
-    payload: orderSyncStatus
-  });
-  // customer sync
-  yield put({
-    type: types.RECEIVED_STATUS_SYNC_CUSTOMER,
-    payload: customerSyncStatus
-  });
-  // custom product sync
-  yield put({
-    type: types.RECEIVED_STATUS_SYNC_CUSTOM_PRODUCT,
-    payload: customProductSyncStatus
-  });
-  // general config sync
-  yield put({
-    type: types.RECEIVED_STATUS_SYNC_GENERAL_CONFIG,
-    payload: configSyncStatus
-  });
-  // all product sync
-  yield put({
-    type: types.RECEIVED_STATUS_SYNC_ALL_PRODUCT,
-    payload: productSyncStatus
+    type: types.RECEIVED_STATUS_SYNC,
+    payload: {
+      orderSyncStatus,
+      customerSyncStatus,
+      customProductSyncStatus,
+      configSyncStatus,
+      productSyncStatus
+    }
   });
 }
 
