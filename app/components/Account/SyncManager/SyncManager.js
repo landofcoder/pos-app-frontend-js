@@ -98,7 +98,6 @@ class SyncManager extends Component {
       getSyncAllCustomerError
     } = this.props;
     // toggle show log action will get data from local
-    console.log(type);
     switch (type) {
       case ALL_PRODUCT_SYNC:
         break;
