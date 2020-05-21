@@ -298,21 +298,21 @@ export function* fetchingAndWriteProductBarCodeInventory() {
   );
 
   // eslint-disable-next-line no-unused-vars,camelcase
-  const { total_page, list } = productBarCode;
+  if (productBarCode) {
+    const { total_page, list } = productBarCode;
+    // Sync product barcode inventory
+    yield syncBarCodeIndexToLocal(list);
+    // Init page array
+    const arrayPageListPaging = new Array(total_page).fill(0);
 
-  // Sync product barcode inventory
-  yield syncBarCodeIndexToLocal(list);
-
-  // Init page array
-  const arrayPageListPaging = new Array(total_page).fill(0);
-
-  // eslint-disable-next-line camelcase
-  if (total_page > 1) {
-    yield all(
-      arrayPageListPaging.map((item, index) =>
-        call(fetchingNextPageBarCodeInventory, { index: index + 1 })
-      )
-    );
+    // eslint-disable-next-line camelcase
+    if (total_page > 1) {
+      yield all(
+        arrayPageListPaging.map((item, index) =>
+          call(fetchingNextPageBarCodeInventory, { index: index + 1 })
+        )
+      );
+    }
   }
 }
 
@@ -355,17 +355,15 @@ export async function getProductBarCodeInventoryByPage(
       }
     );
     data = await response.json();
+    if (data.message || data.error) {
+      // eslint-disable-next-line no-throw-literal
+      throw { message: data.message, data };
+    }
+    if (data.length > 0) {
+      return data[0];
+    }
+    return null;
   } catch (e) {
-    // eslint-disable-next-line no-throw-literal
-    throw { message: 'Error connection to server', data: {} };
+    return null;
   }
-  if (data.message) {
-    // eslint-disable-next-line no-throw-literal
-    throw { message: data.message, data };
-  }
-
-  if (data.length > 0) {
-    return data[0];
-  }
-  return null;
 }

@@ -1137,7 +1137,7 @@ function* loginAction(payload) {
       yield setupFetchingGeneralConfig();
 
       // Step 2: Start setup
-      yield setupSyncCategoriesAndProducts(); // added sync manager success
+      yield setupSyncCategoriesAndProducts();
 
       // Step 3: Sync product barcode to local
       yield writeProductBarCodeInventoryToLocal();
