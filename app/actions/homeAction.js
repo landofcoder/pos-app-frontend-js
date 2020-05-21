@@ -306,6 +306,7 @@ export function createCustomizeProduct(payload) {
     payload
   };
 }
+
 export function getShowAllDevices() {
   return {
     type: types.SHOW_ALL_DEVICES
@@ -386,8 +387,15 @@ export function setGiftCardAction(payload) {
     payload
   };
 }
+
 export function backToWorkPlace() {
   return {
     type: types.BACK_TO_WORK_PLACE
+  };
+}
+
+export function fetchRewardPoint() {
+  return {
+    type: types.FETCH_REWARD_POINT
   };
 }

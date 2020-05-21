@@ -57,9 +57,6 @@ export async function getDiscountForQuoteService(payload) {
  */
 export async function createOrderLocal(payload) {
   const { cartCurrentResult, orderPreparingCheckoutResult } = payload;
-  console.log('dd1:', cartCurrentResult);
-  console.log('dd2:', orderPreparingCheckoutResult);
-  console.log('dd3-date:', Date.now());
   const orderId = Date.now();
   const customer = Object.assign({}, cartCurrentResult.customer);
   // truong hop la customer va customer do chua duoc dong bo
@@ -144,4 +141,8 @@ export async function noteOrderActionService(payload) {
     console.log(err);
   }
   return { errors: true };
+}
+
+export async function getRewardPointService() {
+
 }

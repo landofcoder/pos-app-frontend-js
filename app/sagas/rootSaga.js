@@ -6,7 +6,8 @@ import * as typesAuthen from '../constants/authen.json';
 import {
   getDiscountForQuoteService,
   createOrderLocal,
-  noteOrderActionService
+  noteOrderActionService,
+  getRewardPointService
 } from './services/cart-service';
 import { stripeMakePayment } from './services/payments/stripe-payment';
 import { authorizeMakePayment } from './services/payments/authorize-payment';
@@ -1215,6 +1216,10 @@ export function* getDefaultDataFromLocal() {
   yield getDefaultProductsFromLocal();
 }
 
+export function* fetchRewardPointSg() {
+  yield call(getRewardPointService);
+}
+
 /**
  * Default root saga
  * @returns void
@@ -1264,6 +1269,7 @@ function* rootSaga() {
     cashCheckoutPlaceOrder
   );
   yield takeEvery(typesAuthen.LOGIN_ACTION, loginAction);
+  yield takeEvery(types.FETCH_REWARD_POINT, fetchRewardPointSg);
 }
 
 export default rootSaga;

@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Slider from 'rc-slider';
+import { fetchRewardPoint } from '../../../actions/homeAction';
 
 class RewardPoint extends Component<Props> {
+  componentDidMount() {
+    const { fetchRewardPoint } = this.props;
+    fetchRewardPoint();
+  }
+
   render() {
     return (
       <div className="col-5">
@@ -22,7 +28,9 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return {};
+  return {
+    fetchRewardPoint: () => dispatch(fetchRewardPoint())
+  };
 }
 
 export default connect(
