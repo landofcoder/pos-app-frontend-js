@@ -73,7 +73,7 @@ class ShowMessages extends Component {
       syncAllProductStatus.message || 'Some reason sync all product error !!!';
 
     return (
-      <div className="text-danger" role="alert">
+      <div className="alert text-danger" role="alert">
         <i className="fas fa-exclamation-circle" style={{ color: '#666' }} />{' '}
         &nbsp;
         {message}
@@ -109,7 +109,7 @@ class ShowMessages extends Component {
 
     if (!syncConfigStatus.errors)
       return (
-        <div className="alert text-success" role="alert">
+        <div className="text-success" role="alert">
           <i className="far fa-check-circle" /> &nbsp;
           <span>All Custom Product synced success!</span>
         </div>
@@ -117,7 +117,7 @@ class ShowMessages extends Component {
     return (
       <>
         {message ? (
-          <div className="alert alert-danger" role="alert">
+          <div className="alert text-danger" role="alert">
             <i
               className="fas fa-exclamation-circle"
               style={{ color: '#666' }}
@@ -178,7 +178,7 @@ class ShowMessages extends Component {
     return (
       <>
         {message ? (
-          <div className="alert alert-danger" role="alert">
+          <div className="alert text-danger" role="alert">
             <i
               className="fas fa-exclamation-circle"
               style={{ color: '#666' }}
@@ -219,7 +219,7 @@ class ShowMessages extends Component {
 
     return (
       <>
-        <div className="alert alert-danger" role="alert">
+        <div className="alert text-danger" role="alert">
           <i className="fas fa-exclamation-circle" style={{ color: '#666' }} />{' '}
           &nbsp;
           {message}

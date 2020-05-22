@@ -66,7 +66,7 @@ class DetailOrderOffline extends Component {
                     <div className="modal-body">
                       <div className="form-group">
                         {orderHistoryDetail.message ? (
-                          <div className="alert alert-danger" role="alert">
+                          <div className="text-danger" role="alert">
                             <i
                               className="fas fa-exclamation-circle"
                               style={{ color: '#666' }}

@@ -93,10 +93,6 @@ const authenRd = (state = initialState, action) =>
       case typesAuthen.RECEIVED_DATA_SYNC_ALL_PRODUCT:
         draft.syncDataManager.syncAllProduct = action.payload;
         break;
-      // end received data sync
-      case typesAuthen.STATUS_SYNC:
-        draft.syncManager.syncStatus = action.payload;
-        break;
       case typesAuthen.RECEIVED_APP_INFO:
         draft.appInfo = action.payload;
         break;
