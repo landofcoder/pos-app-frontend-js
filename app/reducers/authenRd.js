@@ -71,12 +71,7 @@ const authenRd = (state = initialState, action) =>
         draft.messageErrorWorkPlace = '';
         break;
       case typesAuthen.RECEIVED_STATUS_SYNC:
-        draft.syncManager.syncOrder = action.payload.orderSyncStatus;
-        draft.syncManager.syncCustomProduct =
-          action.payload.customProductSyncStatus;
-        draft.syncManager.syncCustomer = action.payload.customerSyncStatus;
-        draft.syncManager.syncConfig = action.payload.configSyncStatus;
-        draft.syncManager.syncAllProduct = action.payload.productSyncStatus;
+        draft.syncManager = action.payload;
         break;
       case typesAuthen.RECEIVED_DATA_SYNC_ORDER:
         draft.syncDataManager.syncOrder = action.payload;
@@ -97,25 +92,6 @@ const authenRd = (state = initialState, action) =>
         draft.appInfo = action.payload;
         break;
       case typesAuthen.LOADING_SYNC_ACTION:
-        switch (action.payload.type) {
-          case typesAuthen.ALL_PRODUCT_SYNC:
-            draft.syncManager.loadingSyncAllProduct = action.payload.status;
-            break;
-          case typesAuthen.CUSTOM_PRODUCT_SYNC:
-            draft.syncManager.loadingSyncCustomProducts = action.payload.status;
-            break;
-          case typesAuthen.CUSTOMERS_SYNC:
-            draft.syncManager.loadingSyncCustomer = action.payload.status;
-            break;
-          case typesAuthen.GENERAL_CONFIG_SYNC:
-            draft.syncManager.loadingSyncConfig = action.payload.status;
-            break;
-          case typesAuthen.SYNC_ORDER_LIST:
-            draft.syncManager.loadingSyncOrder = action.payload.status;
-            break;
-          default:
-            break;
-        }
         break;
       default:
         break;

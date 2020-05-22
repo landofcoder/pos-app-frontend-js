@@ -8,6 +8,7 @@ import {
   GENERAL_CONFIG_SYNC
 } from '../../../../constants/authen.json';
 import { showLogsAction } from '../../../../actions/accountAction';
+import { getDisplayNameForSyncService } from '../../../../common/sync-group-manager';
 
 type Props = {
   isShowLogsMessages: boolean,
@@ -43,21 +44,10 @@ class ShowMessages extends Component {
 
   showTitleLog = () => {
     const { typeShowLogsMessages } = this.props;
-    switch (typeShowLogsMessages) {
-      case ALL_PRODUCT_SYNC:
-        return 'Sync All Products Logs';
-      case CUSTOM_PRODUCT_SYNC:
-        return 'Sync Custom Products Logs';
-      case CUSTOMERS_SYNC:
-        return 'Customer Logs';
-      case GENERAL_CONFIG_SYNC:
-        return 'Sync Config Logs';
-      default:
-        break;
-    }
+    return getDisplayNameForSyncService(typeShowLogsMessages);
   };
 
-  showTableAllProductError = () => {
+  showTableAllProduct = () => {
     const { syncManager } = this.props;
     const syncAllProductStatus = syncManager.syncAllProduct;
     if (!syncAllProductStatus.errors) {
@@ -81,7 +71,7 @@ class ShowMessages extends Component {
     );
   };
 
-  showTableCustomProductError = () => {
+  showTableCustomProduct = () => {
     const { syncDataManager, syncManager } = this.props;
     const syncConfigStatus = syncManager.syncCustomProduct;
     const { syncCustomProduct } = syncDataManager;
@@ -143,7 +133,7 @@ class ShowMessages extends Component {
     );
   };
 
-  showTableCustomerError = () => {
+  showTableCustomer = () => {
     const { syncDataManager, syncManager } = this.props;
     const syncCustomerStatus = syncManager.syncCustomer;
     const { syncCustomer } = syncDataManager;
@@ -203,7 +193,7 @@ class ShowMessages extends Component {
     );
   };
 
-  showTableGeneralConfigError = () => {
+  showTableGeneralConfig = () => {
     const { syncManager } = this.props;
     const syncConfigStatus = syncManager.syncConfig;
     if (!syncConfigStatus.errors) {
@@ -232,15 +222,15 @@ class ShowMessages extends Component {
     const { typeShowLogsMessages } = this.props;
     switch (typeShowLogsMessages) {
       case ALL_PRODUCT_SYNC:
-        return this.showTableAllProductError();
+        return this.showTableAllProduct();
       case CUSTOM_PRODUCT_SYNC:
-        return this.showTableCustomProductError();
+        return this.showTableCustomProduct();
       case CUSTOMERS_SYNC:
-        return this.showTableCustomerError();
+        return this.showTableCustomer();
       case GENERAL_CONFIG_SYNC:
-        return this.showTableGeneralConfigError();
+        return this.showTableGeneralConfig();
       default:
-        break;
+        return null;
     }
   };
 

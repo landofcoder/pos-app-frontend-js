@@ -10,7 +10,7 @@ import {
   toggleModalAddNote,
   getOrderHistoryDetail,
   closeToggleModalOrderDetail,
-  getSyncAllOrderError
+  getDataServiceWithType
 } from '../../../actions/accountAction';
 import DetailOrder from './DetailOrder/DetailOrder';
 import DetailOrderOffline from './DetailOrderOffline/DetailOrderOffline';
@@ -50,7 +50,7 @@ type Props = {
   syncDataClient: payload => void,
   closeToggleModalOrderDetail: () => void,
   isLoadingSyncAllOrder: boolean,
-  getSyncAllOrderError: () => void
+  getAllOrdersDb: () => void
 };
 
 class OrderHistory extends Component<Props> {
@@ -64,10 +64,10 @@ class OrderHistory extends Component<Props> {
   }
 
   componentDidMount(): void {
-    const { getOrderHistory, getSyncAllOrderError } = this.props;
+    const { getOrderHistory, getAllOrdersDb } = this.props;
     getOrderHistory();
-    getSyncAllOrderError();
-    const getSyncOrderErrorId = setInterval(getSyncAllOrderError, 10000);
+    getAllOrdersDb();
+    const getSyncOrderErrorId = setInterval(getAllOrdersDb, 10000);
     this.setState({ intervalGetDataErrorId: getSyncOrderErrorId });
   }
 
@@ -485,7 +485,7 @@ function mapDispatchToProps(dispatch) {
     toggleModalAddNote: payload => dispatch(toggleModalAddNote(payload)),
     syncDataClient: payload => dispatch(syncDataClient(payload)),
     closeToggleModalOrderDetail: () => dispatch(closeToggleModalOrderDetail()),
-    getSyncAllOrderError: () => dispatch(getSyncAllOrderError())
+    getAllOrdersDb: () => dispatch(getDataServiceWithType())
   };
 }
 

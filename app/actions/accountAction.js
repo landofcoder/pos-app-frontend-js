@@ -60,30 +60,18 @@ export function orderAction(payload) {
   };
 }
 
-export function getSyncAllCustomProductError() {
-  return {
-    type: type.GET_SYNC_ALL_CUSTOM_PRODUCT_ERROR_FROM_LOCAL
-  };
-}
-
-export function getSyncAllCustomerError() {
-  return {
-    type: type.GET_SYNC_ALL_CUSTOMER_ERROR_FROM_LOCAL
-  };
-}
-
-export function getSyncAllOrderError() {
-  return {
-    type: type.GET_SYNC_ALL_ORDER_ERROR_FROM_LOCAL
-  };
-}
-
 export function getSyncStatusFromLocal() {
   return {
     type: type.GET_SYNC_STATUS_FROM_LOCAL
   };
 }
 
+export function getDataServiceWithType(payload) {
+  return {
+    type: type.GET_SYNC_DATA_WITH_TYPE,
+    id: payload
+  };
+}
 export function showLogsAction(payload) {
   return {
     type: type.TOOGLE_MODAL_SHOW_SYNC_LOGS,

@@ -1,17 +1,7 @@
 import db from './db';
+import { initService } from '../../common/sync-group-manager';
 
 const table = 'sync_data_manager';
-
-// khoi tao sync data
-function initService(
-  serviceName
-  // eslint-disable-next-line flowtype/no-primitive-constructor-types
-): { name: String, error: Number } {
-  return {
-    name: serviceName,
-    errors: 0
-  };
-}
 
 export async function getServiceByName(name) {
   const productTbl = db.table(table);
@@ -37,7 +27,7 @@ export async function deleteByKey(key) {
   return false;
 }
 
-export async function getAllService() {
+export async function getAllSyncService() {
   const tbl = db.table(table);
   const data = await tbl.toArray();
   return data;
