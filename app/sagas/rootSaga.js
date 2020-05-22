@@ -1216,8 +1216,22 @@ export function* getDefaultDataFromLocal() {
   yield getDefaultProductsFromLocal();
 }
 
-export function* fetchRewardPointSg() {
-  yield call(getRewardPointService);
+export function* fetchRewardPointConditionSg() {
+  // Check customer is selected from cartCurrent
+  const cartCurrentResult = yield select(cartCurrent);
+  const customerId = cartCurrentResult.customer
+    ? cartCurrentResult.customer.id
+    : null;
+  // Have no customer selected
+  console.log('customer id:', customerId);
+  if (customerId) {
+    // Show reward point box and start loading
+    yield put({ type: types.UPDATE_REWARD_POINT_BOX_LOADING, payload: true });
+    const rewardPointResult = yield call(getRewardPointService);
+    console.log('result reward point:', rewardPointResult);
+  } else {
+    // Turn off reward point
+  }
 }
 
 /**
@@ -1269,7 +1283,10 @@ function* rootSaga() {
     cashCheckoutPlaceOrder
   );
   yield takeEvery(typesAuthen.LOGIN_ACTION, loginAction);
-  yield takeEvery(types.FETCH_REWARD_POINT, fetchRewardPointSg);
+  yield takeEvery(
+    types.FETCH_REWARD_POINT_CONDITION,
+    fetchRewardPointConditionSg
+  );
 }
 
 export default rootSaga;

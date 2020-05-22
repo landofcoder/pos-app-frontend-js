@@ -394,8 +394,8 @@ export function backToWorkPlace() {
   };
 }
 
-export function fetchRewardPoint() {
+export function fetchRewardPointCondition() {
   return {
-    type: types.FETCH_REWARD_POINT
+    type: types.FETCH_REWARD_POINT_CONDITION
   };
 }

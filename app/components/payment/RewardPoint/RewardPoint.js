@@ -1,35 +1,63 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Slider from 'rc-slider';
-import { fetchRewardPoint } from '../../../actions/homeAction';
+import { fetchRewardPointCondition } from '../../../actions/homeAction';
 
 class RewardPoint extends Component<Props> {
   componentDidMount() {
-    const { fetchRewardPoint } = this.props;
-    fetchRewardPoint();
+    const { fetchRewardPointCondition } = this.props;
+    fetchRewardPointCondition();
   }
 
   render() {
+    const { isShowRewardPoint, isLoadingRewardPointInfo } = this.props;
     return (
-      <div className="col-5">
-        <div className="card">
-          <div className="card-body">
-            <h5 className="card-title">Reward point</h5>
-            <Slider />
+      <>
+        {isShowRewardPoint ? (
+          <div className="col-5">
+            <div className="card">
+              <div className="card-body">
+                <h5 className="card-title">Reward point</h5>
+                {isLoadingRewardPointInfo ? (
+                  <div className="d-flex justify-content-center">
+                    <div
+                      className="spinner-border spinner-border-sm text-secondary"
+                      role="status"
+                    >
+                      <span className="sr-only">Loading...</span>
+                    </div>
+                  </div>
+                ) : (
+                  <></>
+                )}
+                <Slider />
+                <div className="mt-3 text-right">
+                  <button disabled type="button" className="btn btn-outline-dark btn-sm">
+                    Apply
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        ) : (
+          <></>
+        )}
+      </>
     );
   }
 }
 
 function mapStateToProps(state) {
-  return {};
+  return {
+    isShowRewardPoint: state.mainRd.checkout.rewardPoint.isShowRewardPoint,
+    isLoadingRewardPointInfo:
+      state.mainRd.checkout.rewardPoint.isLoadingRewardPointInfo
+  };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    fetchRewardPoint: () => dispatch(fetchRewardPoint())
+    fetchRewardPointCondition: () => dispatch(fetchRewardPointCondition())
   };
 }
 

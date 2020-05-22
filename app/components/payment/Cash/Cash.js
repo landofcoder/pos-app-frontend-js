@@ -19,6 +19,7 @@ type Props = {
   toggleModalCalculatorStatus: boolean,
   toggleModalCalculator: (payload: boolean) => void,
   orderPreparingCheckout: Object,
+  isShowRewardPoint: boolean,
   currencyCode: string
 };
 
@@ -28,8 +29,7 @@ class CashPayment extends Component<Props> {
   constructor(props) {
     super(props);
     this.state = {
-      inputCustomerCash: '',
-      isShowRewardPoint: true
+      inputCustomerCash: ''
     };
   }
 
@@ -135,9 +135,9 @@ class CashPayment extends Component<Props> {
       cashPlaceOrderAction,
       updateShowCashModal,
       isLoadingCashPlaceOrder,
-      toggleModalCalculatorStatus
+      toggleModalCalculatorStatus,
+      isShowRewardPoint
     } = this.props;
-    const { isShowRewardPoint } = this.state;
     let isScaleUpModal = false;
     let widthModal = '400px';
 
@@ -212,7 +212,7 @@ class CashPayment extends Component<Props> {
               </div>
             </div>
             <Calculator />
-            {isShowRewardPoint ? <RewardPoint /> : <></>}
+            <RewardPoint />
           </div>
         </div>
       </div>
@@ -226,7 +226,8 @@ function mapStateToProps(state) {
     isLoadingCashPlaceOrder: state.mainRd.isLoadingCashPlaceOrder,
     toggleModalCalculatorStatus: state.mainRd.isOpenCalculator,
     orderPreparingCheckout: state.mainRd.checkout.orderPreparingCheckout,
-    cartCurrent: state.mainRd.cartCurrent
+    cartCurrent: state.mainRd.cartCurrent,
+    isShowRewardPoint: state.mainRd.checkout.rewardPoint.isShowRewardPoint
   };
 }
 

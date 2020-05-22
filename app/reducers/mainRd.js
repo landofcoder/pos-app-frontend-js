@@ -103,6 +103,10 @@ const initialState = {
       },
       resultCharge: 0, // Default is 0, and with payment.json types
       isLoadingCharging: false
+    },
+    rewardPoint: {
+      isShowRewardPoint: false,
+      isLoadingRewardPointInfo: true
     }
   },
   cartHoldList: [],
@@ -632,12 +636,10 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       }
       case types.ON_CARD_PAYMENT_FIELD_ONCHANGE:
-        console.log('field onChange payload:', action.payload);
         draft.checkout.cardPayment.cardInfo[action.payload.field] =
           action.payload.value;
         break;
       case types.UPDATE_PAYMENT_RESULT_CODE:
-        console.log('payment result:', action.payload);
         draft.checkout.cardPayment.resultCharge = action.payload;
         break;
       case types.START_CARD_PAYMENT_LOADING:
@@ -647,6 +649,10 @@ const mainRd = (state: Object = initialState, action: Object) =>
         const { payload } = action;
         draft.isShowLogsMessages = payload.status;
         draft.typeShowLogsMessages = payload.type;
+        break;
+      case types.UPDATE_REWARD_POINT_BOX_LOADING:
+        draft.checkout.rewardPoint.isShowRewardPoint = action.payload;
+        draft.checkout.rewardPoint.isLoadingRewardPointInfo = action.payload;
         break;
       default:
     }

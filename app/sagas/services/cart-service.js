@@ -144,5 +144,5 @@ export async function noteOrderActionService(payload) {
 }
 
 export async function getRewardPointService() {
-
+  return null;
 }
