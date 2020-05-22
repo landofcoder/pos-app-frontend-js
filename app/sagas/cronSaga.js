@@ -67,29 +67,19 @@ function* resolveCustomerIdForOrder(customer) {
 function* getSyncAllCustomProduct() {
   // get all custom product in local db
   const payloadResultCustomProduct = yield getAllTblCustomProduct();
-  yield put({
-    type: types.RECEIVED_DATA_SYNC_CUSTOM_PRODUCT,
-    payload: payloadResultCustomProduct
-  });
+  return payloadResultCustomProduct;
 }
 
 function* getSyncAllCustomer() {
   // get all customer in local db
   const payloadResultCustomer = yield getAllTblCustomer();
-
-  yield put({
-    type: types.RECEIVED_DATA_SYNC_CUSTOMER,
-    payload: payloadResultCustomer
-  });
+  return payloadResultCustomer;
 }
 
 function* getSyncAllOrder() {
   // get all order in local db
   const payloadResultOrder = yield getAllOrders();
-  yield put({
-    type: types.RECEIVED_DATA_SYNC_ORDER,
-    payload: payloadResultOrder
-  });
+  return payloadResultOrder;
 }
 
 function* getSyncStatusFromLocal() {
@@ -102,24 +92,31 @@ function* getSyncStatusFromLocal() {
 
 function* getSyncDataWithTypeFromLocal(payload) {
   const { id, step, stepAt } = payload;
+  let listData = [];
   switch (id) {
     case types.ALL_PRODUCT_SYNC:
-      // yield get(id, syncAllNow);
       break;
     case types.CUSTOM_PRODUCT_SYNC:
-      yield getSyncAllCustomProduct();
+      listData = yield call(getSyncAllCustomProduct);
       break;
     case types.CUSTOMERS_SYNC:
-      yield getSyncAllCustomer();
+      listData = yield call(getSyncAllCustomer);
       break;
     case types.GENERAL_CONFIG_SYNC:
       break;
     case types.SYNC_ORDER_LIST:
-      yield getSyncAllOrder();
+      listData = yield call(getSyncAllOrder);
       break;
     default:
       break;
   }
+  yield put({
+    type: types.RECEIVED_DATA_SYNC,
+    payload: listData,
+    id,
+    step,
+    stepAt
+  });
 }
 
 function* syncCustomer(customerName, syncAllNow) {

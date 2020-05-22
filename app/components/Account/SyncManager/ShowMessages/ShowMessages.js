@@ -74,8 +74,10 @@ class ShowMessages extends Component {
   showTableCustomProduct = () => {
     const { syncDataManager, syncManager } = this.props;
     const syncConfigStatus = syncManager.syncCustomProduct;
-    const { syncCustomProduct } = syncDataManager;
-    const { message } = syncConfigStatus;
+    let syncCustomProduct = [];
+    if (syncDataManager.id === 'CUSTOM_PRODUCT_SYNC') {
+      syncCustomProduct = syncDataManager.data;
+    }
     const tableCustomProduct = syncCustomProduct.map((item, index) => {
       if (item.status) return null;
       return (
@@ -96,26 +98,8 @@ class ShowMessages extends Component {
         </tr>
       );
     });
-
-    if (!syncConfigStatus.errors)
-      return (
-        <div className="text-success" role="alert">
-          <i className="far fa-check-circle" /> &nbsp;
-          <span>All Custom Product synced success!</span>
-        </div>
-      );
     return (
       <>
-        {message ? (
-          <div className="alert text-danger" role="alert">
-            <i
-              className="fas fa-exclamation-circle"
-              style={{ color: '#666' }}
-            />{' '}
-            &nbsp;
-            {message}
-          </div>
-        ) : null}
         <table className="table">
           <thead>
             <tr>
@@ -136,8 +120,10 @@ class ShowMessages extends Component {
   showTableCustomer = () => {
     const { syncDataManager, syncManager } = this.props;
     const syncCustomerStatus = syncManager.syncCustomer;
-    const { syncCustomer } = syncDataManager;
-    const { message } = syncCustomerStatus;
+    let syncCustomer = [];
+    if (syncDataManager.id === 'CUSTOMERS_SYNC') {
+      syncCustomer = syncDataManager.data;
+    }
 
     const tableCustomer = syncCustomer.map((item, index) => {
       if (item.status) return null;
@@ -158,25 +144,8 @@ class ShowMessages extends Component {
         </tr>
       );
     });
-    if (!syncCustomerStatus.errors)
-      return (
-        <div className="text-success" role="alert">
-          <i className="far fa-check-circle" /> &nbsp;
-          <span>All Customer synced success</span>
-        </div>
-      );
     return (
       <>
-        {message ? (
-          <div className="alert text-danger" role="alert">
-            <i
-              className="fas fa-exclamation-circle"
-              style={{ color: '#666' }}
-            />{' '}
-            &nbsp;
-            {message}
-          </div>
-        ) : null}
         <table className="table">
           <thead>
             <tr>
@@ -194,28 +163,7 @@ class ShowMessages extends Component {
   };
 
   showTableGeneralConfig = () => {
-    const { syncManager } = this.props;
-    const syncConfigStatus = syncManager.syncConfig;
-    if (!syncConfigStatus.errors) {
-      return (
-        <div className="text-success" role="alert">
-          <i className="far fa-check-circle" /> &nbsp;
-          <span>General Config synced success</span>
-        </div>
-      );
-    }
-    const message =
-      syncConfigStatus.message || 'Some reason sync config error !!!';
-
-    return (
-      <>
-        <div className="alert text-danger" role="alert">
-          <i className="fas fa-exclamation-circle" style={{ color: '#666' }} />{' '}
-          &nbsp;
-          {message}
-        </div>
-      </>
-    );
+    return null;
   };
 
   showTableLog = () => {

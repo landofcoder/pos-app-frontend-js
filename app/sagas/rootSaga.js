@@ -588,10 +588,6 @@ function* getOrderHistoryDetail(payload) {
 function* getOrderHistory() {
   yield put({ type: types.TURN_ON_LOADING_ORDER_HISTORY });
   const data = yield call(getOrderHistoryService);
-
-  // Get orders from local db
-  // console.log('all orders:', JSON.stringify(allOrders));
-
   yield put({
     type: types.RECEIVED_ORDER_HISTORY_ACTION,
     payload: data.items
