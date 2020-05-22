@@ -143,6 +143,24 @@ export async function noteOrderActionService(payload) {
   return { errors: true };
 }
 
-export async function getRewardPointService() {
+export async function getRewardPointService({ customerId }) {
+  try {
+    const response = await fetch(
+      `${apiGatewayPath}/cashier/customer-checkout/reward-points-info?customerId=${customerId}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          platform: window.platform,
+          token: window.liveToken,
+          url: window.mainUrl
+        }
+      }
+    );
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
   return null;
 }

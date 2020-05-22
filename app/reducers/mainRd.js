@@ -106,7 +106,13 @@ const initialState = {
     },
     rewardPoint: {
       isShowRewardPoint: false,
-      isLoadingRewardPointInfo: true
+      isLoadingRewardPointInfo: true,
+      info: {
+        // Res from api includes points balance, list rules
+        list_rules: {
+          items: []
+        }
+      }
     }
   },
   cartHoldList: [],
@@ -653,6 +659,10 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.UPDATE_REWARD_POINT_BOX_LOADING:
         draft.checkout.rewardPoint.isShowRewardPoint = action.payload;
         draft.checkout.rewardPoint.isLoadingRewardPointInfo = action.payload;
+        break;
+      case types.RECEIVED_REWARD_POINT_INFO:
+        draft.checkout.rewardPoint.info = action.payload;
+        draft.checkout.rewardPoint.isLoadingRewardPointInfo = false;
         break;
       default:
     }

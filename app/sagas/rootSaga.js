@@ -1222,13 +1222,16 @@ export function* fetchRewardPointConditionSg() {
   const customerId = cartCurrentResult.customer
     ? cartCurrentResult.customer.id
     : null;
-  // Have no customer selected
-  console.log('customer id:', customerId);
   if (customerId) {
     // Show reward point box and start loading
     yield put({ type: types.UPDATE_REWARD_POINT_BOX_LOADING, payload: true });
-    const rewardPointResult = yield call(getRewardPointService);
-    console.log('result reward point:', rewardPointResult);
+    const rewardPointResult = yield call(getRewardPointService, { customerId });
+
+    // Received reward info and stop loading
+    yield put({
+      type: types.RECEIVED_REWARD_POINT_INFO,
+      payload: rewardPointResult
+    });
   } else {
     // Turn off reward point
   }
