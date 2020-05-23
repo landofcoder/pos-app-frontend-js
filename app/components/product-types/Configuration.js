@@ -102,14 +102,7 @@ class Configuration extends Component<Props> {
                   id="exampleModalLongTitle"
                   dangerouslySetInnerHTML={{ __html: parentProduct.name }}
                 />
-                <button
-                  type="button"
-                  className="close"
-                  data-dismiss="modal"
-                  aria-label="Close"
-                >
-                  {variantProductPrice}
-                </button>
+                <span className="font-weight-bolder">{variantProductPrice}</span>
               </div>
               <div className="modal-body">
                 {configurableOptions.map((item, index) => {
@@ -153,7 +146,7 @@ class Configuration extends Component<Props> {
                     onClick={() => updateIsShowingProductOption(false)}
                     className="btn btn-outline-dark btn-block btn-sm"
                   >
-                    CANCEL
+                    Cancel
                   </button>
                 </div>
                 <div className="col-md-6 p-0">
@@ -162,7 +155,7 @@ class Configuration extends Component<Props> {
                     type="button"
                     className="btn btn-primary btn-block btn-sm"
                   >
-                    ADD TO CART
+                    Add to cart
                   </button>
                 </div>
               </div>

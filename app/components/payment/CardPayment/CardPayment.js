@@ -147,7 +147,7 @@ class CardPayment extends Component {
                         cardPaymentType === 'cash' ? 'active' : ''
                       }`}
                     >
-                      CASH
+                      Cash
                     </button>
                   </div>
                 </div>

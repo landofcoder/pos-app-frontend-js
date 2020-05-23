@@ -189,7 +189,7 @@ class CustomizeProduct extends Component<Props> {
                 onClick={() => updateIsShowingProductOption(false)}
                 className="btn btn-outline-dark btn-block btn-sm"
               >
-                CANCEL
+                Cancel
               </button>
             </div>
             <div className="col-md-6 p-0">
@@ -199,7 +199,7 @@ class CustomizeProduct extends Component<Props> {
                 className="btn btn-primary btn-block btn-sm"
                 disabled={!this.additionalAddToCard()}
               >
-                ADD TO CART
+                Add to cart
               </button>
             </div>
           </div>

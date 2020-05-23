@@ -625,7 +625,7 @@ export default class Pos extends Component<Props, State> {
                 className="btn btn-primary btn-block"
                 onClick={startCashCheckoutAction}
               >
-                CASH
+                Cash
               </button>
             </div>
             <div className="col-md-2 pl-1 pr-0">

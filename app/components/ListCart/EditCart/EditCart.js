@@ -125,7 +125,7 @@ class EditCart extends Component<Props, State> {
                     updateIsShowModelEditingCartItem({ open: false })
                   }
                 >
-                  CANCEL
+                  Cancel
                 </button>
               </div>
               <div className="col-md-6 p-0">
@@ -134,7 +134,7 @@ class EditCart extends Component<Props, State> {
                   className="btn btn-primary btn-sm btn-block"
                   onClick={() => updateQtyEditCart(posQty)}
                 >
-                  UPDATE
+                  Update
                 </button>
               </div>
             </div>
