@@ -129,8 +129,8 @@ class CartCustomer extends Component<Props> {
                     <div className="input-group mb-3">
                       <input
                         type="text"
-                        className="form-control"
-                        placeholder="Search by id, email or first name of customer"
+                        className="form-control input-sm"
+                        placeholder="Search by customer id, email, first name"
                         aria-label="Recipient's username"
                         onChange={this.onSearchCustomer}
                         aria-describedby="button-addon2"
@@ -186,7 +186,7 @@ class CartCustomer extends Component<Props> {
                       onClick={() => toggleModalCustomer(false)}
                       className="btn btn-secondary btn-block btn-sm"
                     >
-                      CLOSE
+                      Close
                     </button>
                   </div>
                 </div>

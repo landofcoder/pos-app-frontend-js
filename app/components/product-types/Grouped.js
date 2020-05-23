@@ -122,16 +122,18 @@ class Grouped extends Component<Props> {
                         dangerouslySetInnerHTML={{ __html: item.product.name }}
                       ></div>
                       <div className="col-md-6">
-                        <input
-                          className="form-control"
-                          value={item.qty}
-                          onChange={evt => this.qtyOnChange(index, evt)}
-                        />
+                        <div className="form-group input-group-sm">
+                          <input
+                            className="form-control"
+                            value={item.qty}
+                            onChange={evt => this.qtyOnChange(index, evt)}
+                          />
+                        </div>
                       </div>
                       <div className="col-md-12">
-                        <p className="font-weight-bold">
+                        <span className="font-weight-bold">
                           {this.getPriceProductItem(item)}
-                        </p>
+                        </span>
                       </div>
                     </div>
                   </div>
