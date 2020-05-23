@@ -109,55 +109,49 @@ class CardPayment extends Component {
             />
           </div>
           <div className="modal-body">
-            <div className="col-10 offset-1">
-              <div className="row">
+            <div className="row">
+              <div className="col-6">
                 <div className="card mb-3">
                   <div className="card-header">Checkout Total</div>
                   <div className="card-body">
                     <SubTotal />
                   </div>
                 </div>
+              </div>
+              <div className="col-6">
                 <div className="col-12">
                   <div className="row">
-                    <div className="col-md-4">
-                      <button
-                        onClick={() => updateCardPaymentType('stripe')}
-                        type="button"
-                        className={`btn btn-outline-primary btn-lg btn-block ${
-                          cardPaymentType === 'stripe' ? 'active' : ''
-                        }`}
-                      >
-                        Stripe
-                      </button>
-                    </div>
-                    <div className="col-md-4">
-                      <button
-                        onClick={() => updateCardPaymentType('authorize')}
-                        type="button"
-                        className={`btn btn-outline-primary btn-lg btn-block ${
-                          cardPaymentType === 'authorize' ? 'active' : ''
-                        }`}
-                      >
-                        {' '}
-                        Authorize.net
-                      </button>
-                    </div>
-                    <div className="col-md-4">
-                      <button
-                        onClick={() => this.switchToCashPayment()}
-                        type="button"
-                        className={`btn btn-outline-primary btn-lg btn-block ${
-                          cardPaymentType === 'cash' ? 'active' : ''
-                        }`}
-                      >
-                        CASH
-                      </button>
-                    </div>
+                    <button
+                      onClick={() => updateCardPaymentType('stripe')}
+                      type="button"
+                      className={`mr-1 btn btn-outline-dark btn-sm ${
+                        cardPaymentType === 'stripe' ? 'active' : ''
+                      }`}
+                    >
+                      Stripe
+                    </button>
+                    <button
+                      onClick={() => updateCardPaymentType('authorize')}
+                      type="button"
+                      className={`mr-1 btn btn-outline-dark btn-sm ${
+                        cardPaymentType === 'authorize' ? 'active' : ''
+                      }`}
+                    >
+                      {' '}
+                      Authorize.net
+                    </button>
+                    <button
+                      onClick={() => this.switchToCashPayment()}
+                      type="button"
+                      className={`mr-1 btn btn-outline-dark btn-sm ${
+                        cardPaymentType === 'cash' ? 'active' : ''
+                      }`}
+                    >
+                      CASH
+                    </button>
                   </div>
                 </div>
-                <div className="col-md-12 mt-4 mb-5">
-                  <InputCard />
-                </div>
+                <InputCard />
               </div>
             </div>
             <div className="col-12">
@@ -168,7 +162,7 @@ class CardPayment extends Component {
             <div className="modal-footer">
               <button
                 type="button"
-                className="btn btn-secondary btn-lg"
+                className="btn btn-outline-secondary"
                 onClick={() => updateIsShowCardPaymentModel(false)}
               >
                 Close
@@ -180,7 +174,7 @@ class CardPayment extends Component {
                   isLoadingCharging
                 }
                 type="button"
-                className="btn btn-primary btn-lg"
+                className="btn btn-primary"
                 onClick={acceptPaymentCard}
               >
                 {isLoadingCharging ? (

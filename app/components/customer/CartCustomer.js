@@ -94,7 +94,7 @@ class CartCustomer extends Component<Props> {
                   <div className="col-md-3 p-0">
                     <button
                       type="button"
-                      className="btn btn-outline-primary btn-block"
+                      className="btn btn-outline-primary btn-block btn-sm"
                       onClick={() => toggleModalSignUpCustomer(true)}
                     >
                       Add customer
@@ -107,7 +107,10 @@ class CartCustomer extends Component<Props> {
                       {customer ? (
                         <div className="row">
                           <div className="col-md-6">
-                            <button type="button" className="btn btn-primary">
+                            <button
+                              type="button"
+                              className="btn btn-primary btn-sm"
+                            >
                               {email}
                             </button>
                             <span className={Styles.wrapCloseIcon}>
@@ -181,7 +184,7 @@ class CartCustomer extends Component<Props> {
                     <button
                       type="button"
                       onClick={() => toggleModalCustomer(false)}
-                      className="btn btn-secondary btn-block"
+                      className="btn btn-secondary btn-block btn-sm"
                     >
                       CLOSE
                     </button>

@@ -136,7 +136,7 @@ class Bundle extends Component<Props> {
                 <button
                   type="button"
                   onClick={() => updateIsShowingProductOption(false)}
-                  className="btn btn-outline-dark btn-block"
+                  className="btn btn-outline-dark btn-block btn-sm"
                 >
                   CANCEL
                 </button>
@@ -145,7 +145,7 @@ class Bundle extends Component<Props> {
                 <button
                   onClick={this.addToCart}
                   type="button"
-                  className="btn btn-primary btn-block"
+                  className="btn btn-primary btn-block btn-sm"
                 >
                   ADD TO CART
                 </button>

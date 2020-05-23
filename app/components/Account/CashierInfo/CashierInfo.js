@@ -31,7 +31,7 @@ class CashierInfo extends Component<Props> {
             <div className="mb-2">
               <button
                 type="button"
-                className="btn btn-outline-danger"
+                className="btn btn-outline-danger btn-sm"
                 onClick={this.handleSignOut}
               >
                 Sign out

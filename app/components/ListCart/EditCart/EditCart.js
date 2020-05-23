@@ -86,7 +86,7 @@ class EditCart extends Component<Props, State> {
                 <div className="col-md-4 text-right pull-right">
                   <button
                     type="button"
-                    className="btn btn-secondary"
+                    className="btn btn-outline-secondary"
                     onClick={this.counterDownQty}
                   >
                     -
@@ -98,7 +98,7 @@ class EditCart extends Component<Props, State> {
                       this.qtyInput = input;
                     }}
                     type="text"
-                    className="form-control"
+                    className="form-control text-center"
                     placeholder="0"
                     onChange={this.onQtyOnChange}
                     value={posQty}
@@ -108,7 +108,7 @@ class EditCart extends Component<Props, State> {
                 <div className="col-md-4 text-left pull-left">
                   <button
                     type="button"
-                    className="btn btn-secondary"
+                    className="btn btn-outline-secondary"
                     onClick={this.counterUpQty}
                   >
                     +
@@ -120,7 +120,7 @@ class EditCart extends Component<Props, State> {
               <div className="col-md-6 p-0">
                 <button
                   type="button"
-                  className="btn btn-outline-dark btn-lg btn-block"
+                  className="btn btn-outline-dark btn-sm btn-block"
                   onClick={() =>
                     updateIsShowModelEditingCartItem({ open: false })
                   }
@@ -131,7 +131,7 @@ class EditCart extends Component<Props, State> {
               <div className="col-md-6 p-0">
                 <button
                   type="submit"
-                  className="btn btn-primary btn-lg btn-block"
+                  className="btn btn-primary btn-sm btn-block"
                   onClick={() => updateQtyEditCart(posQty)}
                 >
                   UPDATE

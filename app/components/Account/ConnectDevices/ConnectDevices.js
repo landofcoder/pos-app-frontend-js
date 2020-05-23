@@ -63,7 +63,7 @@ class ConnectDevices extends Component<Props> {
                       <button
                         onClick={changeScannerDevice}
                         type="button"
-                        className="btn btn-secondary"
+                        className="btn btn-secondary btn-sm"
                       >
                         Change
                       </button>
@@ -77,7 +77,7 @@ class ConnectDevices extends Component<Props> {
                           <select
                             onChange={this.handleChangeDevice}
                             value={deviceSelected}
-                            className="form-control"
+                            className="form-control custom-select-sm"
                           >
                             {allDevices.map((device, index) => {
                               return (
@@ -109,7 +109,7 @@ class ConnectDevices extends Component<Props> {
                       <div className="text-right">
                         <button
                           type="button"
-                          className="btn btn-primary"
+                          className="btn btn-primary btn-sm"
                           disabled={connectDisabled}
                           onClick={this.connectDevice}
                         >

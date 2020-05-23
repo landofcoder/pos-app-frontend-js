@@ -91,72 +91,72 @@ class InputCard extends Component {
     return (
       <div className="mt-4">
         {cardPaymentType ? (
-          <div className="row">
-            <div className="col-8 offset-2">
-              <div className="card">
-                <div className="card-header">Card</div>
-                <div className="card-body">
-                  <div className="row">
-                    <div className="col-12">
-                      <div className="form-group">
-                        <label htmlFor="exampleFormControlInput1">
-                          Name on Card
-                        </label>
-                        <input
-                          value={nameOnCard}
-                          className="form-control"
-                          onChange={e => this.carInfoOnChange('nameOnCard', e)}
-                        />
-                      </div>
-                    </div>
-                    <div className="col-12">
-                      <div className="form-group">
-                        <label htmlFor="exampleFormControlInput1">
-                          Card number
-                        </label>
-                        <input
-                          className={
-                            // eslint-disable-next-line prefer-template
-                            `form-control ` + this.checkValidInputCardNumber()
-                          }
-                          value={cardNumber}
-                          onChange={e => this.carInfoOnChange('cardNumber', e)}
-                          type="password"
-                        />
-                      </div>
-                    </div>
-                    <div className="col-3 pr-1">
-                      <label htmlFor="exampleFormControlInput1">
-                        Exp month
-                      </label>
-                      <input
-                        ref={this.focusExpMonthInput.ref}
-                        id="cart-exp-month"
-                        className="form-control"
-                        onChange={e => this.carInfoOnChange('expMonth', e)}
-                        value={expMonth}
-                      />
-                    </div>
-                    <div className="col-3 pl-1">
-                      <label htmlFor="exampleFormControlInput1">Exp date</label>
-                      <input
-                        ref={this.focusExpDateInput.ref}
-                        id="cart-exp-year"
-                        className="form-control"
-                        onChange={e => this.carInfoOnChange('expYear', e)}
-                        value={expYear}
-                      />
-                    </div>
-                    <div className="col-3 pl-0">
-                      <label htmlFor="exampleFormControlInput1">CSC</label>
-                      <input
-                        ref={this.focusCvcInput.ref}
-                        className="form-control"
-                        onChange={e => this.carInfoOnChange('cvc', e)}
-                        type="password"
-                        value={cvc}
-                      />
-                    </div>
+          <div className="card">
+            <div className="card-header">Card</div>
+            <div className="card-body">
+              <div className="row">
+                <div className="col-12">
+                  <div className="form-group input-group-sm">
+                    <label htmlFor="exampleFormControlInput1">
+                      Name on Card
+                    </label>
+                    <input
+                      value={nameOnCard}
+                      className="form-control"
+                      onChange={e => this.carInfoOnChange('nameOnCard', e)}
+                    />
+                  </div>
+                </div>
+                <div className="col-12">
+                  <div className="form-group input-group-sm">
+                    <label htmlFor="exampleFormControlInput1">
+                      Card number
+                    </label>
+                    <input
+                      className={
+                        // eslint-disable-next-line prefer-template
+                        `form-control ` + this.checkValidInputCardNumber()
+                      }
+                      value={cardNumber}
+                      onChange={e => this.carInfoOnChange('cardNumber', e)}
+                      type="password"
+                    />
+                  </div>
+                </div>
+                <div className="col-4 pr-1">
+                  <div className="form-group input-group-sm">
+                    <label htmlFor="exampleFormControlInput1">Exp month</label>
+                    <input
+                      ref={this.focusExpMonthInput.ref}
+                      id="cart-exp-month"
+                      className="form-control"
+                      onChange={e => this.carInfoOnChange('expMonth', e)}
+                      value={expMonth}
+                    />
+                  </div>
+                </div>
+                <div className="col-4 pl-1">
+                  <label htmlFor="exampleFormControlInput1">Exp date</label>
+                  <div className="input-group input-group-sm">
+                    <input
+                      ref={this.focusExpDateInput.ref}
+                      id="cart-exp-year"
+                      className="form-control"
+                      onChange={e => this.carInfoOnChange('expYear', e)}
+                      value={expYear}
+                    />
+                  </div>
+                </div>
+                <div className="col-4 pl-0">
+                  <label htmlFor="exampleFormControlInput1">CSC</label>
+                  <div className="input-group input-group-sm">
+                    <input
+                      ref={this.focusCvcInput.ref}
+                      className="form-control"
+                      onChange={e => this.carInfoOnChange('cvc', e)}
+                      type="password"
+                      value={cvc}
+                    />
                   </div>
                 </div>
               </div>

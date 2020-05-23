@@ -171,10 +171,10 @@ class SubTotal extends Component<Props> {
     return (
       <div>
         <div className="form-group row">
-          <label htmlFor="staticEmail" className="col-sm-5 col-form-label">
+          <label htmlFor="staticEmail" className="col-sm-7 col-form-label">
             Subtotal
           </label>
-          <div className="col-sm-7 pt-1">
+          <div className="col-sm-5 pt-1">
             {loadingPreparingOrder ? (
               <div className="spinner-border spinner-border-sm" role="status">
                 <span className="sr-only">Loading...</span>
@@ -185,22 +185,23 @@ class SubTotal extends Component<Props> {
               </div>
             )}
           </div>
-          <div className="col-sm-5 pt-1">
+          <div className="col-sm-7 pt-1">
             <p id="lblDiscountAmount">Coupon code</p>
           </div>
-          <div className="col-sm-7 pt-1">{this.showCouponCode()}</div>
-          <div className="col-sm-5 pt-1">
+          <div className="col-sm-5 pt-1">{this.showCouponCode()}</div>
+
+          <div className="col-sm-7 pt-1">
             <p id="lblDiscountAmount">GiftCard</p>
           </div>
-          <div className="col-sm-7 pt-1">{this.showGiftCard()}</div>
+          <div className="col-sm-5 pt-1">{this.showGiftCard()}</div>
 
           <label
             htmlFor="lblDiscountAmount"
-            className="col-sm-5 col-form-label"
+            className="col-sm-7 col-form-label"
           >
             Discount
           </label>
-          <div className="col-sm-7 pt-1">
+          <div className="col-sm-5 pt-1">
             <span className="font-weight-bold" id="lblDiscountAmount">
               {discountAmount}
             </span>
@@ -213,19 +214,19 @@ class SubTotal extends Component<Props> {
               </del>
             </span>
           </div>
-          <label htmlFor="lblTaxAmount" className="col-sm-5 col-form-label">
+          <label htmlFor="lblTaxAmount" className="col-sm-7 col-form-label">
             Shipping & Handling
           </label>
-          <div className="col-sm-7 pt-1">
+          <div className="col-sm-5 pt-1">
             <p className="font-weight-bold" id="lblTaxAmount">
               {shippingAmount}
             </p>
           </div>
           <div className={Styles.lineSubTotal} />
-          <label htmlFor="staticEmail" className="col-sm-5 col-form-label">
+          <label htmlFor="staticEmail" className="col-sm-7 col-form-label">
             Order total
           </label>
-          <div className="col-sm-7 pt-1">
+          <div className="col-sm-5 pt-1">
             {loadingPreparingOrder ? (
               <div className="spinner-border spinner-border-sm" role="status">
                 <span className="sr-only">Loading...</span>

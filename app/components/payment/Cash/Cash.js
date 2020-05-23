@@ -198,14 +198,14 @@ class CashPayment extends Component<Props> {
                 <button
                   type="button"
                   onClick={() => updateShowCashModal(false)}
-                  className="btn btn-outline-dark btn-block mt-0"
+                  className="btn btn-outline-dark mt-0"
                 >
                   CANCEL
                 </button>
                 <button
                   type="button"
                   onClick={() => this.toggleModalCalculator()}
-                  className="btn btn-outline-info btn-block mt-0"
+                  className="btn btn-outline-info mt-0"
                 >
                   CALCULATOR
                 </button>
