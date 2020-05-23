@@ -126,7 +126,7 @@ class CustomizeProduct extends Component<Props> {
                 <div className="col-12">
                   <label htmlFor="input-name">Name</label>
                 </div>
-                <div className="col-12">
+                <div className="col-12 input-group-sm">
                   <input
                     onChange={this.actionNameValue}
                     className="col form-control"
@@ -146,7 +146,7 @@ class CustomizeProduct extends Component<Props> {
                 </div>
               </div>
               <div className="row">
-                <div className="col-6">
+                <div className="col-6 input-group-sm">
                   <input
                     type="number"
                     className="col form-control"
@@ -155,7 +155,7 @@ class CustomizeProduct extends Component<Props> {
                     value={price}
                   />
                 </div>
-                <div className="col-6">
+                <div className="col-6 input-group-sm">
                   <input
                     type="number"
                     className="col form-control"
@@ -171,7 +171,7 @@ class CustomizeProduct extends Component<Props> {
                 <div className="col-12">
                   <label htmlFor="input-note">Note</label>
                 </div>
-                <div className="col-12">
+                <div className="col-12 input-group-sm">
                   <input
                     className="col form-control"
                     id="input-note"
@@ -183,7 +183,7 @@ class CustomizeProduct extends Component<Props> {
             </div>
           </div>
           <div className="modal-footer">
-            <div className="col-md-6 p-0">
+            <div className="col-md-6 pr-0 pl-0">
               <button
                 type="button"
                 onClick={() => updateIsShowingProductOption(false)}
@@ -192,7 +192,7 @@ class CustomizeProduct extends Component<Props> {
                 Cancel
               </button>
             </div>
-            <div className="col-md-6 p-0">
+            <div className="col-md-6 pr-0 pl-0">
               <button
                 onClick={this.addToCart}
                 type="button"
