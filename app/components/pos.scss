@@ -1,13 +1,5 @@
 @import 'styles/variables';
 
-.openCategory {
-  display: block;
-}
-
-.closeCategory {
-  display: block;
-}
-
 #wrapPostContainerId {
   height: #{$wrapPostContainerHeight};
   padding-bottom: $paddingBottomPostContainerId;

@@ -356,13 +356,7 @@ export default class Pos extends Component<Props, State> {
               paddingTop: 0
             }}
           >
-            <div
-              className={`${
-                isOpenCategoriesModel
-                  ? Styles.openCategory
-                  : Styles.closeCategory
-              }`}
-            >
+            <div>
               <Categories />
             </div>
           </div>

@@ -5,6 +5,7 @@ import {
   toggleModelCategories
 } from '../../../actions/homeAction';
 import ChevronRight from '../chevron-right';
+import X from '../x';
 import Styles from './categories.scss';
 
 type Props = {
@@ -75,32 +76,39 @@ class Categories extends Component<Props> {
     /* eslint-enable */
     return (
       <div className={`${Styles.wrapCategoryBox}`}>
-        <div className={`col-12 ${Styles.wrapTitleCategory}`}>
-          <h4 className={Styles.title}>Categories</h4>
+        <div className={Styles.wrapInsideBox}>
+          <div className={`col-12 ${Styles.wrapTitleCategory}`}>
+            <h4 className={Styles.title}>Categories</h4>
+          </div>
+          <ul className="list-group list-group-flush">
+            <li className="list-group-item d-flex justify-content-between align-items-center">
+              All products
+            </li>
+            <li className="list-group-item d-flex justify-content-between align-items-center">
+              Cras justo odio
+              <span style={{ marginLeft: '10px' }}>
+                <ChevronRight />
+              </span>
+            </li>
+            <li className="list-group-item d-flex justify-content-between align-items-center">
+              Dapibus ac facilisis in
+              <span style={{ marginLeft: '10px' }}>
+                <ChevronRight />
+              </span>
+            </li>
+            <li className="list-group-item d-flex justify-content-between align-items-center">
+              Morbi leo risus
+              <span style={{ marginLeft: '10px' }}>
+                <ChevronRight />
+              </span>
+            </li>
+          </ul>
         </div>
-        <ul className="list-group list-group-flush">
-          <li className="list-group-item d-flex justify-content-between align-items-center">
-            All products
-          </li>
-          <li className="list-group-item d-flex justify-content-between align-items-center">
-            Cras justo odio
-            <span style={{ marginLeft: '10px' }}>
-              <ChevronRight />
-            </span>
-          </li>
-          <li className="list-group-item d-flex justify-content-between align-items-center">
-            Dapibus ac facilisis in
-            <span style={{ marginLeft: '10px' }}>
-              <ChevronRight />
-            </span>
-          </li>
-          <li className="list-group-item d-flex justify-content-between align-items-center">
-            Morbi leo risus
-            <span style={{ marginLeft: '10px' }}>
-              <ChevronRight />
-            </span>
-          </li>
-        </ul>
+        <div className={Styles.wrapCloseIcon}>
+          <div className={Styles.closeIcon}>
+            <X />
+          </div>
+        </div>
       </div>
     );
   }
