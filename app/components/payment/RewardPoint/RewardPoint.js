@@ -51,10 +51,6 @@ class RewardPoint extends Component<Props> {
     return listRuleItems;
   };
 
-  getSpendMinApplyPoints = (ruleActive, pointsBalance) => {
-    return 100;
-  };
-
   getSpendMaxApplyPoints = (ruleActive, pointsBalance) => {
     const spendMaxPoints = ruleActive ? ruleActive.spend_max_points : 0;
     // Max points by spendMaxPoints
@@ -68,7 +64,16 @@ class RewardPoint extends Component<Props> {
     return 0;
   };
 
+  getRuleActive = () => {
+    const { rewardPointInfo } = this.props;
+    const listRuleItems = this.conditionRuleItems(rewardPointInfo);
+    const { activeRuleIndex } = this.state;
+    return listRuleItems[activeRuleIndex];
+  };
+
   enableApply = () => {
+    const ruleActive = this.getRuleActive();
+    console.log('rule active:', ruleActive);
     return true;
   };
 
@@ -78,9 +83,9 @@ class RewardPoint extends Component<Props> {
       isLoadingRewardPointInfo,
       rewardPointInfo
     } = this.props;
-    const listRuleItems = this.conditionRuleItems(rewardPointInfo);
     const { activeRuleIndex } = this.state;
-    const ruleActive = listRuleItems[activeRuleIndex];
+    const listRuleItems = this.conditionRuleItems();
+    const ruleActive = this.getRuleActive();
     const pointStep = ruleActive ? ruleActive.spend_points : 0;
     const customerBalancePoints = rewardPointInfo
       ? rewardPointInfo.total_points
@@ -150,7 +155,7 @@ class RewardPoint extends Component<Props> {
                 </div>
                 <div className="mt-3 text-right">
                   <button
-                    disabled={this.enableApply}
+                    disabled={this.enableApply()}
                     type="button"
                     className="btn btn-outline-dark btn-sm"
                   >

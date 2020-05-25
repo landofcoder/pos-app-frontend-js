@@ -159,6 +159,7 @@ const initialState = {
   orderHistoryDetailOffline: {},
   order_id_history: null,
   isOpenFindCustomer: false,
+  isOpenCategoriesModel: false,
   isOpenAddNote: false,
   isOpenSignUpCustomer: false,
   isOpenCalculator: false,
@@ -323,6 +324,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.LOADING_NOTE_ORDER_ACTION:
         draft.isLoadingNoteOrderAction = action.payload;
+        break;
       case types.TOGGLE_MODAL_SIGN_UP_CUSTOMER:
         draft.isOpenSignUpCustomer = action.payload;
         break;
@@ -664,7 +666,11 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.checkout.rewardPoint.info = action.payload;
         draft.checkout.rewardPoint.isLoadingRewardPointInfo = false;
         break;
+      case types.TOGGLE_MODEL_CATEGORIES:
+        draft.isOpenCategoriesModel = action.payload;
+        break;
       default:
+        break;
     }
   });
 export default mainRd;

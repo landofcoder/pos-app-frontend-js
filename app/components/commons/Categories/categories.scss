@@ -1,5 +1,40 @@
-.menuCategory {
-  svg {
-    font-size: 25px;
+.wrapCategoryBox {
+  position: absolute;
+  z-index: 1;
+  background: #fff;
+  margin-left: -15px;
+  min-width: 300px;
+  height: 100%;
+  max-height: 100%;
+  overflow: scroll;
+  border-right: 1px solid #dedede;
+  padding-top: 10px;
+  padding-left: 0;
+
+  .wrapTitleCategory {
+    border-bottom: 1px solid #dedede;
+
+    .title {
+      font-size: 20px;
+      margin-left: 10px;
+    }
+  }
+
+  ul {
+    li {
+      border: 0;
+      cursor: pointer;
+      padding-left: 26px;
+
+      &:hover {
+        background: #dfdfdf;
+      }
+
+      span {
+        svg {
+          width: 18px;
+        }
+      }
+    }
   }
 }

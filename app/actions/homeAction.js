@@ -179,6 +179,13 @@ export function toggleModalSignUpCustomer(payload) {
   };
 }
 
+export function toggleModelCategories(payload) {
+  return {
+    type: types.TOGGLE_MODEL_CATEGORIES,
+    payload
+  };
+}
+
 export function searchCustomer(payload) {
   return {
     type: types.SEARCH_CUSTOMER,

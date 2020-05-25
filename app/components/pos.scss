@@ -1,8 +1,15 @@
 @import 'styles/variables';
 
+.openCategory {
+  display: block;
+}
+
+.closeCategory {
+  display: block;
+}
+
 #wrapPostContainerId {
-  //padding-top: #{$paddingTopPostContainerId};
-  height: #{$wrapPostContainerHeight}; // 98 after calc
+  height: #{$wrapPostContainerHeight};
   padding-bottom: $paddingBottomPostContainerId;
 }
 
@@ -13,22 +20,16 @@
   padding-bottom: 50px;
 
   .wrapTop {
-    padding-left: 100px;
     border-bottom: 1px solid #dedede;
     margin-bottom: 10px;
+    padding-left: 10px;
 
     .wrapTopActions {
-      display: flex;
+      display: block;
       padding-top: 3px;
 
-      .wrapCategories {
-        display: block;
-      }
-
-      .wrapActions {
-        i {
-          font-size: 20px;
-        }
+      span {
+        float: left;
       }
     }
   }
@@ -78,10 +79,6 @@
     .wrapRight {
       width: 50%;
 
-      .wrapStatusOnline {
-
-      }
-
       .wrapClock {
         text-align: right;
         padding-right: 20px;
@@ -101,7 +98,6 @@
 .wrapProductItem {
   .itemCart {
     width: 100%;
-    //border: 0 !important;
   }
 
   .wrapProductImage {

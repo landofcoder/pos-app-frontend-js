@@ -1,39 +1,42 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getProductByCategory } from '../../../actions/homeAction';
+import {
+  getProductByCategory,
+  toggleModelCategories
+} from '../../../actions/homeAction';
+import ChevronRight from '../chevron-right';
 import Styles from './categories.scss';
 
 type Props = {
   allCategories: Object,
-  getProductByCategory: (payload: string) => void
+  getProductByCategory: (payload: string) => void,
+  toggleModelCategories: (payload: boolean) => void
 };
 
 class Categories extends Component<Props> {
   props: Props;
 
-  state = {
-    openNavigation: false
-  };
-
   componentDidMount(): void {
-    window.addEventListener('resize', this.windowDimensionChange);
+    document.addEventListener('keydown', this.escFunction, false);
   }
 
-  componentWillUnmount(): void {
-    window.removeEventListener('resize', this.windowDimensionChange);
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.escFunction, false);
   }
+
+  escFunction = event => {
+    if (event.keyCode === 27) {
+      // Do whatever when esc is pressed
+      const { toggleModelCategories } = this.props;
+      // Hide any modal
+      toggleModelCategories(false);
+    }
+  };
 
   getProductByCategory = item => {
     const categoryId = item.id;
     const { getProductByCategory } = this.props;
     getProductByCategory(categoryId);
-  };
-
-  windowDimensionChange = () => {
-    // When scaled from window width to pc width openNavigation for mobile default is off
-    if (window.innerWidth > 768) {
-      this.setState({ openNavigation: false });
-    }
   };
 
   /**
@@ -65,107 +68,39 @@ class Categories extends Component<Props> {
     );
   };
 
-  navigationClick = () => {
-    const { openNavigation } = this.state;
-    if (openNavigation) {
-      this.setState({ openNavigation: false });
-    } else {
-      this.setState({ openNavigation: true });
-    }
-  };
-
   render() {
     const { allCategories } = this.props;
-    const { openNavigation } = this.state;
     /* eslint-disable */
     const children_data = (allCategories && allCategories.children_data) ? allCategories.children_data : [];
     /* eslint-enable */
     return (
-      <div>
-        <nav className="navbar navbar-light navbar-expand-lg mainmenu">
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-toggle="collapse"
-            data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-            onClick={this.navigationClick}
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div
-            className={`collapse navbar-collapse ${
-              openNavigation ? 'show' : ''
-            }`}
-            id="navbarSupportedContent"
-          >
-            <ul className="navbar-nav">
-              <li className="dropdown">
-                <a
-                  href="#"
-                  className="menu-icon"
-                  role="button"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
-                  <div className={Styles.menuCategory}>
-                    <svg
-                      className="bi bi-list"
-                      width="1em"
-                      height="1em"
-                      viewBox="0 0 16 16"
-                      fill="currentColor"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M2.5 11.5A.5.5 0 013 11h10a.5.5 0 010 1H3a.5.5 0 01-.5-.5zm0-4A.5.5 0 013 7h10a.5.5 0 010 1H3a.5.5 0 01-.5-.5zm0-4A.5.5 0 013 3h10a.5.5 0 010 1H3a.5.5 0 01-.5-.5z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </div>
-                </a>
-
-                <ul
-                  className="dropdown-menu"
-                  data-naviga-redirect={openNavigation}
-                  aria-labelledby="navbarDropdown"
-                >
-                  {children_data.map((value, index) => {
-                    return (
-                      <li
-                        key={index}
-                        data-category-id={value.id}
-                        className={
-                          value.children_data && value.children_data.length > 0
-                            ? 'dropdown'
-                            : ''
-                        }
-                      >
-                        <a
-                          href="#"
-                          onClick={() => this.getProductByCategory(value)}
-                          className={
-                            value.children_data &&
-                            value.children_data.length > 0
-                              ? 'dropdown-toggle'
-                              : ''
-                          }
-                        >
-                          {value.name}
-                        </a>
-                        {this.renderSubMenu(value, index)}
-                      </li>
-                    );
-                  })}
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </nav>
+      <div className={`${Styles.wrapCategoryBox}`}>
+        <div className={`col-12 ${Styles.wrapTitleCategory}`}>
+          <h4 className={Styles.title}>Categories</h4>
+        </div>
+        <ul className="list-group list-group-flush">
+          <li className="list-group-item d-flex justify-content-between align-items-center">
+            All products
+          </li>
+          <li className="list-group-item d-flex justify-content-between align-items-center">
+            Cras justo odio
+            <span style={{ marginLeft: '10px' }}>
+              <ChevronRight />
+            </span>
+          </li>
+          <li className="list-group-item d-flex justify-content-between align-items-center">
+            Dapibus ac facilisis in
+            <span style={{ marginLeft: '10px' }}>
+              <ChevronRight />
+            </span>
+          </li>
+          <li className="list-group-item d-flex justify-content-between align-items-center">
+            Morbi leo risus
+            <span style={{ marginLeft: '10px' }}>
+              <ChevronRight />
+            </span>
+          </li>
+        </ul>
       </div>
     );
   }
@@ -173,7 +108,8 @@ class Categories extends Component<Props> {
 
 function mapDispatchToProps(dispatch) {
   return {
-    getProductByCategory: payload => dispatch(getProductByCategory(payload))
+    getProductByCategory: payload => dispatch(getProductByCategory(payload)),
+    toggleModelCategories: payload => dispatch(toggleModelCategories(payload))
   };
 }
 

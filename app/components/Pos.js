@@ -24,6 +24,8 @@ import { sumCartTotalPrice } from '../common/cart';
 import Categories from './commons/Categories/Categories';
 import Custom from './product-types/Custom';
 import routes from '../constants/routes';
+import Menu from './commons/menu';
+import Plus from './commons/plus';
 
 type Props = {
   productList: Array<Object>,
@@ -35,6 +37,7 @@ type Props = {
   mainPanelType: string,
   checkoutAction: () => void,
   getDetailProductConfigurable: (payload: Object) => void,
+  toggleModelCategories: (payload: boolean) => void,
   getProductByBarcodeFromScanner: (payload: string) => void,
   getDetailProductBundle: (payload: Object) => void,
   getDetailProductGrouped: (payload: Object) => void,
@@ -56,6 +59,7 @@ type Props = {
   isOpenSignUpCustomer: boolean,
   internetConnected: boolean,
   posCommandIsFetchingProduct: boolean,
+  isOpenCategoriesModel: boolean,
   defaultColor: string,
   hidDevice: Object,
   history: (payload: string) => void,
@@ -269,33 +273,6 @@ export default class Pos extends Component<Props, State> {
   };
 
   /**
-   * Render discount and tax
-   * @returns {*}
-   */
-  renderDiscountAndTax = () => {
-    return (
-      <>
-        {/* <div className={CommonStyle.wrapRow}> */}
-        {/*  <div className={CommonStyle.wrapLabel}> */}
-        {/*    <span>Subtotal</span> */}
-        {/*  </div> */}
-        {/*  <div className={CommonStyle.wrapValue}> */}
-        {/*    <span>{this.sumTotalPrice()}</span> */}
-        {/*  </div> */}
-        {/* </div> */}
-        {/* <div className={CommonStyle.wrapRow}> */}
-        {/*  <div className={CommonStyle.wrapLabel}> */}
-        {/*    <span>Discount</span> */}
-        {/*  </div> */}
-        {/*  <div className={CommonStyle.wrapValue}> */}
-        {/*    <span>--</span> */}
-        {/*  </div> */}
-        {/* </div> */}
-      </>
-    );
-  };
-
-  /**
    * When cashier input search
    * @param e
    */
@@ -350,7 +327,9 @@ export default class Pos extends Component<Props, State> {
       isOpenReceiptModal,
       posCommandIsFetchingProduct,
       defaultColor,
-      startCashCheckoutAction
+      startCashCheckoutAction,
+      isOpenCategoriesModel,
+      toggleModelCategories
     } = this.props;
     const { mainWrapProductPanel } = this.state;
     // Check Redirect To Layout Account
@@ -370,6 +349,23 @@ export default class Pos extends Component<Props, State> {
               : 'default'
           }
         >
+          <div
+            className={`${ModalStyle.modal}`}
+            style={{
+              display: isOpenCategoriesModel ? 'block' : 'none',
+              paddingTop: 0
+            }}
+          >
+            <div
+              className={`${
+                isOpenCategoriesModel
+                  ? Styles.openCategory
+                  : Styles.closeCategory
+              }`}
+            >
+              <Categories />
+            </div>
+          </div>
           {/* OPTION MODEL (PRODUCT CONFIGURABLE, PRODUCT BUNDLE, PRODUCT GROUPED) */}
           <div
             id="modalProductOption"
@@ -435,23 +431,22 @@ export default class Pos extends Component<Props, State> {
                 {/* Header action begin */}
                 <div className={`row ${Styles.wrapTop}`}>
                   <div className={`${Styles.wrapTopActions} col-md-2`}>
-                    <div className={Styles.wrapCategories}>
-                      <Categories />
-                    </div>
-                    <div className={Styles.wrapActions}>
-                      <a
-                        className={CommonStyle.btnActionPadding}
-                        href="#"
-                        onClick={() => {
-                          this.addCustomProduct();
-                        }}
-                      >
-                        <i
-                          style={{ color: '#888' }}
-                          className="fas fa-plus fa-lg"
-                        ></i>
-                      </a>
-                    </div>
+                    <span
+                      role="presentation"
+                      onClick={() => toggleModelCategories(true)}
+                      className={CommonStyle.btnActionPadding}
+                    >
+                      <Menu />
+                    </span>
+                    <span
+                      role="presentation"
+                      className={CommonStyle.btnActionPadding}
+                      onClick={() => {
+                        this.addCustomProduct();
+                      }}
+                    >
+                      <Plus />
+                    </span>
                   </div>
                   <div className="col-md-5 mb-0 pr-0">
                     <div className="input-group flex-nowrap">
@@ -495,7 +490,7 @@ export default class Pos extends Component<Props, State> {
                       <></>
                     )}
                   </div>
-                  <div className="col-md-5"></div>
+                  <div className="col-md-5" />
                 </div>
                 {/* Header action end */}
 
@@ -537,7 +532,6 @@ export default class Pos extends Component<Props, State> {
                   <ListCart />
                   <div className={CommonStyle.subTotalContainer}>
                     <div className={`${CommonStyle.wrapSubTotal} pr-3`}>
-                      {this.renderDiscountAndTax()}
                       <div className={CommonStyle.wrapRow}>
                         <div
                           className={CommonStyle.wrapLabel}
