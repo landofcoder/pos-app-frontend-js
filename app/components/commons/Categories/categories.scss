@@ -1,11 +1,14 @@
 .wrapCategoryBox {
+  display: block;
+
+
   .wrapInsideBox {
     position: absolute;
     z-index: 1;
     background: #fff;
     margin-left: -15px;
-    min-width: 300px;
     height: 100%;
+    min-width: 300px;
     max-height: 100%;
     overflow: scroll;
     border-right: 1px solid #dedede;
@@ -41,12 +44,11 @@
   }
 
   .wrapCloseIcon {
-    position: relative;
-    display: none;
-
     .closeIcon {
       position: absolute;
-      right: -10px;
+      right: 10px;
+      top: 10px;
+      cursor: pointer;
     }
   }
 }

@@ -70,7 +70,7 @@ class Categories extends Component<Props> {
   };
 
   render() {
-    const { allCategories } = this.props;
+    const { allCategories, toggleModelCategories } = this.props;
     /* eslint-disable */
     const children_data = (allCategories && allCategories.children_data) ? allCategories.children_data : [];
     /* eslint-enable */
@@ -103,10 +103,11 @@ class Categories extends Component<Props> {
               </span>
             </li>
           </ul>
-        </div>
-        <div className={Styles.wrapCloseIcon}>
-          <div className={Styles.closeIcon}>
-            <X />
+
+          <div className={Styles.wrapCloseIcon}>
+            <div className={Styles.closeIcon} onClick={() => toggleModelCategories(false)}>
+              <X />
+            </div>
           </div>
         </div>
       </div>
