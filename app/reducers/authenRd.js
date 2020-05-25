@@ -1,6 +1,9 @@
 import produce from 'immer';
 import * as typesAuthen from '../constants/authen';
-import { RECEIVED_GENERAL_CONFIG } from '../constants/root';
+import {
+  RECEIVED_GENERAL_CONFIG,
+  GET_SYNC_DATA_WITH_TYPE
+} from '../constants/root';
 
 const initialState = {
   loading: false,
@@ -18,12 +21,14 @@ const initialState = {
     }
   },
   syncDataManager: {
+    // do du lieu ra ngoai voi step la so trang, stepAt la vi tri trang hien tai
     id: null,
     data: null,
     step: 10,
     stepAt: 1
   },
-  syncManager: {}
+  syncManager: {},
+  loadingSyncManager: {}
 };
 
 /*  eslint no-param-reassign: "error" */
@@ -61,6 +66,7 @@ const authenRd = (state = initialState, action) =>
       case typesAuthen.RECEIVED_DATA_SYNC:
         draft.syncDataManager.id = action.id;
         draft.syncDataManager.data = action.payload;
+        draft.syncDataManager.statusData = action.statusData;
         draft.syncDataManager.step = action.step;
         draft.syncDataManager.stepAt = action.stepAt;
         break;
@@ -68,6 +74,7 @@ const authenRd = (state = initialState, action) =>
         draft.appInfo = action.payload;
         break;
       case typesAuthen.LOADING_SYNC_ACTION:
+        draft.loadingSyncManager[action.payload.type] = action.payload.status;
         break;
       default:
         break;

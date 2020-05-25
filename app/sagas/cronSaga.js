@@ -10,9 +10,13 @@ import {
   getGeneralConfigFromLocal,
   updateGeneralConfigFromLocal
 } from './services/settings-service';
-import { syncCustomProductAPI } from './services/product-service';
+import {
+  syncCustomProductAPI,
+  getAllProductFromLocal
+} from './services/product-service';
 import {
   getAllTblCustomer,
+  getAllTblCustomerByPaginate,
   getCustomerByName,
   updateCustomerById,
   replaceCustomerById,
@@ -22,12 +26,14 @@ import {
 import {
   getAllTblCustomProduct,
   updateCustomProductById,
-  getCustomProductById
+  getCustomProductById,
+  getAllTblCustomProductByPaginate
 } from '../reducers/db/sync_custom_product';
 import {
   getAllOrders,
   getOrderById,
-  updateOrderById
+  updateOrderById,
+  getAllOrdersByPaginate
 } from '../reducers/db/sync_orders';
 import {
   successLoadService,
@@ -44,11 +50,14 @@ import {
   reloadTokenFromLoggedLocalDB
 } from './rootSaga';
 
-import { serviceTypeGroupManager } from '../common/sync-group-manager';
+import {
+  conditionForSyncing,
+  serviceTypeGroupManager
+} from '../common/sync-group-manager';
 
 const cashierInfo = state => state.authenRd.cashierInfo;
 const detailOutlet = state => state.mainRd.generalConfig.detail_outlet;
-const syncManager = state => state.authenRd.syncManager;
+const loadingSyncManager = state => state.authenRd.loadingSyncManager;
 
 function* resolveCustomerIdForOrder(customer) {
   const customerResult = yield call(getCustomerById, customer.id);
@@ -64,21 +73,30 @@ function* resolveCustomerIdForOrder(customer) {
   yield updateCustomerOrderListById(customer);
 }
 
-function* getSyncAllCustomProduct() {
+function* getSyncAllProduct(step, stepAt) {
   // get all custom product in local db
-  const payloadResultCustomProduct = yield getAllTblCustomProduct();
+  const payloadResultAllProduct = yield getAllProductFromLocal(step, stepAt);
+  return payloadResultAllProduct;
+}
+
+function* getSyncAllCustomProduct(step, stepAt) {
+  // get all custom product in local db
+  const payloadResultCustomProduct = yield getAllTblCustomProductByPaginate(
+    step,
+    stepAt
+  );
   return payloadResultCustomProduct;
 }
 
-function* getSyncAllCustomer() {
+function* getSyncAllCustomer(step, stepAt) {
   // get all customer in local db
-  const payloadResultCustomer = yield getAllTblCustomer();
+  const payloadResultCustomer = yield getAllTblCustomerByPaginate(step, stepAt);
   return payloadResultCustomer;
 }
 
-function* getSyncAllOrder() {
+function* getSyncAllOrder(step, stepAt) {
   // get all order in local db
-  const payloadResultOrder = yield getAllOrders();
+  const payloadResultOrder = yield getAllOrdersByPaginate(step, stepAt);
   return payloadResultOrder;
 }
 
@@ -93,19 +111,22 @@ function* getSyncStatusFromLocal() {
 function* getSyncDataWithTypeFromLocal(payload) {
   const { id, step, stepAt } = payload;
   let listData = [];
+  let statusData = {};
+  statusData = yield getServiceByName(id);
   switch (id) {
     case types.ALL_PRODUCT_SYNC:
+      listData = yield call(getSyncAllProduct, step, stepAt);
       break;
     case types.CUSTOM_PRODUCT_SYNC:
-      listData = yield call(getSyncAllCustomProduct);
+      listData = yield call(getSyncAllCustomProduct, step, stepAt);
       break;
     case types.CUSTOMERS_SYNC:
-      listData = yield call(getSyncAllCustomer);
-      break;
-    case types.GENERAL_CONFIG_SYNC:
+      listData = yield call(getSyncAllCustomer, step, stepAt);
       break;
     case types.SYNC_ORDER_LIST:
-      listData = yield call(getSyncAllOrder);
+      listData = yield call(getSyncAllOrder, step, stepAt);
+      break;
+    case types.GENERAL_CONFIG_SYNC:
       break;
     default:
       break;
@@ -113,6 +134,7 @@ function* getSyncDataWithTypeFromLocal(payload) {
   yield put({
     type: types.RECEIVED_DATA_SYNC,
     payload: listData,
+    statusData,
     id,
     step,
     stepAt
@@ -377,6 +399,7 @@ function* syncGeneralConfig(configName, syncAllNow) {
 
 function* checkTimeToAcceptSyncing(typeID) {
   const nowTime = Date.now();
+  // last time
   let syncTimeAllProduct;
   let syncTimeCustomProduct;
   let syncTimeCustomer;
@@ -399,72 +422,53 @@ function* checkTimeToAcceptSyncing(typeID) {
     generalConfigSync = timeConfig.general_config_sync || 5;
     allOrdersSync = timeConfig.all_orders_sync || 5;
   } catch (e) {}
-  const syncManagerResult = yield select(syncManager);
-
-  const {
-    loadingSyncAllProduct,
-    loadingSyncConfig,
-    loadingSyncCustomProducts,
-    loadingSyncCustomer,
-    loadingSyncOrder
-  } = syncManagerResult;
+  const loadingSyncManagerResult = yield select(loadingSyncManager);
 
   // truong hop sync dang hoat dong va chua duoc hoan tat, ham check sync khong nen chay them ham sync them lan nua
 
   switch (typeID) {
     case types.ALL_PRODUCT_SYNC:
       syncTimeAllProduct = yield getLastUpdateTime(types.ALL_PRODUCT_SYNC);
-      if (
-        nowTime - syncTimeAllProduct > allProducts * 60000 &&
-        !loadingSyncAllProduct
-      ) {
-        return true;
-      }
-      break;
+      return conditionForSyncing(
+        syncTimeAllProduct,
+        allProducts,
+        loadingSyncManagerResult[typeID]
+      );
     case types.CUSTOM_PRODUCT_SYNC:
       syncTimeCustomProduct = yield getLastUpdateTime(
         types.CUSTOM_PRODUCT_SYNC
       );
-      if (
-        nowTime - syncTimeCustomProduct > allCustomProduct * 60000 &&
-        !loadingSyncCustomProducts
-      ) {
-        return true;
-      }
-      break;
+      return conditionForSyncing(
+        syncTimeCustomProduct,
+        allCustomProduct,
+        loadingSyncManagerResult[typeID]
+      );
     case types.CUSTOMERS_SYNC:
       syncTimeCustomer = yield getLastUpdateTime(types.CUSTOMERS_SYNC);
-      if (
-        nowTime - syncTimeCustomer > allCustomersSync * 60000 &&
-        !loadingSyncCustomer
-      ) {
-        return true;
-      }
-      break;
+      return conditionForSyncing(
+        syncTimeCustomer,
+        allCustomersSync,
+        loadingSyncManagerResult[typeID]
+      );
     case types.GENERAL_CONFIG_SYNC:
       syncTimeGeneralConfig = yield getLastUpdateTime(
         types.GENERAL_CONFIG_SYNC
       );
-      if (
-        nowTime - syncTimeGeneralConfig > generalConfigSync * 60000 &&
-        !loadingSyncConfig
-      ) {
-        return true;
-      }
-      break;
+      return conditionForSyncing(
+        syncTimeGeneralConfig,
+        generalConfigSync,
+        loadingSyncManagerResult[typeID]
+      );
     case types.SYNC_ORDER_LIST:
       syncTimeAllOrder = yield getLastUpdateTime(types.SYNC_ORDER_LIST);
-      if (
-        nowTime - syncTimeAllOrder > allOrdersSync * 60000 &&
-        !loadingSyncOrder
-      ) {
-        return true;
-      }
-      break;
+      return conditionForSyncing(
+        syncTimeAllOrder,
+        allOrdersSync,
+        loadingSyncManagerResult[typeID]
+      );
     default:
-      break;
+      return false;
   }
-  return false;
 }
 
 function* cronJobs() {

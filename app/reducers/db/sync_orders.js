@@ -8,6 +8,16 @@ export async function getAllOrders() {
   return data;
 }
 
+export async function getAllOrdersByPaginate(step, stepAt) {
+  const tbl = db.table(table);
+  const data = await tbl
+    .reverse()
+    .offset(stepAt)
+    .limit(step)
+    .toArray();
+  return data;
+}
+
 export async function createOrders(orders) {
   const tbl = db.table(table);
   const data = await tbl.add(orders);

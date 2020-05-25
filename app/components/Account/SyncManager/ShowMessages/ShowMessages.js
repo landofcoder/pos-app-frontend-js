@@ -5,17 +5,20 @@ import {
   ALL_PRODUCT_SYNC,
   CUSTOM_PRODUCT_SYNC,
   CUSTOMERS_SYNC,
-  GENERAL_CONFIG_SYNC
+  GENERAL_CONFIG_SYNC,
+  SYNC_ORDER_LIST
 } from '../../../../constants/authen.json';
 import { showLogsAction } from '../../../../actions/accountAction';
 import { getDisplayNameForSyncService } from '../../../../common/sync-group-manager';
+import { formatCurrencyCode } from '../../../../common/settings';
 
 type Props = {
   isShowLogsMessages: boolean,
   typeShowLogsMessages: string,
   syncDataManager: object,
   syncManager: object,
-  showLogsAction: (payload: Object) => void
+  showLogsAction: (payload: Object) => void,
+  statusData: object
 };
 class ShowMessages extends Component {
   props: Props;
@@ -30,6 +33,22 @@ class ShowMessages extends Component {
   close = () => {
     const { showLogsAction } = this.props;
     showLogsAction({ status: false });
+  };
+
+  renderStatusSync = manager => {
+    if (!manager.update_at) {
+      return (
+        <span className="badge badge-pill badge-secondary">not synced</span>
+      );
+    }
+    if (manager.errors) {
+      return (
+        <span className="badge badge-danger badge-pill">
+          {manager.errors} errors
+        </span>
+      );
+    }
+    return <span className="badge badge-success badge-pill">success</span>;
   };
 
   actionCollapseData = index => {
@@ -48,9 +67,16 @@ class ShowMessages extends Component {
   };
 
   showTableAllProduct = () => {
-    const { syncManager } = this.props;
-    const syncAllProductStatus = syncManager.syncAllProduct;
-    if (!syncAllProductStatus.errors) {
+    const { syncDataManager, statusData } = this.props;
+    let message;
+    let syncDataAllProduct = [];
+    if (statusData.errors || statusData.message) {
+      message = statusData.message || 'Some reason sync all product error !!!';
+    }
+    if (syncDataManager.id === ALL_PRODUCT_SYNC) {
+      syncDataAllProduct = syncDataManager.data;
+    }
+    if (!syncDataAllProduct.length && !statusData.errors) {
       return (
         <div className="text-success" role="alert">
           <i className="far fa-check-circle" /> &nbsp;
@@ -58,28 +84,143 @@ class ShowMessages extends Component {
         </div>
       );
     }
-    // get message
-    const message =
-      syncAllProductStatus.message || 'Some reason sync all product error !!!';
+    const tableAllProduct = syncDataAllProduct.map((item, index) => {
+      return (
+        <tr
+          key={index}
+          onClick={() => {
+            this.actionCollapseData(index);
+          }}
+        >
+          <th scope="row">{index + 1}</th>
+          <td>{item.name}</td>
+          <td>{item.sku}</td>
+          <td>{new Date(item.pos_sync_create_at).toLocaleString()}</td>
+          <td>{new Date(item.pos_sync_updated_at).toLocaleString()}</td>
+        </tr>
+      );
+    });
 
     return (
-      <div className="alert text-danger" role="alert">
-        <i className="fas fa-exclamation-circle" style={{ color: '#666' }} />{' '}
-        &nbsp;
-        {message}
-      </div>
+      <>
+        {message ? (
+          <div className="alert text-danger" role="alert">
+            <i
+              className="fas fa-exclamation-circle"
+              style={{ color: '#666' }}
+            />{' '}
+            &nbsp;
+            {message}
+          </div>
+        ) : null}
+        <div>
+          <table className="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Product Name</th>
+                <th scope="col">Sku</th>
+                <th scope="col">Create at</th>
+                <th scope="col">Update at</th>
+              </tr>
+            </thead>
+            <tbody>{tableAllProduct}</tbody>
+          </table>
+        </div>
+      </>
+    );
+  };
+
+  showPaginate = () => {
+    const { typeShowLogsMessages, syncDataManager, statusData } = this.props;
+    // dang ky hien thi dang so trang
+    switch (typeShowLogsMessages) {
+      case SYNC_ORDER_LIST:
+      case ALL_PRODUCT_SYNC:
+      case CUSTOMERS_SYNC:
+      case CUSTOM_PRODUCT_SYNC:
+        break;
+      default:
+        return;
+    }
+    if (
+      syncDataManager.data.length < syncDataManager.step &&
+      !statusData.errors
+    ) {
+      return null;
+    }
+    return (
+      <nav aria-label="...">
+        <ul className="pagination">
+          <li
+            className={`page-item ${
+              +syncDataManager.stepAt === 1 ? 'disabled' : null
+            }`}
+          >
+            <a
+              className="page-link"
+              role="presentation"
+              onClick={this.goDataPage()}
+            >
+              Previous
+            </a>
+          </li>
+          <li className="page-item">
+            <a
+              className="page-link"
+              role="presentation"
+              onClick={this.goDataPage()}
+            >
+              1
+            </a>
+          </li>
+          <li className="page-item active">
+            <a
+              className="page-link"
+              role="presentation"
+              onClick={this.goDataPage()}
+            >
+              2
+            </a>
+          </li>
+          <li className="page-item">
+            <a
+              className="page-link"
+              role="presentation"
+              onClick={this.goDataPage()}
+            >
+              3
+            </a>
+          </li>
+          <li className="page-item">
+            <a
+              className="page-link"
+              role="presentation"
+              onClick={this.goDataPage()}
+            >
+              Next
+            </a>
+          </li>
+        </ul>
+      </nav>
     );
   };
 
   showTableCustomProduct = () => {
-    const { syncDataManager, syncManager } = this.props;
-    const syncConfigStatus = syncManager.syncCustomProduct;
-    let syncCustomProduct = [];
-    if (syncDataManager.id === 'CUSTOM_PRODUCT_SYNC') {
-      syncCustomProduct = syncDataManager.data;
+    const { syncDataManager, statusData } = this.props;
+    let syncDataCustomProduct = [];
+    if (syncDataManager.id === CUSTOM_PRODUCT_SYNC) {
+      syncDataCustomProduct = syncDataManager.data;
     }
-    const tableCustomProduct = syncCustomProduct.map((item, index) => {
-      if (item.status) return null;
+    if (!syncDataCustomProduct.length && !statusData.errors) {
+      return (
+        <div className="text-success" role="alert">
+          <i className="far fa-check-circle" /> &nbsp;
+          <span>All Custom Product synced success</span>
+        </div>
+      );
+    }
+    const tableCustomProduct = syncDataCustomProduct.map((item, index) => {
       return (
         <tr
           key={index}
@@ -118,15 +259,20 @@ class ShowMessages extends Component {
   };
 
   showTableCustomer = () => {
-    const { syncDataManager, syncManager } = this.props;
-    const syncCustomerStatus = syncManager.syncCustomer;
-    let syncCustomer = [];
-    if (syncDataManager.id === 'CUSTOMERS_SYNC') {
-      syncCustomer = syncDataManager.data;
+    const { syncDataManager, statusData } = this.props;
+    let syncDataCustomer = [];
+    if (syncDataManager.id === CUSTOMERS_SYNC) {
+      syncDataCustomer = syncDataManager.data;
     }
-
-    const tableCustomer = syncCustomer.map((item, index) => {
-      if (item.status) return null;
+    if (!syncDataCustomer.length && !statusData.errors) {
+      return (
+        <div className="text-success" role="alert">
+          <i className="far fa-check-circle" /> &nbsp;
+          <span>All Customer synced success</span>
+        </div>
+      );
+    }
+    const tableCustomer = syncDataCustomer.map((item, index) => {
       return (
         <tr
           key={index}
@@ -163,7 +309,62 @@ class ShowMessages extends Component {
   };
 
   showTableGeneralConfig = () => {
-    return null;
+    const { syncDataManager, statusData } = this.props;
+    let syncDataConfig = [];
+    if (syncDataManager.id === CUSTOMERS_SYNC) {
+      syncDataConfig = syncDataManager.data;
+    }
+    if (!syncDataConfig.length && !statusData.errors) {
+      return (
+        <div className="text-success" role="alert">
+          <i className="far fa-check-circle" /> &nbsp;
+          <span>General config synced success</span>
+        </div>
+      );
+    }
+  };
+
+  showTableOrderLocal = () => {
+    const { syncDataManager, statusData } = this.props;
+    let syncDataAllProduct = [];
+    if (syncDataManager.id === SYNC_ORDER_LIST) {
+      syncDataAllProduct = syncDataManager.data;
+    }
+    if (!syncDataAllProduct.length && !statusData.errors) {
+      return (
+        <div className="text-success" role="alert">
+          <i className="far fa-check-circle" /> &nbsp;
+          <span>All Order synced success</span>
+        </div>
+      );
+    }
+    const tableOrderLocal = syncDataAllProduct.map((item, index) => {
+      return (
+        <tr key={index} style={{ cursor: 'pointer' }}>
+          <th scope="row">{index + 1}</th>
+          <td>--</td>
+          <td>{formatCurrencyCode(item.grand_total)}</td>
+          <td>{new Date(item.created_at).toDateString()}</td>
+          <td>{this.renderStatusSync(item)}</td>
+        </tr>
+      );
+    });
+    return (
+      <>
+        <table className="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Orders Id</th>
+              <th scope="col">Total</th>
+              <th scope="col">Create at</th>
+              <th scope="col">Sync status</th>
+            </tr>
+          </thead>
+          <tbody>{tableOrderLocal}</tbody>
+        </table>
+      </>
+    );
   };
 
   showTableLog = () => {
@@ -177,9 +378,15 @@ class ShowMessages extends Component {
         return this.showTableCustomer();
       case GENERAL_CONFIG_SYNC:
         return this.showTableGeneralConfig();
+      case SYNC_ORDER_LIST:
+        return this.showTableOrderLocal();
       default:
         return null;
     }
+  };
+
+  goDataPage = () => {
+    // const {}
   };
 
   render() {
@@ -196,7 +403,10 @@ class ShowMessages extends Component {
             <div className="modal-header">
               <h5 className="modal-title">{this.showTitleLog()}</h5>
             </div>
-            <div className="modal-body">{this.showTableLog()}</div>
+            <div className="modal-body">
+              {this.showTableLog()}
+              {this.showPaginate()}
+            </div>
             <div className="modal-footer">
               <button
                 type="button"
@@ -220,6 +430,7 @@ function mapStateToProps(state) {
     isShowLogsMessages: state.mainRd.isShowLogsMessages,
     typeShowLogsMessages: state.mainRd.typeShowLogsMessages,
     syncDataManager: state.authenRd.syncDataManager,
+    statusData: state.authenRd.syncDataManager.statusData,
     syncManager: state.authenRd.syncManager
   };
 }

@@ -163,12 +163,12 @@ export async function getProductsByProductIdLocal(productId) {
   return data;
 }
 
-export async function getAllProduct() {
+export async function getAllTblProductByPaginate(step, stepAt) {
   const tbl = db.table(table);
-  try {
-    const products = await tbl.toArray();
-    return products;
-  } catch (e) {
-    return [];
-  }
+  const data = await tbl
+    .reverse()
+    .offset(stepAt)
+    .limit(step)
+    .toArray();
+  return data;
 }

@@ -49,7 +49,7 @@ type Props = {
   syncDataClient: payload => void,
   closeToggleModalOrderDetail: () => void,
   isLoadingSyncAllOrder: boolean,
-  getAllOrdersDb: () => void
+  getAllOrdersDb: payload => void
 };
 
 class OrderHistory extends Component<Props> {
@@ -58,14 +58,20 @@ class OrderHistory extends Component<Props> {
   constructor(props) {
     super(props);
     this.state = {
-      intervalGetDataErrorId: null
+      intervalGetDataErrorId: null,
+      step: 10,
+      stepAt: 0
     };
   }
 
   componentDidMount(): void {
     const { getAllOrdersDb } = this.props;
-    getAllOrdersDb();
-    const getSyncOrderErrorId = setInterval(getAllOrdersDb, 10000);
+    const { step, stepAt } = this.state;
+    getAllOrdersDb({ id: SYNC_ORDER_LIST, step, stepAt });
+    const getSyncOrderErrorId = setInterval(
+      getAllOrdersDb({ id: SYNC_ORDER_LIST, step, stepAt }),
+      10000
+    );
     this.setState({ intervalGetDataErrorId: getSyncOrderErrorId });
   }
 
@@ -288,6 +294,7 @@ class OrderHistory extends Component<Props> {
                 <th scope="col">#</th>
                 <th scope="col">Orders Id</th>
                 <th scope="col">Total</th>
+                <th scope="col">Create at</th>
                 <th scope="col">Last time sync</th>
                 <th scope="col">Orders status</th>
                 <th scope="col">Sync status</th>
@@ -311,6 +318,7 @@ class OrderHistory extends Component<Props> {
                       <th scope="row">{index + 1}</th>
                       <td>--</td>
                       <td>{formatCurrencyCode(item.grand_total)}</td>
+                      <td>{new Date(item.created_at).toDateString()}</td>
                       <td>{this.renderLastTime(item)}</td>
                       <td>{item.status ? item.status : '--'}</td>
                       <td>{this.renderStatusSync(item)}</td>
@@ -462,7 +470,7 @@ function mapDispatchToProps(dispatch) {
     toggleModalAddNote: payload => dispatch(toggleModalAddNote(payload)),
     syncDataClient: payload => dispatch(syncDataClient(payload)),
     closeToggleModalOrderDetail: () => dispatch(closeToggleModalOrderDetail()),
-    getAllOrdersDb: () => dispatch(getDataServiceWithType(SYNC_ORDER_LIST))
+    getAllOrdersDb: payload => dispatch(getDataServiceWithType(payload))
   };
 }
 

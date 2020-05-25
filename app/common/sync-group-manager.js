@@ -44,3 +44,19 @@ export function getDisplayNameForSyncService(serviceName) {
       return null;
   }
 }
+
+/**
+ * check condition check sync aceept
+ * @param lastTimeService
+ * @param timeCondition
+ * @param loadingService
+ * @returns {boolean|boolean}
+ */
+export function conditionForSyncing(
+  lastTimeService,
+  timeCondition,
+  loadingService
+) {
+  const nowTime = Date.now();
+  return nowTime - lastTimeService > timeCondition * 60000 && !loadingService;
+}

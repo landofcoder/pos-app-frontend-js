@@ -22,6 +22,16 @@ export async function getAllTblCustomProduct() {
   return data;
 }
 
+export async function getAllTblCustomProductByPaginate(step, stepAt) {
+  const tbl = db.table(table);
+  const data = await tbl
+    .reverse()
+    .offset(stepAt)
+    .limit(step)
+    .toArray();
+  return data;
+}
+
 export async function createProductDb(product) {
   console.log('create product');
   const tbl = db.table(table);

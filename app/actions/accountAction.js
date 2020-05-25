@@ -69,7 +69,9 @@ export function getSyncStatusFromLocal() {
 export function getDataServiceWithType(payload) {
   return {
     type: type.GET_SYNC_DATA_WITH_TYPE,
-    id: payload
+    id: payload.id,
+    step: payload.step,
+    stepAt: payload.stepAt
   };
 }
 export function showLogsAction(payload) {

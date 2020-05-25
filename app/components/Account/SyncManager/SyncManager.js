@@ -8,12 +8,6 @@ import {
   getSyncStatusFromLocal
 } from '../../../actions/accountAction';
 
-import {
-  ALL_PRODUCT_SYNC,
-  CUSTOM_PRODUCT_SYNC,
-  CUSTOMERS_SYNC,
-  GENERAL_CONFIG_SYNC
-} from '../../../constants/authen.json';
 import Style from './sync-manager.scss';
 
 type Props = {
@@ -21,7 +15,8 @@ type Props = {
   syncManager: Object,
   showLogsAction: (payload: Object) => void,
   getSyncStatusFromLocal: () => void,
-  getDataServiceWithType: payload => void
+  getDataServiceWithType: payload => void,
+  loadingSyncManager: Object
 };
 class SyncManager extends Component {
   props: Props;
@@ -29,7 +24,9 @@ class SyncManager extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      intervalGetDataErrorId: null
+      intervalGetDataErrorId: null,
+      step: 10,
+      stepAt: 0
     };
   }
 
@@ -74,25 +71,15 @@ class SyncManager extends Component {
   };
 
   actionSyncStatus = manager => {
-    const { syncManager } = this.props;
-    switch (manager.name) {
-      case CUSTOMERS_SYNC:
-        return syncManager.loadingSyncCustomer;
-      case ALL_PRODUCT_SYNC:
-        return syncManager.loadingSyncAllProduct;
-      case CUSTOM_PRODUCT_SYNC:
-        return syncManager.loadingSyncCustomProducts;
-      case GENERAL_CONFIG_SYNC:
-        return syncManager.loadingSyncConfig;
-      default:
-        return null;
-    }
+    const { loadingSyncManager } = this.props;
+    return loadingSyncManager[manager.name];
   };
 
   actionToggleShowLogs = type => {
     const { showLogsAction, getDataServiceWithType } = this.props;
+    const { step, stepAt } = this.state;
     // toggle show log action will get data from local
-    getDataServiceWithType(type);
+    getDataServiceWithType({ id: type, step, stepAt });
     showLogsAction({ type, status: true });
   };
 
@@ -179,7 +166,8 @@ function mapStateToProps(state) {
   return {
     isShowLogsMessages: state.mainRd.isShowLogsMessages,
     typeShowLogsMessages: state.mainRd.typeShowLogsMessages,
-    syncManager: state.authenRd.syncManager
+    syncManager: state.authenRd.syncManager,
+    loadingSyncManager: state.authenRd.loadingSyncManager
   };
 }
 export default connect(
