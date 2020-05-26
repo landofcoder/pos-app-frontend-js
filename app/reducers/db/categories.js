@@ -29,7 +29,6 @@ export async function writeCategoriesToLocal(mainCategory) {
     if (item.level !== 1) {
       // eslint-disable-next-line no-await-in-loop
       const categoryItem = await categoryTbl.get({ id: item.id });
-      console.log(categoryItem);
       if (categoryItem) {
         // Update
         // eslint-disable-next-line no-await-in-loop
