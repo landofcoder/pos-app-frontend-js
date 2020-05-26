@@ -12,7 +12,7 @@ export async function getAllOrdersByPaginate(step, stepAt) {
   const tbl = db.table(table);
   const data = await tbl
     .reverse()
-    .offset(stepAt)
+    .offset(stepAt * step)
     .limit(step)
     .toArray();
   return data;
