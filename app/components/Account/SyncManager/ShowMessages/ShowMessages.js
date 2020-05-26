@@ -8,7 +8,10 @@ import {
   GENERAL_CONFIG_SYNC,
   SYNC_ORDER_LIST
 } from '../../../../constants/authen.json';
-import { showLogsAction } from '../../../../actions/accountAction';
+import {
+  showLogsAction,
+  getDataServiceWithType
+} from '../../../../actions/accountAction';
 import { getDisplayNameForSyncService } from '../../../../common/sync-group-manager';
 import { formatCurrencyCode } from '../../../../common/settings';
 
@@ -18,7 +21,8 @@ type Props = {
   syncDataManager: object,
   syncManager: object,
   showLogsAction: (payload: Object) => void,
-  statusData: object
+  statusData: object,
+  getDataServiceWithType: payload => void
 };
 class ShowMessages extends Component {
   props: Props;
@@ -70,7 +74,7 @@ class ShowMessages extends Component {
     const { syncDataManager, statusData } = this.props;
     let message;
     let syncDataAllProduct = [];
-    if (statusData.errors || statusData.message) {
+    if (statusData.errors) {
       message = statusData.message || 'Some reason sync all product error !!!';
     }
     if (syncDataManager.id === ALL_PRODUCT_SYNC) {
@@ -133,6 +137,8 @@ class ShowMessages extends Component {
 
   showPaginate = () => {
     const { typeShowLogsMessages, syncDataManager, statusData } = this.props;
+    const { step, stepAt } = syncDataManager;
+    let listPage = [];
     // dang ky hien thi dang so trang
     switch (typeShowLogsMessages) {
       case SYNC_ORDER_LIST:
@@ -145,58 +151,61 @@ class ShowMessages extends Component {
     }
     if (
       syncDataManager.data.length < syncDataManager.step &&
-      !statusData.errors
+      +stepAt === 0
     ) {
       return null;
     }
+
+    // condition for first page
+    if (+stepAt === 0) {
+      listPage = [+stepAt, +stepAt + 1, +stepAt + 2];
+    } else {
+      listPage = [+stepAt - 1, +stepAt, +stepAt + 1];
+    }
+    if (syncDataManager.data.length < syncDataManager.step) {
+      listPage = listPage.filter(item => {
+        return item <= stepAt;
+      });
+    }
     return (
       <nav aria-label="...">
-        <ul className="pagination">
+        <ul className="pagination" style={{ cursor: 'pointer' }}>
+          <li className={`page-item ${+stepAt === 0 ? 'disabled' : null}`}>
+            <a
+              className="page-link"
+              role="presentation"
+              onClick={() => this.goDataPage(+stepAt - 1)}
+            >
+              Previous
+            </a>
+          </li>
+          {listPage.map((item, index) => {
+            return (
+              <li
+                className={`page-item ${+stepAt === item ? 'active' : null}`}
+                key={index}
+              >
+                <a
+                  className="page-link"
+                  role="presentation"
+                  onClick={() => this.goDataPage(item)}
+                >
+                  {item + 1}
+                </a>
+              </li>
+            );
+          })}
           <li
             className={`page-item ${
-              +syncDataManager.stepAt === 1 ? 'disabled' : null
+              syncDataManager.data.length < syncDataManager.step
+                ? 'disabled'
+                : null
             }`}
           >
             <a
               className="page-link"
               role="presentation"
-              onClick={this.goDataPage()}
-            >
-              Previous
-            </a>
-          </li>
-          <li className="page-item">
-            <a
-              className="page-link"
-              role="presentation"
-              onClick={this.goDataPage()}
-            >
-              1
-            </a>
-          </li>
-          <li className="page-item active">
-            <a
-              className="page-link"
-              role="presentation"
-              onClick={this.goDataPage()}
-            >
-              2
-            </a>
-          </li>
-          <li className="page-item">
-            <a
-              className="page-link"
-              role="presentation"
-              onClick={this.goDataPage()}
-            >
-              3
-            </a>
-          </li>
-          <li className="page-item">
-            <a
-              className="page-link"
-              role="presentation"
-              onClick={this.goDataPage()}
+              onClick={() => this.goDataPage(+stepAt + 1)}
             >
               Next
             </a>
@@ -209,6 +218,11 @@ class ShowMessages extends Component {
   showTableCustomProduct = () => {
     const { syncDataManager, statusData } = this.props;
     let syncDataCustomProduct = [];
+    let message;
+    if (statusData.errors) {
+      message =
+        statusData.message || 'Some reason sync all custom product error !!!';
+    }
     if (syncDataManager.id === CUSTOM_PRODUCT_SYNC) {
       syncDataCustomProduct = syncDataManager.data;
     }
@@ -233,14 +247,22 @@ class ShowMessages extends Component {
           <td>{item.price.regularPrice.amount.value}</td>
           <td>{item.pos_qty}</td>
           <td>{new Date(item.id).toDateString()}</td>
-          <td>
-            <span className="badge badge-pill badge-danger">error</span>
-          </td>
+          <td>{this.renderStatusSync(item)}</td>
         </tr>
       );
     });
     return (
       <>
+        {message ? (
+          <div className="alert text-danger" role="alert">
+            <i
+              className="fas fa-exclamation-circle"
+              style={{ color: '#666' }}
+            />{' '}
+            &nbsp;
+            {message}
+          </div>
+        ) : null}
         <table className="table">
           <thead>
             <tr>
@@ -261,6 +283,10 @@ class ShowMessages extends Component {
   showTableCustomer = () => {
     const { syncDataManager, statusData } = this.props;
     let syncDataCustomer = [];
+    let message;
+    if (statusData.errors) {
+      message = statusData.message || 'Some reason sync all customer error !!!';
+    }
     if (syncDataManager.id === CUSTOMERS_SYNC) {
       syncDataCustomer = syncDataManager.data;
     }
@@ -284,14 +310,22 @@ class ShowMessages extends Component {
           <td>{`${item.first_name} ${item.payload.customer.lastname}`}</td>
           <td>{item.email}</td>
           <td>{new Date(item.id).toDateString()}</td>
-          <td>
-            <span className="badge badge-pill badge-danger">error</span>
-          </td>
+          <td>{this.renderStatusSync(item)}</td>
         </tr>
       );
     });
     return (
       <>
+        {message ? (
+          <div className="alert text-danger" role="alert">
+            <i
+              className="fas fa-exclamation-circle"
+              style={{ color: '#666' }}
+            />{' '}
+            &nbsp;
+            {message}
+          </div>
+        ) : null}
         <table className="table">
           <thead>
             <tr>
@@ -314,6 +348,18 @@ class ShowMessages extends Component {
     if (syncDataManager.id === CUSTOMERS_SYNC) {
       syncDataConfig = syncDataManager.data;
     }
+    let message;
+    if (statusData.errors) {
+      message = statusData.message || 'Some reason sync all product error !!!';
+      return (
+        <div className="alert text-danger" role="alert">
+          <i className="fas fa-exclamation-circle" style={{ color: '#666' }} />{' '}
+          &nbsp;
+          {message}
+        </div>
+      );
+    }
+
     if (!syncDataConfig.length && !statusData.errors) {
       return (
         <div className="text-success" role="alert">
@@ -327,6 +373,10 @@ class ShowMessages extends Component {
   showTableOrderLocal = () => {
     const { syncDataManager, statusData } = this.props;
     let syncDataAllProduct = [];
+    let message;
+    if (statusData.errors) {
+      message = statusData.message || 'Some reason sync all product error !!!';
+    }
     if (syncDataManager.id === SYNC_ORDER_LIST) {
       syncDataAllProduct = syncDataManager.data;
     }
@@ -351,6 +401,16 @@ class ShowMessages extends Component {
     });
     return (
       <>
+        {message ? (
+          <div className="alert text-danger" role="alert">
+            <i
+              className="fas fa-exclamation-circle"
+              style={{ color: '#666' }}
+            />{' '}
+            &nbsp;
+            {message}
+          </div>
+        ) : null}
         <table className="table">
           <thead>
             <tr>
@@ -385,8 +445,17 @@ class ShowMessages extends Component {
     }
   };
 
-  goDataPage = () => {
-    // const {}
+  goDataPage = payloadStepAt => {
+    const {
+      getDataServiceWithType,
+      typeShowLogsMessages,
+      syncDataManager
+    } = this.props;
+    getDataServiceWithType({
+      id: typeShowLogsMessages,
+      step: syncDataManager.step,
+      stepAt: payloadStepAt
+    });
   };
 
   render() {
@@ -436,7 +505,8 @@ function mapStateToProps(state) {
 }
 function mapDispatchToProps(dispatch) {
   return {
-    showLogsAction: payload => dispatch(showLogsAction(payload))
+    showLogsAction: payload => dispatch(showLogsAction(payload)),
+    getDataServiceWithType: payload => dispatch(getDataServiceWithType(payload))
   };
 }
 export default connect(

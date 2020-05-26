@@ -1,9 +1,6 @@
 import produce from 'immer';
 import * as typesAuthen from '../constants/authen';
-import {
-  RECEIVED_GENERAL_CONFIG,
-  GET_SYNC_DATA_WITH_TYPE
-} from '../constants/root';
+import { RECEIVED_GENERAL_CONFIG } from '../constants/root';
 
 const initialState = {
   loading: false,
