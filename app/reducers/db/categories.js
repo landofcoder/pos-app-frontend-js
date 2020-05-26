@@ -23,19 +23,23 @@ export async function writeCategoriesToLocal(mainCategory) {
 
   // Sync all RAW categories
   const rawCategories = mainCategory.raw;
-  rawCategories.forEach(async item => {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const item of rawCategories) {
     // Write all children cate except root category. In case we assume every shop just have one root category
     if (item.level !== 1) {
-      const categoryItem = await categoryTbl.get(item.id);
+      // eslint-disable-next-line no-await-in-loop
+      const categoryItem = await categoryTbl.get({ id: item.id });
       if (categoryItem) {
         // Update
-        await categoryTbl.update(categoryItem.id, item);
+        // eslint-disable-next-line no-await-in-loop
+        await categoryTbl.update(item.id, item);
       } else {
         // Add new
+        // eslint-disable-next-line no-await-in-loop
         await categoryTbl.add(item);
       }
     }
-  });
+  }
 }
 
 export async function getRootCategoriesFromLocal() {
