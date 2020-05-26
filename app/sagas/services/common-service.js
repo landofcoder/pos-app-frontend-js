@@ -1,5 +1,6 @@
 import { put } from 'redux-saga/effects';
 import { deleteOrderById } from '../../reducers/db/sync_orders';
+import { getAllCategoriesByParentIdFromLocal } from '../../reducers/db/categories';
 import { UPDATE_CURRENT_POS_COMMAND } from '../../constants/root';
 import { apiGatewayPath } from '../../../configs/env/config.main';
 
@@ -30,6 +31,7 @@ export async function getShopInfoService() {
     throw { message: 'Error connection to server', data: {} };
   }
 
+  // eslint-disable-next-line camelcase
   const { cashier_info, common_config, currency_code, receipt } = data;
 
   // du lieu data tra ve bao gom thong tin cashier_info common config, currency code
@@ -51,6 +53,11 @@ export async function getShopInfoService() {
     throw { message, data };
   }
 
+  return data;
+}
+
+export async function getAllCategoriesByParentIdService(payload) {
+  const data = await getAllCategoriesByParentIdFromLocal(payload);
   return data;
 }
 

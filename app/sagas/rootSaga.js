@@ -29,7 +29,8 @@ import {
   getAllCategoriesService,
   getOrderHistoryService,
   getOrderHistoryServiceDetails,
-  getShopInfoService
+  getShopInfoService,
+  getAllCategoriesByParentIdService
 } from './services/common-service';
 import {
   createConnectedDeviceSettings,
@@ -53,7 +54,7 @@ import {
 import { calcPrice } from '../common/product-price';
 import { BUNDLE } from '../constants/product-types';
 import {
-  getCategoriesFromLocal,
+  getRootCategoriesFromLocal,
   writeCategoriesToLocal
 } from '../reducers/db/categories';
 import { syncCustomers } from '../reducers/db/customers';
@@ -241,7 +242,7 @@ function* getDefaultProductsFromLocal() {
 }
 
 function* getAllCategoriesFromLocal() {
-  const allCategories = yield getCategoriesFromLocal();
+  const allCategories = yield getRootCategoriesFromLocal();
   yield put({ type: types.RECEIVED_ALL_CATEGORIES, payload: allCategories });
 }
 
@@ -453,7 +454,6 @@ function* getSearchCustomer(payload) {
     searchDbResult
   );
   searchResult.items = mergeArray;
-  console.log('search in customer in db');
   console.log(searchDbResult);
 
   yield put({
@@ -470,8 +470,8 @@ function* getSearchCustomer(payload) {
 
 /**
  * Add to cart function
- * @param payload
  * @returns void
+ * @param payloadParams
  */
 function* addToCart(payloadParams) {
   const payload = payloadParams;
@@ -823,11 +823,13 @@ function* updateQtyCartItemSaga(payload) {
 function* writeCategoriesAndProductsToLocal() {
   // Get all categories
   const allCategories = yield call(getAllCategoriesService);
+
   // Sync categories to local db
   yield call(writeCategoriesToLocal, allCategories);
 
+  const categoryMain = allCategories.main;
   // Sync products by categories
-  yield call(writeProductsToLocal, allCategories);
+  yield call(writeProductsToLocal, categoryMain);
 }
 
 function* writeProductBarCodeInventoryToLocal() {
@@ -1161,6 +1163,7 @@ function* loginAction(payload) {
       login: payload.payload,
       token: resultLogin.data
     });
+
     // Setup empty error message
     yield put({
       type: typesAuthen.ERROR_LOGIN,
@@ -1216,7 +1219,7 @@ export function* getDefaultDataFromLocal() {
   yield getDefaultProductsFromLocal();
 }
 
-export function* fetchRewardPointConditionSg() {
+function* fetchRewardPointConditionSg() {
   // Check customer is selected from cartCurrent
   const cartCurrentResult = yield select(cartCurrent);
   const customerId = cartCurrentResult.customer
@@ -1235,6 +1238,13 @@ export function* fetchRewardPointConditionSg() {
   } else {
     // Turn off reward point
   }
+}
+
+function* findChildCategoryParentIdSg(payload) {
+  const cateId = payload.payload;
+  const result = yield call(getAllCategoriesByParentIdService, cateId);
+  // Update all categories
+  yield put({ type: types.RECEIVED_ALL_CATEGORIES, payload: result });
 }
 
 /**
@@ -1289,6 +1299,10 @@ function* rootSaga() {
   yield takeEvery(
     types.FETCH_REWARD_POINT_CONDITION,
     fetchRewardPointConditionSg
+  );
+  yield takeEvery(
+    types.FIND_CHILD_CATEGORY_BY_PARENT_ID,
+    findChildCategoryParentIdSg
   );
 }
 

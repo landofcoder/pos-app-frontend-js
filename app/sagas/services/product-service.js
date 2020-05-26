@@ -7,7 +7,7 @@ import {
   getProductsByProductIdLocal,
   getAllProduct
 } from '../../reducers/db/products';
-import { getCategoriesFromLocal } from '../../reducers/db/categories';
+import { getRootCategoriesFromLocal } from '../../reducers/db/categories';
 import {
   syncBarCodeIndexToLocal,
   getProductByBarcode
@@ -187,7 +187,7 @@ async function syncAllProductsByCategory(categoryId) {
     currentPage
   });
   // Let all parents categories of this category
-  const defaultCategory = await getCategoriesFromLocal();
+  const defaultCategory = await getRootCategoriesFromLocal();
   const allParentIds = await findAllParentCategories(
     defaultCategory.children_data,
     categoryId
@@ -230,7 +230,7 @@ export async function findAllParentCategories(
       const newParentId = item.parent_id;
       // Đã tìm thấy parent, sẽ tìm lại từ đầu dựa trên mảng danh mục từ đầu
       // eslint-disable-next-line no-await-in-loop
-      const defaultCategory = await getCategoriesFromLocal();
+      const defaultCategory = await getRootCategoriesFromLocal();
       // eslint-disable-next-line no-await-in-loop
       await findAllParentCategories(
         defaultCategory.children_data,

@@ -21,4 +21,7 @@ db.version(14).stores({
   inventory_index: '++id, *product_id'
 });
 
+db.version(15).stores({
+  categories: '++id, *parent_id, *level'
+});
 export default db;

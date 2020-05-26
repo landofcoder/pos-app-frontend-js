@@ -13,7 +13,7 @@
     overflow: scroll;
     border-right: 1px solid #dedede;
     padding-top: 10px;
-    padding-left: 0;
+    padding-left: 10px;
 
     .wrapTitleCategory {
       border-bottom: 1px solid #dedede;
@@ -21,6 +21,8 @@
       .title {
         font-size: 20px;
         margin-left: 10px;
+        padding-top: 10px;
+        padding-bottom: 15px;
       }
     }
 
@@ -49,6 +51,17 @@
       right: 10px;
       top: 10px;
       cursor: pointer;
+      padding: 10px;
+
+      svg {
+        color: #999;
+      }
+
+      &:hover {
+        svg {
+          color: #111;
+        }
+      }
     }
   }
 }

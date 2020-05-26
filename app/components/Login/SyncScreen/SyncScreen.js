@@ -90,7 +90,7 @@ class SyncScreen extends Component {
                 </div>
               )}
               <span className="text-muted">
-                Products are synchronizing: {productNumber}{' '}
+                The product categories are synchronizing: {productNumber}{' '}
               </span>
             </div>
             <div className="row">

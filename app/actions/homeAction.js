@@ -406,3 +406,10 @@ export function fetchRewardPointCondition() {
     type: types.FETCH_REWARD_POINT_CONDITION
   };
 }
+
+export function findChildCategoryByParentId(payload) {
+  return {
+    type: types.FIND_CHILD_CATEGORY_BY_PARENT_ID,
+    payload
+  };
+}
