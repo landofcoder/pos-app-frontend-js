@@ -136,8 +136,8 @@ class ShowMessages extends Component {
   };
 
   showPaginate = () => {
-    const { typeShowLogsMessages, syncDataManager, statusData } = this.props;
-    const { step, stepAt } = syncDataManager;
+    const { typeShowLogsMessages, syncDataManager } = this.props;
+    const { stepAt } = syncDataManager;
     let listPage = [];
     // dang ky hien thi dang so trang
     switch (typeShowLogsMessages) {
@@ -149,10 +149,7 @@ class ShowMessages extends Component {
       default:
         return;
     }
-    if (
-      syncDataManager.data.length < syncDataManager.step &&
-      +stepAt === 0
-    ) {
+    if (syncDataManager.data.length < syncDataManager.step && +stepAt === 0) {
       return null;
     }
 
