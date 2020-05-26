@@ -400,13 +400,11 @@ const mainRd = (state: Object = initialState, action: Object) =>
         }
         break;
       case types.PLACE_ORDER_SUCCESS: {
-        {
-          const { orderId } = action;
-          draft.receipt.orderId = orderId;
-          // Copy current cart to cart in receipt
-          draft.receipt.cartForReceipt = draft.cartCurrent;
-          break;
-        }
+        const { orderId } = action;
+        draft.receipt.orderId = orderId;
+        // Copy current cart to cart in receipt
+        draft.receipt.cartForReceipt = draft.cartCurrent;
+        break;
       }
       case types.COPY_CART_CURRENT_TO_RECEIPT:
         draft.receipt.cartForReceipt = draft.cartCurrent;

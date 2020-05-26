@@ -18,27 +18,14 @@ const initialState = {
     }
   },
   syncDataManager: {
-    syncCustomProduct: [],
-    syncCustomer: [],
-    syncOrder: [],
-    syncStatus: {},
-    syncConfig: {},
-    syncAllProduct: []
+    // do du lieu ra ngoai voi step la so trang, stepAt la vi tri trang hien tai
+    id: null,
+    data: null,
+    step: 10,
+    stepAt: 1
   },
-  syncManager: {
-    syncCustomProduct: {},
-    syncCustomer: {},
-    syncOrder: {},
-    syncStatus: {},
-    syncConfig: {},
-    syncAllProduct: {},
-    loadingSyncCustomProducts: false,
-    loadingSyncCustomer: false,
-    loadingSyncOrder: false,
-    loadingSyncStatus: false,
-    loadingSyncConfig: false,
-    loadingSyncAllProduct: false
-  }
+  syncManager: {},
+  loadingSyncManager: {}
 };
 
 /*  eslint no-param-reassign: "error" */
@@ -71,55 +58,20 @@ const authenRd = (state = initialState, action) =>
         draft.messageErrorWorkPlace = '';
         break;
       case typesAuthen.RECEIVED_STATUS_SYNC:
-        draft.syncManager.syncOrder = action.payload.orderSyncStatus;
-        draft.syncManager.syncCustomProduct =
-          action.payload.customProductSyncStatus;
-        draft.syncManager.syncCustomer = action.payload.customerSyncStatus;
-        draft.syncManager.syncConfig = action.payload.configSyncStatus;
-        draft.syncManager.syncAllProduct = action.payload.productSyncStatus;
+        draft.syncManager = action.payload;
         break;
-      case typesAuthen.RECEIVED_DATA_SYNC_ORDER:
-        draft.syncDataManager.syncOrder = action.payload;
-        break;
-      case typesAuthen.RECEIVED_DATA_SYNC_CUSTOM_PRODUCT:
-        draft.syncDataManager.syncCustomProduct = action.payload;
-        break;
-      case typesAuthen.RECEIVED_DATA_SYNC_CUSTOMER:
-        draft.syncDataManager.syncCustomer = action.payload;
-        break;
-      case typesAuthen.RECEIVED_DATA_SYNC_GENERAL_CONFIG:
-        draft.syncDataManager.syncConfig = action.payload;
-        break;
-      case typesAuthen.RECEIVED_DATA_SYNC_ALL_PRODUCT:
-        draft.syncDataManager.syncAllProduct = action.payload;
-        break;
-      // end received data sync
-      case typesAuthen.STATUS_SYNC:
-        draft.syncManager.syncStatus = action.payload;
+      case typesAuthen.RECEIVED_DATA_SYNC:
+        draft.syncDataManager.id = action.id;
+        draft.syncDataManager.data = action.payload;
+        draft.syncDataManager.statusData = action.statusData;
+        draft.syncDataManager.step = action.step;
+        draft.syncDataManager.stepAt = action.stepAt;
         break;
       case typesAuthen.RECEIVED_APP_INFO:
         draft.appInfo = action.payload;
         break;
       case typesAuthen.LOADING_SYNC_ACTION:
-        switch (action.payload.type) {
-          case typesAuthen.ALL_PRODUCT_SYNC:
-            draft.syncManager.loadingSyncAllProduct = action.payload.status;
-            break;
-          case typesAuthen.CUSTOM_PRODUCT_SYNC:
-            draft.syncManager.loadingSyncCustomProducts = action.payload.status;
-            break;
-          case typesAuthen.CUSTOMERS_SYNC:
-            draft.syncManager.loadingSyncCustomer = action.payload.status;
-            break;
-          case typesAuthen.GENERAL_CONFIG_SYNC:
-            draft.syncManager.loadingSyncConfig = action.payload.status;
-            break;
-          case typesAuthen.SYNC_ORDER_LIST:
-            draft.syncManager.loadingSyncOrder = action.payload.status;
-            break;
-          default:
-            break;
-        }
+        draft.loadingSyncManager[action.payload.type] = action.payload.status;
         break;
       default:
         break;

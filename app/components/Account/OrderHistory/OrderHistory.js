@@ -10,7 +10,7 @@ import {
   toggleModalAddNote,
   getOrderHistoryDetail,
   closeToggleModalOrderDetail,
-  getSyncAllOrderError
+  getDataServiceWithType
 } from '../../../actions/accountAction';
 import DetailOrder from './DetailOrder/DetailOrder';
 import DetailOrderOffline from './DetailOrderOffline/DetailOrderOffline';
@@ -32,10 +32,9 @@ import AddNoteOrder from './AddNoteOrder/AddNoteOrder';
 import { syncDataClient } from '../../../actions/homeAction';
 
 type Props = {
-  getOrderHistory: () => void,
   isLoading: boolean,
   orderHistory: array,
-  orderHistoryDb: array,
+  syncDataManager: array,
   isOpenDetailOrder: boolean,
   isOpenDetailOrderOffline: boolean,
   isOpenAddNote: boolean,
@@ -50,7 +49,7 @@ type Props = {
   syncDataClient: payload => void,
   closeToggleModalOrderDetail: () => void,
   isLoadingSyncAllOrder: boolean,
-  getSyncAllOrderError: () => void
+  getAllOrdersDb: payload => void
 };
 
 class OrderHistory extends Component<Props> {
@@ -59,15 +58,20 @@ class OrderHistory extends Component<Props> {
   constructor(props) {
     super(props);
     this.state = {
-      intervalGetDataErrorId: null
+      intervalGetDataErrorId: null,
+      step: 10,
+      stepAt: 0
     };
   }
 
   componentDidMount(): void {
-    const { getOrderHistory, getSyncAllOrderError } = this.props;
-    getOrderHistory();
-    getSyncAllOrderError();
-    const getSyncOrderErrorId = setInterval(getSyncAllOrderError, 10000);
+    const { getAllOrdersDb } = this.props;
+    const { step, stepAt } = this.state;
+    getAllOrdersDb({ id: SYNC_ORDER_LIST, step, stepAt });
+    const getSyncOrderErrorId = setInterval(
+      getAllOrdersDb({ id: SYNC_ORDER_LIST, step, stepAt }),
+      10000
+    );
     this.setState({ intervalGetDataErrorId: getSyncOrderErrorId });
   }
 
@@ -269,12 +273,18 @@ class OrderHistory extends Component<Props> {
   render() {
     const {
       orderHistory,
-      orderHistoryDb,
+      syncDataManager,
       isOpenDetailOrderOffline,
       isOpenDetailOrder,
       isLoading,
       isLoadingSyncAllOrder
     } = this.props;
+
+    let orderHistoryDb = [];
+    if (syncDataManager.id === 'SYNC_ORDER_LIST') {
+      orderHistoryDb = syncDataManager.data;
+    }
+
     return (
       <>
         <div className="row">
@@ -284,6 +294,7 @@ class OrderHistory extends Component<Props> {
                 <th scope="col">#</th>
                 <th scope="col">Orders Id</th>
                 <th scope="col">Total</th>
+                <th scope="col">Create at</th>
                 <th scope="col">Last time sync</th>
                 <th scope="col">Orders status</th>
                 <th scope="col">Sync status</th>
@@ -307,36 +318,10 @@ class OrderHistory extends Component<Props> {
                       <th scope="row">{index + 1}</th>
                       <td>--</td>
                       <td>{formatCurrencyCode(item.grand_total)}</td>
+                      <td>{new Date(item.created_at).toDateString()}</td>
                       <td>{this.renderLastTime(item)}</td>
                       <td>{item.status ? item.status : '--'}</td>
                       <td>{this.renderStatusSync(item)}</td>
-                      {/*<td>*/}
-                      {/*  {isLoadingSyncAllOrder ? (*/}
-                      {/*    <div>*/}
-                      {/*      <div*/}
-                      {/*        className="spinner-border spinner-border-sm"*/}
-                      {/*        role="status"*/}
-                      {/*      >*/}
-                      {/*        <span className="sr-only">Loading...</span>*/}
-                      {/*      </div>*/}
-                      {/*      &nbsp;Syncing*/}
-                      {/*    </div>*/}
-                      {/*  ) : (*/}
-                      {/*    <button*/}
-                      {/*      type="button"*/}
-                      {/*      className="btn btn-outline-secondary btn-sm"*/}
-                      {/*      onClick={e => {*/}
-                      {/*        e.stopPropagation();*/}
-                      {/*        this.syncDataClientAction(*/}
-                      {/*          SYNC_ORDER_LIST,*/}
-                      {/*          item.id*/}
-                      {/*        );*/}
-                      {/*      }}*/}
-                      {/*    >*/}
-                      {/*      Sync now*/}
-                      {/*    </button>*/}
-                      {/*  )}*/}
-                      {/*</td>*/}
                     </tr>
                   );
                 }
@@ -466,7 +451,7 @@ function mapStateToProps(state) {
     isOpenAddNote: state.mainRd.isOpenAddNote,
     isLoading: state.mainRd.isLoadingOrderHistory,
     orderHistory: state.mainRd.orderHistory,
-    orderHistoryDb: state.authenRd.syncDataManager.syncOrder,
+    syncDataManager: state.authenRd.syncDataManager,
     orderHistoryDetailOffline: state.mainRd.orderHistoryDetailOffline,
     orderHistoryDetail: state.mainRd.orderHistoryDetail,
     isLoadingSyncAllOrder: state.authenRd.syncManager.loadingSyncOrder
@@ -485,7 +470,7 @@ function mapDispatchToProps(dispatch) {
     toggleModalAddNote: payload => dispatch(toggleModalAddNote(payload)),
     syncDataClient: payload => dispatch(syncDataClient(payload)),
     closeToggleModalOrderDetail: () => dispatch(closeToggleModalOrderDetail()),
-    getSyncAllOrderError: () => dispatch(getSyncAllOrderError())
+    getAllOrdersDb: payload => dispatch(getDataServiceWithType(payload))
   };
 }
 

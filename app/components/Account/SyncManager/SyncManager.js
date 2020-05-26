@@ -4,26 +4,19 @@ import { connect } from 'react-redux';
 import { syncDataClient } from '../../../actions/homeAction';
 import {
   showLogsAction,
-  getSyncAllCustomerError,
-  getSyncAllCustomProductError,
+  getDataServiceWithType,
   getSyncStatusFromLocal
 } from '../../../actions/accountAction';
 
-import {
-  ALL_PRODUCT_SYNC,
-  CUSTOM_PRODUCT_SYNC,
-  CUSTOMERS_SYNC,
-  GENERAL_CONFIG_SYNC
-} from '../../../constants/authen.json';
 import Style from './sync-manager.scss';
 
 type Props = {
   syncDataClient: payload => void,
   syncManager: Object,
   showLogsAction: (payload: Object) => void,
-  getSyncAllCustomerError: () => void,
-  getSyncAllCustomProductError: () => void,
-  getSyncStatusFromLocal: () => void
+  getSyncStatusFromLocal: () => void,
+  getDataServiceWithType: payload => void,
+  loadingSyncManager: Object
 };
 class SyncManager extends Component {
   props: Props;
@@ -31,7 +24,9 @@ class SyncManager extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      intervalGetDataErrorId: null
+      intervalGetDataErrorId: null,
+      step: 10,
+      stepAt: 0
     };
   }
 
@@ -76,53 +71,20 @@ class SyncManager extends Component {
   };
 
   actionSyncStatus = manager => {
-    const { syncManager } = this.props;
-    switch (manager.name) {
-      case CUSTOMERS_SYNC:
-        return syncManager.loadingSyncCustomer;
-      case ALL_PRODUCT_SYNC:
-        return syncManager.loadingSyncAllProduct;
-      case CUSTOM_PRODUCT_SYNC:
-        return syncManager.loadingSyncCustomProducts;
-      case GENERAL_CONFIG_SYNC:
-        return syncManager.loadingSyncConfig;
-      default:
-        return null;
-    }
+    const { loadingSyncManager } = this.props;
+    return loadingSyncManager[manager.name];
   };
 
   actionToggleShowLogs = type => {
-    const {
-      showLogsAction,
-      getSyncAllCustomProductError,
-      getSyncAllCustomerError
-    } = this.props;
+    const { showLogsAction, getDataServiceWithType } = this.props;
+    const { step, stepAt } = this.state;
     // toggle show log action will get data from local
-    switch (type) {
-      case ALL_PRODUCT_SYNC:
-        break;
-      case CUSTOM_PRODUCT_SYNC:
-        getSyncAllCustomProductError();
-        break;
-      case CUSTOMERS_SYNC:
-        getSyncAllCustomerError();
-        break;
-      case GENERAL_CONFIG_SYNC:
-        break;
-      default:
-        return;
-    }
+    getDataServiceWithType({ id: type, step, stepAt });
     showLogsAction({ type, status: true });
   };
 
   render() {
     const { syncManager } = this.props;
-    const {
-      syncCustomer,
-      syncCustomProduct,
-      syncConfig,
-      syncAllProduct
-    } = syncManager;
     return (
       <div className="row">
         <div className="col-md-12">
@@ -137,147 +99,46 @@ class SyncManager extends Component {
               </tr>
             </thead>
             <tbody>
-              <tr
-                className={Style.cursorPointer}
-                onClick={() => {
-                  this.actionToggleShowLogs(ALL_PRODUCT_SYNC);
-                }}
-              >
-                <th scope="row">1</th>
-                <td>All products sync</td>
-                <td>{this.renderLastTime(syncAllProduct)}</td>
-                <td>{this.renderStatusSync(syncAllProduct)}</td>
-                <td>
-                  {this.actionSyncStatus(syncAllProduct) ? (
-                    <div>
-                      <div
-                        className="spinner-border spinner-border-sm"
-                        role="status"
-                      >
-                        <span className="sr-only">Loading...</span>
-                      </div>
-                      &nbsp;Syncing
-                    </div>
-                  ) : (
-                    <button
-                      type="button"
-                      className="btn btn-outline-secondary btn-sm"
-                      onClick={e => {
-                        e.stopPropagation();
-                        this.syncDataClientAction(ALL_PRODUCT_SYNC);
+              {syncManager.length
+                ? syncManager.map((item, index) => (
+                    <tr
+                      key={index}
+                      className={Style.cursorPointer}
+                      onClick={() => {
+                        this.actionToggleShowLogs(item.name);
                       }}
                     >
-                      Sync now
-                    </button>
-                  )}
-                </td>
-              </tr>
-              <tr
-                className={Style.cursorPointer}
-                onClick={() => {
-                  this.actionToggleShowLogs(CUSTOM_PRODUCT_SYNC);
-                }}
-              >
-                <th scope="row">2</th>
-                <td>Custom products sync</td>
-                <td>{this.renderLastTime(syncCustomProduct)}</td>
-                <td>{this.renderStatusSync(syncCustomProduct)}</td>
-                <td>
-                  {this.actionSyncStatus(syncCustomProduct) ? (
-                    <div>
-                      <div
-                        className="spinner-border spinner-border-sm"
-                        role="status"
-                      >
-                        <span className="sr-only">Loading...</span>
-                      </div>
-                      &nbsp;Syncing
-                    </div>
-                  ) : (
-                    <button
-                      type="button"
-                      className="btn btn-outline-secondary btn-sm"
-                      onClick={e => {
-                        e.stopPropagation();
-                        this.syncDataClientAction(CUSTOM_PRODUCT_SYNC);
-                      }}
-                    >
-                      Sync now
-                    </button>
-                  )}
-                </td>
-              </tr>
-              <tr
-                className={Style.cursorPointer}
-                onClick={() => {
-                  this.actionToggleShowLogs(CUSTOMERS_SYNC);
-                }}
-              >
-                <th scope="row">3</th>
-                <td>Customers sync</td>
-                <td>{this.renderLastTime(syncCustomer)}</td>
-                <td>{this.renderStatusSync(syncCustomer)}</td>
-                <td>
-                  {this.actionSyncStatus(syncCustomer) ? (
-                    <div>
-                      <div
-                        className="spinner-border spinner-border-sm"
-                        role="status"
-                      >
-                        <span className="sr-only">Loading...</span>
-                      </div>
-                      &nbsp;Syncing
-                    </div>
-                  ) : (
-                    <button
-                      type="button"
-                      className="btn btn-outline-secondary btn-sm"
-                      onClick={e => {
-                        e.stopPropagation();
-                        this.syncDataClientAction(CUSTOMERS_SYNC);
-                      }}
-                    >
-                      Sync now
-                    </button>
-                  )}
-                </td>
-              </tr>
-              <tr
-                className={Style.cursorPointer}
-                onClick={() => {
-                  this.actionToggleShowLogs(GENERAL_CONFIG_SYNC);
-                }}
-              >
-                <th scope="row">4</th>
-                <td>General config sync</td>
-                <td>{this.renderLastTime(syncConfig)}</td>
-                <td>{this.renderStatusSync(syncConfig)}</td>
-
-                <td>
-                  {this.actionSyncStatus(syncConfig) ? (
-                    <div>
-                      <div
-                        className="spinner-border spinner-border-sm"
-                        role="status"
-                      >
-                        <span className="sr-only">Loading...</span>
-                      </div>
-                      &nbsp;Syncing
-                    </div>
-                  ) : (
-                    <button
-                      type="button"
-                      className="btn btn-outline-secondary btn-sm"
-                      onClick={e => {
-                        e.stopPropagation();
-                        this.syncDataClientAction(GENERAL_CONFIG_SYNC);
-                      }}
-                    >
-                      Sync now
-                    </button>
-                  )}
-                </td>
-              </tr>
+                      <th scope="row">{index + 1}</th>
+                      <td>{item.displayName}</td>
+                      <td>{this.renderLastTime(item)}</td>
+                      <td>{this.renderStatusSync(item)}</td>
+                      <td>
+                        {this.actionSyncStatus(item) ? (
+                          <div>
+                            <div
+                              className="spinner-border spinner-border-sm"
+                              role="status"
+                            >
+                              <span className="sr-only">Loading...</span>
+                            </div>
+                            &nbsp;Syncing
+                          </div>
+                        ) : (
+                          <button
+                            type="button"
+                            className="btn btn-outline-secondary btn-sm"
+                            onClick={e => {
+                              e.stopPropagation();
+                              this.syncDataClientAction(item.name);
+                            }}
+                          >
+                            Sync now
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                : null}
             </tbody>
           </table>
         </div>
@@ -291,14 +152,13 @@ function mapDispatchToProps(dispatch) {
       dispatch(
         syncDataClient({
           type: payload.type,
-          id: 'syncManger',
+          id: 'syncManger', // id for special item to sync
           syncAllNow: payload.syncAllNow
         })
       ),
     showLogsAction: payload => dispatch(showLogsAction(payload)),
-    getSyncAllCustomerError: () => dispatch(getSyncAllCustomerError()),
-    getSyncAllCustomProductError: () =>
-      dispatch(getSyncAllCustomProductError()),
+    getDataServiceWithType: payload =>
+      dispatch(getDataServiceWithType(payload)),
     getSyncStatusFromLocal: () => dispatch(getSyncStatusFromLocal())
   };
 }
@@ -306,7 +166,8 @@ function mapStateToProps(state) {
   return {
     isShowLogsMessages: state.mainRd.isShowLogsMessages,
     typeShowLogsMessages: state.mainRd.typeShowLogsMessages,
-    syncManager: state.authenRd.syncManager
+    syncManager: state.authenRd.syncManager,
+    loadingSyncManager: state.authenRd.loadingSyncManager
   };
 }
 export default connect(

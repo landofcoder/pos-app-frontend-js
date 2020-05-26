@@ -5,7 +5,7 @@ import {
   searchProductsLocal,
   syncProducts,
   getProductsByProductIdLocal,
-  getAllProduct
+  getAllTblProductByPaginate
 } from '../../reducers/db/products';
 import { getRootCategoriesFromLocal } from '../../reducers/db/categories';
 import {
@@ -252,8 +252,8 @@ export async function findAllParentCategories(
   return parentIds;
 }
 
-export async function getAllProductFromLocal() {
-  return getAllProduct();
+export async function getAllProductFromLocal(step, stepAt) {
+  return getAllTblProductByPaginate(step, stepAt);
 }
 
 export async function syncCustomProductAPI(payload) {
