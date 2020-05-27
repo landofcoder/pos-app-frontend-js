@@ -88,8 +88,6 @@ export default class Pos extends Component<Props, State> {
   }
 
   componentDidMount(): void {
-    // Get default product
-
     const { hidDevice } = this.props;
     // Uncomment below code for testing scanner device working
     // const { getProductByBarcodeFromScanner } = this.props;
@@ -126,7 +124,7 @@ export default class Pos extends Component<Props, State> {
     getProductByBarcodeFromScanner('7-1C4PASWT');
   };
 
-  getFirstMedia = (item: Object) => {
+  getSmallImage = (item: Object) => {
     const { appInfo } = this.props;
     // eslint-disable-next-line camelcase
     const baseImage = appInfo.product_image_base_url;
@@ -251,7 +249,7 @@ export default class Pos extends Component<Props, State> {
                 >
                   <div className={Styles.wrapProductImage}>
                     <div className={Styles.inside}>
-                      <img alt="name" src={this.getFirstMedia(item)} />
+                      <img alt="name" src={this.getSmallImage(item)} />
                     </div>
                   </div>
                   <div className={Styles.wrapProductInfo}>

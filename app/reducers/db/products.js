@@ -40,12 +40,39 @@ export function syncProducts(productList, allParentIds = []) {
         } else {
           // Add new
           itemRemake.pos_sync_create_at = new Date();
+          // const smallImage = itemRemake.small_image.url;
+          // itemRemake.base64Image = await convertImageToBase64(smallImage);
           await productTbl.add(itemRemake);
         }
       }
     });
   }
 }
+
+// async function convertImageToBase64(imagePath) {
+//   const sharpStream = sharp({
+//     failOnError: false
+//   });
+//
+//   const promises = [];
+//   promises.push(
+//     sharpStream
+//       .clone()
+//       .resize({ width: 500 })
+//       .png()
+//       .toBuffer()
+//   );
+//
+//   got.stream(imagePath).pipe(sharpStream);
+//
+//   return Promise.all(promises)
+//     .then(res => {
+//       return res.toString('base64');
+//     })
+//     .catch(err => {
+//       console.error("Error processing files, let's clean it up", err);
+//     });
+// }
 
 export async function counterProduct() {
   // Count products
@@ -56,6 +83,7 @@ export async function counterProduct() {
 async function makeCategoriesArraySimple(product) {
   const productAssign = Object.assign({}, product);
   const categoryIds = 'categoryIds';
+  // eslint-disable-next-line no-prototype-builtins
   if (!productAssign.hasOwnProperty(categoryIds)) {
     const categoryIds = [];
     productAssign.categories.forEach(item => {
@@ -124,17 +152,27 @@ export async function searchProductsLocal(payload, currentPage = 1) {
 export async function getProductsByCategoryLocal({ categoryId, currentPage }) {
   let data;
   let offset = 0;
-  if (currentPage > 1) {
-    offset = currentPage * defaultPageSize;
+  const page = currentPage - 1;
+  if (page >= 1) {
+    offset = page * defaultPageSize;
   }
   try {
-    data = await db
-      .table(table)
-      .where('categoryIds')
-      .anyOf(categoryId)
-      .offset(offset)
-      .limit(defaultPageSize)
-      .toArray();
+    // Get all products
+    if (categoryId === 0) {
+      data = await db
+        .table(table)
+        .offset(offset)
+        .limit(defaultPageSize)
+        .toArray();
+    } else {
+      data = await db
+        .table(table)
+        .where('categoryIds')
+        .anyOf(categoryId)
+        .offset(offset)
+        .limit(defaultPageSize)
+        .toArray();
+    }
   } catch (e) {
     console.log('error:', e);
     data = [];

@@ -112,7 +112,6 @@ function* checkLoginBackgroundSaga() {
   if (loggedDb !== false) {
     // Auto connect scanner
     yield autoConnectScannerDevice();
-
     yield getDefaultDataFromLocal();
     yield put({ type: types.UPDATE_SWITCHING_MODE, payload: CHILDREN });
   } else {
@@ -223,22 +222,6 @@ function* checkoutActionSg() {
     type: types.UPDATE_LOADING_PREPARING_ORDER,
     payload: false
   });
-}
-
-/**
- * Get default product
- * @returns void
- */
-function* getDefaultProductsFromLocal() {
-  // Get default products
-  const searchValue = '';
-  const response = yield call(searchProductService, {
-    searchValue,
-    currentPage: 1
-  });
-
-  const productResult = response.length > 0 ? response : [];
-  yield put({ type: types.RECEIVED_PRODUCT_RESULT, payload: productResult });
 }
 
 function* getAllCategoriesFromLocal() {
@@ -539,9 +522,7 @@ function updateQtyProduct(product) {
 function* getProductByCategory(payload) {
   // Start loading
   yield put({ type: types.UPDATE_MAIN_PRODUCT_LOADING, payload: true });
-
   const categoryId = payload.payload;
-
   const productByCategory = yield call(getProductByCategoryService, {
     categoryId
   });
@@ -1208,11 +1189,13 @@ export function* setupSyncCategoriesAndProducts() {
 export function* getDefaultDataFromLocal() {
   // Get all categories from local
   yield getAllCategoriesFromLocal();
+
   // Get shopInfo from local
   const config = yield getGeneralFromLocal();
   yield receivedGeneralConfig(config);
+
   // Get default products from local
-  yield getDefaultProductsFromLocal();
+  yield getProductByCategory({ payload: 0 });
 }
 
 function* fetchRewardPointConditionSg() {
@@ -1263,7 +1246,6 @@ function* rootSaga() {
   yield takeEvery(types.ADD_TO_CART, addToCart);
   yield takeEvery(types.GET_ORDER_HISTORY_ACTION, getOrderHistory);
   yield takeEvery(types.GET_PRODUCT_BY_CATEGORY, getProductByCategory);
-  yield takeEvery(types.GET_DEFAULT_PRODUCT, getDefaultProductsFromLocal);
   yield takeEvery(types.SIGN_UP_CUSTOMER, signUpAction);
   yield takeEvery(types.GET_ORDER_HISTORY_DETAIL_ACTION, getOrderHistoryDetail);
   yield takeEvery(typesAuthen.CHECK_LOGIN_BACKGROUND, checkLoginBackgroundSaga);

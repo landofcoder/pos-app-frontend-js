@@ -93,9 +93,11 @@ class Categories extends Component<Props> {
   };
 
   backToParent = () => {
-    if (this.isRootCategory() === 1) {
-      // Show all
-      console.info('get all product');
+    const isRootCate = this.isRootCategory();
+    if (isRootCate === 1 || isRootCate === 2) {
+      const { getProductByCategory } = this.props;
+      // Get all products and paging
+      getProductByCategory(0);
     } else {
       // Get parent from current allCategories
       const { findChildCategoryByParentId } = this.props;
@@ -119,14 +121,10 @@ class Categories extends Component<Props> {
 
   isRootCategory = () => {
     const { allCategories } = this.props;
-    let levelOfListCategory = 0;
     if (allCategories && allCategories.length > 0) {
-      levelOfListCategory = allCategories[0].level;
+      return allCategories[0].level;
     }
-    if (levelOfListCategory === 2) {
-      return 1;
-    }
-    return 0;
+    return allCategories.level;
   };
 
   render() {
@@ -134,7 +132,7 @@ class Categories extends Component<Props> {
     let childrenData = [];
     const rootLevel = this.isRootCategory();
     // If root object category
-    if (allCategories.level === 1) {
+    if (allCategories.level === 1 || allCategories.level === 2) {
       childrenData =
         allCategories && allCategories.children_data
           ? allCategories.children_data
@@ -154,7 +152,7 @@ class Categories extends Component<Props> {
               onClick={this.backToParent}
               className="list-group-item d-flex justify-content-between align-items-center"
             >
-              {rootLevel === 1 ? (
+              {rootLevel === 1 || rootLevel === 2 ? (
                 'All products'
               ) : (
                 <span>
