@@ -417,7 +417,6 @@ function* syncGeneralConfig(configName, syncAllNow) {
 }
 
 function* checkTimeToAcceptSyncing(typeID) {
-  const nowTime = Date.now();
   // last time
   let syncTimeAllProduct;
   let syncTimeCustomProduct;
