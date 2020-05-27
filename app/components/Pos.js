@@ -117,7 +117,7 @@ export default class Pos extends Component<Props, State> {
   }
 
   addCustomProduct = () => {
-    const item = { type_id: 'CUSTOM' };
+    const item = { type_id: 'custom_product_type_code' };
     this.preAddToCart(item);
   };
 

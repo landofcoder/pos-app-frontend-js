@@ -45,7 +45,7 @@ class CustomizeProduct extends Component<Props> {
     const { name, tax, price, quantity, note } = this.state;
     const product = {
       id: Date.now(),
-      type_id: 'CUSTOM',
+      type_id: 'custom_product_type_code',
       name,
       tax,
       note,
