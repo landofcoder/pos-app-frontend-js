@@ -19,7 +19,6 @@ type Props = {
   isShowLogsMessages: boolean,
   typeShowLogsMessages: string,
   syncDataManager: object,
-  syncManager: object,
   showLogsAction: (payload: Object) => void,
   statusData: object,
   getDataServiceWithType: payload => void
