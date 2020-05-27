@@ -79,7 +79,7 @@ function* checkExistingFailedCustomProduct(order) {
   for (const item of listItem) {
     if (item.type_id === CUSTOM) {
       const customProductDb = yield call(getCustomProductById, item.id);
-      if (!customProductDb || !customProductDb.status) {
+      if (!customProductDb.length || !customProductDb[0].status) {
         // eslint-disable-next-line no-throw-literal
         throw {
           message:
