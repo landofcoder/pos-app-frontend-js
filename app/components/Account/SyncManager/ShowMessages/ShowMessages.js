@@ -72,6 +72,7 @@ class ShowMessages extends Component {
 
   showTableAllProduct = () => {
     const { syncDataManager, statusData } = this.props;
+    const { stepAt } = syncDataManager;
     let message;
     let syncDataAllProduct = [];
     if (statusData.errors) {
@@ -96,7 +97,7 @@ class ShowMessages extends Component {
             this.actionCollapseData(index);
           }}
         >
-          <th scope="row">{index + 1}</th>
+          <th scope="row">{index + 1 + 10 * stepAt}</th>
           <td>{item.name}</td>
           <td>{item.sku}</td>
           <td>{new Date(item.pos_sync_create_at).toLocaleString()}</td>
@@ -214,6 +215,7 @@ class ShowMessages extends Component {
 
   showTableCustomProduct = () => {
     const { syncDataManager, statusData } = this.props;
+    const { stepAt } = syncDataManager;
     let syncDataCustomProduct = [];
     let message;
     if (statusData.errors) {
@@ -239,7 +241,7 @@ class ShowMessages extends Component {
             this.actionCollapseData(index);
           }}
         >
-          <th scope="row">{index + 1}</th>
+          <th scope="row">{index + 1 + 10 * stepAt}</th>
           <td>{item.name}</td>
           <td>{item.price.regularPrice.amount.value}</td>
           <td>{item.pos_qty}</td>
@@ -279,6 +281,7 @@ class ShowMessages extends Component {
 
   showTableCustomer = () => {
     const { syncDataManager, statusData } = this.props;
+    const { stepAt } = syncDataManager;
     let syncDataCustomer = [];
     let message;
     if (statusData.errors) {
@@ -303,7 +306,7 @@ class ShowMessages extends Component {
             this.actionCollapseData(index);
           }}
         >
-          <th scope="row">{index + 1}</th>
+          <th scope="row">{index + 1 + 10 * stepAt}</th>
           <td>{`${item.first_name} ${item.payload.customer.lastname}`}</td>
           <td>{item.email}</td>
           <td>{new Date(item.id).toDateString()}</td>
@@ -369,6 +372,7 @@ class ShowMessages extends Component {
 
   showTableOrderLocal = () => {
     const { syncDataManager, statusData } = this.props;
+    const { stepAt } = syncDataManager;
     let syncDataAllProduct = [];
     let message;
     if (statusData.errors) {
@@ -388,7 +392,7 @@ class ShowMessages extends Component {
     const tableOrderLocal = syncDataAllProduct.map((item, index) => {
       return (
         <tr key={index} style={{ cursor: 'pointer' }}>
-          <th scope="row">{index + 1}</th>
+          <th scope="row">{index + 1 + 10 * stepAt}</th>
           <td>--</td>
           <td>{formatCurrencyCode(item.grand_total)}</td>
           <td>{new Date(item.created_at).toDateString()}</td>
