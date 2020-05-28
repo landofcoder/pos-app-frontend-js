@@ -403,7 +403,6 @@ class OrderHistory extends Component<Props> {
               ))}
             </tbody>
           </table>
-
           {isLoading ? (
             <div className="form-group">
               <div className="text-center">
@@ -432,19 +431,6 @@ class OrderHistory extends Component<Props> {
           }}
         >
           <div className={modalStyle.modalContentLg}>
-            {/* {isLoading ? ( */}
-            {/*  <div className="form-group"> */}
-            {/*    <div className="text-center"> */}
-            {/*      <div */}
-            {/*        className="spinner-border spinner-border-sm text-secondary" */}
-            {/*        role="status" */}
-            {/*      > */}
-            {/*        <span className="sr-only">Loading...</span> */}
-            {/*      </div> */}
-            {/*    </div> */}
-            {/*  </div> */}
-            {/* ) : null} */}
-            {/* <div className="col-9"> */}
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Order receipt</h5>
