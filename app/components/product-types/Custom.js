@@ -43,9 +43,11 @@ class CustomizeProduct extends Component<Props> {
   addToCart = () => {
     const { updateIsShowingProductOption } = this.props;
     const { name, tax, price, quantity, note } = this.state;
+    const dateNow = Date.now();
     const product = {
-      id: Date.now(),
-      type_id: 'CUSTOM',
+      id: dateNow,
+      sku: dateNow.toString(),
+      type_id: 'custom_product_type_code',
       name,
       tax,
       note,

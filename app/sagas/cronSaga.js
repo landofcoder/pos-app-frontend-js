@@ -1,5 +1,6 @@
 import { takeEvery, put, select, call } from 'redux-saga/effects';
 import * as types from '../constants/authen';
+import { CUSTOM } from '../constants/product-types.json';
 import {
   SYNC_DATA_TYPE,
   GET_SYNC_STATUS_FROM_LOCAL,
@@ -71,6 +72,24 @@ function* resolveCustomerIdForOrder(customer) {
     yield updateOrderById(order, true);
   }
   yield updateCustomerOrderListById(customer);
+}
+
+function* checkExistingFailedCustomProduct(order) {
+  const listItem = order.items.cartCurrentResult.data;
+  // eslint-disable-next-line no-restricted-syntax
+  for (const item of listItem) {
+    if (item.type_id === CUSTOM) {
+      const customProductDb = yield call(getCustomProductById, item.id);
+      if (!customProductDb.length || !customProductDb[0].status) {
+        // eslint-disable-next-line no-throw-literal
+        throw {
+          message:
+            customProductDb.message ||
+            'Cannot sync order cause custom product can not create'
+        };
+      }
+    }
+  }
 }
 
 function* getSyncAllProduct(step, stepAt) {
@@ -300,6 +319,7 @@ function* syncOrder(orderId, syncAllNow) {
     // eslint-disable-next-line no-continue
     if (order.status) continue;
     try {
+      yield checkExistingFailedCustomProduct(order); // will throw if order existing failed custom product
       const result = yield call(syncOrderService, order);
 
       if (!result.status || result.message || result.errors) {

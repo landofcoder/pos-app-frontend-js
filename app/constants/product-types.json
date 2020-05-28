@@ -4,5 +4,5 @@
   "BUNDLE": "bundle",
   "GROUPED": "grouped",
   "DOWNLOADABLE": "downloadable",
-  "CUSTOM": "CUSTOM"
+  "CUSTOM": "custom_product_type_code"
 }

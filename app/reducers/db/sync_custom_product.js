@@ -36,7 +36,7 @@ export async function createProductDb(product) {
   console.log('create product');
   const tbl = db.table(table);
   console.log(product);
-  const data = await getByName(product.name);
+  const data = await getCustomProductById(product.id);
   if (!data || data.length === 0) {
     const tbl = db.table(table);
     await tbl.add(product);
