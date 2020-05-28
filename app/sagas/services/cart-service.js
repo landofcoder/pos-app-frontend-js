@@ -46,7 +46,7 @@ export async function getDiscountForQuoteService(payload) {
     return data;
   } catch (e) {
     // eslint-disable-next-line no-throw-literal
-    throw { message: e.message || 'Unable to connect to server', data: {} };
+    throw { message: e.message || 'Unable to connect server', data: {} };
   }
 }
 
