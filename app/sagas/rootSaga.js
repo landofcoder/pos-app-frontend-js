@@ -1114,10 +1114,10 @@ function* loginAction(payload) {
         payload: SYNC_SCREEN
       });
       // Step 1: Get general config
-      // yield setupFetchingGeneralConfig();
+      yield setupFetchingGeneralConfig();
 
       // Step 2: Start setup
-      // yield setupSyncCategoriesAndProducts();
+      yield setupSyncCategoriesAndProducts();
 
       // Step 3: Sync product barcode to local
       yield writeProductBarCodeInventoryToLocal();
@@ -1135,11 +1135,11 @@ function* loginAction(payload) {
       });
     }
 
-    // // Write logged info to local
-    // yield writeLoggedInfoToLocal({
-    //   login: payload.payload,
-    //   token: resultLogin.data
-    // });
+    // Write logged info to local
+    yield writeLoggedInfoToLocal({
+      login: payload.payload,
+      token: resultLogin.data
+    });
 
     // Setup empty error message
     yield put({
