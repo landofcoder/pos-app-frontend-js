@@ -6,26 +6,24 @@ const table = 'barcode_index';
 const barCodeIndexTbl = db.table(table);
 
 export function* syncBarCodeIndexToLocal(listProductBarCode) {
-  if (listProductBarCode.length > 0) {
-    yield all(
-      listProductBarCode.map(item => {
-        return call(syncBarCodeHandle, { item });
-      })
-    );
-  }
+  yield all(
+    Object.keys(listProductBarCode).map(key =>
+      call(syncBarCodeHandle, listProductBarCode[key])
+    )
+  );
 }
 
-function* syncBarCodeHandle(payload) {
-  const { item } = payload;
+function* syncBarCodeHandle(item) {
+  const itemAssign = Object.assign({}, item);
   const existsItem = yield barCodeIndexTbl.get({ barcode: item.barcode });
   if (existsItem) {
     // Update
-    item.updated_at = format(new Date(), 'yyyy-MM-dd hh:m:s');
-    yield barCodeIndexTbl.update(existsItem, item);
+    itemAssign.updated_at = format(new Date(), 'yyyy-MM-dd hh:m:s');
+    yield barCodeIndexTbl.update({ id: existsItem.id }, itemAssign);
   } else {
     // Create new
-    item.created_at = format(new Date(), 'yyyy-MM-dd hh:m:s');
-    yield barCodeIndexTbl.add(item);
+    itemAssign.created_at = format(new Date(), 'yyyy-MM-dd hh:m:s');
+    yield barCodeIndexTbl.add(itemAssign);
   }
 }
 

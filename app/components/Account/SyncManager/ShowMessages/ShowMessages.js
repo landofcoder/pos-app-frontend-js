@@ -117,7 +117,7 @@ class ShowMessages extends Component {
             {message}
           </div>
         ) : null}
-        <div>
+        <div className="card mb-3">
           <table className="table">
             <thead>
               <tr>
@@ -261,19 +261,21 @@ class ShowMessages extends Component {
             {message}
           </div>
         ) : null}
-        <table className="table">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Custom Product Name</th>
-              <th scope="col">Price</th>
-              <th scope="col">Q.ty</th>
-              <th scope="col">Create at</th>
-              <th scope="col">Status</th>
-            </tr>
-          </thead>
-          <tbody>{tableCustomProduct}</tbody>
-        </table>
+        <div className="card mb-3">
+          <table className="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Custom Product Name</th>
+                <th scope="col">Price</th>
+                <th scope="col">Q.ty</th>
+                <th scope="col">Create at</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody>{tableCustomProduct}</tbody>
+          </table>
+        </div>
       </>
     );
   };
@@ -325,18 +327,20 @@ class ShowMessages extends Component {
             {message}
           </div>
         ) : null}
-        <table className="table">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Customer Name</th>
-              <th scope="col">Email</th>
-              <th scope="col">Create at</th>
-              <th scope="col">Status</th>
-            </tr>
-          </thead>
-          <tbody>{tableCustomer}</tbody>
-        </table>
+        <div className="card mb-3">
+          <table className="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Customer Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Create at</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody>{tableCustomer}</tbody>
+          </table>
+        </div>
       </>
     );
   };
@@ -411,18 +415,20 @@ class ShowMessages extends Component {
             {message}
           </div>
         ) : null}
-        <table className="table">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Orders Id</th>
-              <th scope="col">Total</th>
-              <th scope="col">Create at</th>
-              <th scope="col">Sync status</th>
-            </tr>
-          </thead>
-          <tbody>{tableOrderLocal}</tbody>
-        </table>
+        <div className="card mb-3">
+          <table className="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Orders Id</th>
+                <th scope="col">Total</th>
+                <th scope="col">Create at</th>
+                <th scope="col">Sync status</th>
+              </tr>
+            </thead>
+            <tbody>{tableOrderLocal}</tbody>
+          </table>
+        </div>
       </>
     );
   };

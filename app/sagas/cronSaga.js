@@ -48,7 +48,8 @@ import { syncOrderService } from './services/cart-service';
 import {
   setupFetchingGeneralConfig,
   setupSyncCategoriesAndProducts,
-  reloadTokenFromLoggedLocalDB
+  reloadTokenFromLoggedLocalDB,
+  writeProductBarCodeInventoryToLocal
 } from './rootSaga';
 
 import {
@@ -376,14 +377,38 @@ function* syncOrder(orderId, syncAllNow) {
   });
 }
 
-function* syncBarCodeIndex() {
+function* syncBarCodeIndex(barCodeId, syncAllNow) {
   const timeAccept = yield checkTimeToAcceptSyncing(types.SYNC_BARCODE_INDEX);
-  yield 'hello world';
+  if (!barCodeId && !timeAccept && !syncAllNow) {
+    return null;
+  }
+  // Start loading
+  yield put({
+    type: types.LOADING_SYNC_ACTION,
+    payload: { type: types.SYNC_BARCODE_INDEX, status: true }
+  });
+
+  if (barCodeId && !syncAllNow) {
+    // Sync with barcodeId only
+    console.log('sync with barcode id');
+  } else {
+    // Sync all
+    yield writeProductBarCodeInventoryToLocal();
+  }
+
+  // Write sync success
+  yield call(successLoadService, types.SYNC_BARCODE_INDEX);
+
+  // Stop loading
+  yield put({
+    type: types.LOADING_SYNC_ACTION,
+    payload: { type: types.SYNC_BARCODE_INDEX, status: false }
+  });
 }
 
-function* syncAllProduct(ProductID, syncAllNow) {
+function* syncAllProduct(productID, syncAllNow) {
   const timeAccept = yield checkTimeToAcceptSyncing(types.ALL_PRODUCT_SYNC);
-  if (!ProductID && !timeAccept && !syncAllNow) {
+  if (!productID && !timeAccept && !syncAllNow) {
     return null;
   }
 
@@ -500,7 +525,7 @@ function* cronJobs() {
  * there are 2 payload in param id mean if you want sync with special id(orderid,customerid,productid,...) with payloadType
  * another you want to sync all of payloadType use syncAllNow = 1
  * @param payload
- * @returns {Generator<Generator<Generator<Promise<*>|<"SELECT", SelectEffectDescriptor>|Promise<*|undefined>|Promise<*|undefined>, boolean, *>|<"PUT", PutEffectDescriptor<{payload: {type: string, status: boolean}, type: string}>>, null, *>|Generator<Generator<Promise<*>|<"SELECT", SelectEffectDescriptor>|Promise<*|undefined>|Promise<*|undefined>, boolean, *>|<"PUT", PutEffectDescriptor<{payload: {type: string, status: boolean}, type: string}>>, null, *>, void, *>}
+ * @returns void
  */
 function* syncTypeDataWithID(payload) {
   const payloadType = payload.payload;
@@ -520,6 +545,10 @@ function* syncTypeDataWithID(payload) {
       break;
     case types.SYNC_ORDER_LIST:
       yield syncOrder(id, syncAllNow);
+      break;
+    case types.SYNC_BARCODE_INDEX:
+      console.log('pass sync all now:', syncAllNow);
+      yield syncBarCodeIndex(id, syncAllNow);
       break;
     default:
       break;

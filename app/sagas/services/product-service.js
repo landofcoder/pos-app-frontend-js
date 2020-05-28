@@ -297,13 +297,18 @@ export function* fetchingAndWriteProductBarCodeInventory() {
     false
   );
 
+  console.log('sync barcode:', productBarCode);
+
   // eslint-disable-next-line no-unused-vars,camelcase
   if (productBarCode) {
+    // eslint-disable-next-line camelcase
     const { total_page, list } = productBarCode;
     // Sync product barcode inventory
     yield syncBarCodeIndexToLocal(list);
     // Init page array
     const arrayPageListPaging = new Array(total_page).fill(0);
+
+    console.log('total page:', total_page);
 
     // eslint-disable-next-line camelcase
     if (total_page > 1) {
