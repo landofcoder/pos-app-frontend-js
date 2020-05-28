@@ -110,7 +110,7 @@ export async function syncOrderService(params) {
     return data;
   } catch (error) {
     return {
-      message: error.message || 'Unable to connect to server',
+      message: error.message || 'Unable to connect server',
       data: error.data
     };
   }
