@@ -45,7 +45,7 @@ class ShowMessages extends Component {
         <span className="badge badge-pill badge-secondary">not synced</span>
       );
     }
-    if (manager.errors) {
+    if (manager.errors || !manager.status) {
       return (
         <span className="badge badge-danger badge-pill">
           {manager.errors} errors
