@@ -308,7 +308,7 @@ class ShowMessages extends Component {
           <th scope="row">{index + 1 + 10 * stepAt}</th>
           <td>{`${item.first_name} ${item.payload.customer.lastname}`}</td>
           <td>{item.email}</td>
-          <td>{new Date(item.id).toDateString()}</td>
+          <td>{new Date(item.created_at).toDateString()}</td>
           <td>{this.renderStatusSync(item)}</td>
         </tr>
       );

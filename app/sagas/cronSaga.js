@@ -63,6 +63,7 @@ const loadingSyncManager = state => state.authenRd.loadingSyncManager;
 function* resolveCustomerIdForOrder(customer) {
   const customerResult = yield call(getCustomerById, customer.id);
   const { orderList } = customerResult;
+  if (!orderList) return null;
   // eslint-disable-next-line no-restricted-syntax
   for (const item of orderList) {
     const orderResult = yield getOrderById(item.orderId);
@@ -75,6 +76,7 @@ function* resolveCustomerIdForOrder(customer) {
 }
 
 function* checkExistingFailedCustomProduct(order) {
+  // check condition for custom product sync
   const listItem = order.items.cartCurrentResult.data;
   // eslint-disable-next-line no-restricted-syntax
   for (const item of listItem) {
@@ -84,10 +86,20 @@ function* checkExistingFailedCustomProduct(order) {
         // eslint-disable-next-line no-throw-literal
         throw {
           message:
-            customProductDb.message ||
-            'Cannot sync order cause custom product can not create'
+            'Cannot sync order cause custom product in this order can not create'
         };
       }
+    }
+  }
+  // check condition for custom product sync
+  if (!order.items.cartCurrentResult.isGuestCustomer) {
+    const customerId = order.items.cartCurrentResult.customer.id;
+    const customerResultDb = yield call(getCustomerById, customerId);
+    if (customerResultDb) {
+      // eslint-disable-next-line no-throw-literal
+      throw {
+        message: 'Cannot sync order cause customer in this order can not create'
+      };
     }
   }
 }
@@ -186,8 +198,10 @@ function* syncCustomer(customerName, syncAllNow) {
     try {
       const result = yield call(signUpCustomerService, customer);
       if (result || result.status) {
-        const newCustomerId = result.data.data.createCustomer.customer.id;
+        const newCustomerId = result.data.createCustomer.customer.id;
         customer.status = true;
+        customer.synced = true;
+        customer.update_at = Date.now();
         // update customerid
         yield replaceCustomerById(customer, newCustomerId);
         // update customerid in order checkout with this customer
@@ -302,9 +316,9 @@ function* syncOrder(orderId, syncAllNow) {
   });
 
   // step 1: sync custom product first
-  yield syncCustomProduct();
+  yield syncCustomProduct(null, true);
   // step 2: sync customer second
-  yield syncCustomer();
+  yield syncCustomer(null, true);
   // step 3: next step
 
   let orders;
@@ -331,11 +345,12 @@ function* syncOrder(orderId, syncAllNow) {
         };
       } else {
         order.status = true;
-        order.success = true;
+        order.synced = true;
+        order.message = '';
         yield updateOrderById(order);
       }
     } catch (e) {
-      order.status = false;
+      order.synced = false;
       order.message = e.message;
       order.dataErrors = e.data;
       yield updateOrderById(order);
@@ -364,7 +379,6 @@ function* syncOrder(orderId, syncAllNow) {
 function* syncBarCodeIndex() {
   const timeAccept = yield checkTimeToAcceptSyncing(types.SYNC_BARCODE_INDEX);
   yield 'hello world';
-  console.log('sync barcode index:', timeAccept);
 }
 
 function* syncAllProduct(ProductID, syncAllNow) {
@@ -430,7 +444,6 @@ function* checkTimeToAcceptSyncing(typeID) {
   let timeSyncByModule = 5;
   try {
     timeConfig = config[0].value.common_config.time_synchronized_for_modules;
-    console.log('time config:', timeConfig);
     switch (typeID) {
       case types.ALL_PRODUCT_SYNC:
         timeSyncByModule = timeConfig.all_products || 5;
