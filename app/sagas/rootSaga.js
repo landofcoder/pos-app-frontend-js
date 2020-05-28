@@ -809,7 +809,7 @@ function* writeCategoriesAndProductsToLocal() {
   yield call(writeProductsToLocal, categoryMain);
 }
 
-function* writeProductBarCodeInventoryToLocal() {
+export function* writeProductBarCodeInventoryToLocal() {
   yield fetchingAndWriteProductBarCodeInventory();
   // Update done step 3
   yield put({

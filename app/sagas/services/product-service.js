@@ -322,7 +322,6 @@ export function* fetchingAndWriteProductBarCodeInventory() {
 }
 
 function* fetchingNextPageBarCodeInventory({ index }) {
-  console.log('run me right???');
   const productBarCode = yield getProductBarCodeInventoryByPage(
     index + 1,
     true

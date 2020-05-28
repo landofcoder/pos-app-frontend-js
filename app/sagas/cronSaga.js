@@ -48,7 +48,8 @@ import { syncOrderService } from './services/cart-service';
 import {
   setupFetchingGeneralConfig,
   setupSyncCategoriesAndProducts,
-  reloadTokenFromLoggedLocalDB
+  reloadTokenFromLoggedLocalDB,
+  writeProductBarCodeInventoryToLocal
 } from './rootSaga';
 
 import {
@@ -366,9 +367,28 @@ function* syncBarCodeIndex(barCodeId, syncAllNow) {
   if (!barCodeId && !timeAccept && !syncAllNow) {
     return null;
   }
+  // Start loading
+  yield put({
+    type: types.LOADING_SYNC_ACTION,
+    payload: { type: types.SYNC_BARCODE_INDEX, status: true }
+  });
 
-  yield 'hello world';
-  console.log('sync barcode index now');
+  if (barCodeId && !syncAllNow) {
+    // Sync with barcodeId only
+    console.log('sync with barcode id');
+  } else {
+    // Sync all
+    yield writeProductBarCodeInventoryToLocal();
+  }
+
+  // Write sync success
+  yield call(successLoadService, types.SYNC_BARCODE_INDEX);
+
+  // Stop loading
+  yield put({
+    type: types.LOADING_SYNC_ACTION,
+    payload: { type: types.SYNC_BARCODE_INDEX, status: false }
+  });
 }
 
 function* syncAllProduct(productID, syncAllNow) {

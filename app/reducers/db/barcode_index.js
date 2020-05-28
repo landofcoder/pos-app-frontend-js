@@ -19,7 +19,7 @@ function* syncBarCodeHandle(item) {
   if (existsItem) {
     // Update
     itemAssign.updated_at = format(new Date(), 'yyyy-MM-dd hh:m:s');
-    yield barCodeIndexTbl.update({ barcode: existsItem.barcode }, itemAssign);
+    yield barCodeIndexTbl.update({ id: existsItem.id }, itemAssign);
   } else {
     // Create new
     itemAssign.created_at = format(new Date(), 'yyyy-MM-dd hh:m:s');
