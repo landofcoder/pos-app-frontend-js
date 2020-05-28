@@ -77,6 +77,7 @@ export async function successLoadService(serviceName) {
 
 export async function getLastUpdateTime(serviceName) {
   const serviceData = await getServiceByName(serviceName);
+  console.log('service data:', serviceData);
   if (serviceData) {
     if (serviceData.update_at) return serviceData.update_at;
     return serviceData.create_at;

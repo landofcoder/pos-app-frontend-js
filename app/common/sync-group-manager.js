@@ -3,7 +3,8 @@ import {
   CUSTOM_PRODUCT_SYNC,
   CUSTOMERS_SYNC,
   GENERAL_CONFIG_SYNC,
-  SYNC_ORDER_LIST
+  SYNC_ORDER_LIST,
+  SYNC_BARCODE_INDEX
 } from '../constants/authen.json';
 
 export function serviceTypeGroupManager(serviceName, actionService) {
@@ -40,6 +41,8 @@ export function getDisplayNameForSyncService(serviceName) {
       return 'General config sync';
     case SYNC_ORDER_LIST:
       return 'All orders sync';
+    case SYNC_BARCODE_INDEX:
+      return 'Barcode sync';
     default:
       return null;
   }
