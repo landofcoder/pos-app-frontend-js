@@ -458,9 +458,9 @@ function* checkTimeToAcceptSyncing(typeID) {
   }
   const loadingSyncManagerResult = yield select(loadingSyncManager);
   // truong hop sync dang hoat dong va chua duoc hoan tat, ham check sync khong nen chay them ham sync them lan nua
-  const syncTimeAllProduct = yield getLastUpdateTime(typeID);
+  const getLastTimeSyncServiceByTypeId = yield getLastUpdateTime(typeID);
   return conditionForSyncing(
-    syncTimeAllProduct,
+    getLastTimeSyncServiceByTypeId,
     timeSyncByModule,
     loadingSyncManagerResult[typeID]
   );
