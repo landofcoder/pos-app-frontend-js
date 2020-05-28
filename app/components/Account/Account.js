@@ -10,6 +10,7 @@ import { POS } from '../../constants/routes.json';
 
 class Account extends Component {
   props: Props;
+
   constructor(props) {
     super(props);
     this.state = {
