@@ -163,6 +163,6 @@ export async function getAppInfoService(payload) {
     }
     return data;
   } catch (e) {
-    return { message: e.message || 'Unable to connect to server' };
+    return { message: e.message || 'Unable to connect server' };
   }
 }
