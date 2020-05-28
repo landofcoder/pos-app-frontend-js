@@ -361,15 +361,19 @@ function* syncOrder(orderId, syncAllNow) {
   });
 }
 
-function* syncBarCodeIndex() {
+function* syncBarCodeIndex(barCodeId, syncAllNow) {
   const timeAccept = yield checkTimeToAcceptSyncing(types.SYNC_BARCODE_INDEX);
+  if (!barCodeId && !timeAccept && !syncAllNow) {
+    return null;
+  }
+
   yield 'hello world';
-  console.log('sync barcode index:', timeAccept);
+  console.log('sync barcode index now');
 }
 
-function* syncAllProduct(ProductID, syncAllNow) {
+function* syncAllProduct(productID, syncAllNow) {
   const timeAccept = yield checkTimeToAcceptSyncing(types.ALL_PRODUCT_SYNC);
-  if (!ProductID && !timeAccept && !syncAllNow) {
+  if (!productID && !timeAccept && !syncAllNow) {
     return null;
   }
 
@@ -430,7 +434,6 @@ function* checkTimeToAcceptSyncing(typeID) {
   let timeSyncByModule = 5;
   try {
     timeConfig = config[0].value.common_config.time_synchronized_for_modules;
-    console.log('time config:', timeConfig);
     switch (typeID) {
       case types.ALL_PRODUCT_SYNC:
         timeSyncByModule = timeConfig.all_products || 5;
@@ -487,7 +490,7 @@ function* cronJobs() {
  * there are 2 payload in param id mean if you want sync with special id(orderid,customerid,productid,...) with payloadType
  * another you want to sync all of payloadType use syncAllNow = 1
  * @param payload
- * @returns {Generator<Generator<Generator<Promise<*>|<"SELECT", SelectEffectDescriptor>|Promise<*|undefined>|Promise<*|undefined>, boolean, *>|<"PUT", PutEffectDescriptor<{payload: {type: string, status: boolean}, type: string}>>, null, *>|Generator<Generator<Promise<*>|<"SELECT", SelectEffectDescriptor>|Promise<*|undefined>|Promise<*|undefined>, boolean, *>|<"PUT", PutEffectDescriptor<{payload: {type: string, status: boolean}, type: string}>>, null, *>, void, *>}
+ * @returns void
  */
 function* syncTypeDataWithID(payload) {
   const payloadType = payload.payload;
@@ -507,6 +510,10 @@ function* syncTypeDataWithID(payload) {
       break;
     case types.SYNC_ORDER_LIST:
       yield syncOrder(id, syncAllNow);
+      break;
+    case types.SYNC_BARCODE_INDEX:
+      console.log('pass sync all now:', syncAllNow);
+      yield syncBarCodeIndex(id, syncAllNow);
       break;
     default:
       break;
