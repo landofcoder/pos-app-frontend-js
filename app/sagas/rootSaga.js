@@ -476,8 +476,8 @@ function* addToCart(payloadParams) {
   // Just update qty with type is not bundle type
   if (typeId !== BUNDLE) {
     // Find exists product to update qty
-    for (let i = 0; i < listCartCurrent.length; i += 1) {
-      const item = listCartCurrent[i];
+    for (let i = 0; i < listCartCurrent.data.length; i += 1) {
+      const item = listCartCurrent.data[i];
 
       // Update exists product with qty increment
       if (item.sku === productSku) {
