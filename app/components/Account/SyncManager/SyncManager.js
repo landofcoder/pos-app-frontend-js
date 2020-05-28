@@ -7,12 +7,13 @@ import {
   getDataServiceWithType,
   getSyncStatusFromLocal
 } from '../../../actions/accountAction';
+import { startLoop, stopLoop } from '../../../common/settings';
 
 import Style from './sync-manager.scss';
 
 type Props = {
   syncDataClient: payload => void,
-  syncManager: Object,
+  syncList: Array,
   showLogsAction: (payload: Object) => void,
   getSyncStatusFromLocal: () => void,
   getDataServiceWithType: payload => void,
@@ -24,7 +25,7 @@ class SyncManager extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      intervalGetDataErrorId: null,
+      getSynIntervalInstance: null,
       step: 10,
       stepAt: 0
     };
@@ -33,13 +34,13 @@ class SyncManager extends Component {
   componentDidMount(): void {
     const { getSyncStatusFromLocal } = this.props;
     getSyncStatusFromLocal();
-    const getSyncOrderErrorId = setInterval(getSyncStatusFromLocal, 10000);
-    this.setState({ intervalGetDataErrorId: getSyncOrderErrorId });
+    const getSynIntervalInstance = startLoop(getSyncStatusFromLocal, 10000);
+    this.setState({ getSynIntervalInstance });
   }
 
   componentWillUnmount(): void {
-    const { intervalGetDataErrorId } = this.state;
-    clearInterval(intervalGetDataErrorId);
+    const { getSynIntervalInstance } = this.state;
+    stopLoop(getSynIntervalInstance);
   }
 
   syncDataClientAction = type => {
@@ -84,7 +85,7 @@ class SyncManager extends Component {
   };
 
   render() {
-    const { syncManager } = this.props;
+    const { syncList } = this.props;
     return (
       <div className="row">
         <div className="col-md-12">
@@ -99,8 +100,8 @@ class SyncManager extends Component {
               </tr>
             </thead>
             <tbody>
-              {syncManager.length
-                ? syncManager.map((item, index) => (
+              {syncList.length
+                ? syncList.map((item, index) => (
                     <tr
                       key={index}
                       className={Style.cursorPointer}
@@ -166,7 +167,7 @@ function mapStateToProps(state) {
   return {
     isShowLogsMessages: state.mainRd.isShowLogsMessages,
     typeShowLogsMessages: state.mainRd.typeShowLogsMessages,
-    syncManager: state.authenRd.syncManager,
+    syncList: state.authenRd.syncManager,
     loadingSyncManager: state.authenRd.loadingSyncManager
   };
 }

@@ -341,6 +341,12 @@ function* syncOrder(orderId, syncAllNow) {
   });
 }
 
+function* syncBarCodeIndex() {
+  const timeAccept = yield checkTimeToAcceptSyncing(types.SYNC_BARCODE_INDEX);
+  yield 'hello world';
+  console.log('sync barcode index:', timeAccept);
+}
+
 function* syncAllProduct(ProductID, syncAllNow) {
   const timeAccept = yield checkTimeToAcceptSyncing(types.ALL_PRODUCT_SYNC);
   if (!ProductID && !timeAccept && !syncAllNow) {
@@ -398,77 +404,87 @@ function* syncGeneralConfig(configName, syncAllNow) {
 }
 
 function* checkTimeToAcceptSyncing(typeID) {
-  const nowTime = Date.now();
-  // last time
-  let syncTimeAllProduct;
-  let syncTimeCustomProduct;
-  let syncTimeCustomer;
-  let syncTimeGeneralConfig;
-  let syncTimeAllOrder;
   let timeConfig;
-  // default time
-  let allProducts = 5;
-  let allCustomProduct = 5;
-  let allCustomersSync = 5;
-  let generalConfigSync = 5;
-  let allOrdersSync = 5;
   // get config time from localdb
   const config = yield getGeneralConfigFromLocal();
+  let timeSyncByModule = 5;
   try {
     timeConfig = config[0].value.common_config.time_synchronized_for_modules;
-    allProducts = timeConfig.all_products || 5;
-    allCustomProduct = timeConfig.all_custom_product || 5;
-    allCustomersSync = timeConfig.all_customers_sync || 5;
-    generalConfigSync = timeConfig.general_config_sync || 5;
-    allOrdersSync = timeConfig.all_orders_sync || 5;
-  } catch (e) {}
+    switch (typeID) {
+      case types.ALL_PRODUCT_SYNC:
+        timeSyncByModule = timeConfig.all_products || 5;
+        break;
+      case types.CUSTOM_PRODUCT_SYNC:
+        timeSyncByModule = timeConfig.all_custom_product || 5;
+        break;
+      case types.CUSTOMERS_SYNC:
+        timeSyncByModule = timeConfig.all_customers_sync || 5;
+        break;
+      case types.GENERAL_CONFIG_SYNC:
+        timeSyncByModule = timeConfig.general_config_sync || 5;
+        break;
+      case types.SYNC_ORDER_LIST:
+        timeSyncByModule = timeConfig.all_orders_sync || 5;
+        break;
+      default:
+        break;
+    }
+  } catch (e) {
+    console.log(e);
+  }
   const loadingSyncManagerResult = yield select(loadingSyncManager);
 
   // truong hop sync dang hoat dong va chua duoc hoan tat, ham check sync khong nen chay them ham sync them lan nua
+  const syncTimeAllProduct = yield getLastUpdateTime(typeID);
+  return conditionForSyncing(
+    syncTimeAllProduct,
+    timeSyncByModule,
+    loadingSyncManagerResult[typeID]
+  );
 
-  switch (typeID) {
-    case types.ALL_PRODUCT_SYNC:
-      syncTimeAllProduct = yield getLastUpdateTime(types.ALL_PRODUCT_SYNC);
-      return conditionForSyncing(
-        syncTimeAllProduct,
-        allProducts,
-        loadingSyncManagerResult[typeID]
-      );
-    case types.CUSTOM_PRODUCT_SYNC:
-      syncTimeCustomProduct = yield getLastUpdateTime(
-        types.CUSTOM_PRODUCT_SYNC
-      );
-      return conditionForSyncing(
-        syncTimeCustomProduct,
-        allCustomProduct,
-        loadingSyncManagerResult[typeID]
-      );
-    case types.CUSTOMERS_SYNC:
-      syncTimeCustomer = yield getLastUpdateTime(types.CUSTOMERS_SYNC);
-      return conditionForSyncing(
-        syncTimeCustomer,
-        allCustomersSync,
-        loadingSyncManagerResult[typeID]
-      );
-    case types.GENERAL_CONFIG_SYNC:
-      syncTimeGeneralConfig = yield getLastUpdateTime(
-        types.GENERAL_CONFIG_SYNC
-      );
-      return conditionForSyncing(
-        syncTimeGeneralConfig,
-        generalConfigSync,
-        loadingSyncManagerResult[typeID]
-      );
-    case types.SYNC_ORDER_LIST:
-      syncTimeAllOrder = yield getLastUpdateTime(types.SYNC_ORDER_LIST);
-      return conditionForSyncing(
-        syncTimeAllOrder,
-        allOrdersSync,
-        loadingSyncManagerResult[typeID]
-      );
-    default:
-      return false;
-  }
+  // switch (typeID) {
+  //   case types.ALL_PRODUCT_SYNC:
+  //     syncTimeAllProduct = yield getLastUpdateTime(types.ALL_PRODUCT_SYNC);
+  //     return conditionForSyncing(
+  //       syncTimeAllProduct,
+  //       allProducts,
+  //       loadingSyncManagerResult[typeID]
+  //     );
+  //   case types.CUSTOM_PRODUCT_SYNC:
+  //     syncTimeCustomProduct = yield getLastUpdateTime(
+  //       types.CUSTOM_PRODUCT_SYNC
+  //     );
+  //     return conditionForSyncing(
+  //       syncTimeCustomProduct,
+  //       allCustomProduct,
+  //       loadingSyncManagerResult[typeID]
+  //     );
+  //   case types.CUSTOMERS_SYNC:
+  //     syncTimeCustomer = yield getLastUpdateTime(types.CUSTOMERS_SYNC);
+  //     return conditionForSyncing(
+  //       syncTimeCustomer,
+  //       allCustomersSync,
+  //       loadingSyncManagerResult[typeID]
+  //     );
+  //   case types.GENERAL_CONFIG_SYNC:
+  //     syncTimeGeneralConfig = yield getLastUpdateTime(
+  //       types.GENERAL_CONFIG_SYNC
+  //     );
+  //     return conditionForSyncing(
+  //       syncTimeGeneralConfig,
+  //       generalConfigSync,
+  //       loadingSyncManagerResult[typeID]
+  //     );
+  //   case types.SYNC_ORDER_LIST:
+  //     syncTimeAllOrder = yield getLastUpdateTime(types.SYNC_ORDER_LIST);
+  //     return conditionForSyncing(
+  //       syncTimeAllOrder,
+  //       allOrdersSync,
+  //       loadingSyncManagerResult[typeID]
+  //     );
+  //   default:
+  //     return false;
+  // }
 }
 
 function* cronJobs() {
@@ -480,6 +496,7 @@ function* cronJobs() {
   yield syncCustomer();
   yield syncGeneralConfig();
   yield syncOrder();
+  yield syncBarCodeIndex();
 }
 
 /**

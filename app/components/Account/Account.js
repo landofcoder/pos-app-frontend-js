@@ -104,7 +104,7 @@ class Account extends Component {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps() {
   return {};
 }
 function mapStateToProps(state) {
