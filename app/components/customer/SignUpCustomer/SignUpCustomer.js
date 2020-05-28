@@ -81,7 +81,8 @@ class SignUpCustomer extends Component {
   };
 
   render() {
-    const { firstname, lastname, email, password } = this.state;
+    const { customer, password } = this.state;
+    const { firstname, lastname, email } = customer;
     const {
       isOpenSignUpCustomer,
       toggleModalSignUpCustomer,
@@ -126,22 +127,22 @@ class SignUpCustomer extends Component {
                     </div>
                   </div>
                   <div className="form-group">
-                    <label htmlFor="inputEmail4">Email</label>
+                    <label htmlFor="labelInputEmail">Email</label>
                     <input
                       type="email"
                       className="form-control"
-                      id="inputEmail4"
+                      id="labelInputEmail"
                       value={email}
                       onChange={this.onChangeEmail}
                       required
                     />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="inputEmail4">Password</label>
+                    <label htmlFor="labelInputPassword">Password</label>
                     <input
                       type="password"
                       className="form-control"
-                      id="inputEmail4"
+                      id="inputPassword"
                       value={password}
                       onChange={this.onChangePassword}
                       required

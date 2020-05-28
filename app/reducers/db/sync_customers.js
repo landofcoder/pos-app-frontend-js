@@ -3,11 +3,12 @@ import db from './db';
 const table = 'sync_customers';
 
 export async function signUpCustomerDb(customers) {
-  const id = Date.now();
+  const dateNow = Date.now();
   const { payload } = customers;
-  payload.customer.id = id;
+  payload.customer.id = dateNow;
   const data = {
-    id,
+    id: dateNow,
+    created_at: dateNow,
     email: payload.customer.email,
     first_name: payload.customer.firstname,
     synced: false,
@@ -56,7 +57,7 @@ export async function deleteCustomerById(id) {
  */
 export async function updateCustomerById(customer) {
   // eslint-disable-next-line no-param-reassign
-  customer.udpate_at = Date.now();
+  customer.update_at = Date.now();
   const tbl = db.table(table);
   try {
     await tbl.update(customer.id, customer);
@@ -76,10 +77,10 @@ export async function replaceCustomerById(customer, newCustomerId) {
   const customerCopy = customer;
   if (newCustomerId) {
     customerCopy.payload.customer.id = newCustomerId;
+    customerCopy.update_at = Date.now();
   }
   const tbl = db.table(table);
   try {
-    console.log('param to update', customerCopy);
     await tbl.update(id, customerCopy);
     return true;
   } catch (e) {

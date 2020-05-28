@@ -42,6 +42,14 @@ class DetailOrderOffline extends Component {
       isLoadingOrderHistoryDetail,
       orderHistoryDetail
     } = this.props;
+    let customer;
+    if (orderHistoryDetail.items.cartCurrentResult.isGuestCustomer) {
+      customer =
+        orderHistoryDetail.items.orderPreparingCheckoutResult.shipping_address;
+    } else {
+      // eslint-disable-next-line prefer-destructuring
+      customer = orderHistoryDetail.items.cartCurrentResult.customer;
+    }
     return (
       <>
         <div className={`${StylesOrder.toogleBodyContent}`}>
@@ -92,16 +100,7 @@ class DetailOrderOffline extends Component {
                               <div className="d-flex justify-content-between pr-1">
                                 <span>Customer: </span>
                                 <span>
-                                  {
-                                    orderHistoryDetail.items
-                                      .orderPreparingCheckoutResult
-                                      .shipping_address.firstname
-                                  }{' '}
-                                  {
-                                    orderHistoryDetail.items
-                                      .orderPreparingCheckoutResult
-                                      .shipping_address.lastname
-                                  }
+                                  {customer.firstname} {customer.lastname}
                                 </span>
                               </div>
                             </div>
@@ -274,26 +273,12 @@ class DetailOrderOffline extends Component {
                           <div className="d-flex justify-content-between pr-1">
                             <span>Full name</span>
                             <span>
-                              {
-                                orderHistoryDetail.items
-                                  .orderPreparingCheckoutResult.shipping_address
-                                  .firstname
-                              }{' '}
-                              {
-                                orderHistoryDetail.items
-                                  .orderPreparingCheckoutResult.shipping_address
-                                  .lastname
-                              }
+                              {customer.firstname} {customer.lastname}
                             </span>
                           </div>
                           <div className="d-flex justify-content-between pr-1">
                             <span>Email</span>
-                            <span>
-                              {
-                                orderHistoryDetail.items
-                                  .orderPreparingCheckoutResult.email
-                              }
-                            </span>
+                            <span>{customer.email}</span>
                           </div>
                           <div className="d-flex justify-content-between pr-1">
                             <span>Telephone</span>
