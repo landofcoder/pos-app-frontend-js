@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import ShowMessagesSync from './SyncManager/ShowMessages/ShowMessages';
+import DetailDataSync from './SyncManager/DetailDataSync/DetailDataSync';
 import OrderHistory from './OrderHistory/OrderHistory';
 import CashierInfo from './CashierInfo/CashierInfo';
 import ConnectDevices from './ConnectDevices/ConnectDevices';
@@ -10,7 +10,6 @@ import { POS } from '../../constants/routes.json';
 
 class Account extends Component {
   props: Props;
-
   constructor(props) {
     super(props);
     this.state = {
@@ -47,7 +46,7 @@ class Account extends Component {
     const { viewSelected } = this.state;
     return (
       <>
-        <ShowMessagesSync />
+        <DetailDataSync />
         <div>
           <div className="row pt-4">
             <div className="col-3">
