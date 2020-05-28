@@ -33,8 +33,8 @@ import { syncDataClient } from '../../../actions/homeAction';
 
 type Props = {
   isLoading: boolean,
-  orderHistory: array,
   syncDataManager: array,
+  getDataServiceWithType: payload => void,
   isOpenDetailOrder: boolean,
   isOpenDetailOrderOffline: boolean,
   isOpenAddNote: boolean,
@@ -147,6 +147,89 @@ class OrderHistory extends Component<Props> {
       return <span className="badge badge-danger badge-pill">error</span>;
     }
     return <span className="badge badge-success badge-pill">success</span>;
+  };
+
+  goDataPage = payloadStepAt => {
+    const { getDataServiceWithType, syncDataManager } = this.props;
+    getDataServiceWithType({
+      id: syncDataManager.id,
+      step: syncDataManager.step,
+      stepAt: payloadStepAt
+    });
+  };
+
+  showPaginate = () => {
+    const { syncDataManager } = this.props;
+    const { stepAt, id } = syncDataManager;
+    let listPage = [];
+    // dang ky hien thi dang so trang
+    switch (id) {
+      case SYNC_ORDER_LIST:
+        break;
+      default:
+        return;
+    }
+    if (syncDataManager.data.length < syncDataManager.step && +stepAt === 0) {
+      return null;
+    }
+
+    // condition for first page
+    if (+stepAt === 0) {
+      listPage = [+stepAt, +stepAt + 1, +stepAt + 2];
+    } else {
+      listPage = [+stepAt - 1, +stepAt, +stepAt + 1];
+    }
+    if (syncDataManager.data.length < syncDataManager.step) {
+      listPage = listPage.filter(item => {
+        return item <= stepAt;
+      });
+    }
+    return (
+      <nav aria-label="...">
+        <ul className="pagination" style={{ cursor: 'pointer' }}>
+          <li className={`page-item ${+stepAt === 0 ? 'disabled' : null}`}>
+            <a
+              className="page-link"
+              role="presentation"
+              onClick={() => this.goDataPage(+stepAt - 1)}
+            >
+              Previous
+            </a>
+          </li>
+          {listPage.map((item, index) => {
+            return (
+              <li
+                className={`page-item ${+stepAt === item ? 'active' : null}`}
+                key={index}
+              >
+                <a
+                  className="page-link"
+                  role="presentation"
+                  onClick={() => this.goDataPage(item)}
+                >
+                  {item + 1}
+                </a>
+              </li>
+            );
+          })}
+          <li
+            className={`page-item ${
+              syncDataManager.data.length < syncDataManager.step
+                ? 'disabled'
+                : null
+            }`}
+          >
+            <a
+              className="page-link"
+              role="presentation"
+              onClick={() => this.goDataPage(+stepAt + 1)}
+            >
+              Next
+            </a>
+          </li>
+        </ul>
+      </nav>
+    );
   };
 
   actionDetailOrder = () => {
@@ -272,12 +355,10 @@ class OrderHistory extends Component<Props> {
 
   render() {
     const {
-      orderHistory,
       syncDataManager,
       isOpenDetailOrderOffline,
       isOpenDetailOrder,
-      isLoading,
-      isLoadingSyncAllOrder
+      isLoading
     } = this.props;
 
     let orderHistoryDb = [];
@@ -298,69 +379,28 @@ class OrderHistory extends Component<Props> {
                 <th scope="col">Last time sync</th>
                 <th scope="col">Orders status</th>
                 <th scope="col">Sync status</th>
-                {/*<th scope="col">Action</th>*/}
               </tr>
             </thead>
             <tbody>
-              {/*order db*/}
-              {orderHistoryDb.map((item, index) => {
-                if (item.local) {
-                  return (
-                    <tr
-                      key={index}
-                      style={{ cursor: 'pointer' }}
-                      onClick={() =>
-                        item.local
-                          ? this.getOrderHistoryDetailOffline(item)
-                          : this.getOrderHistoryDetail(item.sales_order_id)
-                      }
-                    >
-                      <th scope="row">{index + 1}</th>
-                      <td>--</td>
-                      <td>{formatCurrencyCode(item.grand_total)}</td>
-                      <td>{new Date(item.created_at).toDateString()}</td>
-                      <td>{this.renderLastTime(item)}</td>
-                      <td>{item.status ? item.status : '--'}</td>
-                      <td>{this.renderStatusSync(item)}</td>
-                    </tr>
-                  );
-                }
-              })}
-              {/*order service api*/}
-              {orderHistory.map((item, index) => {
-                if (item.local) {
-                  return (
-                    <tr
-                      key={index}
-                      style={{ cursor: 'pointer' }}
-                      onClick={() =>
-                        item.local
-                          ? this.getOrderHistoryDetailOffline(item)
-                          : this.getOrderHistoryDetail(item.sales_order_id)
-                      }
-                    >
-                      <th scope="row">{index + 1}</th>
-                      <td>--</td>
-                      <td>{formatCurrencyCode(item.grand_total)}</td>
-                      <td>{this.renderLastTime(item)}</td>
-                      <td>{item.status ? item.status : '--'}</td>
-                      <td>{this.renderStatusSync(item)}</td>
-                      <td>
-                        <button
-                          type="button"
-                          className="btn btn-outline-secondary btn-sm"
-                          onClick={e => {
-                            e.stopPropagation();
-                            this.syncDataClientAction(SYNC_ORDER_LIST, item.id);
-                          }}
-                        >
-                          Sync now
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                }
-              })}
+              {orderHistoryDb.map((item, index) => (
+                <tr
+                  key={index}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() =>
+                    item.local
+                      ? this.getOrderHistoryDetailOffline(item)
+                      : this.getOrderHistoryDetail(item.sales_order_id)
+                  }
+                >
+                  <th scope="row">{index + 1}</th>
+                  <td>--</td>
+                  <td>{formatCurrencyCode(item.grand_total)}</td>
+                  <td>{new Date(item.created_at).toDateString()}</td>
+                  <td>{this.renderLastTime(item)}</td>
+                  <td>{item.status ? item.status : '--'}</td>
+                  <td>{this.renderStatusSync(item)}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
 
@@ -439,6 +479,7 @@ class OrderHistory extends Component<Props> {
             {/* </div> */}
           </div>
         </div>
+        {this.showPaginate()}
       </>
     );
   }
@@ -470,10 +511,10 @@ function mapDispatchToProps(dispatch) {
     toggleModalAddNote: payload => dispatch(toggleModalAddNote(payload)),
     syncDataClient: payload => dispatch(syncDataClient(payload)),
     closeToggleModalOrderDetail: () => dispatch(closeToggleModalOrderDetail()),
-    getAllOrdersDb: payload => dispatch(getDataServiceWithType(payload))
+    getAllOrdersDb: payload => dispatch(getDataServiceWithType(payload)),
+    getDataServiceWithType: payload => dispatch(getDataServiceWithType(payload))
   };
 }
-
 export default withRouter(
   connect(
     mapStateToProps,
