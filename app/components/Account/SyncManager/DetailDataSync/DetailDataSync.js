@@ -23,7 +23,7 @@ type Props = {
   statusData: object,
   getDataServiceWithType: payload => void
 };
-class ShowMessages extends Component {
+class DetailDataSync extends Component {
   props: Props;
 
   constructor(props) {
@@ -82,9 +82,10 @@ class ShowMessages extends Component {
     }
     if (!syncDataAllProduct.length && !statusData.errors) {
       return (
-        <div className="text-success" role="alert">
-          <i className="far fa-check-circle" /> &nbsp;
-          <span>All Product synced success</span>
+        <div className="col">
+          <div className="alert text-muted text-center" role="alert">
+            Have no record found.
+          </div>
         </div>
       );
     }
@@ -108,7 +109,7 @@ class ShowMessages extends Component {
     return (
       <>
         {message ? (
-          <div className="alert text-danger" role="alert">
+          <div className="alert text-muted text-danger" role="alert">
             <i
               className="fas fa-exclamation-circle"
               style={{ color: '#666' }}
@@ -226,9 +227,10 @@ class ShowMessages extends Component {
     }
     if (!syncDataCustomProduct.length && !statusData.errors) {
       return (
-        <div className="text-success" role="alert">
-          <i className="far fa-check-circle" /> &nbsp;
-          <span>All Custom Product synced success</span>
+        <div className="col">
+          <div className="alert text-muted text-center" role="alert">
+            Have no record found.
+          </div>
         </div>
       );
     }
@@ -252,7 +254,7 @@ class ShowMessages extends Component {
     return (
       <>
         {message ? (
-          <div className="alert text-danger" role="alert">
+          <div className="alert text-muted text-danger" role="alert">
             <i
               className="fas fa-exclamation-circle"
               style={{ color: '#666' }}
@@ -293,9 +295,10 @@ class ShowMessages extends Component {
     }
     if (!syncDataCustomer.length && !statusData.errors) {
       return (
-        <div className="text-success" role="alert">
-          <i className="far fa-check-circle" /> &nbsp;
-          <span>All Customer synced success</span>
+        <div className="col">
+          <div className="alert text-muted text-center" role="alert">
+            Have no record found.
+          </div>
         </div>
       );
     }
@@ -318,7 +321,7 @@ class ShowMessages extends Component {
     return (
       <>
         {message ? (
-          <div className="alert text-danger" role="alert">
+          <div className="alert text-muted text-danger" role="alert">
             <i
               className="fas fa-exclamation-circle"
               style={{ color: '#666' }}
@@ -355,7 +358,7 @@ class ShowMessages extends Component {
     if (statusData.errors) {
       message = statusData.message || 'Some reason sync all product error !!!';
       return (
-        <div className="alert text-danger" role="alert">
+        <div className="alert text-muted text-danger" role="alert">
           <i className="fas fa-exclamation-circle" style={{ color: '#666' }} />{' '}
           &nbsp;
           {message}
@@ -365,9 +368,10 @@ class ShowMessages extends Component {
 
     if (!syncDataConfig.length && !statusData.errors) {
       return (
-        <div className="text-success" role="alert">
-          <i className="far fa-check-circle" /> &nbsp;
-          <span>General config synced success</span>
+        <div className="col">
+          <div className="alert text-muted text-center" role="alert">
+            Have no record found.
+          </div>
         </div>
       );
     }
@@ -386,9 +390,10 @@ class ShowMessages extends Component {
     }
     if (!syncDataAllProduct.length && !statusData.errors) {
       return (
-        <div className="text-success" role="alert">
-          <i className="far fa-check-circle" /> &nbsp;
-          <span>All Order synced success</span>
+        <div className="col">
+          <div className="alert text-muted text-center" role="alert">
+            Have no record found.
+          </div>
         </div>
       );
     }
@@ -406,7 +411,7 @@ class ShowMessages extends Component {
     return (
       <>
         {message ? (
-          <div className="alert text-danger" role="alert">
+          <div className="alert text-muted text-danger" role="alert">
             <i
               className="fas fa-exclamation-circle"
               style={{ color: '#666' }}
@@ -518,4 +523,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ShowMessages);
+)(DetailDataSync);
