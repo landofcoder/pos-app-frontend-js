@@ -482,7 +482,11 @@ export default class Pos extends Component<Props, State> {
                       <></>
                     )}
                   </div>
-                  <div className="col-md-5" />
+                  <div className="col-md-5 text-right">
+                    <span className="badge badge-warning">
+                      30 days trial left
+                    </span>
+                  </div>
                 </div>
                 {/* Header action end */}
 
