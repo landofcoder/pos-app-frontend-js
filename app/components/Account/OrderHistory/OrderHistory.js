@@ -67,12 +67,11 @@ class OrderHistory extends Component<Props> {
   componentDidMount(): void {
     const { getAllOrdersDb } = this.props;
     const { step, stepAt } = this.state;
-    getAllOrdersDb({ id: SYNC_ORDER_LIST, step, stepAt });
-    const getSyncOrderErrorId = setInterval(
+    const getAllSyncOrderErrorId = setInterval(
       getAllOrdersDb({ id: SYNC_ORDER_LIST, step, stepAt }),
       10000
     );
-    this.setState({ intervalGetDataErrorId: getSyncOrderErrorId });
+    this.setState({ intervalGetDataErrorId: getAllSyncOrderErrorId });
   }
 
   componentWillUnmount(): void {
