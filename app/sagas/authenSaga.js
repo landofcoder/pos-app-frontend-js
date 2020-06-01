@@ -1,13 +1,16 @@
-import { takeEvery, call, put } from 'redux-saga/effects';
+import { takeEvery, call, put, select } from 'redux-saga/effects';
 import * as types from '../constants/authen';
 import { LOGIN_FORM } from '../constants/main-panel-types.json';
 import {
   deleteLoggedDb,
   getAppInfoService,
   writeAppInfoToLocal,
-  writeLastTimeLogoutToLocal
+  writeLastTimeLogoutToLocal,
+  getGwAppLicense
 } from './services/login-service';
 import { setAppInfoToGlobal } from '../common/settings';
+
+const appInfo = state => state.authenRd.appInfo;
 
 function* logoutAction() {
   // Update view to login_form
@@ -50,9 +53,16 @@ function* getAppByTokenSg(payloadParams) {
   yield put({ type: types.STOP_LOADING_GET_APP_INFO });
 }
 
+function* validateLicenseSg() {
+  const appInfoResult = yield select(appInfo);
+  const gwAppInfo = yield call(getGwAppLicense, appInfoResult);
+  yield put({ type: types.RECEIVED_APP_LICENSE, payload: gwAppInfo });
+}
+
 function* authenSaga() {
   yield takeEvery(types.LOGOUT_ACTION, logoutAction);
   yield takeEvery(types.GET_APP_BY_TOKEN, getAppByTokenSg);
+  yield takeEvery(types.VALIDATE_LICENSE, validateLicenseSg);
 }
 
 export default authenSaga;

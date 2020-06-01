@@ -26,6 +26,7 @@ import Custom from './product-types/Custom';
 import routes from '../constants/routes';
 import Menu from './commons/menu';
 import Plus from './commons/plus';
+import License from './License';
 
 type Props = {
   productList: Array<Object>,
@@ -483,9 +484,7 @@ export default class Pos extends Component<Props, State> {
                     )}
                   </div>
                   <div className="col-md-5 text-right">
-                    <span className="badge badge-warning">
-                      30 days trial left
-                    </span>
+                    <License />
                   </div>
                 </div>
                 {/* Header action end */}

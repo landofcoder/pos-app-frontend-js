@@ -1101,6 +1101,8 @@ function* loginAction(payload) {
   yield put({ type: typesAuthen.START_LOADING });
   const resultLogin = yield call(loginService, payload);
 
+  console.log('result login:', resultLogin);
+
   if (resultLogin && resultLogin.status) {
     const token = resultLogin.data;
     setTokenGlobal(token);

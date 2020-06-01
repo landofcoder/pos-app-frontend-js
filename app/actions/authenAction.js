@@ -25,3 +25,9 @@ export function getAppByToken(payload) {
     payload
   };
 }
+
+export function validateLicense() {
+  return {
+    type: types.VALIDATE_LICENSE
+  };
+}

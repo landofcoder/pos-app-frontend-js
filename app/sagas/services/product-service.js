@@ -297,8 +297,6 @@ export function* fetchingAndWriteProductBarCodeInventory() {
     false
   );
 
-  console.log('sync barcode:', productBarCode);
-
   // eslint-disable-next-line no-unused-vars,camelcase
   if (productBarCode) {
     // eslint-disable-next-line camelcase
