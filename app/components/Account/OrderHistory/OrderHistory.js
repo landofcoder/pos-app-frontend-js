@@ -381,25 +381,43 @@ class OrderHistory extends Component<Props> {
               </tr>
             </thead>
             <tbody>
-              {orderHistoryDb.map((item, index) => (
-                <tr
-                  key={index}
-                  style={{ cursor: 'pointer' }}
-                  onClick={() =>
-                    item.local
-                      ? this.getOrderHistoryDetailOffline(item)
-                      : this.getOrderHistoryDetail(item.sales_order_id)
-                  }
-                >
-                  <th scope="row">{index + 1}</th>
-                  <td>--</td>
-                  <td>{formatCurrencyCode(item.grand_total)}</td>
-                  <td>{new Date(item.created_at).toDateString()}</td>
-                  <td>{this.renderLastTime(item)}</td>
-                  <td>{item.status ? item.status : '--'}</td>
-                  <td>{this.renderStatusSync(item)}</td>
-                </tr>
-              ))}
+              {orderHistoryDb.map((item, index) => {
+                const { syncData } = item.items;
+                let orderId;
+                let invoiceId;
+                if (syncData) {
+                  ({ orderId, invoiceId } = syncData);
+                }
+                return (
+                  <tr
+                    key={index}
+                    style={{ cursor: 'pointer' }}
+                    onClick={() =>
+                      item.local
+                        ? this.getOrderHistoryDetailOffline(item)
+                        : this.getOrderHistoryDetail(item.sales_order_id)
+                    }
+                  >
+                    <th scope="row">{index + 1}</th>
+                    <td>{orderId ? orderId : '--'}</td>
+                    <td>{formatCurrencyCode(item.grand_total)}</td>
+                    <td>{new Date(item.created_at).toDateString()}</td>
+                    <td>{this.renderLastTime(item)}</td>
+                    <td>
+                      {invoiceId ? (
+                        <span className="badge badge-success badge-pill">
+                          success
+                        </span>
+                      ) : (
+                        <span className="badge badge-pill badge-secondary">
+                          pending
+                        </span>
+                      )}
+                    </td>
+                    <td>{this.renderStatusSync(item)}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
           {isLoading ? (

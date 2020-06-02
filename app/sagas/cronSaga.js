@@ -345,6 +345,14 @@ function* syncOrder(orderId, syncAllNow) {
           data: result.data || result.errors || result
         };
       } else {
+        const syncData = {
+          cartId: result.data.cartId,
+          orderId: result.data.orderId,
+          invoiceId: result.data.invoiceId,
+          shipmentId: result.data.shipmentId
+        };
+        order.items.cartCurrentResult.cartId = result.data.cartId;
+        order.items.syncData = syncData;
         order.status = true;
         order.synced = true;
         order.message = '';

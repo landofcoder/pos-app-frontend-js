@@ -50,6 +50,12 @@ class DetailOrderOffline extends Component {
       // eslint-disable-next-line prefer-destructuring
       customer = orderHistoryDetail.items.cartCurrentResult.customer;
     }
+    const { syncData } = orderHistoryDetail.items;
+    let orderId;
+    let invoiceId;
+    if (syncData) {
+      ({ orderId, invoiceId } = syncData);
+    }
     return (
       <>
         <div className={`${StylesOrder.toogleBodyContent}`}>
@@ -95,7 +101,8 @@ class DetailOrderOffline extends Component {
                                 </span>
                               </div>
                               <div className="d-flex justify-content-between pr-1">
-                                <span>Location: </span>
+                                <span>Order ID: </span>
+                                <span>{orderId ? orderId : '--'}</span>
                               </div>
                               <div className="d-flex justify-content-between pr-1">
                                 <span>Customer: </span>
@@ -199,8 +206,11 @@ class DetailOrderOffline extends Component {
                           </div>
                           <div className="d-flex justify-content-between pr-1">
                             <span>Status</span>
-                            <span>not synced</span>
-                            {}
+                            {invoiceId ? (
+                              <span>Success</span>
+                            ) : (
+                              <span>Pendding</span>
+                            )}
                           </div>
                         </div>
                       </div>
