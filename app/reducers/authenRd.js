@@ -11,7 +11,7 @@ const initialState = {
   appInfo: {},
   moduleInstalled: {},
   appLicense: {
-    isLocked: false,
+    lock: false,
     plan: 'TRIAL',
     daysLeft: 0,
     data: {}

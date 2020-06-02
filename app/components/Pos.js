@@ -31,6 +31,7 @@ import License from './License';
 type Props = {
   productList: Array<Object>,
   addToCart: (payload: Object) => void,
+  appLicense: Object,
   holdAction: () => void,
   searchProductAction: (payload: string) => void,
   updateIsShowCardPaymentModel: (payload: string) => void,
@@ -328,14 +329,18 @@ export default class Pos extends Component<Props, State> {
       defaultColor,
       startCashCheckoutAction,
       isOpenCategoriesModel,
-      toggleModelCategories
+      toggleModelCategories,
+      appLicense
     } = this.props;
     const { mainWrapProductPanel } = this.state;
     // Check Redirect To Layout Account
-
     const classWrapProductPanel = `pr-3 ${Styles.wrapProductPanel}`;
-    // Enable checkout button or disable
-    const disableCheckout = cartCurrent.data.length <= 0;
+    // Disable checkout when have no cart current or expired the trial
+    const { lock } = appLicense;
+    let disableCheckout = true;
+    if (!lock && cartCurrent.data.length > 0) {
+      disableCheckout = false;
+    }
     const { isShowingProductOption } = productOption;
 
     return (
@@ -608,6 +613,20 @@ export default class Pos extends Component<Props, State> {
               {isOpenSignUpCustomer ? <SignUpCustomer /> : null}
             </div>
             <div className="col-md-3 pl-0 pr-0">
+              {lock ? (
+                <div
+                  style={{ opacity: 1 }}
+                  className="tooltip bs-tooltip-top"
+                  role="tooltip"
+                >
+                  <div className="arrow"></div>
+                  <div className="tooltip-inner">
+                    Please upgrade to use this feature
+                  </div>
+                </div>
+              ) : (
+                <></>
+              )}
               <button
                 type="button"
                 disabled={disableCheckout}
@@ -618,6 +637,20 @@ export default class Pos extends Component<Props, State> {
               </button>
             </div>
             <div className="col-md-2 pl-1 pr-0">
+              {lock ? (
+                <div
+                  style={{ opacity: 1 }}
+                  className="tooltip bs-tooltip-top"
+                  role="tooltip"
+                >
+                  <div className="arrow"></div>
+                  <div className="tooltip-inner">
+                    Please upgrade to use this feature
+                  </div>
+                </div>
+              ) : (
+                <></>
+              )}
               <button
                 type="button"
                 disabled={disableCheckout}

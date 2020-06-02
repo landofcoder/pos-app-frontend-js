@@ -7,6 +7,7 @@ import * as homeActions from '../actions/homeAction';
 function mapStateToProps(state) {
   return {
     appInfo: state.authenRd.appInfo,
+    appLicense: state.authenRd.appLicense,
     productList: state.mainRd.productList,
     cartCurrent: state.mainRd.cartCurrent,
     mainPanelType: state.mainRd.mainPanelType,
