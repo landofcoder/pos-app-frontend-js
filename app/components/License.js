@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { differenceInDays, addDays } from 'date-fns';
 import { validateLicense } from '../actions/authenAction';
 import { startLoop, stopLoop } from '../common/settings';
 
@@ -22,27 +21,35 @@ class License extends Component {
     stopLoop(frameId);
   }
 
+  openLandOfCodePage = () => {
+    // eslint-disable-next-line global-require
+    const { shell } = require('electron');
+    shell.openExternal('https://pos.landofcoder.com/');
+  };
+
   render() {
     const { appLicense } = this.props;
-    const dateCreated = appLicense.data.created_at;
-    const { plan } = appLicense.data;
-    let isTrial = false;
-    let days = 0;
-    // If have no plan field or plan equal true value
-    if (!plan || plan === 'TRIAL') {
-      // Cal time left
-      isTrial = true;
-      const dayEndTrial = addDays(new Date(dateCreated), 30);
-      days = differenceInDays(dayEndTrial, new Date());
-      if (days > 30) {
-        // Lock checkout function
-        console.log('lock checkout function');
-      }
-    }
+    const { daysLeft, plan } = appLicense;
     return (
       <>
-        {isTrial && Number.isInteger(days) ? (
-          <span className="badge badge-warning">{days} days trial left</span>
+        {daysLeft && daysLeft >= 0 && plan === 'TRIAL' ? (
+          <span className="badge badge-warning">
+            {daysLeft} days trial left
+          </span>
+        ) : (
+          <></>
+        )}
+        {daysLeft && daysLeft < 0 && plan === 'TRIAL' ? (
+          <span className="badge badge-warning">
+            You have expired the trial, please{' '}
+            <a
+              className="text-primary"
+              href="#"
+              onClick={this.openLandOfCodePage}
+            >
+              Upgrade plan
+            </a>
+          </span>
         ) : (
           <></>
         )}
