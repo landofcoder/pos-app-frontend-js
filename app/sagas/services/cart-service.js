@@ -13,10 +13,6 @@ export async function getDiscountForQuoteService(payload) {
   let data;
   const { cart, discountCode, listGiftCard, customerId } = payload;
   try {
-    const timeout = setTimeout(function() {
-      didTimeOut = true;
-      reject(new Error('Request timed out'));
-  }, FETCH_TIMEOUT);
     const response = await fetch(
       `${apiGatewayPath}/cashier/customer-checkout/get-discount-quote`,
       {
