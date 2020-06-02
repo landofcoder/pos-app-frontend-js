@@ -26,6 +26,7 @@ import Custom from './product-types/Custom';
 import routes from '../constants/routes';
 import Menu from './commons/menu';
 import Plus from './commons/plus';
+import Stock from './commons/stock';
 import License from './License';
 
 type Props = {
@@ -243,10 +244,18 @@ export default class Pos extends Component<Props, State> {
             key={item.id}
           >
             <div className={`card ${Styles.itemCart}`}>
-              <div className="card-body">
+              <div
+                className="card-body"
+                style={{ paddingTop: '5px', paddingBottom: '5px' }}
+              >
+                <div className={`${Styles.wrapStock}`}>
+                  <div className={`${Styles.stockIcon}`}>
+                    <Stock />
+                  </div>
+                </div>
                 <a
                   role="presentation"
-                  className={CommonStyle.pointer}
+                  className={Styles.wrapImageBlock}
                   onClick={() => this.preAddToCart(item)}
                 >
                   <div className={Styles.wrapProductImage}>

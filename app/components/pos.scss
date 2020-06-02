@@ -90,6 +90,37 @@
 .wrapProductItem {
   .itemCart {
     width: 100%;
+
+    .wrapStock {
+      display: block;
+      text-align: right;
+
+      svg {
+        font-size: 16px;
+        width: 16px;
+        color: #999
+      }
+
+      &:hover {
+        svg {
+          color: $blueMainColor;
+        }
+      }
+
+      .stockIcon {
+        display: inline-block;
+        padding: 5px;
+        cursor: pointer;
+      }
+    }
+
+    a.wrapImageBlock {
+      cursor: pointer;
+
+      &:hover {
+        color: $blueMainColor;
+      }
+    }
   }
 
   .wrapProductImage {

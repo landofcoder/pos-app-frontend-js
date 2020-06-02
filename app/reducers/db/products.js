@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import db from './db';
 import { defaultPageSize } from '../../common/settings';
+import { injectInventory } from './inventory_index';
 
 const table = 'products';
 
@@ -177,7 +178,8 @@ export async function getProductsByCategoryLocal({ categoryId, currentPage }) {
     console.log('error:', e);
     data = [];
   }
-  return data;
+  const dataWithInventory = await injectInventory(data);
+  return dataWithInventory;
 }
 
 export async function getProductsByProductIdLocal(productId) {
