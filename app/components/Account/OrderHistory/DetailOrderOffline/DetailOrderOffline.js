@@ -5,6 +5,7 @@ import Styles from '../DetailOrder/detail-order.scss';
 import StylesOrder from '../order-history.scss';
 import { formatCurrencyCode } from '../../../../common/settings';
 import { actionLoadingOrderDetailOffline } from '../../../../actions/accountAction';
+
 type Props = {
   orderHistoryDetail: {},
   // order_id_history: number,

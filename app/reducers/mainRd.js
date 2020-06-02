@@ -422,14 +422,8 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.UPDATE_IS_SHOW_HAVE_NO_SEARCH_RESULT_FOUND:
         draft.isShowHaveNoSearchResultFound = action.payload;
         break;
-      case types.TURN_ON_LOADING_ORDER_HISTORY:
-        draft.isLoadingOrderHistory = true;
-        break;
-      case types.TURN_OFF_LOADING_ORDER_HISTORY_DETAIL:
-        draft.isLoadingOrderHistoryDetail = false;
-        break;
-      case types.TURN_ON_LOADING_ORDER_HISTORY_DETAIL:
-        draft.isLoadingOrderHistoryDetail = true;
+      case types.LOADING_ORDER_HISTORY_DETAIL:
+        draft.isLoadingOrderHistoryDetail = action.payload;
         break;
       case types.LOADING_ORDER_HISTORY_DETAIL_OFFLINE:
         draft.isLoadingOrderHistoryDetailOffline = action.payload;
@@ -454,8 +448,8 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.TOGGLE_MODAL_CALCULATOR:
         draft.isOpenCalculator = action.payload;
         break;
-      case types.TURN_OFF_LOADING_ORDER_HISTORY:
-        draft.isLoadingOrderHistory = false;
+      case types.LOADING_ORDER_HISTORY:
+        draft.isLoadingOrderHistory = action.payload;
         break;
       case types.RECEIVED_ORDER_HISTORY_ACTION:
         draft.orderHistory = action.payload;
