@@ -24,7 +24,8 @@ const initialState = {
   setup: {
     stateFetchingConfig: 0, // 0 = loading, 1 = succeed
     stateSynchronizingCategoriesAndProducts: 0, // 0 = loading, 1 = succeed
-    stateSyncProductBarCodeInventory: 0
+    stateSyncProductBarCodeInventory: 0,
+    stateSyncProductInventory: 0
   },
   currentPosCommand: {
     query: {
@@ -211,6 +212,9 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.SETUP_UPDATE_STATE_SYNC_PRODUCT_BAR_CODE_INVENTORY:
         draft.setup.stateSyncProductBarCodeInventory = action.payload;
+        break;
+      case types.SETUP_UPDATE_STATE_SYNC_PRODUCT_INVENTORY:
+        draft.setup.stateSyncProductInventory = action.payload;
         break;
       case types.UPDATE_IS_SHOW_CARD_PAYMENT_MODAL:
         draft.checkout.isShowCardPaymentModal = action.payload;

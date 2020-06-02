@@ -1,4 +1,4 @@
-import { all, call } from 'redux-saga/effects';
+import { call } from 'redux-saga/effects';
 import {
   counterProduct,
   getProductsByCategoryLocal,
@@ -12,6 +12,7 @@ import {
   syncBarCodeIndexToLocal,
   getProductByBarcode
 } from '../../reducers/db/barcode_index';
+import { syncProductInventoryToLocal } from '../../reducers/db/inventory_index';
 import { defaultPageSize } from '../../common/settings';
 import {
   QUERY_GET_PRODUCT_BY_CATEGORY,
@@ -306,15 +307,11 @@ export function* fetchingAndWriteProductBarCodeInventory() {
     // Init page array
     const arrayPageListPaging = new Array(total_page).fill(0);
 
-    console.log('total page:', total_page);
-
     // eslint-disable-next-line camelcase
     if (total_page > 1) {
-      yield all(
-        arrayPageListPaging.map((item, index) =>
-          call(fetchingNextPageBarCodeInventory, { index: index + 1 })
-        )
-      );
+      for (let i = 0; i < arrayPageListPaging.length; i += 1) {
+        yield call(fetchingNextPageBarCodeInventory, { index: i + 1 });
+      }
     }
   }
 }
@@ -328,6 +325,46 @@ function* fetchingNextPageBarCodeInventory({ index }) {
     const { list } = productBarCode;
     // Sync product barcode inventory
     yield syncBarCodeIndexToLocal(list);
+  }
+}
+
+export function* fetchingAndWriteProductInventory() {
+  const currentPage = 1;
+  const numberOfPage = 100;
+  const productInventory = yield getProductInventoryByPage(
+    currentPage,
+    numberOfPage,
+    false
+  );
+
+  const inventoryItems = productInventory.items;
+  if (inventoryItems) {
+    // Sync product inventory to local
+    yield syncProductInventoryToLocal(inventoryItems);
+
+    // Init page array
+    const totalPage = Math.ceil(productInventory.total_count / numberOfPage);
+    const arrayByPageNumber = new Array(totalPage).fill(0);
+    if (totalPage > 1) {
+      // Sync all pages left
+      for (let i = 0; i < arrayByPageNumber.length; i += 1) {
+        yield call(fetchingNextPageProductInventory, { index: i + 1 });
+      }
+    }
+  }
+}
+
+function* fetchingNextPageProductInventory({ index }) {
+  const numberOfPage = 100;
+  const productInventory = yield getProductInventoryByPage(
+    index + 1,
+    numberOfPage,
+    true
+  );
+  if (productInventory) {
+    const { items } = productInventory;
+    // Sync product barcode inventory
+    yield syncProductInventoryToLocal(items);
   }
 }
 
@@ -366,6 +403,38 @@ export async function getProductBarCodeInventoryByPage(
       return data[0];
     }
     return null;
+  } catch (e) {
+    return null;
+  }
+}
+
+export async function getProductInventoryByPage(
+  currentPage,
+  numberOfPage,
+  skipFirstPage = false
+) {
+  if (skipFirstPage && currentPage === 1) {
+    return;
+  }
+  let response = {};
+  try {
+    response = await fetch(
+      `${apiGatewayPath}/product/sync-inventory/${numberOfPage}/${currentPage}`,
+      {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+          url: window.mainUrl,
+          platform: window.platform,
+          token: window.liveToken
+        },
+        redirect: 'follow',
+        referrer: 'no-referrer'
+      }
+    );
+    return await response.json();
   } catch (e) {
     return null;
   }
