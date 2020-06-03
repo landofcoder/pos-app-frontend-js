@@ -347,7 +347,6 @@ export default class Pos extends Component<Props, State> {
       disableCheckout = false;
     }
     const { isShowingProductOption } = productOption;
-
     return (
       <>
         <div
@@ -383,15 +382,7 @@ export default class Pos extends Component<Props, State> {
           {isShowCashPaymentModel ? <CashPanel /> : <></>}
           {/* PAYMENT MODAL */}
 
-          <div
-            className={ModalStyle.modal}
-            id="payModal"
-            style={{ display: isShowCardPaymentModal ? 'block' : 'none' }}
-          >
-            <div className={ModalStyle.modalContentLg}>
-              {isShowCardPaymentModal ? <CardPayment /> : <></>}
-            </div>
-          </div>
+          {isShowCardPaymentModal ? <CardPayment /> : <></>}
 
           {/* RECEIPT MODAL */}
           <div
