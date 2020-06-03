@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Styles from '../../pos.scss';
+import Styles from './stock-display.scss';
 import Stock from '../stock';
 import { getProductByCategory } from '../../../actions/homeAction';
 import ModalStyle from '../../styles/modal.scss';
+import Close from '../x';
 
 class StockDisplay extends Component {
   props: Props;
@@ -26,13 +27,17 @@ class StockDisplay extends Component {
     }
   };
 
+  closeModel = () => {
+    this.setState({ stockDetailOpen: false });
+  };
+
   showStockDetail = () => {
     this.setState({ stockDetailOpen: true });
   };
 
   getInventoryByOutletWareHouse(stock) {
     const { detailOutlet } = this.props;
-    const listStock = stock.stock ? stock.stock : [];
+    const listStock = stock && stock.stock ? stock.stock : [];
     const outletSource = detailOutlet.select_source;
     for (let i = 0; i < listStock.length; i += 1) {
       const stockItem = JSON.parse(listStock[i]);
@@ -45,8 +50,9 @@ class StockDisplay extends Component {
   }
 
   render() {
-    const { stockItem } = this.props;
-    const stockList = stockItem.stock ? stockItem.stock : [];
+    const { stockItem, detailOutlet } = this.props;
+    const outletSource = detailOutlet.select_source;
+    const stockList = stockItem && stockItem.stock ? stockItem.stock : [];
     const { stockDetailOpen } = this.state;
     return (
       <>
@@ -56,13 +62,17 @@ class StockDisplay extends Component {
           style={{ display: stockDetailOpen ? 'block' : 'none' }}
         >
           <div className={ModalStyle.modalContent}>
-            <div className={ModalStyle.close}>
-              Close
+            <div
+              className={ModalStyle.close}
+              role="presentation"
+              onClick={this.closeModel}
+            >
+              <Close />
             </div>
             <div className="card">
               <div className="card-body">
                 <h5 className="card-title">Stock inventory</h5>
-                <ul className="list-group">
+                <ul className={`list-group ${Styles.wrapItems}`}>
                   {stockList.map((item, index) => {
                     const itemAssign = JSON.parse(item);
                     return (
@@ -70,7 +80,18 @@ class StockDisplay extends Component {
                         key={index}
                         className="list-group-item d-flex justify-content-between align-items-center"
                       >
-                        {itemAssign.code}
+                        <span>
+                          <span>
+                            <Stock />
+                            &nbsp;
+                          </span>
+                          {itemAssign.code}
+                          {itemAssign.code === outletSource ? (
+                            <>(Current)</>
+                          ) : (
+                            <></>
+                          )}
+                        </span>
                         <span className="badge badge-primary badge-pill">
                           {itemAssign.total_qty
                             ? itemAssign.total_qty

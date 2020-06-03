@@ -17,6 +17,23 @@
 .modalContent {
   margin: auto;
   width: 400px;
+  position: relative;
+  .close {
+    color: #666;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    right: 10px;
+    z-index: 2;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+  }
 }
 
 .modalContentMd {
@@ -27,19 +44,4 @@
 .modalContentLg {
   margin: auto;
   width: 900px;
-}
-
-/* The Close Button */
-.close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-  color: #000;
-  text-decoration: none;
-  cursor: pointer;
 }

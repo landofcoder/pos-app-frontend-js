@@ -144,7 +144,8 @@ export async function searchProductsLocal(payload, currentPage = 1) {
       .offset(offset)
       .limit(defaultPageSize)
       .toArray();
-    return data;
+    const dataWithInventory = await injectInventory(data);
+    return dataWithInventory;
   } catch (e) {
     return [];
   }
@@ -200,7 +201,8 @@ export async function getProductsByProductIdLocal(productId) {
   } catch (e) {
     console.log('error:', e);
   }
-  return data;
+  const dataWithInventory = await injectInventory(data);
+  return dataWithInventory;
 }
 
 export async function getAllTblProductByPaginate(step, stepAt) {
@@ -210,5 +212,6 @@ export async function getAllTblProductByPaginate(step, stepAt) {
     .offset(stepAt * step)
     .limit(step)
     .toArray();
-  return data;
+  const dataWithInventory = await injectInventory(data);
+  return dataWithInventory;
 }
