@@ -7,6 +7,8 @@ import {
 } from '../../reducers/db/settings';
 import { apiGatewayPath } from '../../../configs/env/config.main';
 
+const appVersion = require('../../../package.json').version;
+
 const loggedInfoKey = 'logged_info';
 const mainUrlKey = 'main_url';
 const appInfoKey = 'app_info';
@@ -165,4 +167,21 @@ export async function getAppInfoService(payload) {
   } catch (e) {
     return { message: e.message || 'Unable to connect server' };
   }
+}
+
+export async function getGwAppLicense(appInfoResult) {
+  const { token } = appInfoResult;
+  const response = await fetch(
+    `${apiGatewayPath}/coreapi/check-license/${token}/${appVersion}`,
+    {
+      method: 'GET',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      redirect: 'follow',
+      referrer: 'no-referrer'
+    }
+  );
+  const data = await response.json();
+  return data;
 }

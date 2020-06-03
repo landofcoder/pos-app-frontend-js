@@ -10,6 +10,12 @@ const initialState = {
   loadingWorkPlace: false,
   appInfo: {},
   moduleInstalled: {},
+  appLicense: {
+    lock: false,
+    plan: 'TRIAL',
+    daysLeft: 0,
+    data: {}
+  },
   login: {
     loginResult: {
       data: '',
@@ -72,6 +78,9 @@ const authenRd = (state = initialState, action) =>
         break;
       case typesAuthen.LOADING_SYNC_ACTION:
         draft.loadingSyncManager[action.payload.type] = action.payload.status;
+        break;
+      case typesAuthen.RECEIVED_APP_LICENSE:
+        draft.appLicense = action.payload;
         break;
       default:
         break;

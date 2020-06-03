@@ -16,7 +16,8 @@ import {
   getProductByBarcodeFromScanner,
   searchProductService,
   writeProductsToLocal,
-  fetchingAndWriteProductBarCodeInventory
+  fetchingAndWriteProductBarCodeInventory,
+  fetchingAndWriteProductInventory
 } from './services/product-service';
 import {
   searchCustomer,
@@ -818,6 +819,15 @@ export function* writeProductBarCodeInventoryToLocal() {
   });
 }
 
+export function* syncProductInventoryToLocal() {
+  yield fetchingAndWriteProductInventory();
+  // Update done step 4
+  yield put({
+    type: types.SETUP_UPDATE_STATE_SYNC_PRODUCT_INVENTORY,
+    payload: 1
+  });
+}
+
 function* createCustomizeProduct(payload) {
   yield call(createProductDb, payload.payload);
   yield put({ type: types.ADD_TO_CART, payload: payload.payload });
@@ -1126,6 +1136,9 @@ function* loginAction(payload) {
 
       // Step 3: Sync product barcode to local
       yield writeProductBarCodeInventoryToLocal();
+
+      // Step 4: Sync product inventory to local
+      yield syncProductInventoryToLocal();
 
       // Get default data from local
       yield getDefaultDataFromLocal();

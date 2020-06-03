@@ -26,10 +26,13 @@ import Custom from './product-types/Custom';
 import routes from '../constants/routes';
 import Menu from './commons/menu';
 import Plus from './commons/plus';
+import License from './License';
+import StockDisplay from './commons/StockDisplay/StockDisplay';
 
 type Props = {
   productList: Array<Object>,
   addToCart: (payload: Object) => void,
+  appLicense: Object,
   holdAction: () => void,
   searchProductAction: (payload: string) => void,
   updateIsShowCardPaymentModel: (payload: string) => void,
@@ -241,10 +244,14 @@ export default class Pos extends Component<Props, State> {
             key={item.id}
           >
             <div className={`card ${Styles.itemCart}`}>
-              <div className="card-body">
+              <div
+                className="card-body"
+                style={{ paddingTop: '5px', paddingBottom: '5px' }}
+              >
+                <StockDisplay stockItem={item.stock} />
                 <a
                   role="presentation"
-                  className={CommonStyle.pointer}
+                  className={Styles.wrapImageBlock}
                   onClick={() => this.preAddToCart(item)}
                 >
                   <div className={Styles.wrapProductImage}>
@@ -327,14 +334,18 @@ export default class Pos extends Component<Props, State> {
       defaultColor,
       startCashCheckoutAction,
       isOpenCategoriesModel,
-      toggleModelCategories
+      toggleModelCategories,
+      appLicense
     } = this.props;
     const { mainWrapProductPanel } = this.state;
     // Check Redirect To Layout Account
-
     const classWrapProductPanel = `pr-3 ${Styles.wrapProductPanel}`;
-    // Enable checkout button or disable
-    const disableCheckout = cartCurrent.data.length <= 0;
+    // Disable checkout when have no cart current or expired the trial
+    const { lock } = appLicense;
+    let disableCheckout = true;
+    if (!lock && cartCurrent.data.length > 0) {
+      disableCheckout = false;
+    }
     const { isShowingProductOption } = productOption;
 
     return (
@@ -482,7 +493,9 @@ export default class Pos extends Component<Props, State> {
                       <></>
                     )}
                   </div>
-                  <div className="col-md-5" />
+                  <div className="col-md-5 text-right">
+                    <License />
+                  </div>
                 </div>
                 {/* Header action end */}
 
@@ -605,6 +618,20 @@ export default class Pos extends Component<Props, State> {
               {isOpenSignUpCustomer ? <SignUpCustomer /> : null}
             </div>
             <div className="col-md-3 pl-0 pr-0">
+              {lock ? (
+                <div
+                  style={{ opacity: 1 }}
+                  className="tooltip bs-tooltip-top"
+                  role="tooltip"
+                >
+                  <div className="arrow"></div>
+                  <div className="tooltip-inner">
+                    Please upgrade to use this feature
+                  </div>
+                </div>
+              ) : (
+                <></>
+              )}
               <button
                 type="button"
                 disabled={disableCheckout}
@@ -615,6 +642,20 @@ export default class Pos extends Component<Props, State> {
               </button>
             </div>
             <div className="col-md-2 pl-1 pr-0">
+              {lock ? (
+                <div
+                  style={{ opacity: 1 }}
+                  className="tooltip bs-tooltip-top"
+                  role="tooltip"
+                >
+                  <div className="arrow"></div>
+                  <div className="tooltip-inner">
+                    Please upgrade to use this feature
+                  </div>
+                </div>
+              ) : (
+                <></>
+              )}
               <button
                 type="button"
                 disabled={disableCheckout}

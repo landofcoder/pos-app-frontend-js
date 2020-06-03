@@ -51,12 +51,14 @@ class SyncScreen extends Component {
     const {
       stateFetchingConfig,
       stateSynchronizingCategoriesAndProducts,
-      stateSyncProductBarCodeInventory
+      stateSyncProductBarCodeInventory,
+      stateSyncProductInventory
     } = setup;
     const allowNextButton =
       stateFetchingConfig === 1 &&
       stateSynchronizingCategoriesAndProducts === 1 &&
-      stateSyncProductBarCodeInventory === 1;
+      stateSyncProductBarCodeInventory === 1 &&
+      stateSyncProductInventory === 1;
     return loading ? (
       <div>
         <div className="container center-loading">
@@ -108,6 +110,23 @@ class SyncScreen extends Component {
               )}
               <span className="text-muted">
                 Products barcode are synchronizing
+              </span>
+            </div>
+            <div className="row">
+              {stateSyncProductInventory === 0 ? (
+                <div
+                  className="mr-2 mt-1 spinner-border spinner-border-sm text-secondary"
+                  role="status"
+                >
+                  <span className="sr-only">Loading...</span>
+                </div>
+              ) : (
+                <div>
+                  <CheckCircle dimension={20} />
+                </div>
+              )}
+              <span className="text-muted">
+                Products inventory are synchronizing
               </span>
             </div>
             <div className={`row float-right mt-2 ${styles.wrapButton}`}>

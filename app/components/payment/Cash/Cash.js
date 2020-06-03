@@ -35,7 +35,6 @@ class CashPayment extends Component<Props> {
 
   componentDidMount(): void {
     document.addEventListener('keydown', this.escFunction, false);
-    console.log('run to cash did mount');
   }
 
   componentWillUnmount() {

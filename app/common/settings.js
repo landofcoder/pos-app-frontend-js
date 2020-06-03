@@ -7,7 +7,7 @@ export function getGraphqlPath() {
 /**
  * Limit loop using requestAnimationFrame if timeOut have param, interval will by timeOut config
  * @param fn
- * @param delay
+ * @param delay mini second unit
  */
 export function startLoop(fn, delay = null) {
   const requestAnimFrame = (() => {

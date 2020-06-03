@@ -90,6 +90,14 @@
 .wrapProductItem {
   .itemCart {
     width: 100%;
+
+    a.wrapImageBlock {
+      cursor: pointer;
+
+      &:hover {
+        color: $blueMainColor;
+      }
+    }
   }
 
   .wrapProductImage {

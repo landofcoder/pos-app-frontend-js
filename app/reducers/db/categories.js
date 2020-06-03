@@ -47,7 +47,6 @@ export async function getRootCategoriesFromLocal() {
     .table(table)
     .where({ level: 1 })
     .first();
-  // Because by default table categories just have one record
   return data;
 }
 
@@ -55,6 +54,6 @@ export async function getAllCategoriesByParentIdFromLocal(cateId) {
   const data = await db
     .table(table)
     .where({ parent_id: cateId })
-    .toArray();
+    .sortBy('position');
   return data;
 }
