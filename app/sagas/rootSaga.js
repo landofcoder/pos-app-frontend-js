@@ -558,23 +558,23 @@ function* getProductByCategoryLazyLoad(categoryId, currentPage) {
 }
 
 function* getOrderHistoryDetail(payload) {
-  yield put({ type: types.TURN_ON_LOADING_ORDER_HISTORY_DETAIL });
+  yield put({ type: types.LOADING_ORDER_HISTORY_DETAIL, payload: true });
   const data = yield call(getOrderHistoryServiceDetails, payload.payload);
   yield put({
     type: types.RECEIVED_ORDER_HISTORY_DETAIL_ACTION,
     payload: data
   });
-  yield put({ type: types.TURN_OFF_LOADING_ORDER_HISTORY_DETAIL });
+  yield put({ type: types.LOADING_ORDER_HISTORY_DETAIL, payload: false });
 }
 
 function* getOrderHistory() {
-  yield put({ type: types.TURN_ON_LOADING_ORDER_HISTORY });
+  yield put({ type: types.LOADING_ORDER_HISTORY, payload: true });
   const data = yield call(getOrderHistoryService);
   yield put({
     type: types.RECEIVED_ORDER_HISTORY_ACTION,
     payload: data.items
   });
-  yield put({ type: types.TURN_OFF_LOADING_ORDER_HISTORY });
+  yield put({ type: types.LOADING_ORDER_HISTORY, payload: false });
 }
 
 function* signUpAction(payload) {
@@ -931,47 +931,52 @@ function* noteOrderAction(payload) {
   }
   yield put({ type: types.LOADING_NOTE_ORDER_ACTION, payload: false });
   yield put({ type: types.TOGGLE_ACTION_ORDER_ADD_NOTE, payload: false });
-  // yield put({type: types.})
 }
 
 function* reorderAction(payload) {
   console.log(payload);
-  const itemList = payload.data.items.cartCurrentResult;
-  // check cart current has product
+  const itemList = payload.data.items.cartCurrentResult.data;
+  // check cart current is holding product or not
   const cartCurrentResult = yield select(cartCurrent);
-  if (cartCurrentResult.length > 0) {
+  if (cartCurrentResult.data.length > 0) {
     // hold cart current
     yield put({ type: types.HOLD_ACTION });
   }
 
   // if order in not sync yet will reuse order with param suit for checkout
-
   if (!payload.synced) {
     for (let i = 0; i < itemList.length; i += 1) {
       yield put({ type: types.ADD_TO_CART, payload: itemList[i] });
     }
   }
+  // close toggle
+  yield put({ type: types.CLOSE_TOGGLE_MODAL_DETAIL_ORDER });
 }
 
 function* orderActionOffline(payload) {
-  const data = yield select(orderDetailLocalDb);
-  const dataList = yield select(orderList);
+  const orderDetail = yield select(orderDetailLocalDb);
+  const orderListResult = yield select(orderList);
   let index;
-  for (let i = 0; i < dataList.length; i += 1) {
-    if (dataList[i].id) {
-      if (dataList[i].id === data.id) index = i;
+  // tim index cua order offline de xoa do viec ghep order online va offline nen khong the bat index cua item nay
+  for (let i = 0; i < orderListResult.length; i += 1) {
+    if (orderListResult[i].id) {
+      if (orderListResult[i].id === orderDetail.id) index = i;
     }
   }
   switch (payload.action) {
     case types.CANCEL_ACTION_ORDER:
-      yield cancelOrderService(data.id); // delete in localdb
+      yield cancelOrderService(orderDetail.id); // delete in localdb
       yield put({ type: types.REMOVE_ORDER_LIST, payload: index });
       break;
     case types.REORDER_ACTION_ORDER:
-      yield reorderAction({ data, synced: false });
+      yield reorderAction({ data: orderDetail, synced: false });
       break;
     case types.NOTE_ORDER_ACTION:
-      yield noteOrderAction({ data, synced: false, message: payload.payload });
+      yield noteOrderAction({
+        data: orderDetail,
+        synced: false,
+        message: payload.payload
+      });
       break;
     default:
       break;
