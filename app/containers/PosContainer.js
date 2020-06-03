@@ -11,6 +11,7 @@ function mapStateToProps(state) {
     productList: state.mainRd.productList,
     cartCurrent: state.mainRd.cartCurrent,
     mainPanelType: state.mainRd.mainPanelType,
+    detailOutlet: state.mainRd.generalConfig.detail_outlet,
     isShowCashPaymentModel: state.mainRd.checkout.isShowCashPaymentModel,
     isShowCardPaymentModal: state.mainRd.checkout.isShowCardPaymentModal,
     productOption: state.mainRd.productOption,

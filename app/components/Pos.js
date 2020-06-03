@@ -26,8 +26,8 @@ import Custom from './product-types/Custom';
 import routes from '../constants/routes';
 import Menu from './commons/menu';
 import Plus from './commons/plus';
-import Stock from './commons/stock';
 import License from './License';
+import StockDisplay from './commons/StockDisplay/StockDisplay';
 
 type Props = {
   productList: Array<Object>,
@@ -248,11 +248,7 @@ export default class Pos extends Component<Props, State> {
                 className="card-body"
                 style={{ paddingTop: '5px', paddingBottom: '5px' }}
               >
-                <div className={`${Styles.wrapStock}`}>
-                  <div className={`${Styles.stockIcon}`}>
-                    <Stock />
-                  </div>
-                </div>
+                <StockDisplay stockItem={item.stock} />
                 <a
                   role="presentation"
                   className={Styles.wrapImageBlock}

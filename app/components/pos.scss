@@ -94,6 +94,7 @@
     .wrapStock {
       display: block;
       text-align: right;
+      cursor: pointer;
 
       svg {
         font-size: 16px;
@@ -110,7 +111,14 @@
       .stockIcon {
         display: inline-block;
         padding: 5px;
-        cursor: pointer;
+
+      }
+
+      .stockNumber {
+        display: inline-block;
+        font-size: 12px;
+        color: #666;
+        font-weight: 600;
       }
     }
 
