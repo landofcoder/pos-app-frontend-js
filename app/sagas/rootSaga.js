@@ -920,7 +920,7 @@ function* getProductByBarcodeFromScannerSaga(payload) {
 function* noteOrderAction(payload) {
   console.log('in noteOrderAction');
   console.log(payload);
-  yield put({ type: types.LOADING_NOTE_ORDER_ACTION, payload: true });
+  yield put({ type: types.LOADING_TOGGLE_MODAL_ACTION_ORDER, payload: true });
   const id = payload.data.entity_id;
   console.log(id);
   if (payload.synced) {
@@ -929,8 +929,8 @@ function* noteOrderAction(payload) {
   } else {
     // set in local db
   }
-  yield put({ type: types.LOADING_NOTE_ORDER_ACTION, payload: false });
-  yield put({ type: types.TOGGLE_ACTION_ORDER_ADD_NOTE, payload: false });
+  yield put({ type: types.LOADING_TOGGLE_MODAL_ACTION_ORDER, payload: false });
+  yield put({ type: types.TOGGLE_MODAL_ACTION_ORDER, payload: false });
 }
 
 function* reorderAction(payload) {
@@ -971,12 +971,15 @@ function* orderActionOffline(payload) {
     case types.REORDER_ACTION_ORDER:
       yield reorderAction({ data: orderDetail, synced: false });
       break;
-    case types.NOTE_ORDER_ACTION:
+    case types.ADD_NOTE_ACTION_ORDER:
       yield noteOrderAction({
         data: orderDetail,
         synced: false,
         message: payload.payload
       });
+      break;
+    case types.REFUND_ACTION_ORDER:
+      console.log('action order');
       break;
     default:
       break;
@@ -990,7 +993,7 @@ function* orderActionOnline(payload) {
     case types.REORDER_ACTION_ORDER:
       yield reorderAction({ data, synced: true });
       break;
-    case types.NOTE_ORDER_ACTION:
+    case types.ADD_NOTE_ACTION_ORDER:
       yield noteOrderAction({ data, synced: true, message: payload.payload });
       break;
     default:
@@ -1038,7 +1041,6 @@ function* selectTypeOrderAction() {
 function* orderAction(params) {
   const { action, payload } = params.payload;
   const typeOf = yield selectTypeOrderAction();
-  console.log(typeOf);
   switch (typeOf) {
     case types.DETAIL_ORDER_OFFLINE:
       yield orderActionOffline({ action, payload });

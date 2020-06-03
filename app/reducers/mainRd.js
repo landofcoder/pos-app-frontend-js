@@ -161,7 +161,9 @@ const initialState = {
   order_id_history: null,
   isOpenFindCustomer: false,
   isOpenCategoriesModel: false,
-  isOpenAddNote: false,
+  toggleActionOrder: {
+    isOpenToggleActionOrder: false
+  },
   isOpenSignUpCustomer: false,
   isOpenCalculator: false,
   isOpenDetailOrder: false,
@@ -323,10 +325,11 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.TOGGLE_MODAL_CUSTOMER:
         draft.isOpenFindCustomer = action.payload;
         break;
-      case types.TOGGLE_ACTION_ORDER_ADD_NOTE:
-        draft.isOpenAddNote = action.payload;
+      case types.TOGGLE_MODAL_ACTION_ORDER:
+        draft.toggleActionOrder.isOpenToggleActionOrder = action.payload.status;
+        draft.toggleActionOrder[action.payload.type] = action.payload.status;
         break;
-      case types.LOADING_NOTE_ORDER_ACTION:
+      case types.LOADING_NOTE_ACTION_ORDER:
         draft.isLoadingNoteOrderAction = action.payload;
         break;
       case types.TOGGLE_MODAL_SIGN_UP_CUSTOMER:

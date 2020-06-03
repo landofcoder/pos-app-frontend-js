@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
-  toggleModalAddNote,
+  toggleModalActionOrder,
   orderAction
 } from '../../../../actions/accountAction';
 import ModalStyle from '../../../styles/modal.scss';
-import { NOTE_ORDER_ACTION } from '../../../../constants/root';
+import { ADD_NOTE_ACTION_ORDER } from '../../../../constants/root';
 
 type Props = {
-  toggleModalAddNote: (payload: boolean) => void,
+  toggleModalActionOrder: (payload: boolean) => void,
   addNoteOrderAction: (payload: string) => void,
   orderAction: (payload: object) => void,
   isLoadingNoteOrderAction: boolean
 };
 
-class AddNoteOrder extends Component<Props> {
+class DetailOrderAction extends Component<Props> {
   props: Props;
 
   constructor(props) {
@@ -35,9 +35,9 @@ class AddNoteOrder extends Component<Props> {
   escFunction = event => {
     if (event.keyCode === 27) {
       // Do whatever when esc is pressed
-      const { toggleModalAddNote } = this.props;
+      const { toggleModalActionOrder } = this.props;
       // Hide any modal
-      toggleModalAddNote(false);
+      toggleModalActionOrder({ type: ADD_NOTE_ACTION_ORDER, status: false });
     }
   };
 
@@ -55,7 +55,7 @@ class AddNoteOrder extends Component<Props> {
   render() {
     const { noteValue } = this.state;
     const {
-      toggleModalAddNote,
+      toggleModalActionOrder,
       orderAction,
       isLoadingNoteOrderAction
     } = this.props;
@@ -88,7 +88,7 @@ class AddNoteOrder extends Component<Props> {
                     className="btn btn-primary btn-block"
                     onClick={() => {
                       orderAction({
-                        action: NOTE_ORDER_ACTION,
+                        action: ADD_NOTE_ACTION_ORDER,
                         kindOf: 'DETAIL_ORDER_ONLINE',
                         payload: noteValue
                       });
@@ -108,7 +108,7 @@ class AddNoteOrder extends Component<Props> {
                 <div className="col-md-2 p-0">
                   <button
                     type="button"
-                    onClick={() => toggleModalAddNote(false)}
+                    onClick={() => toggleModalActionOrder(false)}
                     className="btn btn-secondary btn-block"
                   >
                     CLOSE
@@ -124,13 +124,13 @@ class AddNoteOrder extends Component<Props> {
 }
 
 const mapStateToProps = state => ({
-  isOpenAddNote: state.mainRd.isOpenAddNote,
-  isLoadingNoteOrderAction: state.mainRd.isLoadingNoteOrderAction
+  toggleActionOrder: state.mainRd.toggleActionOrder
 });
 
 const mapDispatchToProps = dispatch => {
   return {
-    toggleModalAddNote: payload => dispatch(toggleModalAddNote(payload)),
+    toggleModalActionOrder: payload =>
+      dispatch(toggleModalActionOrder(payload)),
     orderAction: payload => dispatch(orderAction(payload))
   };
 };
@@ -138,4 +138,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(AddNoteOrder);
+)(DetailOrderAction);

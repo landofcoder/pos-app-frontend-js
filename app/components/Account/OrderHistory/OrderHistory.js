@@ -7,7 +7,7 @@ import {
   toggleModalOrderDetail,
   toggleModalOrderDetailOffline,
   orderAction,
-  toggleModalAddNote,
+  toggleModalActionOrder,
   getOrderHistoryDetail,
   closeToggleModalOrderDetail,
   getDataServiceWithType
@@ -26,9 +26,10 @@ import {
   PRINT_ACTION_ORDER,
   SHIPMENT_ACTION_ORDER,
   CANCEL_ACTION_ORDER,
-  REFUND_ACTION_ORDER
+  REFUND_ACTION_ORDER,
+  ADD_NOTE_ACTION_ORDER
 } from '../../../constants/root';
-import AddNoteOrder from './AddNoteOrder/AddNoteOrder';
+import DetailOrderAction from './DetailOrderAction/DetailOrderAction';
 import { syncDataClient } from '../../../actions/homeAction';
 
 type Props = {
@@ -37,7 +38,7 @@ type Props = {
   getDataServiceWithType: payload => void,
   isOpenDetailOrder: boolean,
   isOpenDetailOrderOffline: boolean,
-  isOpenAddNote: boolean,
+  isOpenToggleActionOrder: boolean,
   toggleModalOrderDetail: object => void,
   toggleModalOrderDetailOffline: object => void,
   orderAction: payload => void,
@@ -45,7 +46,7 @@ type Props = {
   orderHistoryDetailOffline: object,
   orderHistoryDetail: object,
   history: payload => void,
-  toggleModalAddNote: payload => void,
+  toggleModalActionOrder: payload => void,
   syncDataClient: payload => void,
   closeToggleModalOrderDetail: () => void,
   isLoadingSyncAllOrder: boolean,
@@ -67,10 +68,10 @@ class OrderHistory extends Component<Props> {
   componentDidMount(): void {
     const { getAllOrdersDb } = this.props;
     const { step, stepAt } = this.state;
-    const getAllSyncOrderErrorId = setInterval(
-      getAllOrdersDb({ id: SYNC_ORDER_LIST, step, stepAt }),
-      10000
-    );
+    getAllOrdersDb({ id: SYNC_ORDER_LIST, step, stepAt });
+    const getAllSyncOrderErrorId = setInterval(() => {
+      getAllOrdersDb({ id: SYNC_ORDER_LIST, step, stepAt });
+    }, 10000);
     this.setState({ intervalGetDataErrorId: getAllSyncOrderErrorId });
   }
 
@@ -232,13 +233,13 @@ class OrderHistory extends Component<Props> {
   };
 
   actionDetailOrder = () => {
-    const { orderAction, history, isOpenAddNote } = this.props;
+    const { orderAction, history, isOpenToggleActionOrder } = this.props;
 
     // check have detail order to consider show action detail
     if (this.isShowingDetailOrder() || this.isShowingDetailOrderOffline()) {
       return (
         <>
-          {isOpenAddNote ? <AddNoteOrder /> : null}
+          {isOpenToggleActionOrder ? <DetailOrderAction /> : null}
           <div className="row flex-row-reverse mx-3">
             <div className="col-md-3 pl-1 pr-0">
               <button
@@ -348,8 +349,8 @@ class OrderHistory extends Component<Props> {
   };
 
   noteOrderAction = () => {
-    const { toggleModalAddNote } = this.props;
-    toggleModalAddNote(true);
+    const { toggleModalActionOrder } = this.props;
+    toggleModalActionOrder({ type: ADD_NOTE_ACTION_ORDER, status: true });
   };
 
   render() {
@@ -492,7 +493,8 @@ function mapStateToProps(state) {
   return {
     isOpenDetailOrder: state.mainRd.isOpenDetailOrder,
     isOpenDetailOrderOffline: state.mainRd.isOpenDetailOrderOffline,
-    isOpenAddNote: state.mainRd.isOpenAddNote,
+    isOpenToggleActionOrder:
+      state.mainRd.toggleActionOrder.isOpenToggleActionOrder,
     isLoading: state.mainRd.isLoadingOrderHistory,
     orderHistory: state.mainRd.orderHistory,
     syncDataManager: state.authenRd.syncDataManager,
@@ -511,7 +513,8 @@ function mapDispatchToProps(dispatch) {
       dispatch(toggleModalOrderDetailOffline(payload)),
     getOrderHistoryDetail: id => dispatch(getOrderHistoryDetail(id)),
     orderAction: payload => dispatch(orderAction(payload)),
-    toggleModalAddNote: payload => dispatch(toggleModalAddNote(payload)),
+    toggleModalActionOrder: payload =>
+      dispatch(toggleModalActionOrder(payload)),
     syncDataClient: payload => dispatch(syncDataClient(payload)),
     closeToggleModalOrderDetail: () => dispatch(closeToggleModalOrderDetail()),
     getAllOrdersDb: payload => dispatch(getDataServiceWithType(payload)),
