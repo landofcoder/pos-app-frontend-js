@@ -359,15 +359,14 @@ export default class Pos extends Component<Props, State> {
           }
         >
           <div
+            role="presentation"
             className={`${ModalStyle.modal}`}
             style={{
               display: isOpenCategoriesModel ? 'block' : 'none',
               paddingTop: 0
             }}
           >
-            <div>
-              <Categories />
-            </div>
+            <Categories />
           </div>
           {/* OPTION MODEL (PRODUCT CONFIGURABLE, PRODUCT BUNDLE, PRODUCT GROUPED) */}
           <div

@@ -90,7 +90,7 @@ class SignUpCustomer extends Component {
       messageSignUpCustomer
     } = this.props;
     return (
-      <div className={Styles.wrapCartCustomer}>
+      <div>
         <div
           className={ModalStyle.modal}
           style={{ display: isOpenSignUpCustomer ? 'block' : 'none' }}

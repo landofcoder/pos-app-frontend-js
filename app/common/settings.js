@@ -1,4 +1,5 @@
 import LocaleCurrency from 'locale-currency';
+import $ from 'jquery';
 
 export function getGraphqlPath() {
   return `${window.mainUrl}graphql`;
@@ -36,7 +37,9 @@ export function startLoop(fn, delay = null) {
 export function stopLoop(frameId) {
   try {
     window.cancelAnimationFrame(frameId.value);
-  } catch (e) {}
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 export function formatCurrencyCode(value: number) {
@@ -77,4 +80,12 @@ export function setTokenGlobal(token) {
 export function setAppInfoToGlobal(payload) {
   window.mainUrl = payload.destination_url;
   window.platform = payload.platform;
+}
+
+export function clickOutToCloseModal(id, fn) {
+  $('body').click(event => {
+    if (!$(event.target).closest(id).length && !$(event.target).is(id)) {
+      fn.call();
+    }
+  });
 }

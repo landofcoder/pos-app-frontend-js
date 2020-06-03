@@ -9,6 +9,7 @@ import ChevronRight from '../chevron-right';
 import X from '../x';
 import Left from '../left';
 import Styles from './categories.scss';
+import { clickOutToCloseModal } from '../../../common/settings';
 
 type Props = {
   allCategories: Object,
@@ -26,11 +27,17 @@ class Categories extends Component<Props> {
 
   componentDidMount(): void {
     document.addEventListener('keydown', this.escFunction, false);
+    clickOutToCloseModal('#wrap-categories-component', this.closeModel);
   }
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.escFunction, false);
   }
+
+  closeModel = () => {
+    const { toggleModelCategories } = this.props;
+    toggleModelCategories(false);
+  };
 
   escFunction = event => {
     if (event.keyCode === 27) {
@@ -141,7 +148,10 @@ class Categories extends Component<Props> {
       childrenData = allCategories;
     }
     return (
-      <div className={`${Styles.wrapCategoryBox}`}>
+      <div
+        className={`${Styles.wrapCategoryBox}`}
+        id="wrap-categories-component"
+      >
         <div className={Styles.wrapInsideBox}>
           <div className={`col-12 ${Styles.wrapTitleCategory}`}>
             <h4 className={Styles.title}>Categories</h4>

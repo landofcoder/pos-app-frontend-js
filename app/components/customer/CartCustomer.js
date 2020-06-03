@@ -9,6 +9,7 @@ import {
 } from '../../actions/homeAction';
 import Styles from './cart-customer.scss';
 import ModalStyle from '../styles/modal.scss';
+import Close from '../commons/x';
 
 type Props = {
   customer: Object,
@@ -28,7 +29,8 @@ class CartCustomer extends Component<Props> {
   constructor(props) {
     super(props);
     this.state = {
-      delayTimer: null
+      delayTimer: null,
+      searchValue: ''
     };
   }
 
@@ -52,6 +54,7 @@ class CartCustomer extends Component<Props> {
   onSearchCustomer = e => {
     const { searchCustomer } = this.props;
     const { value } = e.target;
+    this.setState({ searchValue: value });
     const { delayTimer } = this.state;
     clearTimeout(delayTimer);
     const delayTimerRes = setTimeout(() => {
@@ -72,25 +75,29 @@ class CartCustomer extends Component<Props> {
       selectCustomerForCurrentCart,
       unSelectCustomerForCurrentCart
     } = this.props;
+    const { searchValue } = this.state;
     let email = '';
-    // let firstname = '';
-    // let lastname = '';
     if (customer) {
       email = customer.email || customer.email;
-      // firstname = customer.firstname || customer.customer.firstname;
-      // lastname = customer.lastname || customer.customer.lastname;
     }
     return (
-      <div className={Styles.wrapCartCustomer}>
+      <div>
         {isOpenFindCustomer === true ? (
           <div
             className={ModalStyle.modal}
             style={{ display: isOpenFindCustomer ? 'block' : 'none' }}
           >
-            <div className={ModalStyle.modalContentMd}>
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">Choose customer</h5>
+            <div className={ModalStyle.modalContentMd} id="wrap-cart-customer">
+              <div
+                className={ModalStyle.close}
+                role="presentation"
+                onClick={() => toggleModalCustomer(false)}
+              >
+                <Close />
+              </div>
+              <div className="card">
+                <div className="card-body">
+                  <h5 className="card-title">Choose customer</h5>
                   <div className="col-md-3 p-0">
                     <button
                       type="button"
@@ -100,8 +107,6 @@ class CartCustomer extends Component<Props> {
                       Add customer
                     </button>
                   </div>
-                </div>
-                <div className="modal-body">
                   <div>
                     <div className="form-group">
                       {customer ? (
@@ -115,6 +120,7 @@ class CartCustomer extends Component<Props> {
                             </button>
                             <span className={Styles.wrapCloseIcon}>
                               <i
+                                role="presentation"
                                 onClick={unSelectCustomerForCurrentCart}
                                 className="fas fa-times"
                               />
@@ -130,6 +136,7 @@ class CartCustomer extends Component<Props> {
                       <input
                         type="text"
                         className="form-control input-sm"
+                        value={searchValue}
                         placeholder="Search by customer id, email, first name"
                         aria-label="Recipient's username"
                         onChange={this.onSearchCustomer}
@@ -141,7 +148,7 @@ class CartCustomer extends Component<Props> {
                   {isLoadingSearchCustomer ? (
                     <div className="d-flex justify-content-center">
                       <div
-                        className="spinner-border text-secondary"
+                        className="spinner-border spinner-border-sm text-secondary"
                         role="status"
                       >
                         <span className="sr-only">Loading...</span>
@@ -169,26 +176,18 @@ class CartCustomer extends Component<Props> {
                           </button>
                         );
                       })}
-                      {customerSearchResult.length === 0 ? (
+                      {customerSearchResult.length === 0 &&
+                      searchValue.length !== 0 ? (
                         <div>
-                          <p className="text-muted">No result found</p>
+                          <p className="text-muted text-center">
+                            No result found
+                          </p>
                         </div>
                       ) : (
                         <div></div>
                       )}
                     </ul>
                   )}
-                </div>
-                <div className="modal-footer">
-                  <div className="col-md-2 p-0">
-                    <button
-                      type="button"
-                      onClick={() => toggleModalCustomer(false)}
-                      className="btn btn-secondary btn-block btn-sm"
-                    >
-                      Close
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>

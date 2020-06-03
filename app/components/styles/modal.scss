@@ -18,6 +18,21 @@
   margin: auto;
   width: 400px;
   position: relative;
+}
+
+.modalContentMd {
+  margin: auto;
+  width: 600px;
+  position: relative;
+}
+
+.modalContentLg {
+  margin: auto;
+  width: 900px;
+  position: relative;
+}
+
+.modalContent, .modalContentMd, .modalContentLg {
   .close {
     color: #666;
     float: right;
@@ -34,14 +49,4 @@
     text-decoration: none;
     cursor: pointer;
   }
-}
-
-.modalContentMd {
-  margin: auto;
-  width: 600px;
-}
-
-.modalContentLg {
-  margin: auto;
-  width: 900px;
 }
