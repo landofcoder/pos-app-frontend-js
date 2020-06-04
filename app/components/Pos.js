@@ -370,21 +370,8 @@ export default class Pos extends Component<Props, State> {
               : 'default'
           }
         >
-          {/* OPTION MODEL (PRODUCT CONFIGURABLE, PRODUCT BUNDLE, PRODUCT GROUPED) */}
-          <div
-            id="modalProductOption"
-            style={{ display: isShowingProductOption ? 'block' : 'none' }}
-            className={ModalStyle.modal}
-          >
-            <div className={ModalStyle.modalContent}>
-              {this.switchingProductSettings()}
-            </div>
-          </div>
-
-          {/* CASH PAYMENT MODAL */}
+          {isShowingProductOption ? this.switchingProductSettings() : <></>}
           {isShowCashPaymentModel ? <CashPanel /> : <></>}
-          {/* PAYMENT MODAL */}
-
           {isShowCardPaymentModal ? <CardPayment /> : <></>}
 
           {/* RECEIPT MODAL */}

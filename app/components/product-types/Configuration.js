@@ -1,17 +1,21 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Modal from 'react-modal';
 import {
   updateIsShowingProductOption,
   onConfigurableSelectOnChange,
   addToCart
 } from '../../actions/homeAction';
 import { formatCurrencyCode } from '../../common/settings';
+import ModalStyle from '../styles/modal.scss';
+import Close from '../commons/x';
 
 type Props = {
   optionValue: Object,
   updateIsShowingProductOption: (payload: string) => void,
   onConfigurableSelectOnChange: (payload: Object) => void,
   addToCart: (payload: Object) => void,
+  isShowingProductOption: boolean,
   currencyCode: string
 };
 
@@ -46,9 +50,9 @@ class Configuration extends Component<Props> {
     const {
       optionValue,
       updateIsShowingProductOption,
-      onConfigurableSelectOnChange
+      onConfigurableSelectOnChange,
+      isShowingProductOption
     } = this.props;
-    const isLoading = !optionValue;
     let parentProduct = null;
     let configurableOptions;
     let variantProductPrice = null;
@@ -69,42 +73,34 @@ class Configuration extends Component<Props> {
     }
     return (
       <>
-        <div className="modal-content">
-          {isLoading ? (
-            <>
-              <div className="modal-body">
-                <div className="d-flex justify-content-center">
-                  <div
-                    className="spinner-border text-secondary spinner-border-sm"
-                    role="status"
-                  >
-                    <span className="sr-only">Loading...</span>
-                  </div>
-                </div>
-              </div>
-              <div className="modal-footer">
-                <div className="col-md-12">
-                  <button
-                    type="button"
-                    onClick={() => updateIsShowingProductOption(false)}
-                    className="btn btn-outline-dark"
-                  >
-                    CANCEL
-                  </button>
-                </div>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="modal-header">
+        <Modal
+          overlayClassName={ModalStyle.Overlay}
+          shouldCloseOnOverlayClick
+          onRequestClose={() => updateIsShowingProductOption(false)}
+          className={`${ModalStyle.Modal}`}
+          isOpen={isShowingProductOption}
+          contentLabel="Example Modal"
+        >
+          <div className={ModalStyle.modalContent}>
+            <div
+              className={ModalStyle.close}
+              role="presentation"
+              onClick={() => updateIsShowingProductOption(false)}
+            >
+              <Close />
+            </div>
+            <div className="card">
+              <div className="card-body">
                 <h5
-                  className="modal-title"
-                  id="exampleModalLongTitle"
+                  className="card-title"
                   dangerouslySetInnerHTML={{ __html: parentProduct.name }}
                 />
-                <span className="font-weight-bolder">{variantProductPrice}</span>
-              </div>
-              <div className="modal-body">
+                <div className="mb-2">
+                  <span className="font-weight-bolder">
+                    {variantProductPrice}
+                  </span>
+                </div>
+                <hr />
                 {configurableOptions.map((item, index) => {
                   return (
                     <div key={item.id}>
@@ -139,29 +135,18 @@ class Configuration extends Component<Props> {
                   );
                 })}
               </div>
-              <div className="modal-footer">
-                <div className="col-md-6 p-0">
-                  <button
-                    type="button"
-                    onClick={() => updateIsShowingProductOption(false)}
-                    className="btn btn-outline-dark btn-block btn-sm"
-                  >
-                    Cancel
-                  </button>
-                </div>
-                <div className="col-md-6 p-0">
-                  <button
-                    onClick={this.addToCart}
-                    type="button"
-                    className="btn btn-primary btn-block btn-sm"
-                  >
-                    Add to cart
-                  </button>
-                </div>
+              <div className="card-footer text-muted">
+                <button
+                  onClick={this.addToCart}
+                  type="button"
+                  className="btn btn-outline-primary btn-block"
+                >
+                  Add to cart
+                </button>
               </div>
-            </>
-          )}
-        </div>
+            </div>
+          </div>
+        </Modal>
       </>
     );
   }
@@ -169,7 +154,8 @@ class Configuration extends Component<Props> {
 
 function mapStateToProps(state) {
   return {
-    optionValue: state.mainRd.productOption.optionValue
+    optionValue: state.mainRd.productOption.optionValue,
+    isShowingProductOption: state.mainRd.productOption.isShowingProductOption
   };
 }
 
