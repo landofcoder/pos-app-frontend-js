@@ -374,16 +374,9 @@ export default class Pos extends Component<Props, State> {
           {isShowCashPaymentModel ? <CashPanel /> : <></>}
           {isShowCardPaymentModal ? <CardPayment /> : <></>}
           {isShowModalItemEditCart ? <EditCart /> : <></>}
+          {isOpenReceiptModal ? <Receipt /> : <></>}
           {/* RECEIPT MODAL */}
-          <div
-            id="receiptModal"
-            className={ModalStyle.modal}
-            style={{ display: isOpenReceiptModal ? 'block' : 'none' }}
-          >
-            <div className={ModalStyle.modalContent} style={{ width: '450px' }}>
-              {isOpenReceiptModal ? <Receipt /> : <></>}
-            </div>
-          </div>
+
           <div className="row" id={Styles.wrapPostContainerId}>
             <div className="col-md-9 pt-3 pl-0 pr-0">
               <div

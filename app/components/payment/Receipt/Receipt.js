@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Modal from 'react-modal';
 import Style from './receipt.scss';
 import CartReceipt from './CartReceipt/CartReceipt';
 import { closeReceiptModal } from '../../../actions/homeAction';
+import ModalStyle from '../../styles/modal.scss';
+import Close from '../../commons/x';
 
 type Props = {
   closeReceiptModal: () => void,
   receipt: Object,
   customReceipt: Object,
-  detailOutlet: Object
+  detailOutlet: Object,
+  isOpenReceiptModal: boolean
 };
 
 class Receipt extends Component<Props> {
@@ -74,7 +78,8 @@ class Receipt extends Component<Props> {
       receipt,
       closeReceiptModal,
       customReceipt,
-      detailOutlet
+      detailOutlet,
+      isOpenReceiptModal
     } = this.props;
     const { dateTime } = this.state;
     const { orderId, cartForReceipt } = receipt;
@@ -115,140 +120,148 @@ class Receipt extends Component<Props> {
         <iframe
           id="ifmcontentstoprint"
           style={{ height: '0px', width: '0px', postition: 'absolute' }}
-        ></iframe>
+        />
         <div style={{ color: '#666' }} className={Style.wrapMainReceipt}>
-          <div className="modal-content">
-            <div className={Style.wrapMainPrint} id="wrap-main-receipt">
-              <style>{css}</style>
-              <table
-                style={{
-                  width: '100%',
-                  paddingTop: '20px',
-                  textAlign: 'center',
-                  borderBottom: '1px solid #dedede'
-                }}
-              >
-                <tbody>
-                  {+logo_display === 1 ? (
-                    <tr>
-                      <td colSpan="2">
-                        <img
-                          style={{
-                            display: 'block',
-                            margin: '0 auto',
-                            width: '150px'
-                          }}
-                          src={window.mainUrl + '/pub/' + icon}
-                        ></img>
-                      </td>
-                    </tr>
-                  ) : null}
-                  <tr>
-                    <td
-                      colSpan="2"
-                      style={{
-                        borderBottom: '1px solid #dedede',
-                        marginBottom: '10px',
-                        textAlign: 'center',
-                        fontSize: '20px',
-                        fontWeight: 'bold'
-                      }}
-                    >
-                      {receipt_title}
-                    </td>
-                  </tr>
-                  {+outlet_name_display ? (
-                    <tr>
-                      <td colSpan="2" style={{ textAlign: 'center' }}>
-                        {detailOutlet.outlet_name}
-                      </td>
-                    </tr>
-                  ) : null}
-                  <tr>
-                    {+date_display === 1 ? (
-                      <>
-                        <td
-                          style={{
-                            marginTop: '25px',
-                            textAlign: 'left',
-                            width: '50%'
-                          }}
-                        >
-                          Create at
-                        </td>
-                        <td
-                          style={{
-                            marginTop: '25px',
-                            textAlign: 'left',
-                            width: '50%'
-                          }}
-                        >
-                          {dateTime}
-                        </td>
-                      </>
-                    ) : null}
-                    {+order_id_display ? (
-                      <td style={{ textAlign: 'left' }}>
-                        <span>{order_id_label}&nbsp;</span>
-                        <span>{orderId}</span>
-                      </td>
-                    ) : null}
-                  </tr>
-                  {customerReceipt && +customer_display === 1 ? (
-                    <tr>
-                      <td style={{ textAlign: 'left' }}>Customer:&nbsp;</td>
-                      <td style={{ textAlign: 'right' }}>
-                        {customerReceipt.firstname}
-                      </td>
-                    </tr>
-                  ) : null}
-                  <tr>
-                    <td colSpan="2">
-                      <div
-                        dangerouslySetInnerHTML={{ __html: header_content }}
-                      />
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <table style={{ width: '100%' }}>
-                <tbody>
-                  <tr>
-                    <td>
-                      <CartReceipt />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style={{ textAlign: 'center' }}>
-                      <div
-                        dangerouslySetInnerHTML={{ __html: footer_content }}
-                      />
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div className="modal-footer">
-              <div className="col-md-6 p-0">
-                <button
-                  type="button"
-                  onClick={closeReceiptModal}
-                  className="btn btn-outline-dark btn-lg btn-block"
-                >
-                  CLOSE
-                </button>
-              </div>
-              <div className="col-md-6 p-0">
-                <button
-                  type="button"
-                  onClick={this.printReceipt}
-                  className="btn btn-primary btn-lg btn-block"
-                >
-                  PRINT
-                </button>
-              </div>
-            </div>
-          </div>
+          <Modal
+            overlayClassName={ModalStyle.Overlay}
+            shouldCloseOnOverlayClick
+            onRequestClose={() => closeReceiptModal(false)}
+            className={`${ModalStyle.Modal}`}
+            isOpen={isOpenReceiptModal}
+            contentLabel="Example Modal">
+           <div className={ModalStyle.modalContent}>
+             <div
+               className={ModalStyle.close}
+               role="presentation"
+               onClick={() => closeReceiptModal(false)}
+             >
+               <Close />
+             </div>
+             <div className="card">
+               <div className="card-body">
+                 <div className={Style.wrapMainPrint} id="wrap-main-receipt">
+                   <style>{css}</style>
+                   <table
+                     style={{
+                       width: '100%',
+                       paddingTop: '20px',
+                       textAlign: 'center',
+                       borderBottom: '1px solid #dedede'
+                     }}
+                   >
+                     <tbody>
+                     {+logo_display === 1 ? (
+                       <tr>
+                         <td colSpan="2">
+                           <img
+                             style={{
+                               display: 'block',
+                               margin: '0 auto',
+                               width: '150px'
+                             }}
+                             src={window.mainUrl + '/pub/' + icon}
+                           />
+                         </td>
+                       </tr>
+                     ) : null}
+                     <tr>
+                       <td
+                         colSpan="2"
+                         style={{
+                           borderBottom: '1px solid #dedede',
+                           marginBottom: '10px',
+                           textAlign: 'center',
+                           fontSize: '20px',
+                           fontWeight: 'bold'
+                         }}
+                       >
+                         {receipt_title}
+                       </td>
+                     </tr>
+                     {+outlet_name_display ? (
+                       <tr>
+                         <td colSpan="2" style={{ textAlign: 'center' }}>
+                           {detailOutlet.outlet_name}
+                         </td>
+                       </tr>
+                     ) : null}
+                     <tr>
+                       {+date_display === 1 ? (
+                         <>
+                           <td
+                             style={{
+                               marginTop: '25px',
+                               textAlign: 'left',
+                               width: '50%'
+                             }}
+                           >
+                             Create at
+                           </td>
+                           <td
+                             style={{
+                               marginTop: '25px',
+                               textAlign: 'left',
+                               width: '50%'
+                             }}
+                           >
+                             {dateTime}
+                           </td>
+                         </>
+                       ) : null}
+                       {+order_id_display ? (
+                         <td style={{ textAlign: 'left' }}>
+                           <span>{order_id_label}&nbsp;</span>
+                           <span>{orderId}</span>
+                         </td>
+                       ) : null}
+                     </tr>
+                     {customerReceipt && +customer_display === 1 ? (
+                       <tr>
+                         <td style={{ textAlign: 'left' }}>Customer:&nbsp;</td>
+                         <td style={{ textAlign: 'right' }}>
+                           {customerReceipt.firstname}
+                         </td>
+                       </tr>
+                     ) : null}
+                     <tr>
+                       <td colSpan="2">
+                         <div
+                           dangerouslySetInnerHTML={{ __html: header_content }}
+                         />
+                       </td>
+                     </tr>
+                     </tbody>
+                   </table>
+                   <table style={{ width: '100%' }}>
+                     <tbody>
+                     <tr>
+                       <td>
+                         <CartReceipt />
+                       </td>
+                     </tr>
+                     <tr>
+                       <td style={{ textAlign: 'center' }}>
+                         <div
+                           dangerouslySetInnerHTML={{ __html: footer_content }}
+                         />
+                       </td>
+                     </tr>
+                     </tbody>
+                   </table>
+                 </div>
+               </div>
+               <div className="card-footer">
+                 <button
+                   type="button"
+                   onClick={this.printReceipt}
+                   className="btn btn-primary btn-lg btn-block"
+                 >
+                   PRINT
+                 </button>
+               </div>
+             </div>
+           </div>
+          </Modal>
         </div>
       </>
     );
@@ -260,7 +273,8 @@ function mapStateToProps(state) {
   return {
     receipt: state.mainRd.receipt,
     customReceipt: state.mainRd.customReceipt,
-    detailOutlet: state.mainRd.generalConfig.detail_outlet
+    detailOutlet: state.mainRd.generalConfig.detail_outlet,
+    isOpenReceiptModal: state.mainRd.receipt.isOpenReceiptModal
   };
 }
 
