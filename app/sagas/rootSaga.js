@@ -430,9 +430,7 @@ function* getSearchCustomer(payload) {
 
   const searchResultByName = yield call(searchCustomerByName, payload);
   let searchDbResult = yield call(searchCustomerDbService, payload);
-  console.log('before', searchDbResult);
   searchDbResult = searchDbResult.map(item => item.payload.customer);
-  console.log('after', searchDbResult);
   const mergeArray = searchResult.items.concat(
     searchResultByName.items,
     searchDbResult
@@ -595,7 +593,11 @@ function* signUpAction(payload) {
         type: types.SELECT_CUSTOMER_FOR_CURRENT_CART,
         payload: paramPayload
       });
+      // Hide sign up customer
       yield put({ type: types.TOGGLE_MODAL_SIGN_UP_CUSTOMER, payload: false });
+
+      // Show choose customer
+      yield put({ type: types.TOGGLE_MODAL_CUSTOMER, payload: true });
     } else {
       // eslint-disable-next-line no-throw-literal
       throw { message: res.message };

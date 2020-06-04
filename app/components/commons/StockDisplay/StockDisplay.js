@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Modal from 'react-modal';
 import Styles from './stock-display.scss';
 import Stock from '../stock';
 import { getProductByCategory } from '../../../actions/homeAction';
@@ -43,7 +44,7 @@ class StockDisplay extends Component {
       const stockItem = JSON.parse(listStock[i]);
       const stockCode = stockItem.code;
       if (stockCode === outletSource) {
-        return stockItem.total_qty ? stockItem.total_qty : stockItem.quantity;
+        return stockItem.quantity ? stockItem.quantity : '--';
       }
     }
     return 0;
@@ -56,10 +57,13 @@ class StockDisplay extends Component {
     const { stockDetailOpen } = this.state;
     return (
       <>
-        <div
-          className={ModalStyle.modal}
-          id="payModal"
-          style={{ display: stockDetailOpen ? 'block' : 'none' }}
+        <Modal
+          overlayClassName={ModalStyle.Overlay}
+          shouldCloseOnOverlayClick
+          onRequestClose={this.closeModel}
+          className={`${ModalStyle.Modal}`}
+          isOpen={stockDetailOpen}
+          contentLabel="Example Modal"
         >
           <div className={ModalStyle.modalContent}>
             <div
@@ -93,9 +97,7 @@ class StockDisplay extends Component {
                           )}
                         </span>
                         <span className="badge badge-primary badge-pill">
-                          {itemAssign.total_qty
-                            ? itemAssign.total_qty
-                            : itemAssign.quantity}
+                          {itemAssign.quantity ? itemAssign.quantity : '--'}
                         </span>
                       </li>
                     );
@@ -104,8 +106,7 @@ class StockDisplay extends Component {
               </div>
             </div>
           </div>
-        </div>
-
+        </Modal>
         <div
           role="presentation"
           className={`${Styles.wrapStock}`}

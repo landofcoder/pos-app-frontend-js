@@ -413,3 +413,10 @@ export function findChildCategoryByParentId(payload) {
     payload
   };
 }
+
+export function updateCategoriesParentsSession(payload) {
+  return {
+    type: types.UPDATE_CATEGORIES_PARENTS_SESSION,
+    payload
+  };
+}

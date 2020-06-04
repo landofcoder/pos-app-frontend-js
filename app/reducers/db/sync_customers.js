@@ -18,7 +18,7 @@ export async function signUpCustomerDb(customers) {
   const customer = await signUpCustomerTbl.get({
     email: payload.customer.email
   });
-  if (!customer || !customer.length()) {
+  if (!customer || !customer.length) {
     await signUpCustomerTbl.add(data);
     return true;
   }

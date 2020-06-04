@@ -18,6 +18,7 @@ import {
 } from '../../../constants/payment';
 import SubTotal from '../Subtotal/SubTotal';
 import ModalStyle from '../../styles/modal.scss';
+import Close from '../../commons/x';
 
 class CardPayment extends Component {
   props: Props;
@@ -98,13 +99,22 @@ class CardPayment extends Component {
     );
     const { resultCharge, isLoadingCharging } = cardPayment;
     return (
-      <div className="row">
-        <Modal
-          overlayClassName={ModalStyle.Overlay}
-          className={ModalStyle.Modal}
-          isOpen
-          contentLabel="Example Modal"
-        >
+      <Modal
+        overlayClassName={ModalStyle.Overlay}
+        className={ModalStyle.Modal}
+        shouldCloseOnOverlayClick
+        onRequestClose={() => updateIsShowCardPaymentModel(false)}
+        isOpen
+        contentLabel="Example Modal"
+      >
+        <div className={ModalStyle.modalContentLg}>
+          <div
+            className={ModalStyle.close}
+            onClick={() => updateIsShowCardPaymentModel(false)}
+            role="presentation"
+          >
+            <Close />
+          </div>
           <div className="modal-content" style={{ minHeight: '300px' }}>
             <div className="modal-header">
               <h5 className="modal-title">Payment</h5>
@@ -154,7 +164,21 @@ class CardPayment extends Component {
                           cardPaymentType === 'cash' ? 'active' : ''
                         }`}
                       >
-                        Cash
+                        Cash{' '}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="17"
+                          height="17"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="feather feather-navigation"
+                        >
+                          <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+                        </svg>
                       </button>
                     </div>
                   </div>
@@ -167,13 +191,6 @@ class CardPayment extends Component {
             </div>
             {cardPaymentType ? (
               <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-outline-secondary"
-                  onClick={() => updateIsShowCardPaymentModel(false)}
-                >
-                  Close
-                </button>
                 <button
                   disabled={
                     cardPaymentType === '' ||
@@ -193,15 +210,17 @@ class CardPayment extends Component {
                   ) : (
                     <></>
                   )}
-                  Accept {loadingPreparingOrder === false ? grandTotal : ''}
+                  <span className="font-weight-bold">
+                    Accept {loadingPreparingOrder === false ? grandTotal : ''}
+                  </span>
                 </button>
               </div>
             ) : (
               <></>
             )}
           </div>
-        </Modal>
-      </div>
+        </div>
+      </Modal>
     );
   }
 }

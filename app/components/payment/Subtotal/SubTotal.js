@@ -76,7 +76,7 @@ class SubTotal extends Component<Props> {
     // const isShowValidateCode = !!discountCode;
     if (isShowInputGiftCard) {
       return (
-        <div className="input-group mb-3">
+        <div className="input-group mb-3 input-group-sm">
           <input
             value={giftCardCode}
             onChange={this.giftCardAction}
@@ -115,7 +115,7 @@ class SubTotal extends Component<Props> {
     const discountCodeValue = discountCode || '';
     if (isShowInputCouponCode) {
       return (
-        <div className="input-group mb-3">
+        <div className="input-group mb-3 input-group-sm">
           <input
             value={discountCodeValue}
             onChange={this.discountCodeAction}
