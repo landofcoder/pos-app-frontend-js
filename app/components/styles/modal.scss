@@ -6,7 +6,14 @@
   right: auto;
   bottom: auto;
   margin-right: -50%;
-  transform: translate(-50%, -50%)
+  transform: translate(-50%, -50%);
+}
+
+.CategoryModal {
+  top: 0;
+  left: 0;
+  height: 100%;
+  transform: none;
 }
 
 .Overlay {

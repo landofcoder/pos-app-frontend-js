@@ -9,7 +9,6 @@ import ChevronRight from '../chevron-right';
 import X from '../x';
 import Left from '../left';
 import Styles from './categories.scss';
-import { clickOutToCloseModal } from '../../../common/settings';
 
 type Props = {
   allCategories: Object,
@@ -27,7 +26,6 @@ class Categories extends Component<Props> {
 
   componentDidMount(): void {
     document.addEventListener('keydown', this.escFunction, false);
-    clickOutToCloseModal('#wrap-categories-component', this.closeModel);
   }
 
   componentWillUnmount() {

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Modal from 'react-modal';
 import ListCart from './ListCart/ListCart';
 import Styles from './pos.scss';
 import CommonStyle from './styles/common.scss';
@@ -15,7 +16,6 @@ import Configuration from './product-types/Configuration';
 import Bundle from './product-types/Bundle';
 import Grouped from './product-types/Grouped';
 import CartCustomer from './customer/CartCustomer';
-import SignUpCustomer from './customer/SignUpCustomer/SignUpCustomer';
 import CashPanel from './payment/Cash/Cash';
 import CardPayment from './payment/CardPayment/CardPayment';
 import Receipt from './payment/Receipt/Receipt';
@@ -59,7 +59,6 @@ type Props = {
   emptyCart: () => void,
   isLoadingSearchHandle: boolean,
   isShowHaveNoSearchResultFound: boolean,
-  isOpenSignUpCustomer: boolean,
   internetConnected: boolean,
   posCommandIsFetchingProduct: boolean,
   isOpenCategoriesModel: boolean,
@@ -312,6 +311,11 @@ export default class Pos extends Component<Props, State> {
     checkoutAction();
   };
 
+  closeCategoriesModal = () => {
+    const { toggleModelCategories } = this.props;
+    toggleModelCategories(false);
+  };
+
   render() {
     const {
       mainProductListLoading,
@@ -321,7 +325,6 @@ export default class Pos extends Component<Props, State> {
       isLoadingSearchHandle,
       isShowHaveNoSearchResultFound,
       internetConnected,
-      isOpenSignUpCustomer,
       productList,
       holdAction,
       cartCurrent,
@@ -349,6 +352,16 @@ export default class Pos extends Component<Props, State> {
     const { isShowingProductOption } = productOption;
     return (
       <>
+        <Modal
+          overlayClassName={ModalStyle.Overlay}
+          shouldCloseOnOverlayClick
+          onRequestClose={this.closeCategoriesModal}
+          className={`${ModalStyle.Modal} ${ModalStyle.CategoryModal}`}
+          isOpen={isOpenCategoriesModel}
+          contentLabel="Example Modal"
+        >
+          <Categories />
+        </Modal>
         <div
           data-tid="container"
           data-theme={
@@ -357,16 +370,6 @@ export default class Pos extends Component<Props, State> {
               : 'default'
           }
         >
-          <div
-            role="presentation"
-            className={`${ModalStyle.modal}`}
-            style={{
-              display: isOpenCategoriesModel ? 'block' : 'none',
-              paddingTop: 0
-            }}
-          >
-            <Categories />
-          </div>
           {/* OPTION MODEL (PRODUCT CONFIGURABLE, PRODUCT BUNDLE, PRODUCT GROUPED) */}
           <div
             id="modalProductOption"
@@ -605,7 +608,6 @@ export default class Pos extends Component<Props, State> {
             </div>
             <div className="col-md-2 pr-1 pl-0">
               <CartCustomer />
-              {isOpenSignUpCustomer ? <SignUpCustomer /> : null}
             </div>
             <div className="col-md-3 pl-0 pr-0">
               {lock ? (
