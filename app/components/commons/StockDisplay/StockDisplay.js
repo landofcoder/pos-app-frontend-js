@@ -44,7 +44,7 @@ class StockDisplay extends Component {
       const stockItem = JSON.parse(listStock[i]);
       const stockCode = stockItem.code;
       if (stockCode === outletSource) {
-        return stockItem.total_qty ? stockItem.total_qty : stockItem.quantity;
+        return stockItem.quantity ? stockItem.quantity : '--';
       }
     }
     return 0;
@@ -97,9 +97,7 @@ class StockDisplay extends Component {
                           )}
                         </span>
                         <span className="badge badge-primary badge-pill">
-                          {itemAssign.total_qty
-                            ? itemAssign.total_qty
-                            : itemAssign.quantity}
+                          {itemAssign.quantity ? itemAssign.quantity : '--'}
                         </span>
                       </li>
                     );

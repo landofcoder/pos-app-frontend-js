@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import {
   getProductByCategory,
   toggleModelCategories,
-  findChildCategoryByParentId
+  findChildCategoryByParentId,
+  updateCategoriesParentsSession
 } from '../../../actions/homeAction';
 import ChevronRight from '../chevron-right';
 import X from '../x';
@@ -12,17 +13,15 @@ import Styles from './categories.scss';
 
 type Props = {
   allCategories: Object,
+  categoriesParentsSession: Array,
   getProductByCategory: (payload: string) => void,
   toggleModelCategories: (payload: boolean) => void,
-  findChildCategoryByParentId: (payload: number) => void
+  findChildCategoryByParentId: (payload: number) => void,
+  updateCategoriesParentsSession: (payload: Array) => void
 };
 
 class Categories extends Component<Props> {
   props: Props;
-
-  state = {
-    listParent: []
-  };
 
   componentDidMount(): void {
     document.addEventListener('keydown', this.escFunction, false);
@@ -31,11 +30,6 @@ class Categories extends Component<Props> {
   componentWillUnmount() {
     document.removeEventListener('keydown', this.escFunction, false);
   }
-
-  closeModel = () => {
-    const { toggleModelCategories } = this.props;
-    toggleModelCategories(false);
-  };
 
   escFunction = event => {
     if (event.keyCode === 27) {
@@ -84,14 +78,21 @@ class Categories extends Component<Props> {
   gotoChildrenCategory = item => {
     const cateId = item.id;
     const childParent = item.children_data;
-    const { getProductByCategory } = this.props;
+    const { getProductByCategory, categoriesParentsSession } = this.props;
     if (childParent && childParent.length > 0) {
-      const { findChildCategoryByParentId } = this.props;
+      const {
+        findChildCategoryByParentId,
+        updateCategoriesParentsSession
+      } = this.props;
       // Set parent category to state
       findChildCategoryByParentId(cateId);
+
+      const listParentAssign = [...categoriesParentsSession];
       // eslint-disable-next-line react/destructuring-assignment,react/no-access-state-in-setstate
-      const listParent = this.state.listParent.concat(item);
-      this.setState({ listParent });
+      const listParent = listParentAssign.concat(item);
+
+      // Update categoriesParentsSession
+      updateCategoriesParentsSession(listParent);
     } else {
       getProductByCategory(cateId);
     }
@@ -104,11 +105,14 @@ class Categories extends Component<Props> {
       // Get all products and paging
       getProductByCategory(0);
     } else {
+      const {
+        categoriesParentsSession,
+        updateCategoriesParentsSession
+      } = this.props;
       // Get parent from current allCategories
       const { findChildCategoryByParentId } = this.props;
-      const { listParent } = this.state;
 
-      const listParentAssign = [...listParent];
+      const listParentAssign = [...categoriesParentsSession];
 
       // Get last item of listParent
       const lastIndex = listParentAssign.length - 1;
@@ -120,7 +124,9 @@ class Categories extends Component<Props> {
       // Remove last item
       // eslint-disable-next-line react/destructuring-assignment,react/no-access-state-in-setstate
       listParentAssign.splice(lastIndex, 1);
-      this.setState({ listParent: listParentAssign });
+
+      // Update categoriesParentsSession
+      updateCategoriesParentsSession(listParentAssign);
     }
   };
 
@@ -134,7 +140,7 @@ class Categories extends Component<Props> {
 
   render() {
     const { toggleModelCategories, allCategories } = this.props;
-    let childrenData = [];
+    let childrenData;
     const rootLevel = this.isRootCategory();
     // If root object category
     if (allCategories.level === 1 || allCategories.level === 2) {
@@ -209,13 +215,16 @@ function mapDispatchToProps(dispatch) {
     getProductByCategory: payload => dispatch(getProductByCategory(payload)),
     toggleModelCategories: payload => dispatch(toggleModelCategories(payload)),
     findChildCategoryByParentId: payload =>
-      dispatch(findChildCategoryByParentId(payload))
+      dispatch(findChildCategoryByParentId(payload)),
+    updateCategoriesParentsSession: payload =>
+      dispatch(updateCategoriesParentsSession(payload))
   };
 }
 
 function mapStateToProps(state) {
   return {
-    allCategories: state.mainRd.allCategories
+    allCategories: state.mainRd.allCategories,
+    categoriesParentsSession: state.mainRd.categoriesParentsSession
   };
 }
 
