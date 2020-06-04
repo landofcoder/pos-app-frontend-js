@@ -373,7 +373,7 @@ export default class Pos extends Component<Props, State> {
           {isShowingProductOption ? this.switchingProductSettings() : <></>}
           {isShowCashPaymentModel ? <CashPanel /> : <></>}
           {isShowCardPaymentModal ? <CardPayment /> : <></>}
-
+          {isShowModalItemEditCart ? <EditCart /> : <></>}
           {/* RECEIPT MODAL */}
           <div
             id="receiptModal"
@@ -384,25 +384,6 @@ export default class Pos extends Component<Props, State> {
               {isOpenReceiptModal ? <Receipt /> : <></>}
             </div>
           </div>
-          {/* Edit cart item model */}
-          {isShowModalItemEditCart ? (
-            <>
-              <div
-                id="editCartModelModal"
-                className={ModalStyle.modal}
-                style={{ display: 'block' }}
-              >
-                <div
-                  className={ModalStyle.modalContent}
-                  style={{ width: '450px' }}
-                >
-                  <EditCart />
-                </div>
-              </div>
-            </>
-          ) : (
-            <></>
-          )}
           <div className="row" id={Styles.wrapPostContainerId}>
             <div className="col-md-9 pt-3 pl-0 pr-0">
               <div

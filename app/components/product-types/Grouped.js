@@ -1,18 +1,22 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Modal from 'react-modal';
 import {
   updateIsShowingProductOption,
   onGroupedChangeQty,
   addToCart
 } from '../../actions/homeAction';
 import { formatCurrencyCode } from '../../common/settings';
+import ModalStyle from '../styles/modal.scss';
+import Close from '../commons/x';
 
 type Props = {
   optionValue: Object,
   updateIsShowingProductOption: (payload: string) => void,
   onGroupedChangeQty: (payload: string) => void,
   addToCart: (payload: Object) => void,
-  currencyCode: string
+  currencyCode: string,
+  isShowingProductOption: boolean
 };
 
 class Grouped extends Component<Props> {
@@ -75,52 +79,45 @@ class Grouped extends Component<Props> {
   };
 
   render() {
-    const { optionValue, updateIsShowingProductOption } = this.props;
-    const isLoading = !optionValue;
+    const {
+      optionValue,
+      updateIsShowingProductOption,
+      isShowingProductOption
+    } = this.props;
     return (
-      <div className="modal-content">
-        {isLoading ? (
-          <>
-            <div className="modal-body">
-              <div className="d-flex justify-content-center">
-                <div
-                  className="spinner-border text-secondary spinner-border-sm"
-                  role="status"
-                >
-                  <span className="sr-only">Loading...</span>
-                </div>
-              </div>
-            </div>
-            <div className="modal-footer">
-              <div className="col-md-12">
-                <button
-                  type="button"
-                  onClick={() => updateIsShowingProductOption(false)}
-                  className="btn btn-outline-dark"
-                >
-                  CANCEL
-                </button>
-              </div>
-            </div>
-          </>
-        ) : (
-          <div>
-            <div className="modal-header">
+      <Modal
+        overlayClassName={ModalStyle.Overlay}
+        shouldCloseOnOverlayClick
+        onRequestClose={() => updateIsShowingProductOption(false)}
+        className={`${ModalStyle.Modal}`}
+        isOpen={isShowingProductOption}
+        contentLabel="Example Modal"
+      >
+        <div className={ModalStyle.modalContent}>
+          <div
+            className={ModalStyle.close}
+            role="presentation"
+            onClick={() => updateIsShowingProductOption(false)}
+          >
+            <Close />
+          </div>
+          <div className="card">
+            <div className="card-body">
               <h5
-                className="modal-title"
+                className="card-title"
                 id="exampleModalLongTitle"
                 dangerouslySetInnerHTML={{ __html: optionValue.name }}
-              ></h5>
-            </div>
-            <div className="modal-body">
+              />
               {optionValue.items.map((item, index) => {
                 return (
                   <div className="form-group" key={index}>
                     <div className="row">
                       <div
                         className="col-md-6"
-                        dangerouslySetInnerHTML={{ __html: item.product.name }}
-                      ></div>
+                        dangerouslySetInnerHTML={{
+                          __html: item.product.name
+                        }}
+                      />
                       <div className="col-md-6">
                         <div className="form-group input-group-sm">
                           <input
@@ -140,36 +137,26 @@ class Grouped extends Component<Props> {
                 );
               })}
             </div>
-            <div className="modal-footer">
-              <div className="col-md-6 p-0">
-                <button
-                  type="button"
-                  onClick={() => updateIsShowingProductOption(false)}
-                  className="btn btn-outline-dark btn-block btn-sm"
-                >
-                  CANCEL
-                </button>
-              </div>
-              <div className="col-md-6 p-0">
-                <button
-                  onClick={this.addToCart}
-                  type="button"
-                  className="btn btn-primary btn-block btn-sm"
-                >
-                  ADD TO CART
-                </button>
-              </div>
+            <div className="card-footer text-muted">
+              <button
+                onClick={this.addToCart}
+                type="button"
+                className="btn btn-outline-primary btn-block"
+              >
+                Add to cart
+              </button>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      </Modal>
     );
   }
 }
 
 function mapStateToProps(state) {
   return {
-    optionValue: state.mainRd.productOption.optionValue
+    optionValue: state.mainRd.productOption.optionValue,
+    isShowingProductOption: state.mainRd.productOption.isShowingProductOption
   };
 }
 
