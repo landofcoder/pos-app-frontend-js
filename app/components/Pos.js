@@ -28,6 +28,7 @@ import Menu from './commons/menu';
 import Plus from './commons/plus';
 import License from './License';
 import StockDisplay from './commons/StockDisplay/StockDisplay';
+import Settings from './commons/settings';
 
 type Props = {
   productList: Array<Object>,
@@ -548,13 +549,13 @@ export default class Pos extends Component<Props, State> {
             </div>
           </div>
           <div className={Styles.wrapActionSecondLine}>
-            <div className="col-md-2 pl-0 pr-1">
+            <div className="col-md-1 pl-0 pr-1 text-right">
               <button
                 type="button"
-                className="btn btn-outline-dark btn-block"
+                className="btn btn-outline-dark"
                 onClick={this.handleRedirectToAccount}
               >
-                Account
+                <Settings/>
               </button>
             </div>
             <div className="col-md-2 pl-0 pr-1">
