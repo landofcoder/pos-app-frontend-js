@@ -7,6 +7,7 @@ import CashierInfo from './CashierInfo/CashierInfo';
 import ConnectDevices from './ConnectDevices/ConnectDevices';
 import SyncManager from './SyncManager/SyncManager';
 import { POS } from '../../constants/routes.json';
+import Back from '../commons/back';
 
 class Account extends Component {
   props: Props;
@@ -56,7 +57,7 @@ class Account extends Component {
                   to={POS}
                   className="list-group-item-light list-group-item list-group-item-action"
                 >
-                  Back
+                  <Back />
                 </Link>
                 <button
                   type="button"
