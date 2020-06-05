@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Modal from 'react-modal';
 import {
   updateIsShowingProductOption,
   onGroupedChangeQty,
@@ -7,12 +8,15 @@ import {
   createCustomizeProduct
 } from '../../actions/homeAction';
 import { formatCurrencyCode } from '../../common/settings';
+import ModalStyle from '../styles/modal.scss';
+import Close from '../commons/x';
 
 type Props = {
   updateIsShowingProductOption: (payload: string) => void,
   onGroupedChangeQty: (payload: string) => void,
   currencyCode: string,
-  createCustomizeProduct: (payload: object) => void
+  createCustomizeProduct: (payload: object) => void,
+  isShowingProductOption: boolean
 };
 
 class CustomizeProduct extends Component<Props> {
@@ -112,103 +116,112 @@ class CustomizeProduct extends Component<Props> {
   };
 
   render() {
-    const { updateIsShowingProductOption } = this.props;
-    const { quantity, name, price, note, tax } = this.state;
+    const { updateIsShowingProductOption, isShowingProductOption } = this.props;
+    const { quantity, name, price, note } = this.state;
     return (
       <div className="modal-content">
-        <div>
-          <div className="modal-header">
-            <h5 className="modal-title" id="exampleModalLongTitle">
-              Custom Sale
-            </h5>
+        <Modal
+          overlayClassName={ModalStyle.Overlay}
+          shouldCloseOnOverlayClick
+          onRequestClose={() => updateIsShowingProductOption(false)}
+          className={`${ModalStyle.Modal}`}
+          isOpen={isShowingProductOption}
+          contentLabel="Example Modal"
+        >
+          <div className={ModalStyle.modalContent}>
+            <div
+              className={ModalStyle.close}
+              role="presentation"
+              onClick={() => updateIsShowingProductOption(false)}
+            >
+              <Close />
+            </div>
+            <div className="card">
+              <div className="card-body">
+                <h5 className="card-title">Custom Sale</h5>
+                <div className="form-group">
+                  <div className="row">
+                    <div className="col-12">
+                      <label htmlFor="input-name">Name</label>
+                    </div>
+                    <div className="col-12 input-group-sm">
+                      <input
+                        onChange={this.actionNameValue}
+                        className="col form-control"
+                        id="input-name"
+                        value={name}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="form-group">
+                  <div className="row">
+                    <div className="col-6">
+                      <label htmlFor="input-price">Price</label>
+                    </div>
+                    <div className="col-6">
+                      <label htmlFor="input-quantity">Quantity</label>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-6 input-group-sm">
+                      <input
+                        type="number"
+                        className="col form-control"
+                        id="input-price"
+                        onChange={this.actionPriceValue}
+                        value={price}
+                      />
+                    </div>
+                    <div className="col-6 input-group-sm">
+                      <input
+                        type="number"
+                        className="col form-control"
+                        id="input-quantity"
+                        onChange={this.actionQuantityValue}
+                        value={quantity}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="form-group">
+                  <div className="row">
+                    <div className="col-12">
+                      <label htmlFor="input-note">Note</label>
+                    </div>
+                    <div className="col-12 input-group-sm">
+                      <input
+                        className="col form-control"
+                        id="input-note"
+                        onChange={this.actionNoteValue}
+                        value={note}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="card-footer">
+                <button
+                  onClick={this.addToCart}
+                  type="button"
+                  className="btn btn-outline-primary btn-block"
+                  disabled={!this.additionalAddToCard()}
+                >
+                  Add to cart
+                </button>
+              </div>
+            </div>
           </div>
-          <div className="modal-body">
-            <div className="form-group">
-              <div className="row">
-                <div className="col-12">
-                  <label htmlFor="input-name">Name</label>
-                </div>
-                <div className="col-12 input-group-sm">
-                  <input
-                    onChange={this.actionNameValue}
-                    className="col form-control"
-                    id="input-name"
-                    value={name}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="form-group">
-              <div className="row">
-                <div className="col-6">
-                  <label htmlFor="input-price">Price</label>
-                </div>
-                <div className="col-6">
-                  <label htmlFor="input-quantity">Quantity</label>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-6 input-group-sm">
-                  <input
-                    type="number"
-                    className="col form-control"
-                    id="input-price"
-                    onChange={this.actionPriceValue}
-                    value={price}
-                  />
-                </div>
-                <div className="col-6 input-group-sm">
-                  <input
-                    type="number"
-                    className="col form-control"
-                    id="input-quantity"
-                    onChange={this.actionQuantityValue}
-                    value={quantity}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="form-group">
-              <div className="row">
-                <div className="col-12">
-                  <label htmlFor="input-note">Note</label>
-                </div>
-                <div className="col-12 input-group-sm">
-                  <input
-                    className="col form-control"
-                    id="input-note"
-                    onChange={this.actionNoteValue}
-                    value={note}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="modal-footer">
-            <div className="col-md-6 pr-0 pl-0">
-              <button
-                type="button"
-                onClick={() => updateIsShowingProductOption(false)}
-                className="btn btn-outline-dark btn-block btn-sm"
-              >
-                Cancel
-              </button>
-            </div>
-            <div className="col-md-6 pr-0 pl-0">
-              <button
-                onClick={this.addToCart}
-                type="button"
-                className="btn btn-primary btn-block btn-sm"
-                disabled={!this.additionalAddToCard()}
-              >
-                Add to cart
-              </button>
-            </div>
-          </div>
-        </div>
+        </Modal>
       </div>
     );
   }
+}
+
+function mapStateToProps(state) {
+  return {
+    isShowingProductOption: state.mainRd.productOption.isShowingProductOption
+  };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -221,6 +234,6 @@ function mapDispatchToProps(dispatch) {
   };
 }
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(CustomizeProduct);
