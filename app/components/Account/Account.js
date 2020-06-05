@@ -6,6 +6,7 @@ import OrderHistory from './OrderHistory/OrderHistory';
 import CashierInfo from './CashierInfo/CashierInfo';
 import ConnectDevices from './ConnectDevices/ConnectDevices';
 import SyncManager from './SyncManager/SyncManager';
+import CashDrawer from './CashDrawer/CashDrawer';
 import { POS } from '../../constants/routes.json';
 import Back from '../commons/back';
 
@@ -34,6 +35,8 @@ class Account extends Component {
         return <ConnectDevices />;
       case 'syncManager':
         return <SyncManager />;
+      case 'cashDrawer':
+        return <CashDrawer />;
       default:
         return null;
     }
@@ -52,22 +55,12 @@ class Account extends Component {
         <div>
           <div className="row pt-4">
             <div className="col-3">
-              <div className="list-group">
-                <Link
-                  to={POS}
-                  className="list-group-item-light list-group-item list-group-item-action"
-                >
+              <div className="col-12 mb-2 pl-0">
+                <Link className="btn btn-light btn-sm" to={POS}>
                   <Back />
                 </Link>
-                <button
-                  type="button"
-                  onClick={() => this.switchingComponent('cashierInfo')}
-                  className={`list-group-item list-group-item-action ${
-                    viewSelected === 'cashierInfo' ? 'active' : ''
-                  }`}
-                >
-                  Account Setting
-                </button>
+              </div>
+              <div className="list-group list-group-flush">
                 <button
                   type="button"
                   onClick={() => this.switchingComponent('ordersHistory')}
@@ -84,7 +77,25 @@ class Account extends Component {
                     viewSelected === 'syncManager' ? 'active' : ''
                   }`}
                 >
-                  Sync data
+                  Sync Data
+                </button>
+                <button
+                  type="button"
+                  onClick={() => this.switchingComponent('cashDrawer')}
+                  className={`list-group-item list-group-item-action ${
+                    viewSelected === 'cashDrawer' ? 'active' : ''
+                  }`}
+                >
+                  Cash drawer
+                </button>
+                <button
+                  type="button"
+                  onClick={() => this.switchingComponent('cashierInfo')}
+                  className={`list-group-item list-group-item-action ${
+                    viewSelected === 'cashierInfo' ? 'active' : ''
+                  }`}
+                >
+                  Account Setting
                 </button>
                 <button
                   type="button"
