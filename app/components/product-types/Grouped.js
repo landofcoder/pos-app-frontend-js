@@ -62,7 +62,7 @@ class Grouped extends Component<Props> {
   preAddToCart = (product, qty) => {
     const productReAssign = Object.assign({}, product);
     const { addToCart } = this.props;
-    productReAssign.qty = qty;
+    productReAssign.pos_qty = qty;
     addToCart(productReAssign);
   };
 
