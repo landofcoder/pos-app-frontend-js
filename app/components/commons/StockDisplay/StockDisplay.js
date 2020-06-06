@@ -36,7 +36,12 @@ class StockDisplay extends Component {
     this.setState({ stockDetailOpen: true });
   };
 
-  getInventoryByOutletWareHouse(stock) {
+  getInventoryByOutletWareHouse(item) {
+    if (item.type_id === 'configurable') {
+      return '--';
+    }
+
+    const stock = item.stockItem;
     const { detailOutlet } = this.props;
     const listStock = stock && stock.stock ? stock.stock : [];
     const outletSource = detailOutlet.select_source;
@@ -51,7 +56,8 @@ class StockDisplay extends Component {
   }
 
   render() {
-    const { stockItem, detailOutlet } = this.props;
+    const { detailOutlet, item } = this.props;
+    const stockItem = item.stock;
     const outletSource = detailOutlet.select_source;
     const stockList = stockItem && stockItem.stock ? stockItem.stock : [];
     const { stockDetailOpen } = this.state;
@@ -116,7 +122,7 @@ class StockDisplay extends Component {
             <Stock />
           </div>
           <div className={Styles.stockNumber}>
-            <span>{this.getInventoryByOutletWareHouse(stockItem)}</span>
+            <span>{this.getInventoryByOutletWareHouse(item)}</span>
           </div>
         </div>
       </>

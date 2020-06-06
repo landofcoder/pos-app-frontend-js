@@ -248,7 +248,7 @@ export default class Pos extends Component<Props, State> {
                 className="card-body"
                 style={{ paddingTop: '5px', paddingBottom: '5px' }}
               >
-                <StockDisplay stockItem={item.stock} />
+                <StockDisplay item={item} />
                 <a
                   role="presentation"
                   className={Styles.wrapImageBlock}
@@ -555,7 +555,7 @@ export default class Pos extends Component<Props, State> {
                 className="btn btn-outline-dark"
                 onClick={this.handleRedirectToAccount}
               >
-                <Settings/>
+                <Settings />
               </button>
             </div>
             <div className="col-md-2 pl-0 pr-1">
