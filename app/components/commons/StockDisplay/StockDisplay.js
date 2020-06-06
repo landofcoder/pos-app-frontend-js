@@ -138,7 +138,8 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state) {
   return {
-    detailOutlet: state.mainRd.generalConfig.detail_outlet
+    detailOutlet: state.mainRd.generalConfig.detail_outlet,
+    productStock: state.mainRd.productStock
   };
 }
 

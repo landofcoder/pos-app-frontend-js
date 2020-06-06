@@ -195,6 +195,10 @@ const initialState = {
       status: false,
       product: {}
     }
+  },
+  productStock: {
+    isLoadingDetailStockByVariantProducts: false, // If product is configuration then will find stock by all variants
+    listProducts: [] // New list product from list product variants with injected stock inventory
   }
 };
 

@@ -26,14 +26,15 @@ function* synProductInventoryHandle(item) {
 }
 
 export async function injectInventory(listProduct) {
-  const arrAssign = [...listProduct];
+  const listProductAssign = [...listProduct];
   for (let i = 0; i < listProduct.length; i += 1) {
     // eslint-disable-next-line no-await-in-loop
-    arrAssign[i].stock = await findBySku(listProduct[i]);
+    listProductAssign[i].stock = await findBySku(listProduct[i]);
   }
-  return arrAssign;
+  return listProductAssign;
 }
 
 async function findBySku(item) {
+  console.log('item product:', item);
   return inventoryIndexTbl.where({ sku: item.sku }).first();
 }
