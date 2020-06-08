@@ -303,7 +303,7 @@ class OrderHistory extends Component<Props> {
                 type="button"
                 className="btn btn-outline-dark btn btn-block"
                 onClick={() => {
-                  this.noteOrderAction();
+                  this.toggleOrderAction(ADD_NOTE_ACTION_ORDER);
                 }}
               >
                 Note
@@ -328,9 +328,7 @@ class OrderHistory extends Component<Props> {
                 type="button"
                 className="btn btn-outline-dark btn btn-block"
                 onClick={() => {
-                  orderAction({
-                    action: REFUND_ACTION_ORDER
-                  });
+                  this.toggleOrderAction(REFUND_ACTION_ORDER);
                 }}
               >
                 Refund
@@ -348,9 +346,9 @@ class OrderHistory extends Component<Props> {
     syncDataClient({ type, id });
   };
 
-  noteOrderAction = () => {
+  toggleOrderAction = type => {
     const { toggleModalActionOrder } = this.props;
-    toggleModalActionOrder({ type: ADD_NOTE_ACTION_ORDER, status: true });
+    toggleModalActionOrder({ type, status: true });
   };
 
   render() {

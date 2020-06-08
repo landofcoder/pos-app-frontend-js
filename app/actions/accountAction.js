@@ -55,11 +55,17 @@ export function actionLoadingOrderDetailOffline(payload) {
 
 export function orderAction(payload) {
   return {
-    type: type.ORDER_ACTION,
+    type: type.SET_ORDER_ACTION,
     payload
   };
 }
 
+export function getOrderAction(payload) {
+  return {
+    type: type.GET_ORDER_ACTION,
+    payload
+  };
+}
 export function getSyncStatusFromLocal() {
   return {
     type: type.GET_SYNC_STATUS_FROM_LOCAL

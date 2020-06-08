@@ -162,7 +162,10 @@ const initialState = {
   isOpenFindCustomer: false,
   isOpenCategoriesModel: false,
   toggleActionOrder: {
-    isOpenToggleActionOrder: false
+    isOpenToggleActionOrder: false,
+    isLoadingSetOrderAction: false,
+    isLoadingGetDataOrderAction: false,
+    typeOpenToggle: null
   },
   isOpenSignUpCustomer: false,
   isOpenCalculator: false,
@@ -326,8 +329,12 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.isOpenFindCustomer = action.payload;
         break;
       case types.TOGGLE_MODAL_ACTION_ORDER:
-        draft.toggleActionOrder.isOpenToggleActionOrder = action.payload.status;
-        draft.toggleActionOrder[action.payload.type] = action.payload.status;
+        if (action.payload.status) {
+          draft.toggleActionOrder.isOpenToggleActionOrder = true;
+          draft.toggleActionOrder.typeOpenToggle = action.payload.type;
+        } else {
+          draft.toggleActionOrder = {};
+        }
         break;
       case types.LOADING_NOTE_ACTION_ORDER:
         draft.isLoadingNoteOrderAction = action.payload;
