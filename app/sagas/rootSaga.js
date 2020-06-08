@@ -953,14 +953,6 @@ function* reorderAction(payload) {
 
 function* orderActionOffline(payload) {
   const orderDetail = yield select(orderDetailLocalDb);
-  const orderListResult = yield select(orderList);
-  let index;
-  // tim index cua order offline de xoa do viec ghep order online va offline nen khong the bat index cua item nay
-  for (let i = 0; i < orderListResult.length; i += 1) {
-    if (orderListResult[i].id) {
-      if (orderListResult[i].id === orderDetail.id) index = i;
-    }
-  }
   switch (payload.action) {
     case types.CANCEL_ACTION_ORDER:
       break;

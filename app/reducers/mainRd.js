@@ -336,9 +336,6 @@ const mainRd = (state: Object = initialState, action: Object) =>
           draft.toggleActionOrder = {};
         }
         break;
-      case types.LOADING_NOTE_ACTION_ORDER:
-        draft.isLoadingNoteOrderAction = action.payload;
-        break;
       case types.TOGGLE_MODAL_SIGN_UP_CUSTOMER:
         draft.isOpenSignUpCustomer = action.payload;
         break;
