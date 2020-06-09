@@ -18,7 +18,8 @@ type Props = {
   orderAction: (payload: object) => void,
   getOrderAction: (payload: object) => void,
   isLoadingSetOrderAction: boolean,
-  isLoadingGetOrderAction: boolean
+  isLoadingGetOrderAction: boolean,
+  dataActionOrder: boolean
 };
 
 class DetailOrderAction extends Component<Props> {
@@ -87,7 +88,7 @@ class DetailOrderAction extends Component<Props> {
       case ADD_NOTE_ACTION_ORDER:
         return this.showBodyAddNote();
       case REFUND_ACTION_ORDER:
-        return this.showBodyReorder();
+        return this.showBodyRefund();
       default:
         return null;
     }
@@ -110,7 +111,10 @@ class DetailOrderAction extends Component<Props> {
     }
   };
 
-  showBodyReorder = () => {
+  showBodyRefund = () => {
+    const { dataActionOrder } = this.props;
+    console.log('hi');
+    console.log(dataActionOrder);
     return 'Hello world';
   };
 
@@ -145,19 +149,20 @@ class DetailOrderAction extends Component<Props> {
           <div className={ModalStyle.modalContentMd}>
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">
-                  {isLoadingGetOrderAction ? (
-                    <span
-                      className="spinner-border spinner-border-sm"
-                      role="status"
-                      aria-hidden="true"
-                    ></span>
-                  ) : (
-                    this.showTitleOrderAction()
-                  )}
-                </h5>
+                <h5 className="modal-title">{this.showTitleOrderAction()}</h5>
               </div>
-              <div className="modal-body">{this.showBodyOrderAction()}</div>
+              <div className="modal-body">
+                {isLoadingGetOrderAction ? (
+                  <div
+                    className="spinner-border spinner-border-sm text-center"
+                    role="status"
+                  >
+                    <span className="sr-only">Loading...</span>
+                  </div>
+                ) : (
+                  this.showBodyOrderAction()
+                )}
+              </div>
               <div className="modal-footer">
                 <div className="col-md-3 p-0">
                   <button
@@ -184,7 +189,7 @@ class DetailOrderAction extends Component<Props> {
                     onClick={() => toggleModalActionOrder(false)}
                     className="btn btn-secondary btn-block"
                   >
-                    CLOSE
+                    Close
                   </button>
                 </div>
               </div>
@@ -201,7 +206,8 @@ const mapStateToProps = state => ({
   isLoadingSetOrderAction:
     state.mainRd.toggleActionOrder.isLoadingSetOrderAction,
   isLoadingGetOrderAction:
-    state.mainRd.toggleActionOrder.isLoadingGetDataOrderAction
+    state.mainRd.toggleActionOrder.isLoadingGetDataOrderAction,
+  dataActionOrder: state.mainRd.toggleActionOrder.dataActionOrder
 });
 
 const mapDispatchToProps = dispatch => {

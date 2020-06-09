@@ -162,6 +162,7 @@ const initialState = {
   isOpenFindCustomer: false,
   isOpenCategoriesModel: false,
   toggleActionOrder: {
+    dataActionOrder: {},
     isOpenToggleActionOrder: false,
     isLoadingSetOrderAction: false,
     isLoadingGetDataOrderAction: false,
@@ -328,6 +329,12 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.TOGGLE_MODAL_CUSTOMER:
         draft.isOpenFindCustomer = action.payload;
         break;
+      case types.RECEIVED_GET_ACTION_ORDER:
+        // bug in case is if we trans toggle to another while data is calling it will wrong show display and stop app when data come back
+        if (action.payload.type === draft.toggleActionOrder.typeOpenToggle) {
+          draft.toggleActionOrder.dataActionOrder = action.payload.data;
+        }
+        break;
       case types.TOGGLE_MODAL_ACTION_ORDER:
         if (action.payload.status) {
           draft.toggleActionOrder.isOpenToggleActionOrder = true;
@@ -438,6 +445,9 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.LOADING_ORDER_HISTORY_DETAIL_OFFLINE:
         draft.isLoadingOrderHistoryDetailOffline = action.payload;
+        break;
+      case types.LOADING_GET_ACTION_ORDER:
+        draft.toggleActionOrder.isLoadingGetDataOrderAction = action.payload;
         break;
       case types.TOGGLE_MODAL_ORDER_DETAIL:
         draft.isOpenDetailOrder = action.payload.isShow;

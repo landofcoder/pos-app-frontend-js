@@ -956,7 +956,7 @@ function* orderActionOffline(payload) {
   const orderDetail = yield select(orderDetailLocalDb);
   console.log(orderDetail);
   const { orderId } = orderDetail.items.syncData;
-  const params = { orderId, type: payload.action };
+  const params = { data: { orderId }, type: payload.action };
   let dataActionOrder;
   switch (payload.action) {
     case types.CANCEL_ACTION_ORDER:
