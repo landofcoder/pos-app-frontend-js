@@ -6,8 +6,9 @@ import * as typesAuthen from '../constants/authen.json';
 import {
   getDiscountForQuoteService,
   createOrderLocal,
-  noteOrderActionService,
-  getRewardPointService
+  // noteOrderActionService,
+  getRewardPointService,
+  getActionOrder
 } from './services/cart-service';
 import { stripeMakePayment } from './services/payments/stripe-payment';
 import { authorizeMakePayment } from './services/payments/authorize-payment';
@@ -923,7 +924,7 @@ function* noteOrderAction(payload) {
   const id = payload.data.entity_id;
   console.log(id);
   if (payload.synced) {
-    yield call(noteOrderActionService, { message: payload.message, id });
+    // yield call(noteOrderActionService, { message: payload.message, id });
     // get id and call service
   } else {
     // set in local db
@@ -953,6 +954,10 @@ function* reorderAction(payload) {
 
 function* orderActionOffline(payload) {
   const orderDetail = yield select(orderDetailLocalDb);
+  console.log(orderDetail);
+  const { orderId } = orderDetail.items.syncData;
+  const params = { orderId, type: payload.action };
+  let dataActionOrder;
   switch (payload.action) {
     case types.CANCEL_ACTION_ORDER:
       break;
@@ -961,11 +966,15 @@ function* orderActionOffline(payload) {
     case types.ADD_NOTE_ACTION_ORDER:
       break;
     case types.REFUND_ACTION_ORDER:
-      console.log('hello world');
+      dataActionOrder = yield call(getActionOrder, params);
       break;
     default:
       break;
   }
+  yield put({
+    type: types.RECEIVED_GET_ACTION_ORDER,
+    payload: { type: payload.action, data: dataActionOrder }
+  });
 }
 
 function* orderActionOnline(payload) {

@@ -119,9 +119,9 @@ export async function syncOrderService(params) {
 export async function getActionOrder(params) {
   try {
     const response = await fetch(
-      `${apiGatewayPath}/cashier/customer-checkout/action-order`,
+      `${apiGatewayPath}/cashier/customer-checkout/get-action-order`,
       {
-        method: 'GET',
+        method: 'POST',
         mode: 'cors',
         cache: 'no-cache',
         credentials: 'same-origin',
@@ -156,7 +156,7 @@ export async function getActionOrder(params) {
 export async function setActionOrder(params) {
   try {
     const response = await fetch(
-      `${apiGatewayPath}/cashier/customer-checkout/action-order`,
+      `${apiGatewayPath}/cashier/customer-checkout/set-action-order`,
       {
         method: 'POST',
         mode: 'cors',
