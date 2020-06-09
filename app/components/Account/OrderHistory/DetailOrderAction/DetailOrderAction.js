@@ -10,6 +10,7 @@ import {
   ADD_NOTE_ACTION_ORDER,
   REFUND_ACTION_ORDER
 } from '../../../../constants/root';
+import { formatCurrencyCode } from '../../../../common/settings';
 
 type Props = {
   toggleModalActionOrder: (payload: boolean) => void,
@@ -113,9 +114,61 @@ class DetailOrderAction extends Component<Props> {
 
   showBodyRefund = () => {
     const { dataActionOrder } = this.props;
-    console.log('hi');
-    console.log(dataActionOrder);
-    return 'Hello world';
+    const { items } = dataActionOrder;
+    return (
+      <table className="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Qty</th>
+            <th>Qty to Refund</th>
+            <th>Subtotal</th>
+            <th>Tax Amount</th>
+            <th>Discount Amount</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {items.map((item, index) => {
+            return (
+              <tr key={index}>
+                <th scope="row">{index + 1}</th>
+                <td>
+                  <div className="row">
+                    <span className="col-12">{item.name}</span>
+                    <span className="col-12">SKU: {item.sku}</span>
+                  </div>
+                </td>
+                <td>{formatCurrencyCode(item.price)}</td>
+                <td>
+                  <div className="row">
+                    <span className="col-12">Ordered {item.qty_ordered}</span>
+                    <span className="col-12">Invoiced {item.qty_invoiced}</span>
+                    <span className="col-12">Shipped {item.qty_shipped}</span>
+                  </div>
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="0"
+                    // onChange={this.onQtyOnChange}
+                    // value={posQty}
+                    aria-describedby="basic-addon2"
+                  />
+                </td>
+                <td>{formatCurrencyCode(item.base_row_invoiced)}</td>
+                <td>{formatCurrencyCode(item.base_tax_amount)}</td>
+                <td>{formatCurrencyCode(item.base_discount_amount)}</td>
+                <td>{formatCurrencyCode(item.base_row_total)}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    );
   };
 
   showBodyAddNote = () => {
@@ -146,7 +199,7 @@ class DetailOrderAction extends Component<Props> {
     return (
       <div>
         <div className={ModalStyle.modal} style={{ display: 'block' }}>
-          <div className={ModalStyle.modalContentMd}>
+          <div className={ModalStyle.modalContentLg}>
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">{this.showTitleOrderAction()}</h5>

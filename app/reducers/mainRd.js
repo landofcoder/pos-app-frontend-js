@@ -18,6 +18,14 @@ const cartCurrentDefaultData = {
   isGuestCustomer: true
 };
 
+const toggleActionOrderDefaultData = {
+  dataActionOrder: {},
+  isOpenToggleActionOrder: false,
+  isLoadingSetOrderAction: false,
+  isLoadingGetDataOrderAction: true,
+  typeOpenToggle: null
+};
+
 const initialState = {
   switchingMode: LOADING, // LOADING, LOGIN_FORM, CHILDREN, SYNC_SCREEN
   flagSwitchModeCounter: 1, // When this flag counter up, render in App.js will re-render and backgroundLogin will re-check
@@ -161,13 +169,7 @@ const initialState = {
   order_id_history: null,
   isOpenFindCustomer: false,
   isOpenCategoriesModel: false,
-  toggleActionOrder: {
-    dataActionOrder: {},
-    isOpenToggleActionOrder: false,
-    isLoadingSetOrderAction: false,
-    isLoadingGetDataOrderAction: false,
-    typeOpenToggle: null
-  },
+  toggleActionOrder: toggleActionOrderDefaultData,
   isOpenSignUpCustomer: false,
   isOpenCalculator: false,
   isOpenDetailOrder: false,
@@ -340,7 +342,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
           draft.toggleActionOrder.isOpenToggleActionOrder = true;
           draft.toggleActionOrder.typeOpenToggle = action.payload.type;
         } else {
-          draft.toggleActionOrder = {};
+          draft.toggleActionOrder = toggleActionOrderDefaultData;
         }
         break;
       case types.TOGGLE_MODAL_SIGN_UP_CUSTOMER:
@@ -519,14 +521,14 @@ const mainRd = (state: Object = initialState, action: Object) =>
         // Update to preparing checkout
         const cartId = ordersInfo.cartId;
         const baseDiscountAmount = ordersInfo.cartTotals.discount_amount;
-        const baseGrandTotal = ordersInfo.cartTotals.base_grand_total;
-        const baseSubTotal = ordersInfo.cartTotals.base_subtotal;
-        const shippingAndTaxAmount = ordersInfo.cartTotals.tax_amount;
+        const baseGrandTotal = ordersInfo.cartTotals.grand_total;
+        const baseSubTotal = ordersInfo.cartTotals.subtotal;
+        const taxAmount = ordersInfo.cartTotals.tax_amount;
         draft.cartCurrent.cartId = cartId;
         draft.checkout.orderPreparingCheckout.totals.base_discount_amount = baseDiscountAmount;
         draft.checkout.orderPreparingCheckout.totals.base_subtotal = baseSubTotal;
         draft.checkout.orderPreparingCheckout.totals.grand_total = baseGrandTotal;
-        draft.checkout.orderPreparingCheckout.totals.tax_amount = shippingAndTaxAmount;
+        draft.checkout.orderPreparingCheckout.totals.tax_amount = taxAmount;
         break;
       case types.BACK_TO_WORK_PLACE:
         draft.switchingMode = WORK_PLACE_FORM;
