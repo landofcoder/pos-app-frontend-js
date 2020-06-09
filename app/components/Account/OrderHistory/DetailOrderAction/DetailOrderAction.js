@@ -151,18 +151,26 @@ class DetailOrderAction extends Component<Props> {
                 </td>
                 <td>
                   <input
-                    type="text"
+                    type="number"
                     className="form-control"
                     placeholder="0"
-                    // onChange={this.onQtyOnChange}
+                    onChange={event => {
+                      if (
+                        event.target.value < 0 ||
+                        event.target.value > item.qty_shipped
+                      )
+                        return;
+                      console.log('go');
+                      // this.onQtyOnChange;
+                    }}
                     // value={posQty}
                     aria-describedby="basic-addon2"
                   />
                 </td>
-                <td>{formatCurrencyCode(item.base_row_invoiced)}</td>
-                <td>{formatCurrencyCode(item.base_tax_amount)}</td>
-                <td>{formatCurrencyCode(item.base_discount_amount)}</td>
-                <td>{formatCurrencyCode(item.base_row_total)}</td>
+                <td>{formatCurrencyCode(item.row_invoiced)}</td>
+                <td>{formatCurrencyCode(item.tax_amount)}</td>
+                <td>{formatCurrencyCode(item.discount_amount)}</td>
+                <td>{formatCurrencyCode(item.row_total)}</td>
               </tr>
             );
           })}
