@@ -29,7 +29,10 @@ class DetailOrderAction extends Component<Props> {
   constructor(props) {
     super(props);
     this.state = {
-      noteValue: ''
+      noteValue: '',
+      refundOption: {
+        items: []
+      }
     };
   }
 
@@ -112,9 +115,17 @@ class DetailOrderAction extends Component<Props> {
     }
   };
 
+  onQtyReturnItemOnChange = (index, item) => {
+    const { refundOption } = this.state;
+    refundOption.items[index] = item;
+    this.setState({ refundOption });
+  };
+
   showBodyRefund = () => {
+    const { refundOption } = this.state;
     const { dataActionOrder } = this.props;
     const { items } = dataActionOrder;
+    let newItem;
     return (
       <table className="table table-striped">
         <thead>
@@ -156,14 +167,23 @@ class DetailOrderAction extends Component<Props> {
                     placeholder="0"
                     onChange={event => {
                       if (
-                        event.target.value < 0 ||
-                        event.target.value > item.qty_shipped
+                        +event.target.value < 0 ||
+                        +event.target.value > +item.qty_shipped ||
+                        // +event.target.value >
+                          // refundOption.items[index].qty_returning
                       )
                         return;
-                      console.log('go');
-                      // this.onQtyOnChange;
+                      newItem = {
+                        order_item_id: item.item_id,
+                        qty: event.target.value
+                      };
+                      this.onQtyReturnItemOnChange(index, newItem);
                     }}
-                    // value={posQty}
+                    value={
+                      refundOption.items[index]
+                        ? refundOption.items[index].qty_returning
+                        : 0
+                    }
                     aria-describedby="basic-addon2"
                   />
                 </td>
