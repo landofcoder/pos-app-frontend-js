@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Modal from 'react-modal';
 import ListCart from './ListCart/ListCart';
 import Styles from './pos.scss';
 import CommonStyle from './styles/common.scss';
@@ -15,7 +16,6 @@ import Configuration from './product-types/Configuration';
 import Bundle from './product-types/Bundle';
 import Grouped from './product-types/Grouped';
 import CartCustomer from './customer/CartCustomer';
-import SignUpCustomer from './customer/SignUpCustomer/SignUpCustomer';
 import CashPanel from './payment/Cash/Cash';
 import CardPayment from './payment/CardPayment/CardPayment';
 import Receipt from './payment/Receipt/Receipt';
@@ -28,6 +28,7 @@ import Menu from './commons/menu';
 import Plus from './commons/plus';
 import License from './License';
 import StockDisplay from './commons/StockDisplay/StockDisplay';
+import Settings from './commons/settings';
 
 type Props = {
   productList: Array<Object>,
@@ -59,7 +60,6 @@ type Props = {
   emptyCart: () => void,
   isLoadingSearchHandle: boolean,
   isShowHaveNoSearchResultFound: boolean,
-  isOpenSignUpCustomer: boolean,
   internetConnected: boolean,
   posCommandIsFetchingProduct: boolean,
   isOpenCategoriesModel: boolean,
@@ -248,7 +248,7 @@ export default class Pos extends Component<Props, State> {
                 className="card-body"
                 style={{ paddingTop: '5px', paddingBottom: '5px' }}
               >
-                <StockDisplay stockItem={item.stock} />
+                <StockDisplay item={item} />
                 <a
                   role="presentation"
                   className={Styles.wrapImageBlock}
@@ -312,6 +312,11 @@ export default class Pos extends Component<Props, State> {
     checkoutAction();
   };
 
+  closeCategoriesModal = () => {
+    const { toggleModelCategories } = this.props;
+    toggleModelCategories(false);
+  };
+
   render() {
     const {
       mainProductListLoading,
@@ -321,7 +326,6 @@ export default class Pos extends Component<Props, State> {
       isLoadingSearchHandle,
       isShowHaveNoSearchResultFound,
       internetConnected,
-      isOpenSignUpCustomer,
       productList,
       holdAction,
       cartCurrent,
@@ -347,9 +351,18 @@ export default class Pos extends Component<Props, State> {
       disableCheckout = false;
     }
     const { isShowingProductOption } = productOption;
-
     return (
       <>
+        <Modal
+          overlayClassName={ModalStyle.Overlay}
+          shouldCloseOnOverlayClick
+          onRequestClose={this.closeCategoriesModal}
+          className={`${ModalStyle.Modal} ${ModalStyle.CategoryModal}`}
+          isOpen={isOpenCategoriesModel}
+          contentLabel="Example Modal"
+        >
+          <Categories />
+        </Modal>
         <div
           data-tid="container"
           data-theme={
@@ -358,71 +371,13 @@ export default class Pos extends Component<Props, State> {
               : 'default'
           }
         >
-          <div
-            className={`${ModalStyle.modal}`}
-            style={{
-              display: isOpenCategoriesModel ? 'block' : 'none',
-              paddingTop: 0
-            }}
-          >
-            <div>
-              <Categories />
-            </div>
-          </div>
-          {/* OPTION MODEL (PRODUCT CONFIGURABLE, PRODUCT BUNDLE, PRODUCT GROUPED) */}
-          <div
-            id="modalProductOption"
-            style={{ display: isShowingProductOption ? 'block' : 'none' }}
-            className={ModalStyle.modal}
-          >
-            <div className={ModalStyle.modalContent}>
-              {this.switchingProductSettings()}
-            </div>
-          </div>
-
-          {/* CASH PAYMENT MODAL */}
+          {isShowingProductOption ? this.switchingProductSettings() : <></>}
           {isShowCashPaymentModel ? <CashPanel /> : <></>}
-          {/* PAYMENT MODAL */}
-
-          <div
-            className={ModalStyle.modal}
-            id="payModal"
-            style={{ display: isShowCardPaymentModal ? 'block' : 'none' }}
-          >
-            <div className={ModalStyle.modalContentLg}>
-              {isShowCardPaymentModal ? <CardPayment /> : <></>}
-            </div>
-          </div>
-
+          {isShowCardPaymentModal ? <CardPayment /> : <></>}
+          {isShowModalItemEditCart ? <EditCart /> : <></>}
+          {isOpenReceiptModal ? <Receipt /> : <></>}
           {/* RECEIPT MODAL */}
-          <div
-            id="receiptModal"
-            className={ModalStyle.modal}
-            style={{ display: isOpenReceiptModal ? 'block' : 'none' }}
-          >
-            <div className={ModalStyle.modalContent} style={{ width: '450px' }}>
-              {isOpenReceiptModal ? <Receipt /> : <></>}
-            </div>
-          </div>
-          {/* Edit cart item model */}
-          {isShowModalItemEditCart ? (
-            <>
-              <div
-                id="editCartModelModal"
-                className={ModalStyle.modal}
-                style={{ display: 'block' }}
-              >
-                <div
-                  className={ModalStyle.modalContent}
-                  style={{ width: '450px' }}
-                >
-                  <EditCart />
-                </div>
-              </div>
-            </>
-          ) : (
-            <></>
-          )}
+
           <div className="row" id={Styles.wrapPostContainerId}>
             <div className="col-md-9 pt-3 pl-0 pr-0">
               <div
@@ -594,13 +549,13 @@ export default class Pos extends Component<Props, State> {
             </div>
           </div>
           <div className={Styles.wrapActionSecondLine}>
-            <div className="col-md-2 pl-0 pr-1">
+            <div className="col-md-1 pl-0 pr-1 text-right">
               <button
                 type="button"
-                className="btn btn-outline-dark btn-block"
+                className="btn btn-outline-dark"
                 onClick={this.handleRedirectToAccount}
               >
-                Account
+                <Settings />
               </button>
             </div>
             <div className="col-md-2 pl-0 pr-1">
@@ -615,7 +570,6 @@ export default class Pos extends Component<Props, State> {
             </div>
             <div className="col-md-2 pr-1 pl-0">
               <CartCustomer />
-              {isOpenSignUpCustomer ? <SignUpCustomer /> : null}
             </div>
             <div className="col-md-3 pl-0 pr-0">
               {lock ? (

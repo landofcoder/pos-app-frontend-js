@@ -36,7 +36,9 @@ export function startLoop(fn, delay = null) {
 export function stopLoop(frameId) {
   try {
     window.cancelAnimationFrame(frameId.value);
-  } catch (e) {}
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 export function formatCurrencyCode(value: number) {

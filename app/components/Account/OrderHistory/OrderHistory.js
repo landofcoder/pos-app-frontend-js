@@ -367,77 +367,79 @@ class OrderHistory extends Component<Props> {
     return (
       <>
         <div className="row">
-          <table className="table">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Orders Id</th>
-                <th scope="col">Total</th>
-                <th scope="col">Create at</th>
-                <th scope="col">Last time sync</th>
-                <th scope="col">Orders status</th>
-                <th scope="col">Sync status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orderHistoryDb.map((item, index) => {
-                const { syncData } = item.items;
-                let orderId;
-                let invoiceId;
-                if (syncData) {
-                  ({ orderId, invoiceId } = syncData);
-                }
-                return (
-                  <tr
-                    key={index}
-                    style={{ cursor: 'pointer' }}
-                    onClick={() =>
-                      item.local
-                        ? this.getOrderHistoryDetailOffline(item)
-                        : this.getOrderHistoryDetail(item.sales_order_id)
-                    }
+          <div className="col-12">
+            <table className="table">
+              <thead className="thead-light">
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Orders Id</th>
+                  <th scope="col">Total</th>
+                  <th scope="col">Create at</th>
+                  <th scope="col">Last time sync</th>
+                  <th scope="col">Orders status</th>
+                  <th scope="col">Sync status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {orderHistoryDb.map((item, index) => {
+                  const { syncData } = item.items;
+                  let orderId;
+                  let invoiceId;
+                  if (syncData) {
+                    ({ orderId, invoiceId } = syncData);
+                  }
+                  return (
+                    <tr
+                      key={index}
+                      style={{ cursor: 'pointer' }}
+                      onClick={() =>
+                        item.local
+                          ? this.getOrderHistoryDetailOffline(item)
+                          : this.getOrderHistoryDetail(item.sales_order_id)
+                      }
+                    >
+                      <th scope="row">{index + 1}</th>
+                      <td>{orderId || '--'}</td>
+                      <td>{formatCurrencyCode(item.grand_total)}</td>
+                      <td>{new Date(item.created_at).toDateString()}</td>
+                      <td>{this.renderLastTime(item)}</td>
+                      <td>
+                        {invoiceId ? (
+                          <span className="badge badge-success badge-pill">
+                            success
+                          </span>
+                        ) : (
+                          <span className="badge badge-pill badge-secondary">
+                            pending
+                          </span>
+                        )}
+                      </td>
+                      <td>{this.renderStatusSync(item)}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+            {isLoading ? (
+              <div className="form-group">
+                <div className="text-center">
+                  <div
+                    className="spinner-border spinner-border-sm text-secondary"
+                    role="status"
                   >
-                    <th scope="row">{index + 1}</th>
-                    <td>{orderId ? orderId : '--'}</td>
-                    <td>{formatCurrencyCode(item.grand_total)}</td>
-                    <td>{new Date(item.created_at).toDateString()}</td>
-                    <td>{this.renderLastTime(item)}</td>
-                    <td>
-                      {invoiceId ? (
-                        <span className="badge badge-success badge-pill">
-                          success
-                        </span>
-                      ) : (
-                        <span className="badge badge-pill badge-secondary">
-                          pending
-                        </span>
-                      )}
-                    </td>
-                    <td>{this.renderStatusSync(item)}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-          {isLoading ? (
-            <div className="form-group">
-              <div className="text-center">
-                <div
-                  className="spinner-border spinner-border-sm text-secondary"
-                  role="status"
-                >
-                  <span className="sr-only">Loading...</span>
+                    <span className="sr-only">Loading...</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ) : null}
-          {!orderHistoryDb.length ? (
-            <div className="col">
-              <div className="alert alert-light text-center" role="alert">
-                No orders found to wait for syncing.
+            ) : null}
+            {!orderHistoryDb.length ? (
+              <div className="col">
+                <div className="alert alert-light text-center" role="alert">
+                  No orders found to wait for syncing.
+                </div>
               </div>
-            </div>
-          ) : null}
+            ) : null}
+          </div>
         </div>
         <div
           className={modalStyle.modal}

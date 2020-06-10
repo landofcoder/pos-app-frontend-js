@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Modal from 'react-modal';
 import {
   updateIsShowModelEditingCartItem,
   updateQtyEditCart
 } from '../../../actions/homeAction';
+import ModalStyle from '../../styles/modal.scss';
+import Close from '../../commons/x';
 
 type Props = {
   itemCartEditing: Object,
@@ -28,10 +31,10 @@ class EditCart extends Component<Props, State> {
     this.setState({ posQty: qty });
     document.addEventListener('keydown', this.escFunction, false);
 
-    // Auto focus & auto select qty for update new value
-    this.qtyInput.focus();
     // Needed run in setTimeout because posQty will change when value map to state in first times
     setTimeout(() => {
+      // Auto focus & auto select qty for update new value
+      this.qtyInput.focus();
       this.qtyInput.select();
     }, 100);
   }
@@ -75,79 +78,84 @@ class EditCart extends Component<Props, State> {
 
     const { posQty } = this.state;
     return (
-      <div>
-        <div className="modal-content">
-          <form onSubmit={() => updateQtyEditCart(posQty)}>
-            <div className="modal-header">
-              <h5 className="modal-title">{itemCartEditing.name}</h5>
-            </div>
-            <div className="modal-body">
-              <div className="row">
-                <div className="col-md-4 text-right pull-right">
-                  <button
-                    type="button"
-                    className="btn btn-outline-secondary"
-                    onClick={this.counterDownQty}
-                  >
-                    -
-                  </button>
-                </div>
-                <div className="col-md-4">
-                  <input
-                    ref={input => {
-                      this.qtyInput = input;
-                    }}
-                    type="text"
-                    className="form-control text-center"
-                    placeholder="0"
-                    onChange={this.onQtyOnChange}
-                    value={posQty}
-                    aria-describedby="basic-addon2"
-                  />
-                </div>
-                <div className="col-md-4 text-left pull-left">
-                  <button
-                    type="button"
-                    className="btn btn-outline-secondary"
-                    onClick={this.counterUpQty}
-                  >
-                    +
-                  </button>
+      <Modal
+        overlayClassName={ModalStyle.Overlay}
+        shouldCloseOnOverlayClick
+        onRequestClose={() => updateIsShowModelEditingCartItem(false)}
+        className={`${ModalStyle.Modal}`}
+        isOpen
+        contentLabel="Example Modal"
+      >
+        <div className={ModalStyle.modalContent}>
+          <div
+            className={ModalStyle.close}
+            role="presentation"
+            onClick={() => updateIsShowModelEditingCartItem(false)}
+          >
+            <Close />
+          </div>
+          <div className="card">
+            <form onSubmit={() => updateQtyEditCart(posQty)}>
+              <div className="card-body">
+                <h5
+                  className="card-title"
+                  dangerouslySetInnerHTML={{ __html: itemCartEditing.name }}
+                />
+                <div className="row">
+                  <div className="col-md-4 text-right pull-right">
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary"
+                      onClick={this.counterDownQty}
+                    >
+                      -
+                    </button>
+                  </div>
+                  <div className="col-md-4">
+                    <input
+                      ref={input => {
+                        this.qtyInput = input;
+                      }}
+                      type="text"
+                      className="form-control text-center"
+                      placeholder="0"
+                      onChange={this.onQtyOnChange}
+                      value={posQty}
+                      aria-describedby="basic-addon2"
+                    />
+                  </div>
+                  <div className="col-md-4 text-left pull-left">
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary"
+                      onClick={this.counterUpQty}
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="modal-footer">
-              <div className="col-md-6 p-0">
-                <button
-                  type="button"
-                  className="btn btn-outline-dark btn-sm btn-block"
-                  onClick={() =>
-                    updateIsShowModelEditingCartItem({ open: false })
-                  }
-                >
-                  Cancel
-                </button>
-              </div>
-              <div className="col-md-6 p-0">
+              <div className="card-footer text-muted">
                 <button
                   type="submit"
-                  className="btn btn-primary btn-sm btn-block"
+                  className="btn btn-outline-primary btn-block"
                   onClick={() => updateQtyEditCart(posQty)}
                 >
                   Update
                 </button>
               </div>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
-      </div>
+      </Modal>
     );
   }
 }
 
 function mapStateToProps(state) {
   return {
-    itemCartEditing: state.mainRd.itemCartEditing.item
+    itemCartEditing: state.mainRd.itemCartEditing.item,
+    isShowModalItemEditCart: state.mainRd.itemCartEditing.showModal
   };
 }
 

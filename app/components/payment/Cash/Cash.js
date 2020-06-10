@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Modal from 'react-modal';
 import {
   updateShowCashModal,
   toggleModalCalculator,
@@ -10,6 +11,7 @@ import SubTotal from '../Subtotal/SubTotal';
 import { formatCurrencyCode } from '../../../common/settings';
 import ModalStyle from '../../styles/modal.scss';
 import RewardPoint from '../RewardPoint/RewardPoint';
+import Close from '../../commons/x';
 
 type Props = {
   loadingPreparingOrder: boolean,
@@ -19,6 +21,7 @@ type Props = {
   toggleModalCalculatorStatus: boolean,
   toggleModalCalculator: (payload: boolean) => void,
   orderPreparingCheckout: Object,
+  isShowCashPaymentModel: boolean,
   isShowRewardPoint: boolean,
   currencyCode: string
 };
@@ -92,6 +95,15 @@ class CashPayment extends Component<Props> {
             id="inputValue"
           />
         </div>
+        <div className="col-12">
+          <button
+            type="button"
+            onClick={() => this.toggleModalCalculator()}
+            className="btn btn-outline-info btn-sm mt-0"
+          >
+            CALCULATOR
+          </button>
+        </div>
         {inputCustomerCash === '' ? null : (
           <>
             <label htmlFor="inputValue" className="col-sm-5 pt-1">
@@ -135,47 +147,39 @@ class CashPayment extends Component<Props> {
       updateShowCashModal,
       isLoadingCashPlaceOrder,
       toggleModalCalculatorStatus,
-      isShowRewardPoint
+      isShowRewardPoint,
+      isShowCashPaymentModel
     } = this.props;
-    let isScaleUpModal = false;
-    let widthModal = '400px';
-
-    if (toggleModalCalculatorStatus === true) {
-      isScaleUpModal = true;
-      widthModal = '800px';
-    } else if (isShowRewardPoint === true) {
-      isScaleUpModal = true;
-      widthModal = '700px';
-    }
-
+    console.info('reward point flag:', isShowRewardPoint);
     return (
-      <div
-        className={ModalStyle.modal}
-        style={{ display: 'block' }}
-        id="cashPaymentModal"
+      <Modal
+        overlayClassName={ModalStyle.Overlay}
+        shouldCloseOnOverlayClick
+        onRequestClose={() => updateShowCashModal(false)}
+        className={`${ModalStyle.Modal}`}
+        isOpen={isShowCashPaymentModel}
+        contentLabel="Example Modal"
       >
-        <div
-          className={ModalStyle.modalContentMd}
-          style={{ width: widthModal }}
-        >
-          <div className="row">
-            <div className={`modal-content ${isScaleUpModal ? 'col-7' : null}`}>
-              <div className="modal-header">
-                <h5 className="modal-title" id="modalCashPayment">
-                  Checkout
-                </h5>
-                <button
-                  type="button"
-                  className="close"
-                  data-dismiss="modal"
-                  aria-label="Close"
-                />
-              </div>
-              <div className="modal-body">
+        <div className="row">
+          <div
+            className={`${ModalStyle.modalContent} ${
+              toggleModalCalculatorStatus ? 'mr-2' : ''
+            }`}
+          >
+            <div
+              className={ModalStyle.close}
+              onClick={() => updateShowCashModal(false)}
+              role="presentation"
+            >
+              <Close />
+            </div>
+            <div className="card">
+              <div className="card-body">
+                <h5 className="card-title">Checkout</h5>
                 <SubTotal />
                 {this.considerOrder() ? this.transactionCustomer() : null}
               </div>
-              <div className="modal-footer">
+              <div className="card-footer">
                 <button
                   onClick={cashPlaceOrderAction}
                   disabled={!this.considerOrder() || isLoadingCashPlaceOrder}
@@ -193,28 +197,12 @@ class CashPayment extends Component<Props> {
                   )}
                 </button>
               </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  onClick={() => updateShowCashModal(false)}
-                  className="btn btn-outline-dark mt-0"
-                >
-                  CANCEL
-                </button>
-                <button
-                  type="button"
-                  onClick={() => this.toggleModalCalculator()}
-                  className="btn btn-outline-info mt-0"
-                >
-                  CALCULATOR
-                </button>
-              </div>
             </div>
-            <Calculator />
-            <RewardPoint />
           </div>
+          <Calculator />
+          <RewardPoint />
         </div>
-      </div>
+      </Modal>
     );
   }
 }
@@ -226,7 +214,8 @@ function mapStateToProps(state) {
     toggleModalCalculatorStatus: state.mainRd.isOpenCalculator,
     orderPreparingCheckout: state.mainRd.checkout.orderPreparingCheckout,
     cartCurrent: state.mainRd.cartCurrent,
-    isShowRewardPoint: state.mainRd.checkout.rewardPoint.isShowRewardPoint
+    isShowRewardPoint: state.mainRd.checkout.rewardPoint.isShowRewardPoint,
+    isShowCashPaymentModel: state.mainRd.checkout.isShowCashPaymentModel
   };
 }
 

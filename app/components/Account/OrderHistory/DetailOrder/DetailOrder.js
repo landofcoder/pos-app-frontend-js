@@ -10,8 +10,7 @@ import {
 type Props = {
   orderHistoryDetail: {},
   isOpenDetailOrder: boolean,
-  isLoadingOrderHistoryDetail: boolean,
-  orderHistoryDetail: {}
+  isLoadingOrderHistoryDetail: boolean
 };
 class DetailOrder extends Component {
   props: Props;

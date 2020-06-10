@@ -1,10 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import ModalStyle from '../../styles/modal.scss';
+import Close from '../../commons/x';
+import { toggleModalCalculator } from '../../../actions/homeAction';
+
 type Props = {
-  toggleModalCalculatorStatus: boolean
+  toggleModalCalculatorStatus: boolean,
+  toggleModalCalculator: (payload: boolean) => void
 };
+
 class Calculator extends Component {
   props: Props;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -23,7 +30,7 @@ class Calculator extends Component {
       return;
     }
     solveValue = solveValue.slice(0, solveValue.length - 1);
-    this.setState({ solveValue: solveValue });
+    this.setState({ solveValue });
   };
 
   btnPress = event => {
@@ -36,9 +43,10 @@ class Calculator extends Component {
 
   calculate = () => {
     try {
-      let { solveValue } = this.state;
+      const { solveValue } = this.state;
       if (solveValue !== 'Error') {
-        let input = eval(solveValue);
+        // eslint-disable-next-line no-eval
+        const input = eval(solveValue);
         this.setState({ solveValue: input.toString() });
       }
     } catch (err) {
@@ -48,14 +56,22 @@ class Calculator extends Component {
 
   render() {
     const { solveValue } = this.state;
-    const { toggleModalCalculatorStatus } = this.props;
+    const { toggleModalCalculatorStatus, toggleModalCalculator } = this.props;
     return (
       <>
         <div
-          className={`col-5 ${
+          style={{ width: '300px' }}
+          className={`${ModalStyle.modalContent} ${
             toggleModalCalculatorStatus === true ? '' : 'd-none'
           }`}
         >
+          <div
+            className={ModalStyle.close}
+            role="presentation"
+            onClick={() => toggleModalCalculator(false)}
+          >
+            <Close />
+          </div>
           <div className="card">
             <div className="card-header">
               <h5 className="m-0">Calculator</h5>
@@ -268,7 +284,14 @@ function mapStateToProps(state) {
     toggleModalCalculatorStatus: state.mainRd.isOpenCalculator
   };
 }
+
+function mapDispatchToProps(dispatch) {
+  return {
+    toggleModalCalculator: payload => dispatch(toggleModalCalculator(payload))
+  };
+}
+
 export default connect(
   mapStateToProps,
-  null
+  mapDispatchToProps
 )(Calculator);

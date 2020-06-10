@@ -171,17 +171,22 @@ export async function getAppInfoService(payload) {
 
 export async function getGwAppLicense(appInfoResult) {
   const { token } = appInfoResult;
-  const response = await fetch(
-    `${apiGatewayPath}/coreapi/check-license/${token}/${appVersion}`,
-    {
-      method: 'GET',
-      mode: 'cors',
-      cache: 'no-cache',
-      credentials: 'same-origin',
-      redirect: 'follow',
-      referrer: 'no-referrer'
-    }
-  );
-  const data = await response.json();
-  return data;
+  try {
+    const response = await fetch(
+      `${apiGatewayPath}/coreapi/check-license/${token}/${appVersion}`,
+      {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        redirect: 'follow',
+        referrer: 'no-referrer'
+      }
+    );
+    const data = await response.json();
+    return data;
+  } catch (e) {
+    console.log(e);
+  }
+  return null;
 }

@@ -26,14 +26,34 @@ function* synProductInventoryHandle(item) {
 }
 
 export async function injectInventory(listProduct) {
-  const arrAssign = [...listProduct];
+  const listProductAssign = [...listProduct];
   for (let i = 0; i < listProduct.length; i += 1) {
     // eslint-disable-next-line no-await-in-loop
-    arrAssign[i].stock = await findBySku(listProduct[i]);
+    const { stock, variants } = await findBySku(listProduct[i]);
+    listProductAssign[i].stock = stock;
+    listProductAssign[i].variants = variants;
   }
-  return arrAssign;
+  return listProductAssign;
 }
 
 async function findBySku(item) {
-  return inventoryIndexTbl.where({ sku: item.sku }).first();
+  const { variants } = item;
+  let listVariants = [];
+  const stock = inventoryIndexTbl.where({ sku: item.sku }).first();
+  if (variants && variants.length > 0) {
+    listVariants = [...variants];
+    for (let i = 0; i < listVariants.length; i += 1) {
+      const productByVariant = listVariants[i].product;
+      // eslint-disable-next-line no-await-in-loop
+      const variantStock = await inventoryIndexTbl
+        .where({ sku: productByVariant.sku })
+        .first();
+      // Update stock for each variant
+      listVariants[i].stock = variantStock;
+    }
+  }
+  return {
+    stock,
+    variants: listVariants
+  };
 }

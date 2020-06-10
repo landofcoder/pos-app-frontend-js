@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Modal from 'react-modal';
 import {
   updateIsShowCardPaymentModel,
   updateCardPaymentType,
@@ -16,6 +17,8 @@ import {
   SHOP_CURRENCY_IS_NOT_CONFIG
 } from '../../../constants/payment';
 import SubTotal from '../Subtotal/SubTotal';
+import ModalStyle from '../../styles/modal.scss';
+import Close from '../../commons/x';
 
 class CardPayment extends Component {
   props: Props;
@@ -95,105 +98,129 @@ class CardPayment extends Component {
       orderPreparingCheckout.totals.grand_total
     );
     const { resultCharge, isLoadingCharging } = cardPayment;
-    console.log('loading status:', isLoadingCharging);
     return (
-      <div className="row">
-        <div className="modal-content" style={{ minHeight: '300px' }}>
-          <div className="modal-header">
-            <h5 className="modal-title">Payment</h5>
-            <button
-              type="button"
-              className="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            />
+      <Modal
+        overlayClassName={ModalStyle.Overlay}
+        className={ModalStyle.Modal}
+        shouldCloseOnOverlayClick
+        onRequestClose={() => updateIsShowCardPaymentModel(false)}
+        isOpen
+        contentLabel="Example Modal"
+      >
+        <div className={ModalStyle.modalContentLg}>
+          <div
+            className={ModalStyle.close}
+            onClick={() => updateIsShowCardPaymentModel(false)}
+            role="presentation"
+          >
+            <Close />
           </div>
-          <div className="modal-body">
-            <div className="row">
-              <div className="col-6">
-                <div className="card mb-3">
-                  <div className="card-header">Checkout Total</div>
-                  <div className="card-body">
-                    <SubTotal />
-                  </div>
-                </div>
-              </div>
-              <div className="col-6">
-                <div className="col-12">
-                  <div className="row">
-                    <button
-                      onClick={() => updateCardPaymentType('stripe')}
-                      type="button"
-                      className={`mr-1 btn btn-outline-dark btn-sm ${
-                        cardPaymentType === 'stripe' ? 'active' : ''
-                      }`}
-                    >
-                      Stripe
-                    </button>
-                    <button
-                      onClick={() => updateCardPaymentType('authorize')}
-                      type="button"
-                      className={`mr-1 btn btn-outline-dark btn-sm ${
-                        cardPaymentType === 'authorize' ? 'active' : ''
-                      }`}
-                    >
-                      {' '}
-                      Authorize.net
-                    </button>
-                    <button
-                      onClick={() => this.switchToCashPayment()}
-                      type="button"
-                      className={`mr-1 btn btn-outline-dark btn-sm ${
-                        cardPaymentType === 'cash' ? 'active' : ''
-                      }`}
-                    >
-                      Cash
-                    </button>
-                  </div>
-                </div>
-                <InputCard />
-              </div>
-            </div>
-            <div className="col-12">
-              {this.renderErrorMessage(resultCharge)}
-            </div>
-          </div>
-          {cardPaymentType ? (
-            <div className="modal-footer">
+          <div className="modal-content" style={{ minHeight: '300px' }}>
+            <div className="modal-header">
+              <h5 className="modal-title">Payment</h5>
               <button
                 type="button"
-                className="btn btn-outline-secondary"
-                onClick={() => updateIsShowCardPaymentModel(false)}
-              >
-                Close
-              </button>
-              <button
-                disabled={
-                  cardPaymentType === '' ||
-                  loadingPreparingOrder ||
-                  isLoadingCharging
-                }
-                type="button"
-                className="btn btn-primary"
-                onClick={acceptPaymentCard}
-              >
-                {isLoadingCharging ? (
-                  <span
-                    className="spinner-border spinner-border"
-                    role="status"
-                    aria-hidden="true"
-                  />
-                ) : (
-                  <></>
-                )}
-                Accept {loadingPreparingOrder === false ? grandTotal : ''}
-              </button>
+                className="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              />
             </div>
-          ) : (
-            <></>
-          )}
+            <div className="modal-body">
+              <div className="row">
+                <div className="col-6">
+                  <div className="card mb-3">
+                    <div className="card-header">Checkout Total</div>
+                    <div className="card-body">
+                      <SubTotal />
+                    </div>
+                  </div>
+                </div>
+                <div className="col-6">
+                  <div className="col-12">
+                    <div className="row">
+                      <button
+                        onClick={() => updateCardPaymentType('stripe')}
+                        type="button"
+                        className={`mr-1 btn btn-outline-dark btn-sm ${
+                          cardPaymentType === 'stripe' ? 'active' : ''
+                        }`}
+                      >
+                        Stripe
+                      </button>
+                      <button
+                        onClick={() => updateCardPaymentType('authorize')}
+                        type="button"
+                        className={`mr-1 btn btn-outline-dark btn-sm ${
+                          cardPaymentType === 'authorize' ? 'active' : ''
+                        }`}
+                      >
+                        {' '}
+                        Authorize.net
+                      </button>
+                      <button
+                        onClick={() => this.switchToCashPayment()}
+                        type="button"
+                        className={`mr-1 btn btn-outline-dark btn-sm ${
+                          cardPaymentType === 'cash' ? 'active' : ''
+                        }`}
+                      >
+                        Cash{' '}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="17"
+                          height="17"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="feather feather-navigation"
+                        >
+                          <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <InputCard />
+                </div>
+              </div>
+              <div className="col-12">
+                {this.renderErrorMessage(resultCharge)}
+              </div>
+            </div>
+            {cardPaymentType ? (
+              <div className="modal-footer">
+                <button
+                  disabled={
+                    cardPaymentType === '' ||
+                    loadingPreparingOrder ||
+                    isLoadingCharging
+                  }
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={acceptPaymentCard}
+                >
+                  {isLoadingCharging ? (
+                    <span
+                      className="spinner-border spinner-border"
+                      role="status"
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    <></>
+                  )}
+                  <span className="font-weight-bold">
+                    Accept {loadingPreparingOrder === false ? grandTotal : ''}
+                  </span>
+                </button>
+              </div>
+            ) : (
+              <></>
+            )}
+          </div>
         </div>
-      </div>
+      </Modal>
     );
   }
 }

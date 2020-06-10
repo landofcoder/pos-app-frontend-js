@@ -131,6 +131,7 @@ const initialState = {
     item: {}
   },
   allCategories: null, // Main store categories
+  categoriesParentsSession: [], // Keep all categories parent when customer go to any children
   customReceipt: {
     cashier_label: null,
     cashier_name_display: '0',
@@ -202,6 +203,10 @@ const initialState = {
       status: false,
       product: {}
     }
+  },
+  productStock: {
+    isLoadingDetailStockByVariantProducts: false, // If product is configuration then will find stock by all variants
+    listProducts: [] // New list product from list product variants with injected stock inventory
   }
 };
 
@@ -686,6 +691,9 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.TOGGLE_MODEL_CATEGORIES:
         draft.isOpenCategoriesModel = action.payload;
+        break;
+      case types.UPDATE_CATEGORIES_PARENTS_SESSION:
+        draft.categoriesParentsSession = action.payload;
         break;
       default:
         break;

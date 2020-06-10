@@ -90,7 +90,7 @@ class SyncManager extends Component {
       <div className="row">
         <div className="col-md-12">
           <table className="table">
-            <thead>
+            <thead className="thead-light">
               <tr>
                 <th scope="col">#</th>
                 <th scope="col">Service name</th>

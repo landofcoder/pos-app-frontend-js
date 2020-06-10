@@ -56,7 +56,9 @@ function* getAppByTokenSg(payloadParams) {
 function* validateLicenseSg() {
   const appInfoResult = yield select(appInfo);
   const gwAppInfo = yield call(getGwAppLicense, appInfoResult);
-  yield put({ type: types.RECEIVED_APP_LICENSE, payload: gwAppInfo });
+  if (gwAppInfo) {
+    yield put({ type: types.RECEIVED_APP_LICENSE, payload: gwAppInfo });
+  }
 }
 
 function* authenSaga() {
