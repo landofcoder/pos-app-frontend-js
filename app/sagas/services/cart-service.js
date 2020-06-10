@@ -184,6 +184,7 @@ export async function setActionOrder(params) {
     return data;
   } catch (error) {
     return {
+      status: false,
       message: error.message || 'Unable to connect server',
       data: error.data
     };

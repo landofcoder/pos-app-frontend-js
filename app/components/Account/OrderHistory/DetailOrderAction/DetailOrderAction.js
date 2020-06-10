@@ -100,25 +100,49 @@ class DetailOrderAction extends Component<Props> {
 
   onSubmitOrderAction = () => {
     const { orderAction, typeOpenToggle } = this.props;
-    const { noteValue } = this.state;
+    const { noteValue, refundOption } = this.state;
+    let payload;
     switch (typeOpenToggle) {
       case ADD_NOTE_ACTION_ORDER:
-        orderAction({
-          action: ADD_NOTE_ACTION_ORDER,
-          kindOf: 'DETAIL_ORDER_ONLINE',
-          payload: noteValue
-        });
+        payload = noteValue;
         break;
       case REFUND_ACTION_ORDER:
+        payload = refundOption;
         break;
       default:
     }
+    orderAction({
+      action: typeOpenToggle,
+      kindOf: 'DETAIL_ORDER_OFFLINE',
+      payload
+    });
   };
 
   onQtyReturnItemOnChange = (index, item) => {
     const { refundOption } = this.state;
+    if (!item) return;
     refundOption.items[index] = item;
     this.setState({ refundOption });
+  };
+
+  conditionToSubmitOrderAction = () => {
+    // true mean accept to submit otherwise denial
+    const { typeOpenToggle } = this.props;
+    const { noteValue, refundOption } = this.state;
+    switch (typeOpenToggle) {
+      case ADD_NOTE_ACTION_ORDER:
+        if (!noteValue) return true;
+        break;
+      case REFUND_ACTION_ORDER:
+        // eslint-disable-next-line no-restricted-syntax
+        for (const item of refundOption.items) {
+          if (item && item.qty) return true;
+        }
+        break;
+      default:
+        break;
+    }
+    return false;
   };
 
   showBodyRefund = () => {
@@ -126,6 +150,7 @@ class DetailOrderAction extends Component<Props> {
     const { dataActionOrder } = this.props;
     const { items } = dataActionOrder;
     let newItem;
+    console.log(refundOption.items);
     return (
       <table className="table table-striped">
         <thead>
@@ -158,6 +183,11 @@ class DetailOrderAction extends Component<Props> {
                     <span className="col-12">Ordered {item.qty_ordered}</span>
                     <span className="col-12">Invoiced {item.qty_invoiced}</span>
                     <span className="col-12">Shipped {item.qty_shipped}</span>
+                    {item.qty_refunded ? (
+                      <span className="col-12">
+                        Refunded {item.qty_refunded}
+                      </span>
+                    ) : null}
                   </div>
                 </td>
                 <td>
@@ -168,23 +198,25 @@ class DetailOrderAction extends Component<Props> {
                     onChange={event => {
                       if (
                         +event.target.value < 0 ||
-                        +event.target.value > +item.qty_shipped ||
-                        // +event.target.value >
-                          // refundOption.items[index].qty_returning
+                        +event.target.value + +item.qty_refunded >
+                          +item.qty_shipped ||
+                        +event.target.value >
+                          (refundOption.items[index]
+                            ? refundOption.items[index].qty_returning
+                            : 10) // is undefined if empty
                       )
-                        return;
+                        return false;
                       newItem = {
                         order_item_id: item.item_id,
-                        qty: event.target.value
+                        qty: +event.target.value
                       };
                       this.onQtyReturnItemOnChange(index, newItem);
                     }}
                     value={
                       refundOption.items[index]
-                        ? refundOption.items[index].qty_returning
+                        ? refundOption.items[index].qty
                         : 0
                     }
-                    aria-describedby="basic-addon2"
                   />
                 </td>
                 <td>{formatCurrencyCode(item.row_invoiced)}</td>
@@ -218,7 +250,6 @@ class DetailOrderAction extends Component<Props> {
   };
 
   render() {
-    const { noteValue } = this.state;
     const {
       toggleModalActionOrder,
       isLoadingSetOrderAction,
@@ -252,7 +283,7 @@ class DetailOrderAction extends Component<Props> {
                     onClick={() => {
                       this.onSubmitOrderAction();
                     }}
-                    disabled={!noteValue}
+                    disabled={!this.conditionToSubmitOrderAction()}
                   >
                     Submit{' '}
                     {isLoadingSetOrderAction ? (

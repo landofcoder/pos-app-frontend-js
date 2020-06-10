@@ -87,6 +87,11 @@ class DetailOrder extends Component {
                                     <span>Ordered: {item.qty_ordered} </span>
                                     <span>Invoiced: {item.qty_invoiced} </span>
                                     <span>Shipped: {item.qty_shipped} </span>
+                                    {item.qty_refunded ? (
+                                      <span>
+                                        Refunded: {item.qty_refunded}{' '}
+                                      </span>
+                                    ) : null}
                                   </div>
                                 </div>
                               </div>

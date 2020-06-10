@@ -451,6 +451,9 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.LOADING_GET_ACTION_ORDER:
         draft.toggleActionOrder.isLoadingGetDataOrderAction = action.payload;
         break;
+      case types.LOADING_SET_ACTION_ORDER:
+        draft.toggleActionOrder.isLoadingSetOrderAction = action.payload;
+        break;
       case types.TOGGLE_MODAL_ORDER_DETAIL:
         draft.isOpenDetailOrder = action.payload.isShow;
         draft.isOpenDetailOrderOffline = false;

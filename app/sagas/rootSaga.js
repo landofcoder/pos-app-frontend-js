@@ -8,7 +8,8 @@ import {
   createOrderLocal,
   // noteOrderActionService,
   getRewardPointService,
-  getActionOrder
+  getActionOrder,
+  setActionOrder
 } from './services/cart-service';
 import { stripeMakePayment } from './services/payments/stripe-payment';
 import { authorizeMakePayment } from './services/payments/authorize-payment';
@@ -952,7 +953,7 @@ function* reorderAction(payload) {
   yield put({ type: types.CLOSE_TOGGLE_MODAL_DETAIL_ORDER });
 }
 
-function* orderActionOffline(payload) {
+function* getOrderActionOffline(payload) {
   const orderDetail = yield select(orderDetailLocalDb);
   console.log(orderDetail);
   const { orderId } = orderDetail.items.syncData;
@@ -975,6 +976,40 @@ function* orderActionOffline(payload) {
     type: types.RECEIVED_GET_ACTION_ORDER,
     payload: { type: payload.action, data: dataActionOrder }
   });
+}
+
+function* setOrderActionOffline(payload) {
+  const orderDetail = yield select(orderDetailLocalDb);
+  const { orderId } = orderDetail.items.syncData;
+  const { items } = payload.payload;
+  const params = {
+    data: { orderId, items },
+    type: payload.action
+  };
+  let resultActionOrder;
+  switch (payload.action) {
+    case types.CANCEL_ACTION_ORDER:
+      break;
+    case types.REORDER_ACTION_ORDER:
+      break;
+    case types.ADD_NOTE_ACTION_ORDER:
+      break;
+    case types.REFUND_ACTION_ORDER:
+      params.data.items = items.filter(item => item);
+      resultActionOrder = yield call(setActionOrder, params);
+      console.log(resultActionOrder);
+      if (resultActionOrder.status) {
+        // do something
+        yield put({ type: types.TOGGLE_MODAL_ACTION_ORDER, payload: false });
+      }
+      break;
+    default:
+      break;
+  }
+  // yield put({
+  //   type: types.RECEIVED_GET_ACTION_ORDER,
+  //   payload: { type: payload.action, data: dataActionOrder }
+  // });
 }
 
 function* orderActionOnline(payload) {
@@ -1038,7 +1073,7 @@ function* setOrderAction(params) {
   yield put({ type: types.LOADING_SET_ACTION_ORDER, payload: true });
   switch (typeOf) {
     case types.DETAIL_ORDER_OFFLINE:
-      yield orderActionOffline({ action, payload });
+      yield setOrderActionOffline({ action, payload });
       break;
     case types.DETAIL_ORDER_ONLINE:
       yield orderActionOnline({ action, payload });
@@ -1058,7 +1093,7 @@ function* getOrderAction(params) {
   yield put({ type: types.LOADING_GET_ACTION_ORDER, payload: true });
   switch (typeOf) {
     case types.DETAIL_ORDER_OFFLINE:
-      yield orderActionOffline({ action, payload });
+      yield getOrderActionOffline({ action, payload });
       break;
     case types.DETAIL_ORDER_ONLINE:
       yield orderActionOnline({ action, payload });
