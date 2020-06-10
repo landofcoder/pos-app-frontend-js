@@ -6,7 +6,6 @@ import * as typesAuthen from '../constants/authen.json';
 import {
   getDiscountForQuoteService,
   createOrderLocal,
-  // noteOrderActionService,
   getRewardPointService,
   getActionOrder,
   setActionOrder
@@ -920,12 +919,10 @@ function* getProductByBarcodeFromScannerSaga(payload) {
 }
 
 function* noteOrderAction(payload) {
-  console.log('in noteOrderAction');
   console.log(payload);
   const id = payload.data.entity_id;
   console.log(id);
   if (payload.synced) {
-    // yield call(noteOrderActionService, { message: payload.message, id });
     // get id and call service
   } else {
     // set in local db

@@ -191,33 +191,6 @@ export async function setActionOrder(params) {
   }
 }
 
-// export async function noteOrderActionService(payload) {
-//   const params = {
-//     statusHistory: {
-//       comment: payload.message,
-//       created_at: Date.now()
-//     }
-//   };
-//   try {
-//     const response = await fetch(
-//       `${window.mainUrl}index.php/rest/V1/orders/${payload.id}/comments`,
-//       {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//           Authorization: `Bearer ${window.liveToken}`
-//         },
-//         body: JSON.stringify(params)
-//       }
-//     );
-//     const data = await response.json();
-//     return data;
-//   } catch (err) {
-//     console.log(err);
-//   }
-//   return { errors: true };
-// }
-
 export async function getRewardPointService({ customerId }) {
   try {
     const response = await fetch(
