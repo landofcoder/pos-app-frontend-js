@@ -56,6 +56,8 @@ class StockDisplay extends Component {
   }
 
   renderStockWarehouse = item => {
+    const { detailOutlet } = this.props;
+    console.log('detail outlet:', detailOutlet);
     let listVariants = [];
     if (item.variants && item.variants.length === 0) {
       listVariants.push(item);
@@ -96,10 +98,7 @@ class StockDisplay extends Component {
   };
 
   render() {
-    const { detailOutlet, item } = this.props;
-    // const stockItem = item.stock;
-    // const outletSource = detailOutlet.select_source;
-    // const stockList = stockItem && stockItem.stock ? stockItem.stock : [];
+    const { item } = this.props;
     const { stockDetailOpen } = this.state;
     return (
       <>
