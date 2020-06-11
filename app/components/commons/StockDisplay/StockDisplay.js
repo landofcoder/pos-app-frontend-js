@@ -55,11 +55,51 @@ class StockDisplay extends Component {
     return 0;
   }
 
+  renderStockWarehouse = item => {
+    let listVariants = [];
+    if (item.variants && item.variants.length === 0) {
+      listVariants.push(item);
+    } else {
+      listVariants = item.variants;
+    }
+    return (
+      <div>
+        {listVariants.map((item, index) => {
+          let listStock = item.stock.stock;
+          if (!listStock) {
+            listStock = [];
+          }
+          return (
+            <div key={index}>
+              <b className="font-weight-bolder">{item.name}</b>
+              <ul className="list-group list-group-flush mt-2">
+                {listStock.map((itemStock, indexStock) => {
+                  const stockItem = JSON.parse(itemStock);
+                  return (
+                    <li
+                      key={indexStock}
+                      className="list-group-item d-flex justify-content-between align-items-center"
+                    >
+                      {stockItem.code}
+                      <span className="badge badge-primary badge-pill">
+                        {stockItem.quantity}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
   render() {
     const { detailOutlet, item } = this.props;
-    const stockItem = item.stock;
-    const outletSource = detailOutlet.select_source;
-    const stockList = stockItem && stockItem.stock ? stockItem.stock : [];
+    // const stockItem = item.stock;
+    // const outletSource = detailOutlet.select_source;
+    // const stockList = stockItem && stockItem.stock ? stockItem.stock : [];
     const { stockDetailOpen } = this.state;
     return (
       <>
@@ -67,7 +107,7 @@ class StockDisplay extends Component {
           overlayClassName={ModalStyle.Overlay}
           shouldCloseOnOverlayClick
           onRequestClose={this.closeModel}
-          className={`${ModalStyle.Modal}`}
+          className={`${ModalStyle.Modal} ${Styles.stockModel}`}
           isOpen={stockDetailOpen}
           contentLabel="Example Modal"
         >
@@ -82,33 +122,8 @@ class StockDisplay extends Component {
             <div className="card">
               <div className="card-body">
                 <h5 className="card-title">Stock inventory</h5>
-                <ul className={`list-group ${Styles.wrapItems}`}>
-                  {stockList.map((item, index) => {
-                    const itemAssign = JSON.parse(item);
-                    return (
-                      <li
-                        key={index}
-                        className="list-group-item d-flex justify-content-between align-items-center"
-                      >
-                        <span>
-                          <span>
-                            <Stock />
-                            &nbsp;
-                          </span>
-                          {itemAssign.code}
-                          {itemAssign.code === outletSource ? (
-                            <>(Current)</>
-                          ) : (
-                            <></>
-                          )}
-                        </span>
-                        <span className="badge badge-primary badge-pill">
-                          {itemAssign.quantity ? itemAssign.quantity : '--'}
-                        </span>
-                      </li>
-                    );
-                  })}
-                </ul>
+                <hr />
+                {this.renderStockWarehouse(item)}
               </div>
             </div>
           </div>
