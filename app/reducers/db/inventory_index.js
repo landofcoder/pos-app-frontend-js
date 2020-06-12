@@ -38,22 +38,23 @@ export async function injectInventory(listProduct) {
 
 async function findBySku(item) {
   const { variants } = item;
-  let listVariants = [];
-  const stock = inventoryIndexTbl.where({ sku: item.sku }).first();
+  const newListVariantsToReturn = [];
+  const stock = await inventoryIndexTbl.where({ sku: item.sku }).first();
   if (variants && variants.length > 0) {
-    listVariants = [...variants];
+    const listVariants = [...variants];
     for (let i = 0; i < listVariants.length; i += 1) {
-      const productByVariant = listVariants[i].product;
+      const singleProduct = listVariants[i].product;
       // eslint-disable-next-line no-await-in-loop
       const variantStock = await inventoryIndexTbl
-        .where({ sku: productByVariant.sku })
+        .where({ sku: singleProduct.sku })
         .first();
       // Update stock for each variant
-      listVariants[i].stock = variantStock;
+      singleProduct.stock = variantStock;
+      newListVariantsToReturn.push(singleProduct);
     }
   }
   return {
     stock,
-    variants: listVariants
+    variants: newListVariantsToReturn
   };
 }
