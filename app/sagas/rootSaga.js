@@ -980,7 +980,7 @@ function* setOrderActionOffline(payload) {
   const { orderId } = orderDetail.items.syncData;
   const { items } = payload.payload;
   const params = {
-    data: { orderId, items },
+    data: { orderId, ...payload.payload },
     type: payload.action
   };
   let resultActionOrder;

@@ -34,7 +34,13 @@ class DetailOrderAction extends Component<Props> {
     this.state = {
       noteValue: '',
       refundOption: {
-        items: []
+        items: [],
+        notify: true,
+        arguments: {
+          extension_attributes: {
+            return_to_stock_items: []
+          }
+        }
       }
     };
   }
@@ -174,6 +180,28 @@ class DetailOrderAction extends Component<Props> {
     this.onQtyReturnItemOnChange(index, newItem);
   };
 
+  renderIsToggleReturnStock = item => {
+    const { refundOption } = this.state;
+    return (
+      refundOption.arguments.extension_attributes.return_to_stock_items.indexOf(
+        item
+      ) !== -1
+    );
+  };
+  onClickReturnToStockToggle = itemOrder => {
+    const { refundOption } = this.state;
+    let newReturnStock =
+      refundOption.arguments.extension_attributes.return_to_stock_items;
+    let getIndex = newReturnStock.indexOf(itemOrder);
+    if (getIndex !== -1) {
+      newReturnStock.splice(getIndex, 1);
+    } else {
+      newReturnStock.push(itemOrder);
+    }
+    refundOption.arguments.extension_attributes.return_to_stock_items = newReturnStock;
+    this.setState({ refundOption });
+  };
+
   showBodyRefund = () => {
     const { refundOption } = this.state;
     const { dataActionOrder } = this.props;
@@ -220,7 +248,25 @@ class DetailOrderAction extends Component<Props> {
                   </div>
                 </td>
                 <td>
-                  <i className="fa fa-toggle-on fa-2x" aria-hidden="true"></i>
+                  <div
+                    className=""
+                    style={{ color: '#777', cursor: 'pointer' }}
+                    onClick={() => {
+                      this.onClickReturnToStockToggle(item.item_id);
+                    }}
+                  >
+                    {this.renderIsToggleReturnStock(item.item_id) ? (
+                      <i
+                        className="fa fa-toggle-on fa-2x"
+                        aria-hidden="true"
+                      ></i>
+                    ) : (
+                      <i
+                        className="fa fa-toggle-off fa-2x"
+                        aria-hidden="true"
+                      ></i>
+                    )}
+                  </div>
                 </td>
                 <td>
                   <input
@@ -272,6 +318,7 @@ class DetailOrderAction extends Component<Props> {
   };
 
   render() {
+    const { refundOption } = this.state;
     const {
       toggleModalActionOrder,
       isLoadingSetOrderAction,
