@@ -977,21 +977,25 @@ function* getOrderActionOffline(payload) {
 
 function* setOrderActionOffline(payload) {
   const orderDetail = yield select(orderDetailLocalDb);
-  const { orderId } = orderDetail.items.syncData;
-  const { items } = payload.payload;
-  const params = {
-    data: { orderId, ...payload.payload },
-    type: payload.action
-  };
+  let orderId;
+  let items;
+  let params;
   let resultActionOrder;
   switch (payload.action) {
     case types.CANCEL_ACTION_ORDER:
       break;
     case types.REORDER_ACTION_ORDER:
+      yield reorderAction({ data: orderDetail, synced: true });
       break;
     case types.ADD_NOTE_ACTION_ORDER:
       break;
     case types.REFUND_ACTION_ORDER:
+      ({ orderId } = orderDetail.items.syncData);
+      ({ items } = payload.payload.items);
+      params = {
+        data: { orderId, ...payload.payload },
+        type: payload.action
+      };
       params.data.items = items.filter(item => item);
       resultActionOrder = yield call(setActionOrder, params);
       console.log(resultActionOrder);

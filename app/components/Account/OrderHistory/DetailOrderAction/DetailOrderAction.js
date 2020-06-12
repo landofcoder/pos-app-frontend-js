@@ -58,7 +58,6 @@ class DetailOrderAction extends Component<Props> {
     const { typeOpenToggle, getOrderAction } = this.props;
     getOrderAction({
       action: typeOpenToggle,
-      kindOf: 'DETAIL_ORDER_ONLINE'
     });
   };
 
@@ -122,7 +121,6 @@ class DetailOrderAction extends Component<Props> {
     }
     orderAction({
       action: typeOpenToggle,
-      kindOf: 'DETAIL_ORDER_OFFLINE',
       payload
     });
   };
@@ -162,7 +160,6 @@ class DetailOrderAction extends Component<Props> {
    */
   conditionChangeInputRefund = (value, index, item) => {
     const { refundOption } = this.state;
-    let newItem;
 
     if (
       value < 0 ||
@@ -173,7 +170,7 @@ class DetailOrderAction extends Component<Props> {
           : 10) // is undefined if empty
     )
       return;
-    newItem = {
+    const newItem = {
       order_item_id: item.item_id,
       qty: value
     };
@@ -188,11 +185,12 @@ class DetailOrderAction extends Component<Props> {
       ) !== -1
     );
   };
+
   onClickReturnToStockToggle = itemOrder => {
     const { refundOption } = this.state;
-    let newReturnStock =
+    const newReturnStock =
       refundOption.arguments.extension_attributes.return_to_stock_items;
-    let getIndex = newReturnStock.indexOf(itemOrder);
+    const getIndex = newReturnStock.indexOf(itemOrder);
     if (getIndex !== -1) {
       newReturnStock.splice(getIndex, 1);
     } else {
@@ -250,10 +248,13 @@ class DetailOrderAction extends Component<Props> {
                 <td>
                   <div
                     className=""
+                    role="button"
                     style={{ color: '#777', cursor: 'pointer' }}
                     onClick={() => {
                       this.onClickReturnToStockToggle(item.item_id);
                     }}
+                    onKeyPress={() => {}}
+                    tabIndex="0"
                   >
                     {this.renderIsToggleReturnStock(item.item_id) ? (
                       <i
@@ -318,7 +319,6 @@ class DetailOrderAction extends Component<Props> {
   };
 
   render() {
-    const { refundOption } = this.state;
     const {
       toggleModalActionOrder,
       isLoadingSetOrderAction,
