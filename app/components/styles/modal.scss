@@ -23,6 +23,7 @@
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
+  z-index: 2
 }
 
 /* Modal Content */
@@ -44,7 +45,9 @@
   position: relative;
 }
 
-.modalContent, .modalContentMd, .modalContentLg {
+.modalContent,
+.modalContentMd,
+.modalContentLg {
   .close {
     color: #666;
     float: right;

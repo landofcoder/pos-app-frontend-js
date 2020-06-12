@@ -14,6 +14,7 @@ import {
 } from '../../../actions/accountAction';
 import DetailOrder from './DetailOrder/DetailOrder';
 import DetailOrderOffline from './DetailOrderOffline/DetailOrderOffline';
+import Modal from 'react-modal';
 import Styles from './order-history.scss';
 import { formatCurrencyCode } from '../../../common/settings';
 import StylesPos from '../../pos.scss';
@@ -441,12 +442,13 @@ class OrderHistory extends Component<Props> {
             ) : null}
           </div>
         </div>
-        <div
-          className={modalStyle.modal}
-          style={{
-            display:
-              isOpenDetailOrderOffline || isOpenDetailOrder ? 'block' : 'none'
-          }}
+        <Modal
+          overlayClassName={modalStyle.Overlay}
+          shouldCloseOnOverlayClick
+          onRequestClose={this.closeOrderHistoryDetail}
+          className={`${modalStyle.Modal}`}
+          isOpen={isOpenDetailOrderOffline || isOpenDetailOrder}
+          contentLabel="Example Modal"
         >
           <div className={modalStyle.modalContentLg}>
             <div className="modal-content">
@@ -482,7 +484,7 @@ class OrderHistory extends Component<Props> {
             </div>
             {/* </div> */}
           </div>
-        </div>
+        </Modal>
         {this.showPaginate()}
       </>
     );
