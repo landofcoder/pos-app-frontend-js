@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
+import Modal from 'react-modal';
 import { formatDistance } from 'date-fns';
 import {
   getOrderHistory,
@@ -14,7 +15,7 @@ import {
 } from '../../../actions/accountAction';
 import DetailOrder from './DetailOrder/DetailOrder';
 import DetailOrderOffline from './DetailOrderOffline/DetailOrderOffline';
-import Modal from 'react-modal';
+import Close from '../../commons/x';
 import Styles from './order-history.scss';
 import { formatCurrencyCode } from '../../../common/settings';
 import StylesPos from '../../pos.scss';
@@ -451,20 +452,16 @@ class OrderHistory extends Component<Props> {
           contentLabel="Example Modal"
         >
           <div className={modalStyle.modalContentLg}>
+            <div
+              className={modalStyle.close}
+              role="presentation"
+              onClick={this.closeOrderHistoryDetail}
+            >
+              <Close />
+            </div>
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Order receipt</h5>
-                <div className="col-md-2 p-0">
-                  <button
-                    onClick={() => {
-                      this.closeOrderHistoryDetail();
-                    }}
-                    type="button"
-                    className="btn btn-outline-dark btn-block"
-                  >
-                    Close
-                  </button>
-                </div>
               </div>
               <div className={`modal-body ${Styles.toogleContent}`}>
                 {this.selectDetailOrder()}

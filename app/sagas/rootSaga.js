@@ -670,8 +670,6 @@ function* getDiscountForCheckoutSaga() {
       }
     };
   }
-  console.log('result get discount');
-  console.log(result);
   yield put({
     type: types.RECEIVED_CHECKOUT_CART_INFO,
     payload: result

@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Modal from 'react-modal';
 import {
   toggleModalActionOrder,
   orderAction,
   getOrderAction
 } from '../../../../actions/accountAction';
+import Close from '../../../commons/x';
 import ModalStyle from '../../../styles/modal.scss';
 import {
   ADD_NOTE_ACTION_ORDER,
@@ -20,7 +22,8 @@ type Props = {
   getOrderAction: (payload: object) => void,
   isLoadingSetOrderAction: boolean,
   isLoadingGetOrderAction: boolean,
-  dataActionOrder: boolean
+  dataActionOrder: boolean,
+  isOpenToggleActionOrder: boolean
 };
 
 class DetailOrderAction extends Component<Props> {
@@ -145,11 +148,36 @@ class DetailOrderAction extends Component<Props> {
     return false;
   };
 
+  /**
+   * pass value of input , index of this item, and this item
+   * @param string value
+   * @param int index
+   * @param object item
+   */
+  conditionChangeInputRefund = (value, index, item) => {
+    const { refundOption } = this.state;
+    let newItem;
+
+    if (
+      value < 0 ||
+      value + +item.qty_refunded > +item.qty_shipped ||
+      value >
+        (refundOption.items[index]
+          ? refundOption.items[index].qty_returning
+          : 10) // is undefined if empty
+    )
+      return;
+    newItem = {
+      order_item_id: item.item_id,
+      qty: value
+    };
+    this.onQtyReturnItemOnChange(index, newItem);
+  };
+
   showBodyRefund = () => {
     const { refundOption } = this.state;
     const { dataActionOrder } = this.props;
     const { items } = dataActionOrder;
-    let newItem;
     console.log(refundOption.items);
     return (
       <table className="table table-striped">
@@ -158,8 +186,9 @@ class DetailOrderAction extends Component<Props> {
             <th scope="col">#</th>
             <th>Product</th>
             <th>Price</th>
-            <th>Qty</th>
-            <th>Qty to Refund</th>
+            <th width="13%">Qty</th>
+            <th width="13%">Return to stock</th>
+            <th width="10%">Qty to Refund</th>
             <th>Subtotal</th>
             <th>Tax Amount</th>
             <th>Discount Amount</th>
@@ -191,26 +220,19 @@ class DetailOrderAction extends Component<Props> {
                   </div>
                 </td>
                 <td>
+                  <i className="fa fa-toggle-on fa-2x" aria-hidden="true"></i>
+                </td>
+                <td>
                   <input
                     type="number"
                     className="form-control"
                     placeholder="0"
                     onChange={event => {
-                      if (
-                        +event.target.value < 0 ||
-                        +event.target.value + +item.qty_refunded >
-                          +item.qty_shipped ||
-                        +event.target.value >
-                          (refundOption.items[index]
-                            ? refundOption.items[index].qty_returning
-                            : 10) // is undefined if empty
-                      )
-                        return false;
-                      newItem = {
-                        order_item_id: item.item_id,
-                        qty: +event.target.value
-                      };
-                      this.onQtyReturnItemOnChange(index, newItem);
+                      this.conditionChangeInputRefund(
+                        +event.target.value,
+                        index,
+                        item
+                      );
                     }}
                     value={
                       refundOption.items[index]
@@ -253,62 +275,66 @@ class DetailOrderAction extends Component<Props> {
     const {
       toggleModalActionOrder,
       isLoadingSetOrderAction,
-      isLoadingGetOrderAction
+      isLoadingGetOrderAction,
+      isOpenToggleActionOrder
     } = this.props;
     return (
-      <div>
-        <div className={ModalStyle.modal} style={{ display: 'block' }}>
-          <div className={ModalStyle.modalContentLg}>
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">{this.showTitleOrderAction()}</h5>
-              </div>
-              <div className="modal-body">
-                {isLoadingGetOrderAction ? (
-                  <div
-                    className="spinner-border spinner-border-sm text-center"
-                    role="status"
-                  >
+      <Modal
+        overlayClassName={ModalStyle.Overlay}
+        shouldCloseOnOverlayClick
+        onRequestClose={() => toggleModalActionOrder(false)}
+        className={`${ModalStyle.Modal}`}
+        isOpen={isOpenToggleActionOrder}
+        contentLabel="Example Modal"
+      >
+        <div className={ModalStyle.modalContentLg}>
+          <div
+            className={ModalStyle.close}
+            role="presentation"
+            onClick={() => toggleModalActionOrder(false)}
+          >
+            <Close />
+          </div>
+
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">{this.showTitleOrderAction()}</h5>
+            </div>
+            <div className="modal-body">
+              {isLoadingGetOrderAction ? (
+                <div className="d-flex justify-content-center">
+                  <div className="spinner-border" role="status">
                     <span className="sr-only">Loading...</span>
                   </div>
-                ) : (
-                  this.showBodyOrderAction()
-                )}
-              </div>
-              <div className="modal-footer">
-                <div className="col-md-3 p-0">
-                  <button
-                    type="button"
-                    className="btn btn-primary btn-block"
-                    onClick={() => {
-                      this.onSubmitOrderAction();
-                    }}
-                    disabled={!this.conditionToSubmitOrderAction()}
-                  >
-                    Submit{' '}
-                    {isLoadingSetOrderAction ? (
-                      <span
-                        className="spinner-border spinner-border-sm"
-                        role="status"
-                        aria-hidden="true"
-                      ></span>
-                    ) : null}
-                  </button>
                 </div>
-                <div className="col-md-2 p-0">
-                  <button
-                    type="button"
-                    onClick={() => toggleModalActionOrder(false)}
-                    className="btn btn-secondary btn-block"
-                  >
-                    Close
-                  </button>
-                </div>
+              ) : (
+                this.showBodyOrderAction()
+              )}
+            </div>
+            <div className="modal-footer">
+              <div className="col-md-3 p-0">
+                <button
+                  type="button"
+                  className="btn btn-primary btn-block"
+                  onClick={() => {
+                    this.onSubmitOrderAction();
+                  }}
+                  disabled={!this.conditionToSubmitOrderAction()}
+                >
+                  Submit{' '}
+                  {isLoadingSetOrderAction ? (
+                    <span
+                      className="spinner-border spinner-border-sm"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                  ) : null}
+                </button>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </Modal>
     );
   }
 }
@@ -319,7 +345,9 @@ const mapStateToProps = state => ({
     state.mainRd.toggleActionOrder.isLoadingSetOrderAction,
   isLoadingGetOrderAction:
     state.mainRd.toggleActionOrder.isLoadingGetDataOrderAction,
-  dataActionOrder: state.mainRd.toggleActionOrder.dataActionOrder
+  dataActionOrder: state.mainRd.toggleActionOrder.dataActionOrder,
+  isOpenToggleActionOrder:
+    state.mainRd.toggleActionOrder.isOpenToggleActionOrder
 });
 
 const mapDispatchToProps = dispatch => {
