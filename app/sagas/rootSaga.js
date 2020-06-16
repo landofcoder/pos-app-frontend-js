@@ -941,10 +941,8 @@ function* reorderAction(payload) {
   }
 
   // if order in not sync yet will reuse order with param suit for checkout
-  if (!payload.synced) {
-    for (let i = 0; i < itemList.length; i += 1) {
-      yield put({ type: types.ADD_TO_CART, payload: itemList[i] });
-    }
+  for (let i = 0; i < itemList.length; i += 1) {
+    yield put({ type: types.ADD_TO_CART, payload: itemList[i] });
   }
   // close toggle
   yield put({ type: types.CLOSE_TOGGLE_MODAL_DETAIL_ORDER });
@@ -985,6 +983,7 @@ function* setOrderActionOffline(payload) {
     case types.CANCEL_ACTION_ORDER:
       break;
     case types.REORDER_ACTION_ORDER:
+      console.log('reorder');
       yield reorderAction({ data: orderDetail, synced: true });
       break;
     case types.ADD_NOTE_ACTION_ORDER:
@@ -1072,6 +1071,7 @@ function* setOrderAction(params) {
   const { action, payload } = params.payload;
   const typeOf = yield selectTypeOrderAction();
   yield put({ type: types.LOADING_SET_ACTION_ORDER, payload: true });
+  console.log(typeOf);
   switch (typeOf) {
     case types.DETAIL_ORDER_OFFLINE:
       yield setOrderActionOffline({ action, payload });
