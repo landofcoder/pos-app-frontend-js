@@ -116,31 +116,79 @@ export async function syncOrderService(params) {
   }
 }
 
-export async function noteOrderActionService(payload) {
-  const params = {
-    statusHistory: {
-      comment: payload.message,
-      created_at: Date.now()
-    }
-  };
+export async function getActionOrder(params) {
   try {
     const response = await fetch(
-      `${window.mainUrl}index.php/rest/V1/orders/${payload.id}/comments`,
+      `${apiGatewayPath}/cashier/customer-checkout/get-action-order`,
       {
         method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${window.liveToken}`
+          platform: window.platform,
+          token: window.liveToken,
+          url: window.mainUrl,
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify(params)
+        redirect: 'follow',
+        referrer: 'no-referrer',
+        body: JSON.stringify({ params })
       }
     );
     const data = await response.json();
+    if (data.message || data.errors || !data.status) {
+      // eslint-disable-next-line no-throw-literal
+      throw {
+        message: data.message || 'Can not get action order',
+        data: data.data || data.errors
+      };
+    }
     return data;
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    return {
+      message: error.message || 'Unable to connect server',
+      data: error.data
+    };
   }
-  return { errors: true };
+}
+
+export async function setActionOrder(params) {
+  try {
+    const response = await fetch(
+      `${apiGatewayPath}/cashier/customer-checkout/set-action-order`,
+      {
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+          platform: window.platform,
+          token: window.liveToken,
+          url: window.mainUrl,
+          'Content-Type': 'application/json'
+        },
+        redirect: 'follow',
+        referrer: 'no-referrer',
+        body: JSON.stringify({ params })
+      }
+    );
+    const data = await response.json();
+    if (data.message || data.errors || !data.status) {
+      // eslint-disable-next-line no-throw-literal
+      throw {
+        message: data.message || 'Can not set action order',
+        data: data.data || data.errors
+      };
+    }
+    return data;
+  } catch (error) {
+    return {
+      status: false,
+      message: error.message || 'Unable to connect server',
+      data: error.data
+    };
+  }
 }
 
 export async function getRewardPointService({ customerId }) {

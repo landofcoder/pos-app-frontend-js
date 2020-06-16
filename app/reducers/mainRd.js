@@ -18,6 +18,14 @@ const cartCurrentDefaultData = {
   isGuestCustomer: true
 };
 
+const toggleActionOrderDefaultData = {
+  dataActionOrder: {},
+  isOpenToggleActionOrder: false,
+  isLoadingSetOrderAction: false,
+  isLoadingGetDataOrderAction: true,
+  typeOpenToggle: null
+};
+
 const initialState = {
   switchingMode: LOADING, // LOADING, LOGIN_FORM, CHILDREN, SYNC_SCREEN
   flagSwitchModeCounter: 1, // When this flag counter up, render in App.js will re-render and backgroundLogin will re-check
@@ -162,7 +170,7 @@ const initialState = {
   order_id_history: null,
   isOpenFindCustomer: false,
   isOpenCategoriesModel: false,
-  isOpenAddNote: false,
+  toggleActionOrder: toggleActionOrderDefaultData,
   isOpenSignUpCustomer: false,
   isOpenCalculator: false,
   isOpenDetailOrder: false,
@@ -328,11 +336,20 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.TOGGLE_MODAL_CUSTOMER:
         draft.isOpenFindCustomer = action.payload;
         break;
-      case types.TOGGLE_ACTION_ORDER_ADD_NOTE:
-        draft.isOpenAddNote = action.payload;
+      case types.RECEIVED_GET_ACTION_ORDER:
+        // bug in case is if we trans toggle to another while data is calling it will wrong show display and stop app when data come back
+        if (action.payload.type === draft.toggleActionOrder.typeOpenToggle) {
+          draft.toggleActionOrder.dataActionOrder = action.payload.data;
+        }
         break;
-      case types.LOADING_NOTE_ORDER_ACTION:
-        draft.isLoadingNoteOrderAction = action.payload;
+      case types.TOGGLE_MODAL_ACTION_ORDER:
+        draft.toggleActionOrder.isLoadingGetDataOrderAction = true;
+        if (action.payload.status) {
+          draft.toggleActionOrder.isOpenToggleActionOrder = true;
+          draft.toggleActionOrder.typeOpenToggle = action.payload.type;
+        } else {
+          draft.toggleActionOrder = toggleActionOrderDefaultData;
+        }
         break;
       case types.TOGGLE_MODAL_SIGN_UP_CUSTOMER:
         draft.isOpenSignUpCustomer = action.payload;
@@ -437,6 +454,12 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.LOADING_ORDER_HISTORY_DETAIL_OFFLINE:
         draft.isLoadingOrderHistoryDetailOffline = action.payload;
         break;
+      case types.LOADING_GET_ACTION_ORDER:
+        draft.toggleActionOrder.isLoadingGetDataOrderAction = action.payload;
+        break;
+      case types.LOADING_SET_ACTION_ORDER:
+        draft.toggleActionOrder.isLoadingSetOrderAction = action.payload;
+        break;
       case types.TOGGLE_MODAL_ORDER_DETAIL:
         draft.isOpenDetailOrder = action.payload.isShow;
         draft.isOpenDetailOrderOffline = false;
@@ -507,14 +530,14 @@ const mainRd = (state: Object = initialState, action: Object) =>
         // Update to preparing checkout
         const cartId = ordersInfo.cartId;
         const baseDiscountAmount = ordersInfo.cartTotals.discount_amount;
-        const baseGrandTotal = ordersInfo.cartTotals.base_grand_total;
-        const baseSubTotal = ordersInfo.cartTotals.base_subtotal;
-        const shippingAndTaxAmount = ordersInfo.cartTotals.tax_amount;
+        const baseGrandTotal = ordersInfo.cartTotals.grand_total;
+        const baseSubTotal = ordersInfo.cartTotals.subtotal;
+        const taxAmount = ordersInfo.cartTotals.tax_amount;
         draft.cartCurrent.cartId = cartId;
         draft.checkout.orderPreparingCheckout.totals.base_discount_amount = baseDiscountAmount;
         draft.checkout.orderPreparingCheckout.totals.base_subtotal = baseSubTotal;
         draft.checkout.orderPreparingCheckout.totals.grand_total = baseGrandTotal;
-        draft.checkout.orderPreparingCheckout.totals.tax_amount = shippingAndTaxAmount;
+        draft.checkout.orderPreparingCheckout.totals.tax_amount = taxAmount;
         break;
       case types.BACK_TO_WORK_PLACE:
         draft.switchingMode = WORK_PLACE_FORM;
