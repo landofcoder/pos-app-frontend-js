@@ -27,10 +27,7 @@ import {
   signUpCustomerServiceDb
 } from './services/customer-service';
 import {
-  cancelOrderService,
   getAllCategoriesService,
-  getOrderHistoryService,
-  getOrderHistoryServiceDetails,
   getShopInfoService,
   getAllCategoriesByParentIdService
 } from './services/common-service';
@@ -556,25 +553,6 @@ function* getProductByCategoryLazyLoad(categoryId, currentPage) {
   return false;
 }
 
-function* getOrderHistoryDetail(payload) {
-  yield put({ type: types.LOADING_ORDER_HISTORY_DETAIL, payload: true });
-  const data = yield call(getOrderHistoryServiceDetails, payload.payload);
-  yield put({
-    type: types.RECEIVED_ORDER_HISTORY_DETAIL_ACTION,
-    payload: data
-  });
-  yield put({ type: types.LOADING_ORDER_HISTORY_DETAIL, payload: false });
-}
-
-function* getOrderHistory() {
-  yield put({ type: types.LOADING_ORDER_HISTORY, payload: true });
-  const data = yield call(getOrderHistoryService);
-  yield put({
-    type: types.RECEIVED_ORDER_HISTORY_ACTION,
-    payload: data.items
-  });
-  yield put({ type: types.LOADING_ORDER_HISTORY, payload: false });
-}
 
 function* signUpAction(payload) {
   yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: true });
@@ -1316,10 +1294,8 @@ function* rootSaga() {
   yield takeEvery(types.GET_DETAIL_PRODUCT_GROUPED, getDetailGroupedProduct);
   yield takeEvery(types.SEARCH_CUSTOMER, getSearchCustomer);
   yield takeEvery(types.ADD_TO_CART, addToCart);
-  yield takeEvery(types.GET_ORDER_HISTORY_ACTION, getOrderHistory);
   yield takeEvery(types.GET_PRODUCT_BY_CATEGORY, getProductByCategory);
   yield takeEvery(types.SIGN_UP_CUSTOMER, signUpAction);
-  yield takeEvery(types.GET_ORDER_HISTORY_DETAIL_ACTION, getOrderHistoryDetail);
   yield takeEvery(typesAuthen.CHECK_LOGIN_BACKGROUND, checkLoginBackgroundSaga);
   yield takeEvery(types.UPDATE_QTY_CART_ITEM, updateQtyCartItemSaga);
   yield takeEvery(types.RE_CHECK_REQUIRE_STEP, reCheckRequireStepSaga);

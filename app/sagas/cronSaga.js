@@ -56,6 +56,7 @@ import {
   conditionForSyncing,
   serviceTypeGroupManager
 } from '../common/sync-group-manager';
+import { getOrderHistoryService } from './services/common-service';
 
 const cashierInfo = state => state.authenRd.cashierInfo;
 const detailOutlet = state => state.mainRd.generalConfig.detail_outlet;
@@ -328,6 +329,8 @@ function* syncOrder(orderId, syncAllNow) {
   } else {
     orders = yield getAllOrders();
   }
+
+  // Sync up order
   let checkAllSync = 0;
   // eslint-disable-next-line no-restricted-syntax
   for (const order of orders) {
@@ -366,6 +369,15 @@ function* syncOrder(orderId, syncAllNow) {
     }
   }
 
+  // Sync down order
+  console.log('go sync down');
+  const itemsOrderResult = yield call(getOrderHistoryService);
+  const itemsOrder = itemsOrderResult.items;
+  console.log(itemsOrder);
+  // eslint-disable-next-line no-restricted-syntax
+  for (const itemOrderId of itemsOrder) {
+    console.log(itemOrderId);
+  }
   if (!checkAllSync) {
     yield call(successLoadService, types.SYNC_ORDER_LIST);
   } else {

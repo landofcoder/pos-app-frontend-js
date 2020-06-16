@@ -99,45 +99,34 @@ export async function getAllCategoriesService() {
  * @returns void
  */
 export async function getOrderHistoryService() {
+  let data = {};
   try {
     const response = await fetch(
-      `${window.mainUrl}/rest/V1/pos/order_history/search?searchCriteria[sortOrders][0][field]=pos_order_id`,
+      `${apiGatewayPath}/cashier/customer-checkout/get-list-order-history`,
       {
         method: 'GET',
+        mode: 'cors',
         cache: 'no-cache',
         credentials: 'same-origin',
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${window.liveToken}`
+          url: window.mainUrl,
+          platform: window.platform,
+          token: window.liveToken
         },
         redirect: 'follow',
         referrer: 'no-referrer'
       }
     );
-    const data = await response.json();
-    return data;
+    data = await response.json();
+    if (data.message || data.errors) {
+      // eslint-disable-next-line no-throw-literal
+      throw { message: data.message };
+    }
   } catch (e) {
-    return { items: [] };
+    data = { items: [] };
   }
-}
-
-export async function getOrderHistoryServiceDetails(index) {
-  const response = await fetch(`${window.mainUrl}rest/V1/orders/${index}`, {
-    method: 'GET',
-    mode: 'cors',
-    cache: 'no-cache',
-    credentials: 'same-origin',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${window.liveToken}`
-    },
-    redirect: 'follow',
-    referrer: 'no-referrer'
-  });
-  const data = await response.json();
   return data;
 }
-
 export async function cancelOrderService(index) {
   await deleteOrderById(index);
 }

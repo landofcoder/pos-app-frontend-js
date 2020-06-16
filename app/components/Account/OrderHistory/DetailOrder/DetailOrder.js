@@ -2,10 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Styles from './detail-order.scss';
 import { formatCurrencyCode } from '../../../../common/settings';
-import {
-  getOrderHistoryDetail,
-  toggleModalOrderDetail
-} from '../../../../actions/accountAction';
+import { toggleModalOrderDetail } from '../../../../actions/accountAction';
 
 type Props = {
   orderHistoryDetail: {},
@@ -281,7 +278,6 @@ function mapStateToProps(state) {
 }
 function mapDispatchToProps(dispatch) {
   return {
-    getOrderHistoryDetail: id => dispatch(getOrderHistoryDetail(id)),
     toggleModalOrderDetail: payload => dispatch(toggleModalOrderDetail(payload))
   };
 }

@@ -4,12 +4,10 @@ import { withRouter } from 'react-router';
 import Modal from 'react-modal';
 import { formatDistance } from 'date-fns';
 import {
-  getOrderHistory,
   toggleModalOrderDetail,
   toggleModalOrderDetailOffline,
   orderAction,
   toggleModalActionOrder,
-  getOrderHistoryDetail,
   closeToggleModalOrderDetail,
   getDataServiceWithType
 } from '../../../actions/accountAction';
@@ -44,7 +42,6 @@ type Props = {
   toggleModalOrderDetail: object => void,
   toggleModalOrderDetailOffline: object => void,
   orderAction: payload => void,
-  getOrderHistoryDetail: id => void,
   orderHistoryDetailOffline: object,
   orderHistoryDetail: object,
   history: payload => void,
@@ -83,9 +80,8 @@ class OrderHistory extends Component<Props> {
   }
 
   getOrderHistoryDetail = saleOrderId => {
-    const { toggleModalOrderDetail, getOrderHistoryDetail } = this.props;
+    const { toggleModalOrderDetail } = this.props;
     toggleModalOrderDetail({ isShow: true, order_id: saleOrderId });
-    getOrderHistoryDetail(saleOrderId);
   };
 
   getOrderHistoryDetailOffline = dataOrderCheckoutOfflineItem => {
@@ -505,12 +501,10 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    getOrderHistory: () => dispatch(getOrderHistory()),
     toggleModalOrderDetail: payload =>
       dispatch(toggleModalOrderDetail(payload)),
     toggleModalOrderDetailOffline: payload =>
       dispatch(toggleModalOrderDetailOffline(payload)),
-    getOrderHistoryDetail: id => dispatch(getOrderHistoryDetail(id)),
     orderAction: payload => dispatch(orderAction(payload)),
     toggleModalActionOrder: payload =>
       dispatch(toggleModalActionOrder(payload)),
