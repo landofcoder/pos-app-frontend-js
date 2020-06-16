@@ -990,7 +990,7 @@ function* setOrderActionOffline(payload) {
       break;
     case types.REFUND_ACTION_ORDER:
       ({ orderId } = orderDetail.items.syncData);
-      ({ items } = payload.payload.items);
+      ({ items } = payload.payload);
       params = {
         data: { orderId, ...payload.payload },
         type: payload.action
