@@ -57,7 +57,7 @@ class DetailOrderAction extends Component<Props> {
   getDataOrderAction = () => {
     const { typeOpenToggle, getOrderAction } = this.props;
     getOrderAction({
-      action: typeOpenToggle,
+      action: typeOpenToggle
     });
   };
 
@@ -349,7 +349,10 @@ class DetailOrderAction extends Component<Props> {
             </div>
             <div className="modal-body">
               {isLoadingGetOrderAction ? (
-                <div className="d-flex justify-content-center">
+                <div
+                  style={{ color: '#666' }}
+                  className="d-flex justify-content-center"
+                >
                   <div className="spinner-border" role="status">
                     <span className="sr-only">Loading...</span>
                   </div>
