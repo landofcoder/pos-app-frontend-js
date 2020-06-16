@@ -343,6 +343,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
         }
         break;
       case types.TOGGLE_MODAL_ACTION_ORDER:
+        draft.toggleActionOrder.isLoadingGetDataOrderAction = true;
         if (action.payload.status) {
           draft.toggleActionOrder.isOpenToggleActionOrder = true;
           draft.toggleActionOrder.typeOpenToggle = action.payload.type;
