@@ -1,5 +1,4 @@
 import { put } from 'redux-saga/effects';
-import { deleteOrderById } from '../../reducers/db/sync_orders';
 import { getAllCategoriesByParentIdFromLocal } from '../../reducers/db/categories';
 import { UPDATE_CURRENT_POS_COMMAND } from '../../constants/root';
 import { apiGatewayPath } from '../../../configs/env/config.main';
@@ -92,43 +91,6 @@ export async function getAllCategoriesService() {
     throw { message: data.message, data };
   }
   return data;
-}
-
-/**
- * Get order history service
- * @returns void
- */
-export async function getOrderHistoryService() {
-  let data = {};
-  try {
-    const response = await fetch(
-      `${apiGatewayPath}/cashier/customer-checkout/get-list-order-history`,
-      {
-        method: 'GET',
-        mode: 'cors',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        headers: {
-          url: window.mainUrl,
-          platform: window.platform,
-          token: window.liveToken
-        },
-        redirect: 'follow',
-        referrer: 'no-referrer'
-      }
-    );
-    data = await response.json();
-    if (data.message || data.errors) {
-      // eslint-disable-next-line no-throw-literal
-      throw { message: data.message };
-    }
-  } catch (e) {
-    data = { items: [] };
-  }
-  return data;
-}
-export async function cancelOrderService(index) {
-  await deleteOrderById(index);
 }
 
 /**

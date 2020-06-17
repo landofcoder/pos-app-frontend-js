@@ -45,6 +45,17 @@ export async function getOrderById(id) {
   return data;
 }
 
+export async function getOrderByOrderId(orderId) {
+  const tbl = db.table(table);
+  let data = [];
+  try {
+    data = await tbl.where({ orderId }).toArray();
+  } catch (e) {
+    console.log('Cannot get order by id');
+  }
+  return data;
+}
+
 export async function updateOrderById(order, notChangeTime) {
   // eslint-disable-next-line no-param-reassign
   if (!notChangeTime) order.update_at = Date.now();
