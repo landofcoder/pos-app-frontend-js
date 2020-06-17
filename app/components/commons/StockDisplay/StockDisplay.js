@@ -36,28 +36,36 @@ class StockDisplay extends Component {
     this.setState({ stockDetailOpen: true });
   };
 
-  getInventoryByOutletWareHouse(item) {
-    if (item.type_id === 'configurable') {
-      return '--';
+  getInventoryByOutletWareHouse = item => {
+    switch (item.type_id) {
+      case 'simple': {
+        const listStock = item.stock.stock;
+        return this.findDefaultQtyByOutletWareHouse(listStock);
+      }
+      case 'configurable':
+        return '';
+      default:
+        return '';
     }
+  };
 
-    const stock = item.stockItem;
-    const { detailOutlet } = this.props;
-    const listStock = stock && stock.stock ? stock.stock : [];
-    const outletSource = detailOutlet.select_source;
-    for (let i = 0; i < listStock.length; i += 1) {
-      const stockItem = JSON.parse(listStock[i]);
-      const stockCode = stockItem.code;
-      if (stockCode === outletSource) {
-        return stockItem.quantity ? stockItem.quantity : '--';
+  findDefaultQtyByOutletWareHouse = listStock => {
+    if (listStock && listStock.length > 0) {
+      const { detailOutlet } = this.props;
+      const outletSource = detailOutlet.select_source;
+      for (let i = 0; i < listStock.length; i += 1) {
+        const stockItem = JSON.parse(listStock[i]);
+        if (stockItem.code === outletSource) {
+          return stockItem.quantity;
+        }
       }
     }
-    return 0;
-  }
+    return '';
+  };
 
   renderStockWarehouse = item => {
     const { detailOutlet } = this.props;
-    console.log('detail outlet:', detailOutlet);
+    const outletSource = detailOutlet.select_source;
     let listVariants = [];
     if (item.variants && item.variants.length === 0) {
       listVariants.push(item);
@@ -82,7 +90,8 @@ class StockDisplay extends Component {
                       key={indexStock}
                       className="list-group-item d-flex justify-content-between align-items-center"
                     >
-                      {stockItem.code}
+                      {stockItem.code}{' '}
+                      {stockItem.code === outletSource ? '(Current)' : ''}
                       <span className="badge badge-primary badge-pill">
                         {stockItem.quantity}
                       </span>

@@ -65,6 +65,7 @@ export function reformatBundleProduct(item, firstInit = true) {
  * Find used configurable
  */
 export function reformatConfigurableProduct(item, firstInit = true) {
+  console.log('reformat configurable product:', item);
   let reAssignItem = null;
 
   /**
@@ -108,6 +109,7 @@ export function reformatConfigurableProduct(item, firstInit = true) {
     const { variants } = reAssignItem;
     for (let k = 0; k < variants.length; k += 1) {
       const productVariant = variants[k];
+      console.log('product variants:', productVariant);
       const { attributes } = variants[k];
 
       let foundIt = 0;
