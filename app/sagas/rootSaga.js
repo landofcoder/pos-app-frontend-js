@@ -6,8 +6,9 @@ import * as typesAuthen from '../constants/authen.json';
 import {
   getDiscountForQuoteService,
   createOrderLocal,
-  noteOrderActionService,
-  getRewardPointService
+  getRewardPointService,
+  getActionOrder,
+  setActionOrder
 } from './services/cart-service';
 import { stripeMakePayment } from './services/payments/stripe-payment';
 import { authorizeMakePayment } from './services/payments/authorize-payment';
@@ -669,8 +670,6 @@ function* getDiscountForCheckoutSaga() {
       }
     };
   }
-  console.log('result get discount');
-  console.log(result);
   yield put({
     type: types.RECEIVED_CHECKOUT_CART_INFO,
     payload: result
@@ -920,19 +919,15 @@ function* getProductByBarcodeFromScannerSaga(payload) {
 }
 
 function* noteOrderAction(payload) {
-  console.log('in noteOrderAction');
   console.log(payload);
-  yield put({ type: types.LOADING_NOTE_ORDER_ACTION, payload: true });
   const id = payload.data.entity_id;
   console.log(id);
   if (payload.synced) {
-    yield call(noteOrderActionService, { message: payload.message, id });
     // get id and call service
   } else {
     // set in local db
   }
-  yield put({ type: types.LOADING_NOTE_ORDER_ACTION, payload: false });
-  yield put({ type: types.TOGGLE_ACTION_ORDER_ADD_NOTE, payload: false });
+  yield put({ type: types.TOGGLE_MODAL_ACTION_ORDER, payload: false });
 }
 
 function* reorderAction(payload) {
@@ -946,53 +941,84 @@ function* reorderAction(payload) {
   }
 
   // if order in not sync yet will reuse order with param suit for checkout
-  if (!payload.synced) {
-    for (let i = 0; i < itemList.length; i += 1) {
-      yield put({ type: types.ADD_TO_CART, payload: itemList[i] });
-    }
+  for (let i = 0; i < itemList.length; i += 1) {
+    yield put({ type: types.ADD_TO_CART, payload: itemList[i] });
   }
   // close toggle
   yield put({ type: types.CLOSE_TOGGLE_MODAL_DETAIL_ORDER });
 }
 
-function* orderActionOffline(payload) {
+function* getOrderActionOffline(payload) {
   const orderDetail = yield select(orderDetailLocalDb);
-  const orderListResult = yield select(orderList);
-  let index;
-  // tim index cua order offline de xoa do viec ghep order online va offline nen khong the bat index cua item nay
-  for (let i = 0; i < orderListResult.length; i += 1) {
-    if (orderListResult[i].id) {
-      if (orderListResult[i].id === orderDetail.id) index = i;
-    }
-  }
+  console.log(orderDetail);
+  const { orderId } = orderDetail.items.syncData;
+  const params = { data: { orderId }, type: payload.action };
+  let dataActionOrder;
   switch (payload.action) {
     case types.CANCEL_ACTION_ORDER:
-      yield cancelOrderService(orderDetail.id); // delete in localdb
-      yield put({ type: types.REMOVE_ORDER_LIST, payload: index });
       break;
     case types.REORDER_ACTION_ORDER:
-      yield reorderAction({ data: orderDetail, synced: false });
       break;
-    case types.NOTE_ORDER_ACTION:
-      yield noteOrderAction({
-        data: orderDetail,
-        synced: false,
-        message: payload.payload
-      });
+    case types.ADD_NOTE_ACTION_ORDER:
+      break;
+    case types.REFUND_ACTION_ORDER:
+      dataActionOrder = yield call(getActionOrder, params);
       break;
     default:
       break;
   }
+  yield put({
+    type: types.RECEIVED_GET_ACTION_ORDER,
+    payload: { type: payload.action, data: dataActionOrder }
+  });
+}
+
+function* setOrderActionOffline(payload) {
+  const orderDetail = yield select(orderDetailLocalDb);
+  let orderId;
+  let items;
+  let params;
+  let resultActionOrder;
+  switch (payload.action) {
+    case types.CANCEL_ACTION_ORDER:
+      break;
+    case types.REORDER_ACTION_ORDER:
+      console.log('reorder');
+      yield reorderAction({ data: orderDetail, synced: true });
+      break;
+    case types.ADD_NOTE_ACTION_ORDER:
+      break;
+    case types.REFUND_ACTION_ORDER:
+      ({ orderId } = orderDetail.items.syncData);
+      ({ items } = payload.payload);
+      params = {
+        data: { orderId, ...payload.payload },
+        type: payload.action
+      };
+      params.data.items = items.filter(item => item);
+      resultActionOrder = yield call(setActionOrder, params);
+      console.log(resultActionOrder);
+      if (resultActionOrder.status) {
+        // do something
+        yield put({ type: types.TOGGLE_MODAL_ACTION_ORDER, payload: false });
+      }
+      break;
+    default:
+      break;
+  }
+  // yield put({
+  //   type: types.RECEIVED_GET_ACTION_ORDER,
+  //   payload: { type: payload.action, data: dataActionOrder }
+  // });
 }
 
 function* orderActionOnline(payload) {
   const data = yield select(orderDetailOnline);
-  console.log(payload.action);
   switch (payload.action) {
     case types.REORDER_ACTION_ORDER:
       yield reorderAction({ data, synced: true });
       break;
-    case types.NOTE_ORDER_ACTION:
+    case types.ADD_NOTE_ACTION_ORDER:
       yield noteOrderAction({ data, synced: true, message: payload.payload });
       break;
     default:
@@ -1037,19 +1063,45 @@ function* selectTypeOrderAction() {
     return types.DETAIL_ORDER_OFFLINE;
 }
 
-function* orderAction(params) {
+/**
+ * set order action used for submitting query message data
+ * @param {*} params
+ */
+function* setOrderAction(params) {
   const { action, payload } = params.payload;
   const typeOf = yield selectTypeOrderAction();
+  yield put({ type: types.LOADING_SET_ACTION_ORDER, payload: true });
   console.log(typeOf);
   switch (typeOf) {
     case types.DETAIL_ORDER_OFFLINE:
-      yield orderActionOffline({ action, payload });
+      yield setOrderActionOffline({ action, payload });
       break;
     case types.DETAIL_ORDER_ONLINE:
       yield orderActionOnline({ action, payload });
       break;
     default:
   }
+  yield put({ type: types.LOADING_SET_ACTION_ORDER, payload: false });
+}
+
+/**
+ * get order action used for getting query message data
+ * @param {*} params
+ */
+function* getOrderAction(params) {
+  const { action, payload } = params.payload;
+  const typeOf = yield selectTypeOrderAction();
+  yield put({ type: types.LOADING_GET_ACTION_ORDER, payload: true });
+  switch (typeOf) {
+    case types.DETAIL_ORDER_OFFLINE:
+      yield getOrderActionOffline({ action, payload });
+      break;
+    case types.DETAIL_ORDER_ONLINE:
+      yield orderActionOnline({ action, payload });
+      break;
+    default:
+  }
+  yield put({ type: types.LOADING_GET_ACTION_ORDER, payload: false });
 }
 
 /**
@@ -1281,8 +1333,8 @@ function* rootSaga() {
     getProductByBarcodeFromScannerSaga
   );
 
-  yield takeEvery(types.ORDER_ACTION, orderAction);
-
+  yield takeEvery(types.SET_ORDER_ACTION, setOrderAction);
+  yield takeEvery(types.GET_ORDER_ACTION, getOrderAction);
   yield takeEvery(
     types.CARD_CHECKOUT_PLACE_ORDER_ACTION,
     cardCheckoutPlaceOrderActionSg

@@ -33,16 +33,16 @@ export function toggleModalOrderDetailOffline(payload) {
   };
 }
 
-export function toggleModalAddNote(payload) {
+export function toggleModalActionOrder(payload) {
   return {
-    type: type.TOGGLE_ACTION_ORDER_ADD_NOTE,
+    type: type.TOGGLE_MODAL_ACTION_ORDER,
     payload
   };
 }
 
 export function addNoteOrderAction(payload) {
   return {
-    type: type.NOTE_ORDER_ACTION,
+    type: type.ADD_NOTE_ACTION_ORDER,
     payload
   };
 }
@@ -55,11 +55,17 @@ export function actionLoadingOrderDetailOffline(payload) {
 
 export function orderAction(payload) {
   return {
-    type: type.ORDER_ACTION,
+    type: type.SET_ORDER_ACTION,
     payload
   };
 }
 
+export function getOrderAction(payload) {
+  return {
+    type: type.GET_ORDER_ACTION,
+    payload
+  };
+}
 export function getSyncStatusFromLocal() {
   return {
     type: type.GET_SYNC_STATUS_FROM_LOCAL

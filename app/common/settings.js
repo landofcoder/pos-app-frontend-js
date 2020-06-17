@@ -58,7 +58,6 @@ export function formatCurrencyCode(value: number) {
 export const defaultPageSize = 20;
 
 export function getShippingMethodCode(methodShipping) {
-  console.log(methodShipping);
   switch (methodShipping) {
     case 'flatrate':
       return 'flatrate_flatrate';

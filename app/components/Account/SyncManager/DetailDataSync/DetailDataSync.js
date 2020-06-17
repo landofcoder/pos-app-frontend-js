@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Modal from 'react-modal';
 import ModalStyle from '../../../styles/modal.scss';
 import {
   ALL_PRODUCT_SYNC,
@@ -8,6 +9,7 @@ import {
   GENERAL_CONFIG_SYNC,
   SYNC_ORDER_LIST
 } from '../../../../constants/authen.json';
+import Close from '../../../commons/x';
 import {
   showLogsAction,
   getDataServiceWithType
@@ -472,13 +474,22 @@ class DetailDataSync extends Component {
   render() {
     const { isShowLogsMessages } = this.props;
     return (
-      <div
-        className={ModalStyle.modal}
-        style={{
-          display: isShowLogsMessages ? 'block' : 'none'
-        }}
+      <Modal
+        overlayClassName={ModalStyle.Overlay}
+        shouldCloseOnOverlayClick
+        onRequestClose={this.close}
+        className={`${ModalStyle.Modal}`}
+        isOpen={isShowLogsMessages}
+        contentLabel="Example Modal"
       >
         <div className={ModalStyle.modalContentLg}>
+          <div
+            className={ModalStyle.close}
+            role="presentation"
+            onClick={this.close}
+          >
+            <Close />
+          </div>
           <div className="modal-content" style={{ backgroundColor: '#F7F8FA' }}>
             <div className="modal-header">
               <h5 className="modal-title">{this.showTitleLog()}</h5>
@@ -487,20 +498,9 @@ class DetailDataSync extends Component {
               {this.showTableLog()}
               {this.showPaginate()}
             </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={() => {
-                  this.close();
-                }}
-              >
-                Close
-              </button>
-            </div>
           </div>
         </div>
-      </div>
+      </Modal>
     );
   }
 }
