@@ -74,8 +74,11 @@ export function reformatConfigurableProduct(item, firstInit = true) {
    */
   if (firstInit) {
     reAssignItem = Object.assign({}, item);
+    console.log('reAssign 1:', reAssignItem);
+    console.log('reAssign 1 item:', item);
   } else {
     reAssignItem = JSON.parse(JSON.stringify(item));
+    console.log('reAssign 2:', reAssignItem);
   }
   const configurableOption = reAssignItem.configurable_options;
 

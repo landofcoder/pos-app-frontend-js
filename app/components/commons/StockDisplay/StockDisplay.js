@@ -67,21 +67,28 @@ class StockDisplay extends Component {
     const { detailOutlet } = this.props;
     const outletSource = detailOutlet.select_source;
     let listVariants = [];
-    if (item.variants && item.variants.length === 0) {
-      listVariants.push(item);
-    } else {
-      listVariants = item.variants;
+
+    switch (item.type_id) {
+      case 'simple':
+        listVariants.push({ product: item });
+        break;
+      case 'configurable':
+        listVariants = item.variants;
+        break;
+      default:
+        break;
     }
     return (
       <div>
         {listVariants.map((item, index) => {
-          let listStock = item.stock.stock;
+          const { product } = item;
+          let listStock = product.stock.stock;
           if (!listStock) {
             listStock = [];
           }
           return (
             <div key={index}>
-              <b className="font-weight-bolder">{item.name}</b>
+              <b className="font-weight-bolder">{product.name}</b>
               <ul className="list-group list-group-flush mt-2">
                 {listStock.map((itemStock, indexStock) => {
                   const stockItem = JSON.parse(itemStock);

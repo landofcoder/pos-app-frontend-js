@@ -43,14 +43,14 @@ async function findBySku(item) {
   if (variants && variants.length > 0) {
     const listVariants = [...variants];
     for (let i = 0; i < listVariants.length; i += 1) {
-      const singleProduct = listVariants[i].product;
+      // const singleProduct = listVariants[i].product;
       // eslint-disable-next-line no-await-in-loop
       const variantStock = await inventoryIndexTbl
-        .where({ sku: singleProduct.sku })
+        .where({ sku: listVariants[i].product.sku })
         .first();
       // Update stock for each variant
-      singleProduct.stock = variantStock;
-      newListVariantsToReturn.push(singleProduct);
+      listVariants[i].product.stock = variantStock;
+      newListVariantsToReturn.push(listVariants[i]);
     }
   }
   return {
