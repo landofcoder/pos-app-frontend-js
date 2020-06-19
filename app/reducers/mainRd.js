@@ -475,9 +475,6 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.LOADING_ORDER_HISTORY:
         draft.isLoadingOrderHistory = action.payload;
         break;
-      case types.RECEIVED_ORDER_HISTORY_ACTION:
-        draft.orderHistory = action.payload;
-        break;
       case types.RECEIVED_ORDER_HISTORY_DETAIL_OFFLINE_ACTION:
         draft.orderHistoryDetailOffline = action.payload;
         break;
@@ -615,12 +612,6 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.UPDATE_CARD_PAYMENT_TYPE:
         draft.checkout.cardPayment.type = action.payload;
-        break;
-      case types.REMOVE_ORDER_LIST:
-        let orderList = draft.orderHistory;
-        orderList.splice(action.payload, 1);
-        draft.orderHistory = orderList;
-        draft.isOpenDetailOrderOffline = false;
         break;
       case types.UPDATE_CUSTOMER_INFO_AND_SHIPPING_ADDRESS_PREPARING_CHECKOUT: {
         const {

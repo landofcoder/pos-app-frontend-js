@@ -486,7 +486,6 @@ function mapStateToProps(state) {
     isOpenToggleActionOrder:
       state.mainRd.toggleActionOrder.isOpenToggleActionOrder,
     isLoading: state.mainRd.isLoadingOrderHistory,
-    orderHistory: state.mainRd.orderHistory,
     syncDataManager: state.authenRd.syncDataManager,
     orderHistoryDetailOffline: state.mainRd.orderHistoryDetailOffline,
     orderHistoryDetail: state.mainRd.orderHistoryDetail,

@@ -85,7 +85,6 @@ const guestInfo = state =>
 const allDevices = state => state.mainRd.hidDevice.allDevices;
 const orderDetailLocalDb = state => state.mainRd.orderHistoryDetailOffline;
 const cardPayment = state => state.mainRd.checkout.cardPayment;
-const orderList = state => state.mainRd.orderHistory;
 const detailOutlet = state => state.mainRd.generalConfig.detail_outlet;
 const isOpenDetailOrderOffline = state => state.mainRd.isOpenDetailOrderOffline;
 const internetConnected = state => state.mainRd.internetConnected;
