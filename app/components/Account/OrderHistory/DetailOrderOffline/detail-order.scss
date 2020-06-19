@@ -1,0 +1,12 @@
+@import '../order-history';
+.wrapDetailOrder {
+  height: $heightToggleContent;
+  overflow-y: auto;
+  background-color: white;
+}
+
+.wrapContent {
+  display: flex;
+  flex-direction: column;
+  padding: 4px;
+}

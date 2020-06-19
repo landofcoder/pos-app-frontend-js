@@ -376,7 +376,6 @@ function* syncOrder(orderId, syncAllNow) {
   }
 
   // Sync down order
-  console.log('go sync down');
   const itemsOrderResult = yield call(getListOrderHistoryService);
   const itemsOrder = itemsOrderResult.items;
   // eslint-disable-next-line no-restricted-syntax
@@ -387,11 +386,9 @@ function* syncOrder(orderId, syncAllNow) {
       itemOrderId.sales_order_id
     );
     if (orders.length > 0) {
-      console.log('UPDATE ORDER');
       orderItemUpdate.id = orders[0].id;
       yield call(updateOrderById, orderItemUpdate);
     } else {
-      console.log('CREATE ORDER');
       orderItemUpdate.id = Date.now();
       yield call(createOrders, orderItemUpdate);
     }

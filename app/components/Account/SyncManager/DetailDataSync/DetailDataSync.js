@@ -170,7 +170,10 @@ class DetailDataSync extends Component {
     }
     return (
       <nav aria-label="...">
-        <ul className={`pagination ${Styles.noselect}`} style={{ cursor: 'pointer' }}>
+        <ul
+          className={`pagination ${Styles.noselect}`}
+          style={{ cursor: 'pointer' }}
+        >
           <li className={`page-item ${+stepAt === 0 ? 'disabled' : null}`}>
             <a
               className="page-link"
@@ -404,7 +407,7 @@ class DetailDataSync extends Component {
       return (
         <tr key={index} style={{ cursor: 'pointer' }}>
           <th scope="row">{index + 1 + 10 * stepAt}</th>
-          <td>--</td>
+          <td>{item.orderId ? item.orderId : '--'}</td>
           <td>{formatCurrencyCode(item.grand_total)}</td>
           <td>{new Date(item.created_at).toDateString()}</td>
           <td>{this.renderStatusSync(item)}</td>

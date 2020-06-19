@@ -84,11 +84,9 @@ const guestInfo = state =>
   state.mainRd.generalConfig.common_config.default_guest_checkout;
 const allDevices = state => state.mainRd.hidDevice.allDevices;
 const orderDetailLocalDb = state => state.mainRd.orderHistoryDetailOffline;
-const orderDetailOnline = state => state.mainRd.orderHistoryDetail;
 const cardPayment = state => state.mainRd.checkout.cardPayment;
 const orderList = state => state.mainRd.orderHistory;
 const detailOutlet = state => state.mainRd.generalConfig.detail_outlet;
-const isOpenDetailOrderOnline = state => state.mainRd.isOpenDetailOrder;
 const isOpenDetailOrderOffline = state => state.mainRd.isOpenDetailOrderOffline;
 const internetConnected = state => state.mainRd.internetConnected;
 
@@ -990,26 +988,6 @@ function* setOrderActionOffline(payload) {
   // });
 }
 
-function* orderActionOnline(payload) {
-  const data = yield select(orderDetailOnline);
-  switch (payload.action) {
-    case types.REORDER_ACTION_ORDER:
-      yield reorderAction({ data, synced: true });
-      break;
-    case types.ADD_NOTE_ACTION_ORDER:
-      yield noteOrderAction({ data, synced: true, message: payload.payload });
-      break;
-    default:
-      break;
-  }
-}
-
-// type of order action to call in saga
-function isShowingDetailOrder(orderHistoryDetail, isOpenDetailOrder) {
-  // Object.entries(obj).length > 0 to check in object empty or not
-  return Object.entries(orderHistoryDetail).length > 0 && isOpenDetailOrder;
-}
-
 function isShowingDetailOrderOffline(
   orderHistoryDetailOffline,
   isOpenDetailOrderOffline
@@ -1021,17 +999,8 @@ function isShowingDetailOrderOffline(
 }
 
 function* selectTypeOrderAction() {
-  const orderHistoryDetailResult = yield select(orderDetailOnline);
   const orderHistoryDetailOfflineResult = yield select(orderDetailLocalDb);
-  const isOpenDetailOrderOnlineResult = yield select(isOpenDetailOrderOnline);
   const isOpenDetailOrderOfflineResult = yield select(isOpenDetailOrderOffline);
-  if (
-    isShowingDetailOrder(
-      orderHistoryDetailResult,
-      isOpenDetailOrderOnlineResult
-    )
-  )
-    return types.DETAIL_ORDER_ONLINE;
   if (
     isShowingDetailOrderOffline(
       orderHistoryDetailOfflineResult,
@@ -1055,7 +1024,6 @@ function* setOrderAction(params) {
       yield setOrderActionOffline({ action, payload });
       break;
     case types.DETAIL_ORDER_ONLINE:
-      yield orderActionOnline({ action, payload });
       break;
     default:
   }
@@ -1075,7 +1043,6 @@ function* getOrderAction(params) {
       yield getOrderActionOffline({ action, payload });
       break;
     case types.DETAIL_ORDER_ONLINE:
-      yield orderActionOnline({ action, payload });
       break;
     default:
   }

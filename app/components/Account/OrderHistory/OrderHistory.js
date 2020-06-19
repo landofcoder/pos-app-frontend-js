@@ -4,14 +4,12 @@ import { withRouter } from 'react-router';
 import Modal from 'react-modal';
 import { formatDistance } from 'date-fns';
 import {
-  toggleModalOrderDetail,
   toggleModalOrderDetailOffline,
   orderAction,
   toggleModalActionOrder,
   closeToggleModalOrderDetail,
   getDataServiceWithType
 } from '../../../actions/accountAction';
-import DetailOrder from './DetailOrder/DetailOrder';
 import DetailOrderOffline from './DetailOrderOffline/DetailOrderOffline';
 import Close from '../../commons/x';
 import Styles from './order-history.scss';
@@ -98,16 +96,9 @@ class OrderHistory extends Component<Props> {
   };
 
   selectDetailOrder = () => {
-    const { isOpenDetailOrder, isOpenDetailOrderOffline } = this.props;
-    if (isOpenDetailOrder) return <DetailOrder />;
+    const { isOpenDetailOrderOffline } = this.props;
     if (isOpenDetailOrderOffline) return <DetailOrderOffline />;
     return null;
-  };
-
-  isShowingDetailOrder = () => {
-    const { orderHistoryDetail, isOpenDetailOrder } = this.props;
-    // Object.entries(obj).length > 0 to check in object empty or not
-    return Object.entries(orderHistoryDetail).length > 0 && isOpenDetailOrder;
   };
 
   isShowingDetailOrderOffline = () => {
@@ -237,7 +228,7 @@ class OrderHistory extends Component<Props> {
     const { orderAction, history, isOpenToggleActionOrder } = this.props;
 
     // check have detail order to consider show action detail
-    if (this.isShowingDetailOrder() || this.isShowingDetailOrderOffline()) {
+    if (this.isShowingDetailOrderOffline()) {
       return (
         <>
           {isOpenToggleActionOrder ? <DetailOrderAction /> : null}
@@ -314,7 +305,7 @@ class OrderHistory extends Component<Props> {
               <button
                 type="button"
                 className="btn btn-outline-danger btn btn-block"
-                disabled={this.isShowingDetailOrder()}
+                disabled={true}
                 onClick={() => {
                   orderAction({
                     action: CANCEL_ACTION_ORDER
