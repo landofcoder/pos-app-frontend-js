@@ -184,7 +184,10 @@ class OrderHistory extends Component<Props> {
     }
     return (
       <nav aria-label="...">
-        <ul className="pagination" style={{ cursor: 'pointer' }}>
+        <ul
+          className={`pagination ${Styles.noselect}`}
+          style={{ cursor: 'pointer' }}
+        >
           <li className={`page-item ${+stepAt === 0 ? 'disabled' : null}`}>
             <a
               className="page-link"
@@ -390,10 +393,11 @@ class OrderHistory extends Component<Props> {
                     <tr
                       key={index}
                       style={{ cursor: 'pointer' }}
-                      onClick={() =>
-                        item.local
-                          ? this.getOrderHistoryDetailOffline(item)
-                          : this.getOrderHistoryDetail(item.sales_order_id)
+                      onClick={
+                        () =>
+                          // item.local
+                          this.getOrderHistoryDetailOffline(item)
+                        // : this.getOrderHistoryDetail(item.sales_order_id)
                       }
                     >
                       <th scope="row">{index + 1}</th>
@@ -402,13 +406,13 @@ class OrderHistory extends Component<Props> {
                       <td>{new Date(item.created_at).toDateString()}</td>
                       <td>{this.renderLastTime(item)}</td>
                       <td>
-                        {invoiceId ? (
+                        {invoiceId || item.status === 'complete' ? (
                           <span className="badge badge-success badge-pill">
                             success
                           </span>
                         ) : (
                           <span className="badge badge-pill badge-secondary">
-                            pending
+                            {item.status ? item.status : 'pending'}
                           </span>
                         )}
                       </td>
