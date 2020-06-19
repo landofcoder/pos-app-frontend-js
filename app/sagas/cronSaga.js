@@ -33,6 +33,8 @@ import {
 import {
   getAllOrders,
   getOrderById,
+  createOrders,
+  getOrderByOrderId,
   updateOrderById,
   getAllOrdersByPaginate
 } from '../reducers/db/sync_orders';
@@ -56,6 +58,10 @@ import {
   conditionForSyncing,
   serviceTypeGroupManager
 } from '../common/sync-group-manager';
+import {
+  getListOrderHistoryService,
+  getDetailOrderHistoryService
+} from './services/cart-service';
 
 const cashierInfo = state => state.authenRd.cashierInfo;
 const detailOutlet = state => state.mainRd.generalConfig.detail_outlet;
@@ -76,7 +82,7 @@ function* resolveCustomerIdForOrder(customer) {
   yield updateCustomerOrderListById(customer);
 }
 
-function* checkExistingFailedCustomProduct(order) {
+function* checkExistingFailedOrder(order) {
   // check condition for custom product sync
   const listItem = order.items.cartCurrentResult.data;
   // eslint-disable-next-line no-restricted-syntax
@@ -92,7 +98,7 @@ function* checkExistingFailedCustomProduct(order) {
       }
     }
   }
-  // check condition for custom product sync
+  // check condition for customer
   if (!order.items.cartCurrentResult.isGuestCustomer) {
     const customerId = order.items.cartCurrentResult.customer.id;
     const customerResultDb = yield call(getCustomerById, customerId);
@@ -328,13 +334,15 @@ function* syncOrder(orderId, syncAllNow) {
   } else {
     orders = yield getAllOrders();
   }
+
+  // Sync up order
   let checkAllSync = 0;
   // eslint-disable-next-line no-restricted-syntax
   for (const order of orders) {
     // eslint-disable-next-line no-continue
     if (order.status) continue;
     try {
-      yield checkExistingFailedCustomProduct(order); // will throw if order existing failed custom product
+      yield checkExistingFailedOrder(order); // will throw if order existing failed custom product
       const result = yield call(syncOrderService, order);
 
       if (!result.status || result.message || result.errors) {
@@ -351,7 +359,8 @@ function* syncOrder(orderId, syncAllNow) {
           invoiceId: result.data.invoiceId,
           shipmentId: result.data.shipmentId
         };
-        order.items.cartCurrentResult.cartId = result.data.cartId;
+        order.orderId = syncData.orderId;
+        order.items.cartCurrentResult.cartId = syncData.cartId;
         order.items.syncData = syncData;
         order.status = true;
         order.synced = true;
@@ -366,6 +375,24 @@ function* syncOrder(orderId, syncAllNow) {
     }
   }
 
+  // Sync down order
+  const itemsOrderResult = yield call(getListOrderHistoryService);
+  const itemsOrder = itemsOrderResult.items;
+  // eslint-disable-next-line no-restricted-syntax
+  for (const itemOrderId of itemsOrder) {
+    const orders = yield getOrderByOrderId(itemOrderId.sales_order_id);
+    const orderItemUpdate = yield call(
+      getDetailOrderHistoryService,
+      itemOrderId.sales_order_id
+    );
+    if (orders.length > 0) {
+      orderItemUpdate.id = orders[0].id;
+      yield call(updateOrderById, orderItemUpdate);
+    } else {
+      orderItemUpdate.id = Date.now();
+      yield call(createOrders, orderItemUpdate);
+    }
+  }
   if (!checkAllSync) {
     yield call(successLoadService, types.SYNC_ORDER_LIST);
   } else {

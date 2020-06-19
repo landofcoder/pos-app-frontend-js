@@ -165,7 +165,6 @@ const initialState = {
     tax_label: null
   },
   orderHistory: [],
-  orderHistoryDetail: {},
   orderHistoryDetailOffline: {},
   order_id_history: null,
   isOpenFindCustomer: false,
@@ -178,7 +177,6 @@ const initialState = {
   isLoadingSearchCustomer: false,
   isLoadingOrderHistory: false,
   isLoadingNoteOrderAction: false,
-  isLoadingOrderHistoryDetail: true,
   isLoadingOrderHistoryDetailOffline: true,
   isLoadingSignUpCustomer: false,
   customerSearchResult: [],
@@ -448,9 +446,6 @@ const mainRd = (state: Object = initialState, action: Object) =>
       case types.UPDATE_IS_SHOW_HAVE_NO_SEARCH_RESULT_FOUND:
         draft.isShowHaveNoSearchResultFound = action.payload;
         break;
-      case types.LOADING_ORDER_HISTORY_DETAIL:
-        draft.isLoadingOrderHistoryDetail = action.payload;
-        break;
       case types.LOADING_ORDER_HISTORY_DETAIL_OFFLINE:
         draft.isLoadingOrderHistoryDetailOffline = action.payload;
         break;
@@ -465,29 +460,20 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.isOpenDetailOrderOffline = false;
         draft.order_id_history = action.payload.order_id;
         draft.orderHistoryDetailOffline = {};
-        draft.orderHistoryDetail = {};
         break;
       case types.TOGGLE_MODAL_ORDER_DETAIL_OFFLINE:
         draft.isOpenDetailOrderOffline = action.payload.isShow;
         draft.isOpenDetailOrder = false;
         draft.orderHistoryDetailOffline = action.payload.dataItem;
-        draft.orderHistoryDetail = {};
         break;
       case types.CLOSE_TOGGLE_MODAL_DETAIL_ORDER:
         draft.isOpenDetailOrderOffline = false;
-        draft.isOpenDetailOrder = false;
         break;
       case types.TOGGLE_MODAL_CALCULATOR:
         draft.isOpenCalculator = action.payload;
         break;
       case types.LOADING_ORDER_HISTORY:
         draft.isLoadingOrderHistory = action.payload;
-        break;
-      case types.RECEIVED_ORDER_HISTORY_ACTION:
-        draft.orderHistory = action.payload;
-        break;
-      case types.RECEIVED_ORDER_HISTORY_DETAIL_ACTION:
-        draft.orderHistoryDetail = action.payload;
         break;
       case types.RECEIVED_ORDER_HISTORY_DETAIL_OFFLINE_ACTION:
         draft.orderHistoryDetailOffline = action.payload;
@@ -626,12 +612,6 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.UPDATE_CARD_PAYMENT_TYPE:
         draft.checkout.cardPayment.type = action.payload;
-        break;
-      case types.REMOVE_ORDER_LIST:
-        let orderList = draft.orderHistory;
-        orderList.splice(action.payload, 1);
-        draft.orderHistory = orderList;
-        draft.isOpenDetailOrderOffline = false;
         break;
       case types.UPDATE_CUSTOMER_INFO_AND_SHIPPING_ADDRESS_PREPARING_CHECKOUT: {
         const {

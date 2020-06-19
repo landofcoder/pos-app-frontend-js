@@ -1,17 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { format } from 'date-fns';
-import Styles from '../DetailOrder/detail-order.scss';
+import Styles from './detail-order.scss';
 import StylesOrder from '../order-history.scss';
 import { formatCurrencyCode } from '../../../../common/settings';
 import { actionLoadingOrderDetailOffline } from '../../../../actions/accountAction';
 
 type Props = {
   orderHistoryDetail: {},
-  // order_id_history: number,
   isOpenDetailOrder: boolean,
   isLoadingOrderHistoryDetail: boolean,
-  // getOrderHistoryDetail: id => void,
   orderHistoryDetail: {},
   actionLoadingOrderDetailOffline: payload => void
 };
@@ -141,6 +139,11 @@ class DetailOrderOffline extends Component {
                                       <div>
                                         <span>sku: {item.sku}, </span>
                                         <span>ordered: {item.pos_qty} </span>
+                                        {item.pos_refunded ? (
+                                          <span>
+                                            refunded: {item.pos_refunded}
+                                          </span>
+                                        ) : null}
                                       </div>
                                     </div>
                                   </div>

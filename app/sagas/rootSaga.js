@@ -27,10 +27,7 @@ import {
   signUpCustomerServiceDb
 } from './services/customer-service';
 import {
-  cancelOrderService,
   getAllCategoriesService,
-  getOrderHistoryService,
-  getOrderHistoryServiceDetails,
   getShopInfoService,
   getAllCategoriesByParentIdService
 } from './services/common-service';
@@ -87,11 +84,8 @@ const guestInfo = state =>
   state.mainRd.generalConfig.common_config.default_guest_checkout;
 const allDevices = state => state.mainRd.hidDevice.allDevices;
 const orderDetailLocalDb = state => state.mainRd.orderHistoryDetailOffline;
-const orderDetailOnline = state => state.mainRd.orderHistoryDetail;
 const cardPayment = state => state.mainRd.checkout.cardPayment;
-const orderList = state => state.mainRd.orderHistory;
 const detailOutlet = state => state.mainRd.generalConfig.detail_outlet;
-const isOpenDetailOrderOnline = state => state.mainRd.isOpenDetailOrder;
 const isOpenDetailOrderOffline = state => state.mainRd.isOpenDetailOrderOffline;
 const internetConnected = state => state.mainRd.internetConnected;
 
@@ -556,25 +550,6 @@ function* getProductByCategoryLazyLoad(categoryId, currentPage) {
   return false;
 }
 
-function* getOrderHistoryDetail(payload) {
-  yield put({ type: types.LOADING_ORDER_HISTORY_DETAIL, payload: true });
-  const data = yield call(getOrderHistoryServiceDetails, payload.payload);
-  yield put({
-    type: types.RECEIVED_ORDER_HISTORY_DETAIL_ACTION,
-    payload: data
-  });
-  yield put({ type: types.LOADING_ORDER_HISTORY_DETAIL, payload: false });
-}
-
-function* getOrderHistory() {
-  yield put({ type: types.LOADING_ORDER_HISTORY, payload: true });
-  const data = yield call(getOrderHistoryService);
-  yield put({
-    type: types.RECEIVED_ORDER_HISTORY_ACTION,
-    payload: data.items
-  });
-  yield put({ type: types.LOADING_ORDER_HISTORY, payload: false });
-}
 
 function* signUpAction(payload) {
   yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: true });
@@ -1012,26 +987,6 @@ function* setOrderActionOffline(payload) {
   // });
 }
 
-function* orderActionOnline(payload) {
-  const data = yield select(orderDetailOnline);
-  switch (payload.action) {
-    case types.REORDER_ACTION_ORDER:
-      yield reorderAction({ data, synced: true });
-      break;
-    case types.ADD_NOTE_ACTION_ORDER:
-      yield noteOrderAction({ data, synced: true, message: payload.payload });
-      break;
-    default:
-      break;
-  }
-}
-
-// type of order action to call in saga
-function isShowingDetailOrder(orderHistoryDetail, isOpenDetailOrder) {
-  // Object.entries(obj).length > 0 to check in object empty or not
-  return Object.entries(orderHistoryDetail).length > 0 && isOpenDetailOrder;
-}
-
 function isShowingDetailOrderOffline(
   orderHistoryDetailOffline,
   isOpenDetailOrderOffline
@@ -1043,17 +998,8 @@ function isShowingDetailOrderOffline(
 }
 
 function* selectTypeOrderAction() {
-  const orderHistoryDetailResult = yield select(orderDetailOnline);
   const orderHistoryDetailOfflineResult = yield select(orderDetailLocalDb);
-  const isOpenDetailOrderOnlineResult = yield select(isOpenDetailOrderOnline);
   const isOpenDetailOrderOfflineResult = yield select(isOpenDetailOrderOffline);
-  if (
-    isShowingDetailOrder(
-      orderHistoryDetailResult,
-      isOpenDetailOrderOnlineResult
-    )
-  )
-    return types.DETAIL_ORDER_ONLINE;
   if (
     isShowingDetailOrderOffline(
       orderHistoryDetailOfflineResult,
@@ -1077,7 +1023,6 @@ function* setOrderAction(params) {
       yield setOrderActionOffline({ action, payload });
       break;
     case types.DETAIL_ORDER_ONLINE:
-      yield orderActionOnline({ action, payload });
       break;
     default:
   }
@@ -1097,7 +1042,6 @@ function* getOrderAction(params) {
       yield getOrderActionOffline({ action, payload });
       break;
     case types.DETAIL_ORDER_ONLINE:
-      yield orderActionOnline({ action, payload });
       break;
     default:
   }
@@ -1316,10 +1260,8 @@ function* rootSaga() {
   yield takeEvery(types.GET_DETAIL_PRODUCT_GROUPED, getDetailGroupedProduct);
   yield takeEvery(types.SEARCH_CUSTOMER, getSearchCustomer);
   yield takeEvery(types.ADD_TO_CART, addToCart);
-  yield takeEvery(types.GET_ORDER_HISTORY_ACTION, getOrderHistory);
   yield takeEvery(types.GET_PRODUCT_BY_CATEGORY, getProductByCategory);
   yield takeEvery(types.SIGN_UP_CUSTOMER, signUpAction);
-  yield takeEvery(types.GET_ORDER_HISTORY_DETAIL_ACTION, getOrderHistoryDetail);
   yield takeEvery(typesAuthen.CHECK_LOGIN_BACKGROUND, checkLoginBackgroundSaga);
   yield takeEvery(types.UPDATE_QTY_CART_ITEM, updateQtyCartItemSaga);
   yield takeEvery(types.RE_CHECK_REQUIRE_STEP, reCheckRequireStepSaga);

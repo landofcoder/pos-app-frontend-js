@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Modal from 'react-modal';
 import ModalStyle from '../../../styles/modal.scss';
+import Styles from './detail-data-sync.scss';
 import {
   ALL_PRODUCT_SYNC,
   CUSTOM_PRODUCT_SYNC,
@@ -169,7 +170,10 @@ class DetailDataSync extends Component {
     }
     return (
       <nav aria-label="...">
-        <ul className="pagination" style={{ cursor: 'pointer' }}>
+        <ul
+          className={`pagination ${Styles.noselect}`}
+          style={{ cursor: 'pointer' }}
+        >
           <li className={`page-item ${+stepAt === 0 ? 'disabled' : null}`}>
             <a
               className="page-link"
@@ -403,7 +407,7 @@ class DetailDataSync extends Component {
       return (
         <tr key={index} style={{ cursor: 'pointer' }}>
           <th scope="row">{index + 1 + 10 * stepAt}</th>
-          <td>--</td>
+          <td>{item.orderId ? item.orderId : '--'}</td>
           <td>{formatCurrencyCode(item.grand_total)}</td>
           <td>{new Date(item.created_at).toDateString()}</td>
           <td>{this.renderStatusSync(item)}</td>

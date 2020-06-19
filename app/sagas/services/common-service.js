@@ -1,5 +1,4 @@
 import { put } from 'redux-saga/effects';
-import { deleteOrderById } from '../../reducers/db/sync_orders';
 import { getAllCategoriesByParentIdFromLocal } from '../../reducers/db/categories';
 import { UPDATE_CURRENT_POS_COMMAND } from '../../constants/root';
 import { apiGatewayPath } from '../../../configs/env/config.main';
@@ -92,54 +91,6 @@ export async function getAllCategoriesService() {
     throw { message: data.message, data };
   }
   return data;
-}
-
-/**
- * Get order history service
- * @returns void
- */
-export async function getOrderHistoryService() {
-  try {
-    const response = await fetch(
-      `${window.mainUrl}/rest/V1/pos/order_history/search?searchCriteria[sortOrders][0][field]=pos_order_id`,
-      {
-        method: 'GET',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${window.liveToken}`
-        },
-        redirect: 'follow',
-        referrer: 'no-referrer'
-      }
-    );
-    const data = await response.json();
-    return data;
-  } catch (e) {
-    return { items: [] };
-  }
-}
-
-export async function getOrderHistoryServiceDetails(index) {
-  const response = await fetch(`${window.mainUrl}rest/V1/orders/${index}`, {
-    method: 'GET',
-    mode: 'cors',
-    cache: 'no-cache',
-    credentials: 'same-origin',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${window.liveToken}`
-    },
-    redirect: 'follow',
-    referrer: 'no-referrer'
-  });
-  const data = await response.json();
-  return data;
-}
-
-export async function cancelOrderService(index) {
-  await deleteOrderById(index);
 }
 
 /**
