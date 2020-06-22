@@ -4,16 +4,12 @@ import { withRouter } from 'react-router';
 import Modal from 'react-modal';
 import { formatDistance } from 'date-fns';
 import {
-  getOrderHistory,
-  toggleModalOrderDetail,
   toggleModalOrderDetailOffline,
   orderAction,
   toggleModalActionOrder,
-  getOrderHistoryDetail,
   closeToggleModalOrderDetail,
   getDataServiceWithType
 } from '../../../actions/accountAction';
-import DetailOrder from './DetailOrder/DetailOrder';
 import DetailOrderOffline from './DetailOrderOffline/DetailOrderOffline';
 import Close from '../../commons/x';
 import Styles from './order-history.scss';
@@ -44,7 +40,6 @@ type Props = {
   toggleModalOrderDetail: object => void,
   toggleModalOrderDetailOffline: object => void,
   orderAction: payload => void,
-  getOrderHistoryDetail: id => void,
   orderHistoryDetailOffline: object,
   orderHistoryDetail: object,
   history: payload => void,
@@ -83,9 +78,8 @@ class OrderHistory extends Component<Props> {
   }
 
   getOrderHistoryDetail = saleOrderId => {
-    const { toggleModalOrderDetail, getOrderHistoryDetail } = this.props;
+    const { toggleModalOrderDetail } = this.props;
     toggleModalOrderDetail({ isShow: true, order_id: saleOrderId });
-    getOrderHistoryDetail(saleOrderId);
   };
 
   getOrderHistoryDetailOffline = dataOrderCheckoutOfflineItem => {
@@ -102,16 +96,9 @@ class OrderHistory extends Component<Props> {
   };
 
   selectDetailOrder = () => {
-    const { isOpenDetailOrder, isOpenDetailOrderOffline } = this.props;
-    if (isOpenDetailOrder) return <DetailOrder />;
+    const { isOpenDetailOrderOffline } = this.props;
     if (isOpenDetailOrderOffline) return <DetailOrderOffline />;
     return null;
-  };
-
-  isShowingDetailOrder = () => {
-    const { orderHistoryDetail, isOpenDetailOrder } = this.props;
-    // Object.entries(obj).length > 0 to check in object empty or not
-    return Object.entries(orderHistoryDetail).length > 0 && isOpenDetailOrder;
   };
 
   isShowingDetailOrderOffline = () => {
@@ -188,7 +175,10 @@ class OrderHistory extends Component<Props> {
     }
     return (
       <nav aria-label="...">
-        <ul className="pagination" style={{ cursor: 'pointer' }}>
+        <ul
+          className={`pagination ${Styles.noselect}`}
+          style={{ cursor: 'pointer' }}
+        >
           <li className={`page-item ${+stepAt === 0 ? 'disabled' : null}`}>
             <a
               className="page-link"
@@ -238,7 +228,7 @@ class OrderHistory extends Component<Props> {
     const { orderAction, history, isOpenToggleActionOrder } = this.props;
 
     // check have detail order to consider show action detail
-    if (this.isShowingDetailOrder() || this.isShowingDetailOrderOffline()) {
+    if (this.isShowingDetailOrderOffline()) {
       return (
         <>
           {isOpenToggleActionOrder ? <DetailOrderAction /> : null}
@@ -315,7 +305,7 @@ class OrderHistory extends Component<Props> {
               <button
                 type="button"
                 className="btn btn-outline-danger btn btn-block"
-                disabled={this.isShowingDetailOrder()}
+                disabled={true}
                 onClick={() => {
                   orderAction({
                     action: CANCEL_ACTION_ORDER
@@ -394,10 +384,11 @@ class OrderHistory extends Component<Props> {
                     <tr
                       key={index}
                       style={{ cursor: 'pointer' }}
-                      onClick={() =>
-                        item.local
-                          ? this.getOrderHistoryDetailOffline(item)
-                          : this.getOrderHistoryDetail(item.sales_order_id)
+                      onClick={
+                        () =>
+                          // item.local
+                          this.getOrderHistoryDetailOffline(item)
+                        // : this.getOrderHistoryDetail(item.sales_order_id)
                       }
                     >
                       <th scope="row">{index + 1}</th>
@@ -406,13 +397,13 @@ class OrderHistory extends Component<Props> {
                       <td>{new Date(item.created_at).toDateString()}</td>
                       <td>{this.renderLastTime(item)}</td>
                       <td>
-                        {invoiceId ? (
+                        {invoiceId || item.status === 'complete' ? (
                           <span className="badge badge-success badge-pill">
                             success
                           </span>
                         ) : (
                           <span className="badge badge-pill badge-secondary">
-                            pending
+                            {item.status ? item.status : 'pending'}
                           </span>
                         )}
                       </td>
@@ -495,7 +486,6 @@ function mapStateToProps(state) {
     isOpenToggleActionOrder:
       state.mainRd.toggleActionOrder.isOpenToggleActionOrder,
     isLoading: state.mainRd.isLoadingOrderHistory,
-    orderHistory: state.mainRd.orderHistory,
     syncDataManager: state.authenRd.syncDataManager,
     orderHistoryDetailOffline: state.mainRd.orderHistoryDetailOffline,
     orderHistoryDetail: state.mainRd.orderHistoryDetail,
@@ -505,12 +495,10 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    getOrderHistory: () => dispatch(getOrderHistory()),
     toggleModalOrderDetail: payload =>
       dispatch(toggleModalOrderDetail(payload)),
     toggleModalOrderDetailOffline: payload =>
       dispatch(toggleModalOrderDetailOffline(payload)),
-    getOrderHistoryDetail: id => dispatch(getOrderHistoryDetail(id)),
     orderAction: payload => dispatch(orderAction(payload)),
     toggleModalActionOrder: payload =>
       dispatch(toggleModalActionOrder(payload)),

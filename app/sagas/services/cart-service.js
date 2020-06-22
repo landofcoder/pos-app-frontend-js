@@ -1,4 +1,4 @@
-import { createOrders } from '../../reducers/db/sync_orders';
+import { createOrders, deleteOrderById } from '../../reducers/db/sync_orders';
 import { apiGatewayPath } from '../../../configs/env/config.main';
 import { updateCustomerOrderListById } from '../../reducers/db/sync_customers';
 
@@ -80,7 +80,7 @@ export async function syncOrderService(params) {
 
   try {
     const response = await fetch(
-      `${apiGatewayPath}/cashier/customer-checkout/sync-order`,
+      `${apiGatewayPath}/cashier/customer-checkout/sync-up-order`,
       {
         method: 'POST',
         mode: 'cors',
@@ -116,6 +116,78 @@ export async function syncOrderService(params) {
   }
 }
 
+/**
+ * Get order history service
+ * @returns void
+ */
+export async function getListOrderHistoryService() {
+  let data = {};
+  try {
+    const response = await fetch(
+      `${apiGatewayPath}/cashier/customer-checkout/get-list-order-history`,
+      {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+          url: window.mainUrl,
+          platform: window.platform,
+          token: window.liveToken
+        },
+        redirect: 'follow',
+        referrer: 'no-referrer'
+      }
+    );
+    data = await response.json();
+    if (data.message || data.errors) {
+      // eslint-disable-next-line no-throw-literal
+      throw { message: data.message };
+    }
+  } catch (e) {
+    data = { items: [] };
+  }
+  return data;
+}
+
+export async function getDetailOrderHistoryService(params) {
+  let data = {};
+  const paramsPayload = { orderId: params };
+  try {
+    const response = await fetch(
+      `${apiGatewayPath}/cashier/customer-checkout/sync-down-order`,
+      {
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+          url: window.mainUrl,
+          platform: window.platform,
+          token: window.liveToken,
+          'Content-Type': 'application/json'
+        },
+        redirect: 'follow',
+        referrer: 'no-referrer',
+        body: JSON.stringify({ params: paramsPayload })
+      }
+    );
+    data = await response.json();
+    if (data.message || data.errors) {
+      // eslint-disable-next-line no-throw-literal
+      throw { message: data.message };
+    }
+    return data;
+  } catch (e) {
+    // eslint-disable-next-line no-throw-literal
+    throw { message: e.message || 'Cannot connect to server' };
+  }
+}
+
+export async function cancelOrderService(index) {
+  await deleteOrderById(index);
+}
+
 export async function getActionOrder(params) {
   try {
     const response = await fetch(
@@ -146,7 +218,8 @@ export async function getActionOrder(params) {
     }
     return data;
   } catch (error) {
-    return {
+    // eslint-disable-next-line no-throw-literal
+    throw {
       message: error.message || 'Unable to connect server',
       data: error.data
     };
