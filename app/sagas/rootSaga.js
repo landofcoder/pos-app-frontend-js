@@ -426,7 +426,6 @@ function* getSearchCustomer(payload) {
   yield reloadTokenFromLoggedLocalDB();
   // Start search loading
   yield put({ type: types.UPDATE_IS_LOADING_SEARCH_CUSTOMER, payload: true });
-  console.log(payload);
   const searchResult = yield call(searchCustomer, payload);
 
   const searchResultByName = yield call(searchCustomerByName, payload);
@@ -983,7 +982,6 @@ function* setOrderActionOffline(payload) {
     case types.CANCEL_ACTION_ORDER:
       break;
     case types.REORDER_ACTION_ORDER:
-      console.log('reorder');
       yield reorderAction({ data: orderDetail, synced: true });
       break;
     case types.ADD_NOTE_ACTION_ORDER:
