@@ -46,7 +46,6 @@ import {
   getAllSyncService
 } from '../reducers/db/sync_data_manager';
 import { signUpCustomerService } from './services/customer-service';
-import { syncOrderService } from './services/cart-service';
 import {
   setupFetchingGeneralConfig,
   setupSyncCategoriesAndProducts,
@@ -60,7 +59,8 @@ import {
 } from '../common/sync-group-manager';
 import {
   getListOrderHistoryService,
-  getDetailOrderHistoryService
+  getDetailOrderHistoryService,
+  syncOrderService
 } from './services/cart-service';
 
 const cashierInfo = state => state.authenRd.cashierInfo;
@@ -340,7 +340,7 @@ function* syncOrder(orderId, syncAllNow) {
   // eslint-disable-next-line no-restricted-syntax
   for (const order of orders) {
     // eslint-disable-next-line no-continue
-    if (order.status) continue;
+    if (order.synced) continue;
     try {
       yield checkExistingFailedOrder(order); // will throw if order existing failed custom product
       const result = yield call(syncOrderService, order);

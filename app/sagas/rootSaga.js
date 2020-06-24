@@ -549,7 +549,6 @@ function* getProductByCategoryLazyLoad(categoryId, currentPage) {
   return false;
 }
 
-
 function* signUpAction(payload) {
   yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: true });
   // signUp action
@@ -938,6 +937,9 @@ function* getOrderActionOffline(payload) {
     case types.REFUND_ACTION_ORDER:
       dataActionOrder = yield call(getActionOrder, params);
       break;
+    case types.SHIPMENT_ACTION_ORDER:
+      dataActionOrder = yield call(getActionOrder, params);
+      break;
     default:
       break;
   }
@@ -1015,16 +1017,19 @@ function* setOrderAction(params) {
   const { action, payload } = params.payload;
   const typeOf = yield selectTypeOrderAction();
   yield put({ type: types.LOADING_SET_ACTION_ORDER, payload: true });
-  console.log(typeOf);
-  switch (typeOf) {
-    case types.DETAIL_ORDER_OFFLINE:
-      yield setOrderActionOffline({ action, payload });
-      break;
-    case types.DETAIL_ORDER_ONLINE:
-      break;
-    default:
+  try {
+    switch (typeOf) {
+      case types.DETAIL_ORDER_OFFLINE:
+        yield setOrderActionOffline({ action, payload });
+        break;
+      case types.DETAIL_ORDER_ONLINE:
+        break;
+      default:
+    }
+    yield put({ type: types.LOADING_SET_ACTION_ORDER, payload: false });
+  } catch (e) {
+    console.log(e);
   }
-  yield put({ type: types.LOADING_SET_ACTION_ORDER, payload: false });
 }
 
 /**
@@ -1035,15 +1040,19 @@ function* getOrderAction(params) {
   const { action, payload } = params.payload;
   const typeOf = yield selectTypeOrderAction();
   yield put({ type: types.LOADING_GET_ACTION_ORDER, payload: true });
-  switch (typeOf) {
-    case types.DETAIL_ORDER_OFFLINE:
-      yield getOrderActionOffline({ action, payload });
-      break;
-    case types.DETAIL_ORDER_ONLINE:
-      break;
-    default:
+  try {
+    switch (typeOf) {
+      case types.DETAIL_ORDER_OFFLINE:
+        yield getOrderActionOffline({ action, payload });
+        break;
+      case types.DETAIL_ORDER_ONLINE:
+        break;
+      default:
+    }
+    yield put({ type: types.LOADING_GET_ACTION_ORDER, payload: false });
+  } catch (e) {
+    console.log(e);
   }
-  yield put({ type: types.LOADING_GET_ACTION_ORDER, payload: false });
 }
 
 /**

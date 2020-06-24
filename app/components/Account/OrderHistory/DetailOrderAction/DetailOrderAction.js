@@ -10,7 +10,9 @@ import Close from '../../../commons/x';
 import ModalStyle from '../../../styles/modal.scss';
 import {
   ADD_NOTE_ACTION_ORDER,
-  REFUND_ACTION_ORDER
+  REFUND_ACTION_ORDER,
+  PAYMENT_ACTION_ORDER,
+  SHIPMENT_ACTION_ORDER
 } from '../../../../constants/root';
 import { formatCurrencyCode } from '../../../../common/settings';
 
@@ -41,6 +43,9 @@ class DetailOrderAction extends Component<Props> {
             return_to_stock_items: []
           }
         }
+      },
+      shipmentOption: {
+        items: []
       }
     };
   }
@@ -84,6 +89,10 @@ class DetailOrderAction extends Component<Props> {
   showTitleOrderAction = () => {
     const { typeOpenToggle } = this.props;
     switch (typeOpenToggle) {
+      case PAYMENT_ACTION_ORDER:
+        return 'Payment order';
+      case SHIPMENT_ACTION_ORDER:
+        return 'Ship items';
       case ADD_NOTE_ACTION_ORDER:
         return 'Add note';
       case REFUND_ACTION_ORDER:
@@ -95,8 +104,11 @@ class DetailOrderAction extends Component<Props> {
 
   showBodyOrderAction = () => {
     const { typeOpenToggle } = this.props;
-    console.log(typeOpenToggle);
     switch (typeOpenToggle) {
+      case SHIPMENT_ACTION_ORDER:
+        return this.showBodyTakeShipment();
+      case PAYMENT_ACTION_ORDER:
+        return this.showBodyTakePayment();
       case ADD_NOTE_ACTION_ORDER:
         return this.showBodyAddNote();
       case REFUND_ACTION_ORDER:
@@ -204,7 +216,6 @@ class DetailOrderAction extends Component<Props> {
     const { refundOption } = this.state;
     const { dataActionOrder } = this.props;
     const { items } = dataActionOrder;
-    console.log(refundOption.items);
     return (
       <table className="table table-striped">
         <thead>
@@ -315,6 +326,75 @@ class DetailOrderAction extends Component<Props> {
           ></textarea>
         </div>
       </div>
+    );
+  };
+
+  showBodyTakeShipment = () => {
+    const { shipmentOption } = this.state;
+    const { dataActionOrder } = this.props;
+    const { items } = dataActionOrder;
+    return (
+      <>
+        <div className="mb-2 d-flex">
+          <span className="pr-3 align-self-center">Select max Qty to Ship</span>
+          <div style={{ color: '#777', cursor: 'pointer' }}>
+            {this.renderIsToggleReturnStock() ? (
+              <i className="fa fa-toggle-on fa-2x" aria-hidden="true"></i>
+            ) : (
+              <i className="fa fa-toggle-off fa-2x" aria-hidden="true"></i>
+            )}
+          </div>
+        </div>
+        <table className="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Product</th>
+              <th scope="col">Qty left</th>
+              <th width="17%">Qty to ship</th>
+            </tr>
+          </thead>
+          <tbody>
+            {items.map((item, index) => {
+              return (
+                <tr key={index}>
+                  <th scope="row">{index + 1}</th>
+                  <td>
+                    <div className="row">
+                      <span className="col-12">{item.name}</span>
+                      <span className="col-12">SKU: {item.sku}</span>
+                    </div>
+                  </td>
+                  <td>
+                    {+item.qty_invoiced -
+                      +item.qty_shipped -
+                      +item.qty_canceled}
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      className="form-control"
+                      placeholder="0"
+                      onChange={event => {
+                        this.conditionChangeInputRefund(
+                          +event.target.value,
+                          index,
+                          item
+                        );
+                      }}
+                      value={
+                        shipmentOption.items[index]
+                          ? shipmentOption.items[index].qty
+                          : 0
+                      }
+                    />
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </>
     );
   };
 

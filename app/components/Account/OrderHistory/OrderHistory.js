@@ -41,7 +41,6 @@ type Props = {
   toggleModalOrderDetailOffline: object => void,
   orderAction: payload => void,
   orderHistoryDetailOffline: object,
-  orderHistoryDetail: object,
   history: payload => void,
   toggleModalActionOrder: payload => void,
   syncDataClient: payload => void,
@@ -224,6 +223,31 @@ class OrderHistory extends Component<Props> {
     );
   };
 
+  statusDisableActionOrder = type => {
+    const { orderHistoryDetailOffline } = this.props;
+    let status;
+    ({ status } = orderHistoryDetailOffline);
+    console.log(status);
+    status = status === 'complete' || status === 'closed';
+    console.log('status,' + status);
+    switch (type) {
+      case SHIPMENT_ACTION_ORDER:
+        return false;
+        return status;
+      case PRINT_ACTION_ORDER:
+        return false;
+      case CANCEL_ACTION_ORDER:
+        return status;
+      case REFUND_ACTION_ORDER:
+        return false;
+      case PAYMENT_ACTION_ORDER:
+        // return false;
+        return status;
+      default:
+        break;
+    }
+  };
+
   actionDetailOrder = () => {
     const { orderAction, history, isOpenToggleActionOrder } = this.props;
 
@@ -238,10 +262,9 @@ class OrderHistory extends Component<Props> {
                 type="button"
                 className="btn btn-outline-primary btn btn-block"
                 onClick={() => {
-                  orderAction({
-                    action: PAYMENT_ACTION_ORDER
-                  });
+                  this.toggleOrderAction(PAYMENT_ACTION_ORDER);
                 }}
+                disabled={this.statusDisableActionOrder(PAYMENT_ACTION_ORDER)}
               >
                 Take Payment
               </button>
@@ -256,6 +279,7 @@ class OrderHistory extends Component<Props> {
                   });
                   history.push(types.POS);
                 }}
+                disabled={this.statusDisableActionOrder(REORDER_ACTION_ORDER)}
               >
                 Reorder
               </button>
@@ -269,6 +293,7 @@ class OrderHistory extends Component<Props> {
                     action: PRINT_ACTION_ORDER
                   });
                 }}
+                disabled={this.statusDisableActionOrder(PRINT_ACTION_ORDER)}
               >
                 Print
               </button>
@@ -278,10 +303,9 @@ class OrderHistory extends Component<Props> {
                 type="button"
                 className="btn btn-outline-dark btn btn-block"
                 onClick={() => {
-                  orderAction({
-                    action: SHIPMENT_ACTION_ORDER
-                  });
+                  this.toggleOrderAction(SHIPMENT_ACTION_ORDER);
                 }}
+                disabled={this.statusDisableActionOrder(SHIPMENT_ACTION_ORDER)}
               >
                 Take Shipment
               </button>
@@ -297,6 +321,7 @@ class OrderHistory extends Component<Props> {
                 onClick={() => {
                   this.toggleOrderAction(ADD_NOTE_ACTION_ORDER);
                 }}
+                disabled={this.statusDisableActionOrder(ADD_NOTE_ACTION_ORDER)}
               >
                 Note
               </button>
@@ -305,7 +330,7 @@ class OrderHistory extends Component<Props> {
               <button
                 type="button"
                 className="btn btn-outline-danger btn btn-block"
-                disabled={true}
+                disabled={this.statusDisableActionOrder(CANCEL_ACTION_ORDER)}
                 onClick={() => {
                   orderAction({
                     action: CANCEL_ACTION_ORDER
@@ -322,6 +347,7 @@ class OrderHistory extends Component<Props> {
                 onClick={() => {
                   this.toggleOrderAction(REFUND_ACTION_ORDER);
                 }}
+                disabled={this.statusDisableActionOrder(REFUND_ACTION_ORDER)}
               >
                 Refund
               </button>
@@ -488,15 +514,12 @@ function mapStateToProps(state) {
     isLoading: state.mainRd.isLoadingOrderHistory,
     syncDataManager: state.authenRd.syncDataManager,
     orderHistoryDetailOffline: state.mainRd.orderHistoryDetailOffline,
-    orderHistoryDetail: state.mainRd.orderHistoryDetail,
     isLoadingSyncAllOrder: state.authenRd.syncManager.loadingSyncOrder
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    toggleModalOrderDetail: payload =>
-      dispatch(toggleModalOrderDetail(payload)),
     toggleModalOrderDetailOffline: payload =>
       dispatch(toggleModalOrderDetailOffline(payload)),
     orderAction: payload => dispatch(orderAction(payload)),

@@ -64,11 +64,15 @@ export async function createOrderLocal(payload) {
     // luu order id vao customer do
     await updateCustomerOrderListById(customer, orderId);
   }
+  // check shipping address va payment method
+  const status = 'complete';
+  //
   const newOrder = {
     id: orderId,
     grand_total: orderPreparingCheckoutResult.totals.grand_total,
     items: payload,
     local: true,
+    status,
     created_at: Date.now()
   };
   const res = await createOrders(newOrder);
