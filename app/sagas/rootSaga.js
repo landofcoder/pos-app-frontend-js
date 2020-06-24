@@ -955,9 +955,8 @@ function* setOrderActionOffline(payload) {
   let items;
   let params;
   let resultActionOrder;
+  ({ orderId } = orderDetail.items.syncData);
   switch (payload.action) {
-    case types.CANCEL_ACTION_ORDER:
-      break;
     case types.REORDER_ACTION_ORDER:
       yield reorderAction({ data: orderDetail, synced: true });
       break;
@@ -965,7 +964,6 @@ function* setOrderActionOffline(payload) {
       break;
     case types.REFUND_ACTION_ORDER:
     case types.SHIPMENT_ACTION_ORDER:
-      ({ orderId } = orderDetail.items.syncData);
       ({ items } = payload.payload);
       params = {
         data: { orderId, ...payload.payload },
@@ -979,14 +977,20 @@ function* setOrderActionOffline(payload) {
         yield put({ type: types.TOGGLE_MODAL_ACTION_ORDER, payload: false });
       }
       break;
-
+    case types.CANCEL_ACTION_ORDER:
+      params = {
+        data: { orderId, ...payload.payload },
+        type: payload.action
+      };
+      resultActionOrder = yield call(setActionOrder, params);
+      if (resultActionOrder.status) {
+        // do something
+        yield put({ type: types.TOGGLE_MODAL_ACTION_ORDER, payload: false });
+      }
+      break;
     default:
       break;
   }
-  // yield put({
-  //   type: types.RECEIVED_GET_ACTION_ORDER,
-  //   payload: { type: payload.action, data: dataActionOrder }
-  // });
 }
 
 function isShowingDetailOrderOffline(

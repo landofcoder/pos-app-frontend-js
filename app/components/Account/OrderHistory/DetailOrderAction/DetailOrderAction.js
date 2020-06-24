@@ -13,7 +13,8 @@ import {
   ADD_NOTE_ACTION_ORDER,
   REFUND_ACTION_ORDER,
   PAYMENT_ACTION_ORDER,
-  SHIPMENT_ACTION_ORDER
+  SHIPMENT_ACTION_ORDER,
+  CANCEL_ACTION_ORDER
 } from '../../../../constants/root';
 import { formatCurrencyCode } from '../../../../common/settings';
 
@@ -99,6 +100,8 @@ class DetailOrderAction extends Component<Props> {
         return 'Add note';
       case REFUND_ACTION_ORDER:
         return 'Refund order';
+      case CANCEL_ACTION_ORDER:
+        return 'Cancel order';
       default:
         return null;
     }
@@ -115,6 +118,8 @@ class DetailOrderAction extends Component<Props> {
         return this.showBodyAddNote();
       case REFUND_ACTION_ORDER:
         return this.showBodyRefund();
+      case CANCEL_ACTION_ORDER:
+        return this.showBodyCancel();
       default:
         return null;
     }
@@ -133,6 +138,7 @@ class DetailOrderAction extends Component<Props> {
         break;
       case SHIPMENT_ACTION_ORDER:
         payload = shipmentOption;
+      case CANCEL_ACTION_ORDER:
       default:
     }
     orderAction({
@@ -173,6 +179,9 @@ class DetailOrderAction extends Component<Props> {
         for (const item of shipmentOption.items) {
           if (item && item.qty) return true;
         }
+        break;
+      case CANCEL_ACTION_ORDER:
+        return true;
         break;
       default:
         break;
@@ -233,7 +242,7 @@ class DetailOrderAction extends Component<Props> {
     const { dataActionOrder } = this.props;
     const { items } = dataActionOrder;
     return (
-      <table className="table table-striped">
+      <table className="table table-striped table-hover">
         <thead>
           <tr>
             <th scope="col">#</th>
@@ -365,7 +374,7 @@ class DetailOrderAction extends Component<Props> {
             )}
           </div>
         </div>
-        <table className="table table-striped">
+        <table className="table table-striped table-hover">
           <thead>
             <tr>
               <th scope="col">#</th>
@@ -467,15 +476,24 @@ class DetailOrderAction extends Component<Props> {
     return optionShipAll;
   };
 
+  showBodyCancel = () => {
+    return (
+      <div>
+        <div className="input-group mb-3">
+          <span>Are your sure want to cancel this order ?</span>
+        </div>
+      </div>
+    );
+  };
+
   render() {
     const {
       toggleModalActionOrder,
       isLoadingSetOrderAction,
       isLoadingGetOrderAction,
-      isOpenToggleActionOrder
+      isOpenToggleActionOrder,
+      typeOpenToggle
     } = this.props;
-    const { shipmentOption } = this.state;
-    console.log(shipmentOption);
     return (
       <Modal
         overlayClassName={ModalStyle.Overlay}
@@ -485,7 +503,12 @@ class DetailOrderAction extends Component<Props> {
         isOpen={isOpenToggleActionOrder}
         contentLabel="Example Modal"
       >
-        <div className={ModalStyle.modalContentLg}>
+        <div
+          className={ModalStyle.modalContentLg}
+          style={{
+            width: typeOpenToggle === CANCEL_ACTION_ORDER ? '400px' : '-1'
+          }}
+        >
           <div
             className={ModalStyle.close}
             role="presentation"
@@ -513,6 +536,23 @@ class DetailOrderAction extends Component<Props> {
               )}
             </div>
             <div className="modal-footer">
+              {typeOpenToggle === CANCEL_ACTION_ORDER ? (
+                <div className="col-md-3 p-0">
+                  <button
+                    type="button"
+                    className="btn btn-secondary btn-block"
+                    onClick={() => {
+                      toggleModalActionOrder({
+                        type: CANCEL_ACTION_ORDER,
+                        status: false
+                      });
+                    }}
+                    disabled={!this.conditionToSubmitOrderAction()}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : null}
               <div className="col-md-3 p-0">
                 <button
                   type="button"
@@ -522,14 +562,15 @@ class DetailOrderAction extends Component<Props> {
                   }}
                   disabled={!this.conditionToSubmitOrderAction()}
                 >
-                  Submit{' '}
                   {isLoadingSetOrderAction ? (
                     <span
                       className="spinner-border spinner-border-sm"
                       role="status"
                       aria-hidden="true"
                     ></span>
-                  ) : null}
+                  ) : (
+                    'Submit'
+                  )}
                 </button>
               </div>
             </div>

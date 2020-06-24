@@ -234,7 +234,8 @@ class OrderHistory extends Component<Props> {
       case PRINT_ACTION_ORDER:
         return false;
       case CANCEL_ACTION_ORDER:
-        return status;
+        return false;
+        return status !== 'pending';
       case REFUND_ACTION_ORDER:
         return false;
       case PAYMENT_ACTION_ORDER:
@@ -328,9 +329,7 @@ class OrderHistory extends Component<Props> {
                 className="btn btn-outline-danger btn btn-block"
                 disabled={this.statusDisableActionOrder(CANCEL_ACTION_ORDER)}
                 onClick={() => {
-                  orderAction({
-                    action: CANCEL_ACTION_ORDER
-                  });
+                  this.toggleOrderAction(CANCEL_ACTION_ORDER);
                 }}
               >
                 Cancel Order
@@ -382,7 +381,7 @@ class OrderHistory extends Component<Props> {
       <>
         <div className="row">
           <div className="col-12">
-            <table className="table">
+            <table className="table table-hover">
               <thead className="thead-light">
                 <tr>
                   <th scope="col">#</th>
