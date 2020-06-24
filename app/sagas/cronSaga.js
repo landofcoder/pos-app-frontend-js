@@ -381,16 +381,20 @@ function* syncOrder(orderId, syncAllNow) {
   // eslint-disable-next-line no-restricted-syntax
   for (const itemOrderId of itemsOrder) {
     const orders = yield getOrderByOrderId(itemOrderId.sales_order_id);
-    const orderItemUpdate = yield call(
-      getDetailOrderHistoryService,
-      itemOrderId.sales_order_id
-    );
-    if (orders.length > 0) {
-      orderItemUpdate.id = orders[0].id;
-      yield call(updateOrderById, orderItemUpdate);
-    } else {
-      orderItemUpdate.id = Date.now();
-      yield call(createOrders, orderItemUpdate);
+    try {
+      const orderItemUpdate = yield call(
+        getDetailOrderHistoryService,
+        itemOrderId.sales_order_id
+      );
+      if (orders.length > 0) {
+        orderItemUpdate.id = orders[0].id;
+        yield call(updateOrderById, orderItemUpdate);
+      } else {
+        orderItemUpdate.id = Date.now();
+        yield call(createOrders, orderItemUpdate);
+      }
+    } catch (e) {
+      checkAllSync += 1;
     }
   }
   if (!checkAllSync) {
