@@ -46,7 +46,8 @@ class DetailOrderAction extends Component<Props> {
         }
       },
       shipmentOption: {
-        items: []
+        items: [],
+        optionShipAll: false
       }
     };
   }
@@ -121,7 +122,7 @@ class DetailOrderAction extends Component<Props> {
 
   onSubmitOrderAction = () => {
     const { orderAction, typeOpenToggle } = this.props;
-    const { noteValue, refundOption } = this.state;
+    const { noteValue, refundOption, shipmentOption } = this.state;
     let payload;
     switch (typeOpenToggle) {
       case ADD_NOTE_ACTION_ORDER:
@@ -130,6 +131,8 @@ class DetailOrderAction extends Component<Props> {
       case REFUND_ACTION_ORDER:
         payload = refundOption;
         break;
+      case SHIPMENT_ACTION_ORDER:
+        payload = shipmentOption;
       default:
     }
     orderAction({
@@ -145,10 +148,17 @@ class DetailOrderAction extends Component<Props> {
     this.setState({ refundOption });
   };
 
+  onQtyShipItemOnChange = (index, item) => {
+    const { shipmentOption } = this.state;
+    if (!item) return;
+    shipmentOption.items[index] = item;
+    this.setState({ shipmentOption });
+  };
+
   conditionToSubmitOrderAction = () => {
     // true mean accept to submit otherwise denial
     const { typeOpenToggle } = this.props;
-    const { noteValue, refundOption } = this.state;
+    const { noteValue, refundOption, shipmentOption } = this.state;
     switch (typeOpenToggle) {
       case ADD_NOTE_ACTION_ORDER:
         if (!noteValue) return true;
@@ -156,6 +166,11 @@ class DetailOrderAction extends Component<Props> {
       case REFUND_ACTION_ORDER:
         // eslint-disable-next-line no-restricted-syntax
         for (const item of refundOption.items) {
+          if (item && item.qty) return true;
+        }
+        break;
+      case SHIPMENT_ACTION_ORDER:
+        for (const item of shipmentOption.items) {
           if (item && item.qty) return true;
         }
         break;
@@ -337,8 +352,13 @@ class DetailOrderAction extends Component<Props> {
       <>
         <div className="mb-2 d-flex">
           <span className="pr-3 align-self-center">Select max Qty to Ship</span>
-          <div className={Styles.btnActionToggle}>
-            {this.renderIsToggleReturnStock() ? (
+          <div
+            className={Styles.btnActionToggle}
+            onClick={() => {
+              this.onClickShipAllQtyToggle();
+            }}
+          >
+            {this.renderIsToggleShipAll() ? (
               <i className="fa fa-toggle-on fa-2x" aria-hidden="true"></i>
             ) : (
               <i className="fa fa-toggle-off fa-2x" aria-hidden="true"></i>
@@ -376,7 +396,7 @@ class DetailOrderAction extends Component<Props> {
                       className="form-control"
                       placeholder="0"
                       onChange={event => {
-                        this.conditionChangeInputRefund(
+                        this.conditionChangeInputShipQty(
                           +event.target.value,
                           index,
                           item
@@ -398,6 +418,55 @@ class DetailOrderAction extends Component<Props> {
     );
   };
 
+  onClickShipAllQtyToggle = () => {
+    const { shipmentOption } = this.state;
+    const { dataActionOrder } = this.props;
+    const { items } = dataActionOrder;
+
+    let { optionShipAll } = shipmentOption;
+    shipmentOption.items = [];
+    if (optionShipAll) {
+      // delete all option ship
+      shipmentOption.optionShipAll = false;
+    } else {
+      shipmentOption.optionShipAll = true;
+      items.map((item, index) => {
+        const newItem = {
+          order_item_id: item.item_id,
+          qty: +item.qty_ordered - +item.qty_shipped - +item.qty_canceled
+        };
+        shipmentOption.items.push(newItem);
+      });
+      // add all quantity option ship
+    }
+    this.setState({ shipmentOption });
+  };
+
+  conditionChangeInputShipQty = (value, index, item) => {
+    const { shipmentOption } = this.state;
+
+    if (
+      value < 0 ||
+      value + +item.qty_shipped > +item.qty_ordered ||
+      value >
+        (shipmentOption.items[index]
+          ? shipmentOption.items[index].qty_shipped
+          : 10) // is undefined if empty
+    )
+      return;
+    const newItem = {
+      order_item_id: item.item_id,
+      qty: value
+    };
+    this.onQtyShipItemOnChange(index, newItem);
+  };
+
+  renderIsToggleShipAll = item => {
+    const { shipmentOption } = this.state;
+    const { optionShipAll } = shipmentOption;
+    return optionShipAll;
+  };
+
   render() {
     const {
       toggleModalActionOrder,
@@ -405,6 +474,8 @@ class DetailOrderAction extends Component<Props> {
       isLoadingGetOrderAction,
       isOpenToggleActionOrder
     } = this.props;
+    const { shipmentOption } = this.state;
+    console.log(shipmentOption);
     return (
       <Modal
         overlayClassName={ModalStyle.Overlay}

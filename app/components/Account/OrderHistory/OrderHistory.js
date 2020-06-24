@@ -230,7 +230,6 @@ class OrderHistory extends Component<Props> {
     status = status === 'complete' || status === 'closed';
     switch (type) {
       case SHIPMENT_ACTION_ORDER:
-        return false;
         return status;
       case PRINT_ACTION_ORDER:
         return false;
@@ -239,7 +238,6 @@ class OrderHistory extends Component<Props> {
       case REFUND_ACTION_ORDER:
         return false;
       case PAYMENT_ACTION_ORDER:
-        // return false;
         return status;
       default:
         break;

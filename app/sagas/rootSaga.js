@@ -964,6 +964,7 @@ function* setOrderActionOffline(payload) {
     case types.ADD_NOTE_ACTION_ORDER:
       break;
     case types.REFUND_ACTION_ORDER:
+    case types.SHIPMENT_ACTION_ORDER:
       ({ orderId } = orderDetail.items.syncData);
       ({ items } = payload.payload);
       params = {
@@ -978,6 +979,7 @@ function* setOrderActionOffline(payload) {
         yield put({ type: types.TOGGLE_MODAL_ACTION_ORDER, payload: false });
       }
       break;
+
     default:
       break;
   }
