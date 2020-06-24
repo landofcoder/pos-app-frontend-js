@@ -227,9 +227,7 @@ class OrderHistory extends Component<Props> {
     const { orderHistoryDetailOffline } = this.props;
     let status;
     ({ status } = orderHistoryDetailOffline);
-    console.log(status);
     status = status === 'complete' || status === 'closed';
-    console.log('status,' + status);
     switch (type) {
       case SHIPMENT_ACTION_ORDER:
         return false;

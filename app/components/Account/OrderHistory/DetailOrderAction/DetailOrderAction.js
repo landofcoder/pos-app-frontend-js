@@ -8,6 +8,7 @@ import {
 } from '../../../../actions/accountAction';
 import Close from '../../../commons/x';
 import ModalStyle from '../../../styles/modal.scss';
+import Styles from './detail-order-action.scss';
 import {
   ADD_NOTE_ACTION_ORDER,
   REFUND_ACTION_ORDER,
@@ -258,9 +259,8 @@ class DetailOrderAction extends Component<Props> {
                 </td>
                 <td>
                   <div
-                    className=""
+                    className={Styles.btnActionToggle}
                     role="button"
-                    style={{ color: '#777', cursor: 'pointer' }}
                     onClick={() => {
                       this.onClickReturnToStockToggle(item.item_id);
                     }}
@@ -337,7 +337,7 @@ class DetailOrderAction extends Component<Props> {
       <>
         <div className="mb-2 d-flex">
           <span className="pr-3 align-self-center">Select max Qty to Ship</span>
-          <div style={{ color: '#777', cursor: 'pointer' }}>
+          <div className={Styles.btnActionToggle}>
             {this.renderIsToggleReturnStock() ? (
               <i className="fa fa-toggle-on fa-2x" aria-hidden="true"></i>
             ) : (
