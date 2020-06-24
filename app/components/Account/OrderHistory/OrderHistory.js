@@ -234,7 +234,6 @@ class OrderHistory extends Component<Props> {
       case PRINT_ACTION_ORDER:
         return false;
       case CANCEL_ACTION_ORDER:
-        return false;
         return status !== 'pending';
       case REFUND_ACTION_ORDER:
         return false;
