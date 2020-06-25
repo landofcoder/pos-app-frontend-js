@@ -91,13 +91,14 @@ class Receipt extends Component<Props> {
     const { orderId } = receipt;
     let customerReceipt;
     const cartForReceipt =
-      receipt.items.orderPreparingCheckoutResult.detailOutletResult;
-    if (receipt.items.cartCurrentResult.isGuestCustomer) {
+      receipt.items.orderPreparingCheckoutResult.shipping_address;
+    if (receipt.items.cartCurrentResult.isGuestCustomer === true) {
       customerReceipt = cartForReceipt;
     } else {
       customerReceipt = receipt.items.cartCurrentResult.customer;
     }
-
+    console.log(receipt);
+    console.log(customerReceipt);
     /* eslint-disable */
     const { outlet_name } = detailOutlet;
     let {
@@ -237,6 +238,7 @@ class Receipt extends Component<Props> {
                             </td>
                             <td style={{ textAlign: 'right' }}>
                               {customerReceipt.firstname}
+                              {customerReceipt.lastname}
                             </td>
                           </tr>
                         ) : null}
