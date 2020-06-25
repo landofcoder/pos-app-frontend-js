@@ -965,6 +965,15 @@ function* setOrderActionOffline(payload) {
       yield reorderAction({ data: orderDetail, synced: true });
       break;
     case types.ADD_NOTE_ACTION_ORDER:
+      params = {
+        data: { orderId, payload: payload.payload },
+        type: payload.action
+      };
+      resultActionOrder = yield call(setActionOrder, params);
+      if (resultActionOrder.status) {
+        // do something
+        yield put({ type: types.TOGGLE_MODAL_ACTION_ORDER, payload: false });
+      }
       break;
     case types.REFUND_ACTION_ORDER:
     case types.SHIPMENT_ACTION_ORDER:
@@ -993,7 +1002,7 @@ function* setOrderActionOffline(payload) {
       }
       break;
     case types.PRINT_ACTION_ORDER:
-      yield put({ type: types.PRINT_RECEIPT_NOW, payload: true});
+      yield put({ type: types.PRINT_RECEIPT_NOW, payload: true });
       yield put({ type: types.COPY_DETAIL_ORDER_TO_RECEIPT });
       yield put({ type: types.OPEN_RECEIPT_MODAL });
       break;

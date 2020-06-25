@@ -138,7 +138,9 @@ class DetailOrderAction extends Component<Props> {
         break;
       case SHIPMENT_ACTION_ORDER:
         payload = shipmentOption;
+        break;
       case CANCEL_ACTION_ORDER:
+        break;
       default:
     }
     orderAction({
@@ -167,26 +169,26 @@ class DetailOrderAction extends Component<Props> {
     const { noteValue, refundOption, shipmentOption } = this.state;
     switch (typeOpenToggle) {
       case ADD_NOTE_ACTION_ORDER:
-        if (!noteValue) return true;
-        break;
+        if (noteValue) return false;
+        return true;
       case REFUND_ACTION_ORDER:
         // eslint-disable-next-line no-restricted-syntax
         for (const item of refundOption.items) {
-          if (item && item.qty) return true;
+          if (item && item.qty) return false;
         }
         break;
       case SHIPMENT_ACTION_ORDER:
+        // eslint-disable-next-line no-restricted-syntax
         for (const item of shipmentOption.items) {
-          if (item && item.qty) return true;
+          if (item && item.qty) return false;
         }
         break;
       case CANCEL_ACTION_ORDER:
-        return true;
-        break;
+        return false;
       default:
         break;
     }
-    return false;
+    return true;
   };
 
   /**
@@ -560,7 +562,7 @@ class DetailOrderAction extends Component<Props> {
                   onClick={() => {
                     this.onSubmitOrderAction();
                   }}
-                  disabled={!this.conditionToSubmitOrderAction()}
+                  disabled={this.conditionToSubmitOrderAction()}
                 >
                   {isLoadingSetOrderAction ? (
                     <span
