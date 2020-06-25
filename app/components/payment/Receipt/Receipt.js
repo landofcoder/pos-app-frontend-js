@@ -52,7 +52,6 @@ class Receipt extends Component<Props> {
     pri.document.close();
     pri.focus();
     pri.print();
-    console.log(isPrintReceiptNow);
     if (isPrintReceiptNow) {
       closeReceiptModal();
     }
@@ -90,9 +89,15 @@ class Receipt extends Component<Props> {
     } = this.props;
     const { dateTime } = this.state;
     const { orderId } = receipt;
+    let customerReceipt;
     const cartForReceipt =
-      receipt.items.orderPreparingCheckoutResult.shipping_address;
-    const customerReceipt = cartForReceipt.customer;
+      receipt.items.orderPreparingCheckoutResult.detailOutletResult;
+    if (receipt.items.cartCurrentResult.isGuestCustomer) {
+      customerReceipt = cartForReceipt;
+    } else {
+      customerReceipt = receipt.items.cartCurrentResult.customer;
+    }
+
     /* eslint-disable */
     const { outlet_name } = detailOutlet;
     let {

@@ -450,6 +450,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
       }
       case types.CLOSE_RECEIPT_MODAL:
         draft.receipt.isOpenReceiptModal = false;
+        draft.receipt.isPrintReceiptNow = false;
         break;
       case types.UPDATE_IS_LOADING_SEARCH_HANDLE:
         draft.isLoadingSearchHandle = action.payload;
