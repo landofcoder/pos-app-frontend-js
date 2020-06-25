@@ -10,6 +10,7 @@ import {
   closeToggleModalOrderDetail,
   getDataServiceWithType
 } from '../../../actions/accountAction';
+import Receipt from '../../payment/Receipt/Receipt';
 import DetailOrderOffline from './DetailOrderOffline/DetailOrderOffline';
 import Close from '../../commons/x';
 import Styles from './order-history.scss';
@@ -41,13 +42,13 @@ type Props = {
   toggleModalOrderDetailOffline: object => void,
   orderAction: payload => void,
   orderHistoryDetailOffline: object,
-  orderHistoryDetail: object,
   history: payload => void,
   toggleModalActionOrder: payload => void,
   syncDataClient: payload => void,
   closeToggleModalOrderDetail: () => void,
   isLoadingSyncAllOrder: boolean,
-  getAllOrdersDb: payload => void
+  getAllOrdersDb: payload => void,
+  isOpenReceiptModal: boolean
 };
 
 class OrderHistory extends Component<Props> {
@@ -224,6 +225,27 @@ class OrderHistory extends Component<Props> {
     );
   };
 
+  statusDisableActionOrder = type => {
+    const { orderHistoryDetailOffline } = this.props;
+    let status;
+    ({ status } = orderHistoryDetailOffline);
+    status = status === 'complete' || status === 'closed';
+    switch (type) {
+      case SHIPMENT_ACTION_ORDER:
+        return status;
+      case PRINT_ACTION_ORDER:
+        return false;
+      case CANCEL_ACTION_ORDER:
+        return status !== 'pending';
+      case REFUND_ACTION_ORDER:
+        return false;
+      case PAYMENT_ACTION_ORDER:
+        return status;
+      default:
+        break;
+    }
+  };
+
   actionDetailOrder = () => {
     const { orderAction, history, isOpenToggleActionOrder } = this.props;
 
@@ -238,10 +260,9 @@ class OrderHistory extends Component<Props> {
                 type="button"
                 className="btn btn-outline-primary btn btn-block"
                 onClick={() => {
-                  orderAction({
-                    action: PAYMENT_ACTION_ORDER
-                  });
+                  this.toggleOrderAction(PAYMENT_ACTION_ORDER);
                 }}
+                disabled={this.statusDisableActionOrder(PAYMENT_ACTION_ORDER)}
               >
                 Take Payment
               </button>
@@ -256,6 +277,7 @@ class OrderHistory extends Component<Props> {
                   });
                   history.push(types.POS);
                 }}
+                disabled={this.statusDisableActionOrder(REORDER_ACTION_ORDER)}
               >
                 Reorder
               </button>
@@ -269,6 +291,7 @@ class OrderHistory extends Component<Props> {
                     action: PRINT_ACTION_ORDER
                   });
                 }}
+                disabled={this.statusDisableActionOrder(PRINT_ACTION_ORDER)}
               >
                 Print
               </button>
@@ -278,10 +301,9 @@ class OrderHistory extends Component<Props> {
                 type="button"
                 className="btn btn-outline-dark btn btn-block"
                 onClick={() => {
-                  orderAction({
-                    action: SHIPMENT_ACTION_ORDER
-                  });
+                  this.toggleOrderAction(SHIPMENT_ACTION_ORDER);
                 }}
+                disabled={this.statusDisableActionOrder(SHIPMENT_ACTION_ORDER)}
               >
                 Take Shipment
               </button>
@@ -297,6 +319,7 @@ class OrderHistory extends Component<Props> {
                 onClick={() => {
                   this.toggleOrderAction(ADD_NOTE_ACTION_ORDER);
                 }}
+                disabled={this.statusDisableActionOrder(ADD_NOTE_ACTION_ORDER)}
               >
                 Note
               </button>
@@ -305,11 +328,9 @@ class OrderHistory extends Component<Props> {
               <button
                 type="button"
                 className="btn btn-outline-danger btn btn-block"
-                disabled={true}
+                disabled={this.statusDisableActionOrder(CANCEL_ACTION_ORDER)}
                 onClick={() => {
-                  orderAction({
-                    action: CANCEL_ACTION_ORDER
-                  });
+                  this.toggleOrderAction(CANCEL_ACTION_ORDER);
                 }}
               >
                 Cancel Order
@@ -322,6 +343,7 @@ class OrderHistory extends Component<Props> {
                 onClick={() => {
                   this.toggleOrderAction(REFUND_ACTION_ORDER);
                 }}
+                disabled={this.statusDisableActionOrder(REFUND_ACTION_ORDER)}
               >
                 Refund
               </button>
@@ -348,7 +370,8 @@ class OrderHistory extends Component<Props> {
       syncDataManager,
       isOpenDetailOrderOffline,
       isOpenDetailOrder,
-      isLoading
+      isLoading,
+      isOpenReceiptModal
     } = this.props;
 
     let orderHistoryDb = [];
@@ -360,7 +383,7 @@ class OrderHistory extends Component<Props> {
       <>
         <div className="row">
           <div className="col-12">
-            <table className="table">
+            <table className="table table-hover">
               <thead className="thead-light">
                 <tr>
                   <th scope="col">#</th>
@@ -434,6 +457,7 @@ class OrderHistory extends Component<Props> {
             ) : null}
           </div>
         </div>
+        {isOpenReceiptModal ? <Receipt /> : <></>}
         <Modal
           overlayClassName={modalStyle.Overlay}
           shouldCloseOnOverlayClick
@@ -488,15 +512,13 @@ function mapStateToProps(state) {
     isLoading: state.mainRd.isLoadingOrderHistory,
     syncDataManager: state.authenRd.syncDataManager,
     orderHistoryDetailOffline: state.mainRd.orderHistoryDetailOffline,
-    orderHistoryDetail: state.mainRd.orderHistoryDetail,
-    isLoadingSyncAllOrder: state.authenRd.syncManager.loadingSyncOrder
+    isLoadingSyncAllOrder: state.authenRd.syncManager.loadingSyncOrder,
+    isOpenReceiptModal: state.mainRd.receipt.isOpenReceiptModal
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    toggleModalOrderDetail: payload =>
-      dispatch(toggleModalOrderDetail(payload)),
     toggleModalOrderDetailOffline: payload =>
       dispatch(toggleModalOrderDetailOffline(payload)),
     orderAction: payload => dispatch(orderAction(payload)),

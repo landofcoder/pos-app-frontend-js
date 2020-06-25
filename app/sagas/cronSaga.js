@@ -46,7 +46,6 @@ import {
   getAllSyncService
 } from '../reducers/db/sync_data_manager';
 import { signUpCustomerService } from './services/customer-service';
-import { syncOrderService } from './services/cart-service';
 import {
   setupFetchingGeneralConfig,
   setupSyncCategoriesAndProducts,
@@ -60,7 +59,8 @@ import {
 } from '../common/sync-group-manager';
 import {
   getListOrderHistoryService,
-  getDetailOrderHistoryService
+  getDetailOrderHistoryService,
+  syncOrderService
 } from './services/cart-service';
 
 const cashierInfo = state => state.authenRd.cashierInfo;
@@ -340,7 +340,7 @@ function* syncOrder(orderId, syncAllNow) {
   // eslint-disable-next-line no-restricted-syntax
   for (const order of orders) {
     // eslint-disable-next-line no-continue
-    if (order.status) continue;
+    if (order.synced) continue;
     try {
       yield checkExistingFailedOrder(order); // will throw if order existing failed custom product
       const result = yield call(syncOrderService, order);
@@ -381,16 +381,20 @@ function* syncOrder(orderId, syncAllNow) {
   // eslint-disable-next-line no-restricted-syntax
   for (const itemOrderId of itemsOrder) {
     const orders = yield getOrderByOrderId(itemOrderId.sales_order_id);
-    const orderItemUpdate = yield call(
-      getDetailOrderHistoryService,
-      itemOrderId.sales_order_id
-    );
-    if (orders.length > 0) {
-      orderItemUpdate.id = orders[0].id;
-      yield call(updateOrderById, orderItemUpdate);
-    } else {
-      orderItemUpdate.id = Date.now();
-      yield call(createOrders, orderItemUpdate);
+    try {
+      const orderItemUpdate = yield call(
+        getDetailOrderHistoryService,
+        itemOrderId.sales_order_id
+      );
+      if (orders.length > 0) {
+        orderItemUpdate.id = orders[0].id;
+        yield call(updateOrderById, orderItemUpdate);
+      } else {
+        orderItemUpdate.id = Date.now();
+        yield call(createOrders, orderItemUpdate);
+      }
+    } catch (e) {
+      checkAllSync += 1;
     }
   }
   if (!checkAllSync) {

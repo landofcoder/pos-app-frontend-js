@@ -89,7 +89,7 @@ class SyncManager extends Component {
     return (
       <div className="row">
         <div className="col-md-12">
-          <table className="table">
+          <table className="table table-hover">
             <thead className="thead-light">
               <tr>
                 <th scope="col">#</th>

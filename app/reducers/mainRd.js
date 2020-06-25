@@ -64,7 +64,10 @@ const initialState = {
   receipt: {
     orderId: 0, // Last order is inserted
     isOpenReceiptModal: false,
-    cartForReceipt: testCartCurrentForDefaultReceipt // When customer checkout succeed, copy current cart to this
+    items: {
+      cartForReceipt: testCartCurrentForDefaultReceipt, // When customer checkout succeed, copy current cart to this
+      isPrintReceiptNow: false,
+    }
   },
   checkout: {
     isShowCashPaymentModel: false,
@@ -431,7 +434,15 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       }
       case types.COPY_CART_CURRENT_TO_RECEIPT:
-        draft.receipt.cartForReceipt = draft.cartCurrent;
+        draft.receipt.items.cartCurrentResult = draft.cartCurrent;
+        draft.receipt.items.orderPreparingCheckoutResult =
+          draft.checkout.orderPreparingCheckout;
+        break;
+      case types.COPY_DETAIL_ORDER_TO_RECEIPT:
+        draft.receipt = {...draft.receipt, ...draft.orderHistoryDetailOffline};
+        break;
+      case types.PRINT_RECEIPT_NOW:
+        draft.receipt.isPrintReceiptNow = action.payload;
         break;
       case types.OPEN_RECEIPT_MODAL: {
         draft.receipt.isOpenReceiptModal = true;
@@ -439,6 +450,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
       }
       case types.CLOSE_RECEIPT_MODAL:
         draft.receipt.isOpenReceiptModal = false;
+        draft.receipt.isPrintReceiptNow = false;
         break;
       case types.UPDATE_IS_LOADING_SEARCH_HANDLE:
         draft.isLoadingSearchHandle = action.payload;

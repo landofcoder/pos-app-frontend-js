@@ -8,9 +8,13 @@ import {
 } from '../../../../actions/accountAction';
 import Close from '../../../commons/x';
 import ModalStyle from '../../../styles/modal.scss';
+import Styles from './detail-order-action.scss';
 import {
   ADD_NOTE_ACTION_ORDER,
-  REFUND_ACTION_ORDER
+  REFUND_ACTION_ORDER,
+  PAYMENT_ACTION_ORDER,
+  SHIPMENT_ACTION_ORDER,
+  CANCEL_ACTION_ORDER
 } from '../../../../constants/root';
 import { formatCurrencyCode } from '../../../../common/settings';
 
@@ -41,6 +45,10 @@ class DetailOrderAction extends Component<Props> {
             return_to_stock_items: []
           }
         }
+      },
+      shipmentOption: {
+        items: [],
+        optionShipAll: false
       }
     };
   }
@@ -84,10 +92,16 @@ class DetailOrderAction extends Component<Props> {
   showTitleOrderAction = () => {
     const { typeOpenToggle } = this.props;
     switch (typeOpenToggle) {
+      case PAYMENT_ACTION_ORDER:
+        return 'Payment order';
+      case SHIPMENT_ACTION_ORDER:
+        return 'Ship items';
       case ADD_NOTE_ACTION_ORDER:
         return 'Add note';
       case REFUND_ACTION_ORDER:
         return 'Refund order';
+      case CANCEL_ACTION_ORDER:
+        return 'Cancel order';
       default:
         return null;
     }
@@ -95,12 +109,17 @@ class DetailOrderAction extends Component<Props> {
 
   showBodyOrderAction = () => {
     const { typeOpenToggle } = this.props;
-    console.log(typeOpenToggle);
     switch (typeOpenToggle) {
+      case SHIPMENT_ACTION_ORDER:
+        return this.showBodyTakeShipment();
+      case PAYMENT_ACTION_ORDER:
+        return this.showBodyTakePayment();
       case ADD_NOTE_ACTION_ORDER:
         return this.showBodyAddNote();
       case REFUND_ACTION_ORDER:
         return this.showBodyRefund();
+      case CANCEL_ACTION_ORDER:
+        return this.showBodyCancel();
       default:
         return null;
     }
@@ -108,7 +127,7 @@ class DetailOrderAction extends Component<Props> {
 
   onSubmitOrderAction = () => {
     const { orderAction, typeOpenToggle } = this.props;
-    const { noteValue, refundOption } = this.state;
+    const { noteValue, refundOption, shipmentOption } = this.state;
     let payload;
     switch (typeOpenToggle) {
       case ADD_NOTE_ACTION_ORDER:
@@ -117,6 +136,9 @@ class DetailOrderAction extends Component<Props> {
       case REFUND_ACTION_ORDER:
         payload = refundOption;
         break;
+      case SHIPMENT_ACTION_ORDER:
+        payload = shipmentOption;
+      case CANCEL_ACTION_ORDER:
       default:
     }
     orderAction({
@@ -132,10 +154,17 @@ class DetailOrderAction extends Component<Props> {
     this.setState({ refundOption });
   };
 
+  onQtyShipItemOnChange = (index, item) => {
+    const { shipmentOption } = this.state;
+    if (!item) return;
+    shipmentOption.items[index] = item;
+    this.setState({ shipmentOption });
+  };
+
   conditionToSubmitOrderAction = () => {
     // true mean accept to submit otherwise denial
     const { typeOpenToggle } = this.props;
-    const { noteValue, refundOption } = this.state;
+    const { noteValue, refundOption, shipmentOption } = this.state;
     switch (typeOpenToggle) {
       case ADD_NOTE_ACTION_ORDER:
         if (!noteValue) return true;
@@ -145,6 +174,14 @@ class DetailOrderAction extends Component<Props> {
         for (const item of refundOption.items) {
           if (item && item.qty) return true;
         }
+        break;
+      case SHIPMENT_ACTION_ORDER:
+        for (const item of shipmentOption.items) {
+          if (item && item.qty) return true;
+        }
+        break;
+      case CANCEL_ACTION_ORDER:
+        return true;
         break;
       default:
         break;
@@ -204,9 +241,8 @@ class DetailOrderAction extends Component<Props> {
     const { refundOption } = this.state;
     const { dataActionOrder } = this.props;
     const { items } = dataActionOrder;
-    console.log(refundOption.items);
     return (
-      <table className="table table-striped">
+      <table className="table table-striped table-hover">
         <thead>
           <tr>
             <th scope="col">#</th>
@@ -247,9 +283,8 @@ class DetailOrderAction extends Component<Props> {
                 </td>
                 <td>
                   <div
-                    className=""
+                    className={Styles.btnActionToggle}
                     role="button"
-                    style={{ color: '#777', cursor: 'pointer' }}
                     onClick={() => {
                       this.onClickReturnToStockToggle(item.item_id);
                     }}
@@ -318,12 +353,146 @@ class DetailOrderAction extends Component<Props> {
     );
   };
 
+  showBodyTakeShipment = () => {
+    const { shipmentOption } = this.state;
+    const { dataActionOrder } = this.props;
+    const { items } = dataActionOrder;
+    return (
+      <>
+        <div className="mb-2 d-flex">
+          <span className="pr-3 align-self-center">Select max Qty to Ship</span>
+          <div
+            className={Styles.btnActionToggle}
+            onClick={() => {
+              this.onClickShipAllQtyToggle();
+            }}
+          >
+            {this.renderIsToggleShipAll() ? (
+              <i className="fa fa-toggle-on fa-2x" aria-hidden="true"></i>
+            ) : (
+              <i className="fa fa-toggle-off fa-2x" aria-hidden="true"></i>
+            )}
+          </div>
+        </div>
+        <table className="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Product</th>
+              <th scope="col">Qty left</th>
+              <th width="17%">Qty to ship</th>
+            </tr>
+          </thead>
+          <tbody>
+            {items.map((item, index) => {
+              return (
+                <tr key={index}>
+                  <th scope="row">{index + 1}</th>
+                  <td>
+                    <div className="row">
+                      <span className="col-12">{item.name}</span>
+                      <span className="col-12">SKU: {item.sku}</span>
+                    </div>
+                  </td>
+                  <td>
+                    {+item.qty_invoiced -
+                      +item.qty_shipped -
+                      +item.qty_canceled}
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      className="form-control"
+                      placeholder="0"
+                      onChange={event => {
+                        this.conditionChangeInputShipQty(
+                          +event.target.value,
+                          index,
+                          item
+                        );
+                      }}
+                      value={
+                        shipmentOption.items[index]
+                          ? shipmentOption.items[index].qty
+                          : 0
+                      }
+                    />
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </>
+    );
+  };
+
+  onClickShipAllQtyToggle = () => {
+    const { shipmentOption } = this.state;
+    const { dataActionOrder } = this.props;
+    const { items } = dataActionOrder;
+
+    let { optionShipAll } = shipmentOption;
+    shipmentOption.items = [];
+    if (optionShipAll) {
+      // delete all option ship
+      shipmentOption.optionShipAll = false;
+    } else {
+      shipmentOption.optionShipAll = true;
+      items.map((item, index) => {
+        const newItem = {
+          order_item_id: item.item_id,
+          qty: +item.qty_ordered - +item.qty_shipped - +item.qty_canceled
+        };
+        shipmentOption.items.push(newItem);
+      });
+      // add all quantity option ship
+    }
+    this.setState({ shipmentOption });
+  };
+
+  conditionChangeInputShipQty = (value, index, item) => {
+    const { shipmentOption } = this.state;
+
+    if (
+      value < 0 ||
+      value + +item.qty_shipped > +item.qty_ordered ||
+      value >
+        (shipmentOption.items[index]
+          ? shipmentOption.items[index].qty_shipped
+          : 10) // is undefined if empty
+    )
+      return;
+    const newItem = {
+      order_item_id: item.item_id,
+      qty: value
+    };
+    this.onQtyShipItemOnChange(index, newItem);
+  };
+
+  renderIsToggleShipAll = item => {
+    const { shipmentOption } = this.state;
+    const { optionShipAll } = shipmentOption;
+    return optionShipAll;
+  };
+
+  showBodyCancel = () => {
+    return (
+      <div>
+        <div className="input-group mb-3">
+          <span>Are your sure want to cancel this order ?</span>
+        </div>
+      </div>
+    );
+  };
+
   render() {
     const {
       toggleModalActionOrder,
       isLoadingSetOrderAction,
       isLoadingGetOrderAction,
-      isOpenToggleActionOrder
+      isOpenToggleActionOrder,
+      typeOpenToggle
     } = this.props;
     return (
       <Modal
@@ -334,7 +503,12 @@ class DetailOrderAction extends Component<Props> {
         isOpen={isOpenToggleActionOrder}
         contentLabel="Example Modal"
       >
-        <div className={ModalStyle.modalContentLg}>
+        <div
+          className={ModalStyle.modalContentLg}
+          style={{
+            width: typeOpenToggle === CANCEL_ACTION_ORDER ? '400px' : '-1'
+          }}
+        >
           <div
             className={ModalStyle.close}
             role="presentation"
@@ -362,6 +536,23 @@ class DetailOrderAction extends Component<Props> {
               )}
             </div>
             <div className="modal-footer">
+              {typeOpenToggle === CANCEL_ACTION_ORDER ? (
+                <div className="col-md-3 p-0">
+                  <button
+                    type="button"
+                    className="btn btn-secondary btn-block"
+                    onClick={() => {
+                      toggleModalActionOrder({
+                        type: CANCEL_ACTION_ORDER,
+                        status: false
+                      });
+                    }}
+                    disabled={!this.conditionToSubmitOrderAction()}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : null}
               <div className="col-md-3 p-0">
                 <button
                   type="button"
@@ -371,14 +562,15 @@ class DetailOrderAction extends Component<Props> {
                   }}
                   disabled={!this.conditionToSubmitOrderAction()}
                 >
-                  Submit{' '}
                   {isLoadingSetOrderAction ? (
                     <span
                       className="spinner-border spinner-border-sm"
                       role="status"
                       aria-hidden="true"
                     ></span>
-                  ) : null}
+                  ) : (
+                    'Submit'
+                  )}
                 </button>
               </div>
             </div>

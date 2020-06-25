@@ -549,7 +549,6 @@ function* getProductByCategoryLazyLoad(categoryId, currentPage) {
   return false;
 }
 
-
 function* signUpAction(payload) {
   yield put({ type: types.CHANGE_SIGN_UP_LOADING_CUSTOMER, payload: true });
   // signUp action
@@ -938,6 +937,9 @@ function* getOrderActionOffline(payload) {
     case types.REFUND_ACTION_ORDER:
       dataActionOrder = yield call(getActionOrder, params);
       break;
+    case types.SHIPMENT_ACTION_ORDER:
+      dataActionOrder = yield call(getActionOrder, params);
+      break;
     default:
       break;
   }
@@ -953,16 +955,19 @@ function* setOrderActionOffline(payload) {
   let items;
   let params;
   let resultActionOrder;
+  try {
+    ({ orderId } = orderDetail.items.syncData);
+  } catch (e) {
+    console.log('order still not have orderid');
+  }
   switch (payload.action) {
-    case types.CANCEL_ACTION_ORDER:
-      break;
     case types.REORDER_ACTION_ORDER:
       yield reorderAction({ data: orderDetail, synced: true });
       break;
     case types.ADD_NOTE_ACTION_ORDER:
       break;
     case types.REFUND_ACTION_ORDER:
-      ({ orderId } = orderDetail.items.syncData);
+    case types.SHIPMENT_ACTION_ORDER:
       ({ items } = payload.payload);
       params = {
         data: { orderId, ...payload.payload },
@@ -976,13 +981,25 @@ function* setOrderActionOffline(payload) {
         yield put({ type: types.TOGGLE_MODAL_ACTION_ORDER, payload: false });
       }
       break;
+    case types.CANCEL_ACTION_ORDER:
+      params = {
+        data: { orderId, ...payload.payload },
+        type: payload.action
+      };
+      resultActionOrder = yield call(setActionOrder, params);
+      if (resultActionOrder.status) {
+        // do something
+        yield put({ type: types.TOGGLE_MODAL_ACTION_ORDER, payload: false });
+      }
+      break;
+    case types.PRINT_ACTION_ORDER:
+      yield put({ type: types.PRINT_RECEIPT_NOW, payload: true});
+      yield put({ type: types.COPY_DETAIL_ORDER_TO_RECEIPT });
+      yield put({ type: types.OPEN_RECEIPT_MODAL });
+      break;
     default:
       break;
   }
-  // yield put({
-  //   type: types.RECEIVED_GET_ACTION_ORDER,
-  //   payload: { type: payload.action, data: dataActionOrder }
-  // });
 }
 
 function isShowingDetailOrderOffline(
@@ -1015,16 +1032,19 @@ function* setOrderAction(params) {
   const { action, payload } = params.payload;
   const typeOf = yield selectTypeOrderAction();
   yield put({ type: types.LOADING_SET_ACTION_ORDER, payload: true });
-  console.log(typeOf);
-  switch (typeOf) {
-    case types.DETAIL_ORDER_OFFLINE:
-      yield setOrderActionOffline({ action, payload });
-      break;
-    case types.DETAIL_ORDER_ONLINE:
-      break;
-    default:
+  try {
+    switch (typeOf) {
+      case types.DETAIL_ORDER_OFFLINE:
+        yield setOrderActionOffline({ action, payload });
+        break;
+      case types.DETAIL_ORDER_ONLINE:
+        break;
+      default:
+    }
+    yield put({ type: types.LOADING_SET_ACTION_ORDER, payload: false });
+  } catch (e) {
+    console.log(e);
   }
-  yield put({ type: types.LOADING_SET_ACTION_ORDER, payload: false });
 }
 
 /**
@@ -1035,15 +1055,19 @@ function* getOrderAction(params) {
   const { action, payload } = params.payload;
   const typeOf = yield selectTypeOrderAction();
   yield put({ type: types.LOADING_GET_ACTION_ORDER, payload: true });
-  switch (typeOf) {
-    case types.DETAIL_ORDER_OFFLINE:
-      yield getOrderActionOffline({ action, payload });
-      break;
-    case types.DETAIL_ORDER_ONLINE:
-      break;
-    default:
+  try {
+    switch (typeOf) {
+      case types.DETAIL_ORDER_OFFLINE:
+        yield getOrderActionOffline({ action, payload });
+        break;
+      case types.DETAIL_ORDER_ONLINE:
+        break;
+      default:
+    }
+    yield put({ type: types.LOADING_GET_ACTION_ORDER, payload: false });
+  } catch (e) {
+    console.log(e);
   }
-  yield put({ type: types.LOADING_GET_ACTION_ORDER, payload: false });
 }
 
 /**

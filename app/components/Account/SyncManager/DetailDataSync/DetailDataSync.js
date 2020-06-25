@@ -122,7 +122,7 @@ class DetailDataSync extends Component {
           </div>
         ) : null}
         <div className="card mb-3">
-          <table className="table">
+          <table className="table table-hover">
             <thead>
               <tr>
                 <th scope="col">#</th>
@@ -270,7 +270,7 @@ class DetailDataSync extends Component {
           </div>
         ) : null}
         <div className="card mb-3">
-          <table className="table">
+          <table className="table table-hover">
             <thead>
               <tr>
                 <th scope="col">#</th>
@@ -337,7 +337,7 @@ class DetailDataSync extends Component {
           </div>
         ) : null}
         <div className="card mb-3">
-          <table className="table">
+          <table className="table table-hover">
             <thead>
               <tr>
                 <th scope="col">#</th>
@@ -427,7 +427,7 @@ class DetailDataSync extends Component {
           </div>
         ) : null}
         <div className="card mb-3">
-          <table className="table">
+          <table className="table table-hover">
             <thead>
               <tr>
                 <th scope="col">#</th>
