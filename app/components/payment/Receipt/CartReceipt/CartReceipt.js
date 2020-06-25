@@ -146,8 +146,9 @@ class CartReceipt extends Component<Props> {
 }
 
 const mapStateToProps = state => ({
-  cartForReceipt: state.mainRd.receipt.cartForReceipt.data,
-  orderPreparingCheckout: state.mainRd.checkout.orderPreparingCheckout,
+  cartForReceipt: state.mainRd.receipt.items.cartCurrentResult.data,
+  orderPreparingCheckout:
+    state.mainRd.receipt.items.orderPreparingCheckoutResult,
   customReceipt: state.mainRd.customReceipt,
   cashierInfo: state.authenRd.cashierInfo
 });

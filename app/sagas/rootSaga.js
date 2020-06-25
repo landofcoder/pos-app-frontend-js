@@ -955,7 +955,11 @@ function* setOrderActionOffline(payload) {
   let items;
   let params;
   let resultActionOrder;
-  ({ orderId } = orderDetail.items.syncData);
+  try {
+    ({ orderId } = orderDetail.items.syncData);
+  } catch (e) {
+    console.log('order still not have orderid');
+  }
   switch (payload.action) {
     case types.REORDER_ACTION_ORDER:
       yield reorderAction({ data: orderDetail, synced: true });
@@ -987,6 +991,11 @@ function* setOrderActionOffline(payload) {
         // do something
         yield put({ type: types.TOGGLE_MODAL_ACTION_ORDER, payload: false });
       }
+      break;
+    case types.PRINT_ACTION_ORDER:
+      yield put({ type: types.PRINT_RECEIPT_NOW, payload: true});
+      yield put({ type: types.COPY_DETAIL_ORDER_TO_RECEIPT });
+      yield put({ type: types.OPEN_RECEIPT_MODAL });
       break;
     default:
       break;

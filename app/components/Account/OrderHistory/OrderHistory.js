@@ -10,6 +10,7 @@ import {
   closeToggleModalOrderDetail,
   getDataServiceWithType
 } from '../../../actions/accountAction';
+import Receipt from '../../payment/Receipt/Receipt';
 import DetailOrderOffline from './DetailOrderOffline/DetailOrderOffline';
 import Close from '../../commons/x';
 import Styles from './order-history.scss';
@@ -46,7 +47,8 @@ type Props = {
   syncDataClient: payload => void,
   closeToggleModalOrderDetail: () => void,
   isLoadingSyncAllOrder: boolean,
-  getAllOrdersDb: payload => void
+  getAllOrdersDb: payload => void,
+  isOpenReceiptModal: boolean
 };
 
 class OrderHistory extends Component<Props> {
@@ -368,7 +370,8 @@ class OrderHistory extends Component<Props> {
       syncDataManager,
       isOpenDetailOrderOffline,
       isOpenDetailOrder,
-      isLoading
+      isLoading,
+      isOpenReceiptModal
     } = this.props;
 
     let orderHistoryDb = [];
@@ -454,6 +457,7 @@ class OrderHistory extends Component<Props> {
             ) : null}
           </div>
         </div>
+        {isOpenReceiptModal ? <Receipt /> : <></>}
         <Modal
           overlayClassName={modalStyle.Overlay}
           shouldCloseOnOverlayClick
@@ -508,7 +512,8 @@ function mapStateToProps(state) {
     isLoading: state.mainRd.isLoadingOrderHistory,
     syncDataManager: state.authenRd.syncDataManager,
     orderHistoryDetailOffline: state.mainRd.orderHistoryDetailOffline,
-    isLoadingSyncAllOrder: state.authenRd.syncManager.loadingSyncOrder
+    isLoadingSyncAllOrder: state.authenRd.syncManager.loadingSyncOrder,
+    isOpenReceiptModal: state.mainRd.receipt.isOpenReceiptModal
   };
 }
 
