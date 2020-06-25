@@ -216,7 +216,7 @@ class Receipt extends Component<Props> {
                               <td
                                 style={{
                                   marginTop: '25px',
-                                  textAlign: 'left',
+                                  textAlign: 'right',
                                   width: '50%'
                                 }}
                               >
