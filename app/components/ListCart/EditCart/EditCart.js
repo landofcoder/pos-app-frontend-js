@@ -116,7 +116,7 @@ class EditCart extends Component<Props, State> {
                       ref={input => {
                         this.qtyInput = input;
                       }}
-                      type="text"
+                      type="number"
                       className="form-control text-center"
                       placeholder="0"
                       onChange={this.onQtyOnChange}
