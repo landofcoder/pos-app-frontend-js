@@ -210,11 +210,7 @@ class DetailOrderOffline extends Component {
                           </div>
                           <div className="d-flex justify-content-between pr-1">
                             <span>Status</span>
-                            {invoiceId ? (
-                              <span>Success</span>
-                            ) : (
-                              <span>Pending</span>
-                            )}
+                            <span>{orderHistoryDetail.status}</span>
                           </div>
                         </div>
                       </div>
