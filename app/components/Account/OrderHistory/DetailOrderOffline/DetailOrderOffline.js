@@ -101,7 +101,7 @@ class DetailOrderOffline extends Component {
                               </div>
                               <div className="d-flex justify-content-between pr-1">
                                 <span>Order ID: </span>
-                                <span>{orderId ? orderId : '--'}</span>
+                                <span>{orderId ?? '--'}</span>
                               </div>
                               <div className="d-flex justify-content-between pr-1">
                                 <span>Customer: </span>
@@ -213,7 +213,7 @@ class DetailOrderOffline extends Component {
                             {invoiceId ? (
                               <span>Success</span>
                             ) : (
-                              <span>Pendding</span>
+                              <span>Pending</span>
                             )}
                           </div>
                         </div>
