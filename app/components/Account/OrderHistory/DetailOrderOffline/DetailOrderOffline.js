@@ -353,7 +353,6 @@ class DetailOrderOffline extends Component {
                             .comments ? (
                             orderHistoryDetail.items.cartCurrentResult.comments.map(
                               (item, index) => {
-                                console.log(item);
                                 return (
                                   <div key={index}>
                                     <div className="form-group pb-3 border-bottom">
