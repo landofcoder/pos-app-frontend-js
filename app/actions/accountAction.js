@@ -13,13 +13,6 @@ export function toggleModalOrderDetail(payload) {
   };
 }
 
-export function toggleModalOrderDetailOffline(payload) {
-  return {
-    type: type.TOGGLE_MODAL_ORDER_DETAIL_OFFLINE,
-    payload
-  };
-}
-
 export function toggleModalActionOrder(payload) {
   return {
     type: type.TOGGLE_MODAL_ACTION_ORDER,

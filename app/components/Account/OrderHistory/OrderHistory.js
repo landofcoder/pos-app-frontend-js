@@ -4,14 +4,14 @@ import { withRouter } from 'react-router';
 import Modal from 'react-modal';
 import { formatDistance } from 'date-fns';
 import {
-  toggleModalOrderDetailOffline,
+  toggleModalOrderDetail,
   orderAction,
   toggleModalActionOrder,
   closeToggleModalOrderDetail,
   getDataServiceWithType
 } from '../../../actions/accountAction';
 import Receipt from '../../payment/Receipt/Receipt';
-import DetailOrderOffline from './DetailOrderOffline/DetailOrderOffline';
+import DetailOrder from './DetailOrder/DetailOrder';
 import Close from '../../commons/x';
 import Styles from './order-history.scss';
 import { formatCurrencyCode } from '../../../common/settings';
@@ -28,7 +28,7 @@ import {
   REFUND_ACTION_ORDER,
   ADD_NOTE_ACTION_ORDER
 } from '../../../constants/root';
-import DetailOrderAction from './DetailOrderAction/DetailOrderAction';
+import OrderAction from './OrderAction/OrderAction';
 import { syncDataClient } from '../../../actions/homeAction';
 
 type Props = {
@@ -36,12 +36,11 @@ type Props = {
   syncDataManager: array,
   getDataServiceWithType: payload => void,
   isOpenDetailOrder: boolean,
-  isOpenDetailOrderOffline: boolean,
   isOpenToggleActionOrder: boolean,
   toggleModalOrderDetail: object => void,
-  toggleModalOrderDetailOffline: object => void,
+  toggleModalOrderDetail: object => void,
   orderAction: payload => void,
-  orderHistoryDetailOffline: object,
+  orderHistoryDetail: object,
   history: payload => void,
   toggleModalActionOrder: payload => void,
   syncDataClient: payload => void,
@@ -78,14 +77,9 @@ class OrderHistory extends Component<Props> {
     clearInterval(intervalGetDataErrorId);
   }
 
-  getOrderHistoryDetail = saleOrderId => {
+  getOrderHistoryDetail = dataOrderCheckoutOfflineItem => {
     const { toggleModalOrderDetail } = this.props;
-    toggleModalOrderDetail({ isShow: true, order_id: saleOrderId });
-  };
-
-  getOrderHistoryDetailOffline = dataOrderCheckoutOfflineItem => {
-    const { toggleModalOrderDetailOffline } = this.props;
-    toggleModalOrderDetailOffline({
+    toggleModalOrderDetail({
       isShow: true,
       dataItem: dataOrderCheckoutOfflineItem
     });
@@ -97,17 +91,14 @@ class OrderHistory extends Component<Props> {
   };
 
   selectDetailOrder = () => {
-    const { isOpenDetailOrderOffline } = this.props;
-    if (isOpenDetailOrderOffline) return <DetailOrderOffline />;
+    const { isOpenDetailOrder } = this.props;
+    if (isOpenDetailOrder) return <DetailOrder />;
     return null;
   };
 
-  isShowingDetailOrderOffline = () => {
-    const { orderHistoryDetailOffline, isOpenDetailOrderOffline } = this.props;
-    return (
-      Object.entries(orderHistoryDetailOffline).length > 0 &&
-      isOpenDetailOrderOffline
-    );
+  isShowingDetailOrder = () => {
+    const { orderHistoryDetail, isOpenDetailOrder } = this.props;
+    return Object.entries(orderHistoryDetail).length > 0 && isOpenDetailOrder;
   };
 
   renderLastTime = manager => {
@@ -226,9 +217,9 @@ class OrderHistory extends Component<Props> {
   };
 
   statusDisableActionOrder = type => {
-    const { orderHistoryDetailOffline } = this.props;
+    const { orderHistoryDetail } = this.props;
     let status;
-    ({ status } = orderHistoryDetailOffline);
+    ({ status } = orderHistoryDetail);
     status = status === 'complete' || status === 'closed';
     switch (type) {
       case SHIPMENT_ACTION_ORDER:
@@ -250,10 +241,10 @@ class OrderHistory extends Component<Props> {
     const { orderAction, history, isOpenToggleActionOrder } = this.props;
 
     // check have detail order to consider show action detail
-    if (this.isShowingDetailOrderOffline()) {
+    if (this.isShowingDetailOrder()) {
       return (
         <>
-          {isOpenToggleActionOrder ? <DetailOrderAction /> : null}
+          {isOpenToggleActionOrder ? <OrderAction /> : null}
           <div className="row flex-row-reverse mx-3">
             <div className="col-md-3 pl-1 pr-0">
               <button
@@ -368,7 +359,6 @@ class OrderHistory extends Component<Props> {
   render() {
     const {
       syncDataManager,
-      isOpenDetailOrderOffline,
       isOpenDetailOrder,
       isLoading,
       isOpenReceiptModal
@@ -407,12 +397,7 @@ class OrderHistory extends Component<Props> {
                     <tr
                       key={index}
                       style={{ cursor: 'pointer' }}
-                      onClick={
-                        () =>
-                          // item.local
-                          this.getOrderHistoryDetailOffline(item)
-                        // : this.getOrderHistoryDetail(item.sales_order_id)
-                      }
+                      onClick={() => this.getOrderHistoryDetail(item)}
                     >
                       <th scope="row">{index + 1}</th>
                       <td>{orderId || '--'}</td>
@@ -463,7 +448,7 @@ class OrderHistory extends Component<Props> {
           shouldCloseOnOverlayClick
           onRequestClose={this.closeOrderHistoryDetail}
           className={`${modalStyle.Modal}`}
-          isOpen={isOpenDetailOrderOffline || isOpenDetailOrder}
+          isOpen={isOpenDetailOrder || isOpenDetailOrder}
           contentLabel="Example Modal"
         >
           <div className={modalStyle.modalContentLg}>
@@ -506,12 +491,11 @@ class OrderHistory extends Component<Props> {
 function mapStateToProps(state) {
   return {
     isOpenDetailOrder: state.mainRd.isOpenDetailOrder,
-    isOpenDetailOrderOffline: state.mainRd.isOpenDetailOrderOffline,
     isOpenToggleActionOrder:
       state.mainRd.toggleActionOrder.isOpenToggleActionOrder,
     isLoading: state.mainRd.isLoadingOrderHistory,
     syncDataManager: state.authenRd.syncDataManager,
-    orderHistoryDetailOffline: state.mainRd.orderHistoryDetailOffline,
+    orderHistoryDetail: state.mainRd.orderHistoryDetail,
     isLoadingSyncAllOrder: state.authenRd.syncManager.loadingSyncOrder,
     isOpenReceiptModal: state.mainRd.receipt.isOpenReceiptModal
   };
@@ -519,8 +503,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    toggleModalOrderDetailOffline: payload =>
-      dispatch(toggleModalOrderDetailOffline(payload)),
+    toggleModalOrderDetail: payload =>
+      dispatch(toggleModalOrderDetail(payload)),
     orderAction: payload => dispatch(orderAction(payload)),
     toggleModalActionOrder: payload =>
       dispatch(toggleModalActionOrder(payload)),
