@@ -101,7 +101,7 @@ class DetailOrderOffline extends Component {
                               </div>
                               <div className="d-flex justify-content-between pr-1">
                                 <span>Order ID: </span>
-                                <span>{orderId ? orderId : '--'}</span>
+                                <span>{orderId ?? '--'}</span>
                               </div>
                               <div className="d-flex justify-content-between pr-1">
                                 <span>Customer: </span>
@@ -210,11 +210,7 @@ class DetailOrderOffline extends Component {
                           </div>
                           <div className="d-flex justify-content-between pr-1">
                             <span>Status</span>
-                            {invoiceId ? (
-                              <span>Success</span>
-                            ) : (
-                              <span>Pendding</span>
-                            )}
+                            <span>{orderHistoryDetail.status}</span>
                           </div>
                         </div>
                       </div>
@@ -332,6 +328,40 @@ class DetailOrderOffline extends Component {
                               }
                             </span>
                           </div>
+                        </div>
+                      </div>
+
+                      {/* Comments Order */}
+
+                      <div className="form-group">
+                        <div>
+                          <div
+                            className={`border-bottom col ${Styles.wrapContent}`}
+                          >
+                            <span className="font-weight-bold">
+                              Comments Order
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className={`col ${Styles.wrapContent}`}>
+                          {orderHistoryDetail.items.cartCurrentResult
+                            .comments ? (
+                            orderHistoryDetail.items.cartCurrentResult.comments.map(
+                              (item, index) => {
+                                return (
+                                  <div key={index}>
+                                    <div className="form-group pb-3 border-bottom">
+                                      <p>{item.created_at}</p>
+                                      <p>{item.comment}</p>
+                                    </div>
+                                  </div>
+                                );
+                              }
+                            )
+                          ) : (
+                            <span>Nothing</span>
+                          )}
                         </div>
                       </div>
                     </div>
