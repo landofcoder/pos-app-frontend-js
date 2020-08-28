@@ -66,7 +66,7 @@ const initialState = {
     isOpenReceiptModal: false,
     items: {
       cartForReceipt: testCartCurrentForDefaultReceipt, // When customer checkout succeed, copy current cart to this
-      isPrintReceiptNow: false,
+      isPrintReceiptNow: false
     }
   },
   checkout: {
@@ -168,7 +168,7 @@ const initialState = {
     tax_label: null
   },
   orderHistory: [],
-  orderHistoryDetailOffline: {},
+  orderHistoryDetail: {},
   order_id_history: null,
   isOpenFindCustomer: false,
   isOpenCategoriesModel: false,
@@ -176,11 +176,10 @@ const initialState = {
   isOpenSignUpCustomer: false,
   isOpenCalculator: false,
   isOpenDetailOrder: false,
-  isOpenDetailOrderOffline: false,
   isLoadingSearchCustomer: false,
   isLoadingOrderHistory: false,
   isLoadingNoteOrderAction: false,
-  isLoadingOrderHistoryDetailOffline: true,
+  isLoadingorderHistoryDetail: true,
   isLoadingSignUpCustomer: false,
   customerSearchResult: [],
   isLoadingCashPlaceOrder: false,
@@ -439,7 +438,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
           draft.checkout.orderPreparingCheckout;
         break;
       case types.COPY_DETAIL_ORDER_TO_RECEIPT:
-        draft.receipt = {...draft.receipt, ...draft.orderHistoryDetailOffline};
+        draft.receipt = { ...draft.receipt, ...draft.orderHistoryDetail };
         break;
       case types.PRINT_RECEIPT_NOW:
         draft.receipt.isPrintReceiptNow = action.payload;
@@ -459,7 +458,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.isShowHaveNoSearchResultFound = action.payload;
         break;
       case types.LOADING_ORDER_HISTORY_DETAIL_OFFLINE:
-        draft.isLoadingOrderHistoryDetailOffline = action.payload;
+        draft.isLoadingorderHistoryDetail = action.payload;
         break;
       case types.LOADING_GET_ACTION_ORDER:
         draft.toggleActionOrder.isLoadingGetDataOrderAction = action.payload;
@@ -469,17 +468,10 @@ const mainRd = (state: Object = initialState, action: Object) =>
         break;
       case types.TOGGLE_MODAL_ORDER_DETAIL:
         draft.isOpenDetailOrder = action.payload.isShow;
-        draft.isOpenDetailOrderOffline = false;
-        draft.order_id_history = action.payload.order_id;
-        draft.orderHistoryDetailOffline = {};
-        break;
-      case types.TOGGLE_MODAL_ORDER_DETAIL_OFFLINE:
-        draft.isOpenDetailOrderOffline = action.payload.isShow;
-        draft.isOpenDetailOrder = false;
-        draft.orderHistoryDetailOffline = action.payload.dataItem;
+        draft.orderHistoryDetail = action.payload.dataItem;
         break;
       case types.CLOSE_TOGGLE_MODAL_DETAIL_ORDER:
-        draft.isOpenDetailOrderOffline = false;
+        draft.isOpenDetailOrder = false;
         break;
       case types.TOGGLE_MODAL_CALCULATOR:
         draft.isOpenCalculator = action.payload;
@@ -488,7 +480,7 @@ const mainRd = (state: Object = initialState, action: Object) =>
         draft.isLoadingOrderHistory = action.payload;
         break;
       case types.RECEIVED_ORDER_HISTORY_DETAIL_OFFLINE_ACTION:
-        draft.orderHistoryDetailOffline = action.payload;
+        draft.orderHistoryDetail = action.payload;
         break;
       case types.RECEIVED_ALL_CATEGORIES:
         draft.allCategories = action.payload;

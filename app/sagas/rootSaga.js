@@ -83,10 +83,10 @@ const orderPreparingCheckoutState = state =>
 const guestInfo = state =>
   state.mainRd.generalConfig.common_config.default_guest_checkout;
 const allDevices = state => state.mainRd.hidDevice.allDevices;
-const orderDetailLocalDb = state => state.mainRd.orderHistoryDetailOffline;
+const orderDetailLocalDb = state => state.mainRd.orderHistoryDetail;
 const cardPayment = state => state.mainRd.checkout.cardPayment;
 const detailOutlet = state => state.mainRd.generalConfig.detail_outlet;
-const isOpenDetailOrderOffline = state => state.mainRd.isOpenDetailOrderOffline;
+const isOpenDetailOrder = state => state.mainRd.isOpenDetailOrder;
 const internetConnected = state => state.mainRd.internetConnected;
 
 /**
@@ -1011,26 +1011,12 @@ function* setOrderActionOffline(payload) {
   }
 }
 
-function isShowingDetailOrderOffline(
-  orderHistoryDetailOffline,
-  isOpenDetailOrderOffline
-) {
-  return (
-    Object.entries(orderHistoryDetailOffline).length > 0 &&
-    isOpenDetailOrderOffline
-  );
+function isShowingDetailOrder(orderHistoryDetail, isOpenDetailOrder) {
+  return Object.entries(orderHistoryDetail).length > 0 && isOpenDetailOrder;
 }
 
 function* selectTypeOrderAction() {
-  const orderHistoryDetailOfflineResult = yield select(orderDetailLocalDb);
-  const isOpenDetailOrderOfflineResult = yield select(isOpenDetailOrderOffline);
-  if (
-    isShowingDetailOrderOffline(
-      orderHistoryDetailOfflineResult,
-      isOpenDetailOrderOfflineResult
-    )
-  )
-    return types.DETAIL_ORDER_OFFLINE;
+  return types.DETAIL_ORDER_OFFLINE;
 }
 
 /**

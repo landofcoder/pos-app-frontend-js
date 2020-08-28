@@ -13,7 +13,7 @@ type Props = {
   orderHistoryDetail: {},
   actionLoadingOrderDetailOffline: payload => void
 };
-class DetailOrderOffline extends Component {
+class DetailOrder extends Component {
   props: Props;
 
   componentDidMount() {
@@ -51,9 +51,8 @@ class DetailOrderOffline extends Component {
     }
     const { syncData } = orderHistoryDetail.items;
     let orderId;
-    let invoiceId;
     if (syncData) {
-      ({ orderId, invoiceId } = syncData);
+      ({ orderId } = syncData);
     }
     return (
       <>
@@ -377,11 +376,10 @@ class DetailOrderOffline extends Component {
 }
 function mapStateToProps(state) {
   return {
-    // order_id_history: state.mainRd.order_id_historyOffline,
-    isOpenDetailOrder: state.mainRd.isOpenDetailOrderOffline,
+    isOpenDetailOrder: state.mainRd.isOpenDetailOrder,
     isLoadingOrderHistoryDetail:
-      state.mainRd.isLoadingOrderHistoryDetailOffline,
-    orderHistoryDetail: state.mainRd.orderHistoryDetailOffline
+      state.mainRd.isLoadingorderHistoryDetail,
+    orderHistoryDetail: state.mainRd.orderHistoryDetail
   };
 }
 function mapDispatchToProps(dispatch) {
@@ -393,4 +391,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(DetailOrderOffline);
+)(DetailOrder);

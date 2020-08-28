@@ -8,7 +8,7 @@ import {
 } from '../../../../actions/accountAction';
 import Close from '../../../commons/x';
 import ModalStyle from '../../../styles/modal.scss';
-import Styles from './detail-order-action.scss';
+import Styles from './order-action.scss';
 import {
   ADD_NOTE_ACTION_ORDER,
   REFUND_ACTION_ORDER,
@@ -30,7 +30,7 @@ type Props = {
   isOpenToggleActionOrder: boolean
 };
 
-class DetailOrderAction extends Component<Props> {
+class OrderAction extends Component<Props> {
   props: Props;
 
   constructor(props) {
@@ -605,4 +605,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(DetailOrderAction);
+)(OrderAction);

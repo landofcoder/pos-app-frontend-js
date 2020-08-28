@@ -123,6 +123,7 @@ class Grouped extends Component<Props> {
                           <input
                             className="form-control"
                             value={item.qty}
+                            type="number"
                             onChange={evt => this.qtyOnChange(index, evt)}
                           />
                         </div>
