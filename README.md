@@ -90,7 +90,7 @@ yarn package-linux
  
 #### Bundle all package file supported (macOS, linux, windows)
 ```bash
-yarn package:all
+yarn package-all
 ``` 
 #### That takes a long time
 
