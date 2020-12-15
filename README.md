@@ -102,7 +102,7 @@ yarn package:all
 /release
 *.exe(windows)
 *.deb(linux)
-For macOS in /mac folder
+*.dmg(macOS)
 ```
 
 
