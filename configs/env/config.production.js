@@ -1,1 +1,1 @@
-export const apiGatewayPath = 'http://nestpos.com';
+export const apiGatewayPath = 'https://gateway.nestpos.com';
