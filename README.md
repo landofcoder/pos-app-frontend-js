@@ -8,7 +8,14 @@ We want to make a cross-platform POS frontend application for multi ecommerce Pl
 - We developed POS frontend app with Reactjs, Electron (we just published source code)
 - Backend we are using Magento 2 with some extensions support extra REST API, use magento 2 backend REST APIs (we published all modules repo)
 - Between POS app and Magento 2 backend we are using API Gateway with Nodejs, Mongodb, NestJS (it is simply and we will public source code then)
--
+
+## How it work
+
+![POS How It Work](./screenshots/POS-how-it-work.png)
+
+## DEMO POS APP
+
+[View NestPos App for Magento 2](https://www.youtube.com/watch?v=TD1OHNjuSt8)
 
 ## Installation Environment
 
@@ -133,3 +140,26 @@ yarn package-all
 
 ## Lof_POS license 
 [Landofcoder license](https://landofcoder.com/license)
+
+# Screenshots
+
+<h3>POS Cash Payment</h3>
+<img src="./screenshots/1-POS-core-cash-checkout-1.jpg" />
+
+<h3>POS Custom Receipt</h3>
+<img src="./screenshots/2-M2-POS-Custom-Receipt.jpg" />
+
+<h3>POS Choose Customer</h3>
+<img src="./screenshots/0-M2-POS-choose-customer-1.jpg" />
+
+<h3>POS Search by Sku</h3>
+<img src="./screenshots/0-M2-POS-search-by-sku.jpg" />
+
+<h3>POS Offline Checkout</h3>
+<img src="./screenshots/1-M2-POS-Offline-Checkout.gif" />
+
+## Donation
+
+If this project help you reduce time to develop, you can give me a cup of coffee :) 
+
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/paypalme/allorderdesk)
