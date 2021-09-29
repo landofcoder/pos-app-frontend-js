@@ -7,7 +7,7 @@ However at now our team are not having more time to complete the project, so we 
 We want to make a cross-platform POS frontend application for multi ecommerce Platform (Magento 2, Prestashop, Woocommerce,..)
 - We developed POS frontend app with Reactjs, Electron (we just published source code)
 - Backend we are using Magento 2 with some extensions support extra REST API, use magento 2 backend REST APIs (we published all modules repo)
-- Between POS app and Magento 2 backend we are using API Gateway with Nodejs, Mongodb, NestJS (it is simply and we will public source code then)
+- Between POS app and Magento 2 backend we are using API Gateway with Nodejs, Mongodb, NestJS (it is simply management connector application)
 
 ## How it work
 
@@ -64,6 +64,9 @@ sudo apt update && sudo apt install yarn
 - [Magento 2 Barcode Warehouse Integration](https://github.com/landofcoder/module-pos-barcode-warehouse-integration)
 - [Magento 2 Barcode Label](https://github.com/landofcoder/module-pos-barcode-label)
 
+#### For API Gateway, you can setup after at here:
+
+[POS API Gateway](https://github.com/landofcoder/nestpos-gateway-backend)
 
 ##### Installed homebrew first
 
