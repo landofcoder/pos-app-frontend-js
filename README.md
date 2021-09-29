@@ -1,5 +1,15 @@
 # Lof_POS Magento
-### This is a project base on Electron (a cross-platform desktop app with Javascript)
+
+This is a project base on Electron (a cross-platform desktop app with Javascript), use Magento 2 as backend manage products, orders, customers, checkout.
+However at now our team are not having more time to complete the project, so we published source code for contributers and we will back to develop when we have time.
+
+## Concept
+We want to make a cross-platform POS frontend application for multi ecommerce Platform (Magento 2, Prestashop, Woocommerce,..)
+- We developed POS frontend app with Reactjs, Electron (we just published source code)
+- Backend we are using Magento 2 with some extensions support extra REST API, use magento 2 backend REST APIs (we published all modules repo)
+- Between POS app and Magento 2 backend we are using API Gateway with Nodejs, Mongodb, NestJS (it is simply and we will public source code then)
+-
+
 ## Installation Environment
 
 ### For Linux System
