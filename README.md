@@ -35,17 +35,17 @@ sudo apt update && sudo apt install yarn
 
 #### Required Setup Magento 2 site and setup list extesion for management and REST API
 
-[Magento 2 POS App Settings Module](https://github.com/landofcoder/module-pos-pos-setting)
-[Magento 2 POS Receipt](https://github.com/landofcoder/module-pos-receipt)
-[Magento 2 SYC Products, Orders](https://github.com/landofcoder/module-pos-pos-sync)
-[Magento 2 Cashier](https://github.com/landofcoder/module-pos-cashier)
-[Magento 2 Outlet](https://github.com/landofcoder/module-pos-outlet)
-[Magento 2 Add Custom Product](https://github.com/landofcoder/module-pos-custom-product)
-[Magento 2 POS Permission](https://github.com/landofcoder/module-pos-permission)
-[Magento 2 Barcode Inventory](https://github.com/landofcoder/module-pos-barcode-inventory)
-[Magento 2 Multi Barcode](https://github.com/landofcoder/module-pos-multi-barcode)
-[Magento 2 Barcode Warehouse Integration](https://github.com/landofcoder/module-pos-barcode-warehouse-integration)
-[Magento 2 Barcode Label](https://github.com/landofcoder/module-pos-barcode-label)
+- [Magento 2 POS App Settings Module](https://github.com/landofcoder/module-pos-pos-setting)
+- [Magento 2 POS Receipt](https://github.com/landofcoder/module-pos-receipt)
+- [Magento 2 SYC Products, Orders](https://github.com/landofcoder/module-pos-pos-sync)
+- [Magento 2 Cashier](https://github.com/landofcoder/module-pos-cashier)
+- [Magento 2 Outlet](https://github.com/landofcoder/module-pos-outlet)
+- [Magento 2 Add Custom Product](https://github.com/landofcoder/module-pos-custom-product)
+- [Magento 2 POS Permission](https://github.com/landofcoder/module-pos-permission)
+- [Magento 2 Barcode Inventory](https://github.com/landofcoder/module-pos-barcode-inventory)
+- [Magento 2 Multi Barcode](https://github.com/landofcoder/module-pos-multi-barcode)
+- [Magento 2 Barcode Warehouse Integration](https://github.com/landofcoder/module-pos-barcode-warehouse-integration)
+- [Magento 2 Barcode Label](https://github.com/landofcoder/module-pos-barcode-label)
 
 
 ##### Installed homebrew first
