@@ -155,8 +155,8 @@ yarn package-all
 <h3>POS Search by Sku</h3>
 <img src="./screenshots/0-M2-POS-search-by-sku.jpg" />
 
-<h3>POS Offline Checkout</h3>
-<img src="./screenshots/1-M2-POS-Offline-Checkout.gif" />
+<h3>POS Dashboard</h3>
+<img src="./screenshots/Magento-2-POS-dashboard.png" />
 
 ## Donation
 
